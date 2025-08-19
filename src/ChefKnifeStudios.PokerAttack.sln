@@ -1,0 +1,84 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChefKnifeStudios.PokerAttack.AppHost", "ChefKnifeStudios.PokerAttack.AppHost\ChefKnifeStudios.PokerAttack.AppHost.csproj", "{03295507-7083-450B-A7BE-37F584111DF1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChefKnifeStudios.PokerAttack.ServiceDefaults", "ChefKnifeStudios.PokerAttack.ServiceDefaults\ChefKnifeStudios.PokerAttack.ServiceDefaults.csproj", "{0982B7E8-1C2C-E271-852B-1812CF9D0C2F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{75DC4533-87FC-48A2-953F-1D06236E84A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChefKnifeStudios.PokerAttack.Shared", "ChefKnifeStudios.PokerAttack.Shared\ChefKnifeStudios.PokerAttack.Shared.csproj", "{B8B40F97-9ED2-7933-ABB6-F9B46214F66F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChefKnifeStudios.PokerAttack.Client.Shared", "Client\ChefKnifeStudios.PokerAttack.Client.Shared\ChefKnifeStudios.PokerAttack.Client.Shared.csproj", "{5DE325EB-037A-AB3E-B6A0-C4FA3BCB37B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChefKnifeStudios.PokerAttack.Client.Core", "Client\ChefKnifeStudios.PokerAttack.Client.Core\ChefKnifeStudios.PokerAttack.Client.Core.csproj", "{B690A756-2F29-4269-BA42-69641C7B32C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChefKnifeStudios.PokerAttack.Server.BL", "Server\ChefKnifeStudios.PokerAttack.Server.BL\ChefKnifeStudios.PokerAttack.Server.BL.csproj", "{54CA7B1C-4AD5-4644-8F45-4138A78C8965}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChefKnifeStudios.PokerAttack.Server.Data", "Server\ChefKnifeStudios.PokerAttack.Server.Data\ChefKnifeStudios.PokerAttack.Server.Data.csproj", "{E8290942-88B1-4278-9CD6-26D857A937F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChefKnifeStudios.PokerAttack.Client.WebApp", "Client\ChefKnifeStudios.PokerAttack.Client.WebApp\ChefKnifeStudios.PokerAttack.Client.WebApp.csproj", "{B11A4AC3-2D1F-E22F-9344-DF2590F5231A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChefKnifeStudios.PokerAttack.Server.WebAPI", "Server\ChefKnifeStudios.PokerAttack.Server.WebAPI\ChefKnifeStudios.PokerAttack.Server.WebAPI.csproj", "{97D182E1-6F02-7B9A-AEA7-71525F5B5310}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{03295507-7083-450B-A7BE-37F584111DF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03295507-7083-450B-A7BE-37F584111DF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03295507-7083-450B-A7BE-37F584111DF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03295507-7083-450B-A7BE-37F584111DF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0982B7E8-1C2C-E271-852B-1812CF9D0C2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0982B7E8-1C2C-E271-852B-1812CF9D0C2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0982B7E8-1C2C-E271-852B-1812CF9D0C2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0982B7E8-1C2C-E271-852B-1812CF9D0C2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8B40F97-9ED2-7933-ABB6-F9B46214F66F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8B40F97-9ED2-7933-ABB6-F9B46214F66F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8B40F97-9ED2-7933-ABB6-F9B46214F66F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8B40F97-9ED2-7933-ABB6-F9B46214F66F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DE325EB-037A-AB3E-B6A0-C4FA3BCB37B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DE325EB-037A-AB3E-B6A0-C4FA3BCB37B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DE325EB-037A-AB3E-B6A0-C4FA3BCB37B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DE325EB-037A-AB3E-B6A0-C4FA3BCB37B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B690A756-2F29-4269-BA42-69641C7B32C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B690A756-2F29-4269-BA42-69641C7B32C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B690A756-2F29-4269-BA42-69641C7B32C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B690A756-2F29-4269-BA42-69641C7B32C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54CA7B1C-4AD5-4644-8F45-4138A78C8965}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54CA7B1C-4AD5-4644-8F45-4138A78C8965}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54CA7B1C-4AD5-4644-8F45-4138A78C8965}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54CA7B1C-4AD5-4644-8F45-4138A78C8965}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8290942-88B1-4278-9CD6-26D857A937F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8290942-88B1-4278-9CD6-26D857A937F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8290942-88B1-4278-9CD6-26D857A937F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8290942-88B1-4278-9CD6-26D857A937F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B11A4AC3-2D1F-E22F-9344-DF2590F5231A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B11A4AC3-2D1F-E22F-9344-DF2590F5231A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B11A4AC3-2D1F-E22F-9344-DF2590F5231A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B11A4AC3-2D1F-E22F-9344-DF2590F5231A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97D182E1-6F02-7B9A-AEA7-71525F5B5310}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97D182E1-6F02-7B9A-AEA7-71525F5B5310}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97D182E1-6F02-7B9A-AEA7-71525F5B5310}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97D182E1-6F02-7B9A-AEA7-71525F5B5310}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5DE325EB-037A-AB3E-B6A0-C4FA3BCB37B6} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{B690A756-2F29-4269-BA42-69641C7B32C7} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{54CA7B1C-4AD5-4644-8F45-4138A78C8965} = {75DC4533-87FC-48A2-953F-1D06236E84A6}
+		{E8290942-88B1-4278-9CD6-26D857A937F9} = {75DC4533-87FC-48A2-953F-1D06236E84A6}
+		{B11A4AC3-2D1F-E22F-9344-DF2590F5231A} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{97D182E1-6F02-7B9A-AEA7-71525F5B5310} = {75DC4533-87FC-48A2-953F-1D06236E84A6}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D26AC3DB-E2BD-4D00-9DF2-ECDB1709E71D}
+	EndGlobalSection
+EndGlobal
