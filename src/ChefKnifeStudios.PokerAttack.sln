@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChefKnifeStudios.PokerAttac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChefKnifeStudios.PokerAttack.Server.WebAPI", "Server\ChefKnifeStudios.PokerAttack.Server.WebAPI\ChefKnifeStudios.PokerAttack.Server.WebAPI.csproj", "{97D182E1-6F02-7B9A-AEA7-71525F5B5310}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChefKnifeStudios.PokerAttack.Server.Core", "Server\ChefKnifeStudios.PokerAttack.Server.Core\ChefKnifeStudios.PokerAttack.Server.Core.csproj", "{299BF944-DB8B-4701-A525-E624C82C824E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,6 +68,10 @@ Global
 		{97D182E1-6F02-7B9A-AEA7-71525F5B5310}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97D182E1-6F02-7B9A-AEA7-71525F5B5310}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97D182E1-6F02-7B9A-AEA7-71525F5B5310}.Release|Any CPU.Build.0 = Release|Any CPU
+		{299BF944-DB8B-4701-A525-E624C82C824E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{299BF944-DB8B-4701-A525-E624C82C824E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{299BF944-DB8B-4701-A525-E624C82C824E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{299BF944-DB8B-4701-A525-E624C82C824E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,6 +83,7 @@ Global
 		{E8290942-88B1-4278-9CD6-26D857A937F9} = {75DC4533-87FC-48A2-953F-1D06236E84A6}
 		{B11A4AC3-2D1F-E22F-9344-DF2590F5231A} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{97D182E1-6F02-7B9A-AEA7-71525F5B5310} = {75DC4533-87FC-48A2-953F-1D06236E84A6}
+		{299BF944-DB8B-4701-A525-E624C82C824E} = {75DC4533-87FC-48A2-953F-1D06236E84A6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D26AC3DB-E2BD-4D00-9DF2-ECDB1709E71D}

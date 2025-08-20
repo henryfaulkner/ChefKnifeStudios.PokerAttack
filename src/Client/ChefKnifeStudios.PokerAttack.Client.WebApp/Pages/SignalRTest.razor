@@ -1,0 +1,72 @@
+﻿@using ChefKnifeStudios.PokerAttack.Client.Core.Services
+
+@page "/signalr-test"
+@inject ISignalRNotificationService NotificationService
+@inject NavigationManager NavigationManager
+
+<h3>SignalR Test</h3>
+
+<p>
+    Connection status: <b>@connectionStatus</b>
+</p>
+
+<input @bind="gameId" placeholder="Game ID" />
+<input @bind="message" placeholder="Message" />
+
+<button @onclick="SendTestNotification" disabled="@(!isConnected)">
+    Send Test Notification
+</button>
+
+<ul>
+    @foreach (var msg in messages)
+    {
+        <li>@msg</li>
+    }
+</ul>
+
+@code {
+    private string connectionStatus = "Disconnected";
+    private string gameId = "test-game";
+    private string message = "Hello from Blazor!";
+    private bool isConnected = false;
+    private readonly List<string> messages = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await NotificationService.InitAsync();
+            connectionStatus = "Connected";
+            isConnected = true;
+
+            NotificationService.HandleNotificationReceived += async (notification) =>
+            {
+                await InvokeAsync(() =>
+                {
+                    messages.Add($"{notification.NotificationType}: {notification.Payload}");
+                    StateHasChanged();
+                });
+            };
+        }
+        catch (Exception ex)
+        {
+            connectionStatus = $"Error: {ex.Message}";
+        }
+    }
+
+    private async Task SendTestNotification()
+    {
+        if (!isConnected)
+            return;
+
+        // Use hub method to broadcast into game group
+        try
+        {
+            await NotificationService.BroadcastTestNotification(gameId, message);
+        }
+        catch (Exception ex)
+        {
+            messages.Add($"Error: {ex.Message}");
+        }
+    }
+}
