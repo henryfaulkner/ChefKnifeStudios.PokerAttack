@@ -2,7 +2,7 @@
 
 public record PokerAttackNotification(
     PokerAttackNotificationType NotificationType,
-    object? Payload = null);
+    string? Payload);
 
 public enum PokerAttackNotificationType
 {

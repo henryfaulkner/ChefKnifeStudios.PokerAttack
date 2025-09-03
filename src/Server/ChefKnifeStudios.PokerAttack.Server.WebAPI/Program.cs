@@ -14,7 +14,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddCors();
 builder.Services.AddSignalR();
-builder.Services.AddSingleton<PokerAttackNotificationHelper, PokerAttackNotificationHelper>();
+builder.Services.AddSingleton<IPokerAttackNotificationHelper, PokerAttackNotificationHelper>();
 
 var app = builder.Build();
 

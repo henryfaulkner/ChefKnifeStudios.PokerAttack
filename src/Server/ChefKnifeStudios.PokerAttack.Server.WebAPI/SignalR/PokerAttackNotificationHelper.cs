@@ -1,9 +1,10 @@
-﻿using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
+﻿using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ChefKnifeStudios.PokerAttack.Server.WebAPI.SignalR;
 
-public class PokerAttackNotificationHelper
+public class PokerAttackNotificationHelper : IPokerAttackNotificationHelper
 {
     private readonly IHubContext<SignalRNotificationHub, ISignalRNotificationClient> _hubContext;
 
@@ -35,7 +36,8 @@ public class PokerAttackNotificationHelper
         try
         {
             var groupName = GetGameGroupName(gameId);
-            await _hubContext.Clients.Group(groupName).ReceivePokerAttackNotification(notification, cancellationToken);
+            var group = _hubContext.Clients.Group(groupName);
+            await group.ReceivePokerAttackNotification(notification, cancellationToken);
         }
         catch { /* log or swallow */ }
     }
@@ -56,7 +58,7 @@ public class PokerAttackNotificationHelper
     /// <summary>
     /// Get or generate the SignalR group name for a game
     /// </summary>
-    private string GetGameGroupName(string gameId)
+    public string GetGameGroupName(string gameId)
     {
         if (_gameGroups.TryGetValue(gameId, out var groupName))
             return groupName;

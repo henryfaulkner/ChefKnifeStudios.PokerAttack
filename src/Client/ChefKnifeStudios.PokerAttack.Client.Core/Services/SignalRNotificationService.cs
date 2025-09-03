@@ -50,7 +50,7 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
             var itemArray = apis.GetChildren();
 
             var setting = itemArray.FirstOrDefault(a =>
-                a.GetValue<string>("Name") == APIs.PokerAttackSignalR.ToString());
+                a.GetValue<string>("Name") == nameof(APIs.PokerAttackSignalR));
 
             if (setting != null)
             {
@@ -72,11 +72,12 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
 
                 _hubConnection = new HubConnectionBuilder()
                     .WithUrl(url) // no authentication
+                    .WithAutomaticReconnect()
                     .Build();
 
                 _logger.LogInformation("Connecting to SignalR hub: {host}", baseUri.Host);
 
-                _hubConnection.On<PokerAttackNotification>("PokerAttackNotification", notification =>
+                _hubConnection.On<PokerAttackNotification>("ReceivePokerAttackNotification", notification =>
                 {
                     HandleNotificationReceived?.Invoke(notification);
                 });
