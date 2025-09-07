@@ -1,3 +1,5 @@
+using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
+using ChefKnifeStudios.PokerAttack.Server.WebAPI.EndpointGroups;
 using ChefKnifeStudios.PokerAttack.Server.WebAPI.SignalR;
 using Scalar.AspNetCore;
 
@@ -43,6 +45,7 @@ app.UseCors(policy =>
         .AllowAnyHeader());
 
 app.MapHub<SignalRNotificationHub>("/cks-notification");
+app.MapTestEndpoints();
 
 app.MapDefaultEndpoints();
 

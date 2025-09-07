@@ -13,5 +13,6 @@ public enum PokerAttackNotificationType
     RoundStarted,
     RoundEnded,
     PlayerEliminated,
-    WinnerDeclared
+    WinnerDeclared,
+    Test,
 }

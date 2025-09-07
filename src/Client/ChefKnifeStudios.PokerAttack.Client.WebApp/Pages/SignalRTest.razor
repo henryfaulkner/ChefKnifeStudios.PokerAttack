@@ -1,8 +1,10 @@
 ﻿@using ChefKnifeStudios.PokerAttack.Client.Core.Services
+@using ChefKnifeStudios.PokerAttack.Shared.DTOs.Tests
 
 @page "/signalr-test"
 @inject ISignalRNotificationService NotificationService
 @inject NavigationManager NavigationManager
+@inject ITestEndpointsService TestEndpointsService
 
 <h3>SignalR Test</h3>
 
@@ -59,10 +61,9 @@
         if (!isConnected)
             return;
 
-        // Use hub method to broadcast into game group
         try
         {
-            await NotificationService.BroadcastTestNotification(gameId, message);
+            await TestEndpointsService.SignalRAsync(new SignalRReq(gameId, message));
         }
         catch (Exception ex)
         {

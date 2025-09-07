@@ -13,8 +13,6 @@ public interface ISignalRNotificationService
 {
     Task InitAsync();
     event PokerAttackNotificationHandler? HandleNotificationReceived;
-
-    Task BroadcastTestNotification(string gameId, string message);
 }
 
 public class SignalRNotificationService : ISignalRNotificationService, IDisposable
@@ -55,6 +53,12 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
             if (setting != null)
             {
                 var baseUrl = setting.GetValue("BaseUri", string.Empty)?.TrimEnd('/');
+                if (baseUrl is null)
+                {
+                    string errMsg = "BaseUrl for PokerAttackSignalR API config is null.";
+                    _logger.LogCritical(errMsg);
+                    throw new ApplicationException(errMsg);
+                }
 
                 Uri baseUri;
                 if (Uri.IsWellFormedUriString(baseUrl, UriKind.Absolute))
@@ -99,15 +103,5 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
         if (_hubConnection == null) return;
         _ = _hubConnection.StopAsync();
         _hubConnection = null;
-    }
-
-
-    public async Task BroadcastTestNotification(string gameId, string message)
-    {
-        if (_hubConnection is not null)
-        {
-            await _hubConnection.InvokeAsync("BroadcastGameNotification", gameId, 
-                new PokerAttackNotification(PokerAttackNotificationType.PlayerJoined, message));
-        }
     }
 }
