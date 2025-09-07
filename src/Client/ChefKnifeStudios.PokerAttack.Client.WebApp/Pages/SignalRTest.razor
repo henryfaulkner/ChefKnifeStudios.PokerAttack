@@ -37,7 +37,7 @@
     {
         try
         {
-            await NotificationService.InitAsync();
+            await NotificationService.InitAsync(gameId); // Pass gameId here
             connectionStatus = "Connected";
             isConnected = true;
 

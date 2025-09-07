@@ -11,7 +11,7 @@ public delegate Task PokerAttackNotificationHandler(PokerAttackNotification noti
 
 public interface ISignalRNotificationService
 {
-    Task InitAsync();
+    Task InitAsync(string gameId);
     event PokerAttackNotificationHandler? HandleNotificationReceived;
 }
 
@@ -35,7 +35,7 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
         _logger = logger;
     }
 
-    public async Task InitAsync()
+    public async Task InitAsync(string gameId)
     {
         if (_hubConnection != null && _hubConnection.State == HubConnectionState.Connected)
             return;
@@ -72,10 +72,11 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
                     baseUri = new Uri(hostUri, relativeUri);
                 }
 
-                var url = $"{baseUri.ToString().TrimEnd('/')}/cks-notification";
+                // Pass gameId as query parameter
+                var url = $"{baseUri.ToString().TrimEnd('/')}/cks-notification?gameId={gameId}";
 
                 _hubConnection = new HubConnectionBuilder()
-                    .WithUrl(url) // no authentication
+                    .WithUrl(url)
                     .WithAutomaticReconnect()
                     .Build();
 
