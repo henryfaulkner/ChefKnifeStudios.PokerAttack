@@ -11,7 +11,7 @@ resources:
     - repository: pipelines
       type: github
       endpoint: 'ChefKnifeStudios.DevOps'
-      name: OvercastHoldings/Pipelines
+      name: ChefKnifeStudios.DevOps/Pipelines
       ref: main
 
 pool:
@@ -19,7 +19,7 @@ pool:
 
 stages:
 - stage: BuildAndPublish
-  displayName: Build and Publish Overcast.CustomerPortal.Client
+  displayName: Build and Publish ChefKnifeStudios.PokerAttack.Client
   jobs:
   - job: BuildAndPublish
     displayName: Build and Publish ChefKnifeStudios.PokerAttack.Client.WebApp
