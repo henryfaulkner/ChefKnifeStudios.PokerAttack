@@ -47,9 +47,6 @@ stages:
         docker push $(api-container)
       displayName: Docker push images
 
-    # Git tag build number
-    - template: templates/git-tag-build.yaml@pipelines
-
 - stage: DeployProd
   displayName: Deploy Production
   jobs: 
@@ -77,6 +74,3 @@ stages:
               containerAppName: poker-attack-api
               resourceGroup: 'poker-attack-rg'
               containerAppEnvironment: 'poker-attack-api-env'
-
-          # Git tag Environment and Deployment
-          - template: templates/git-tag-deployment.yaml@pipelines

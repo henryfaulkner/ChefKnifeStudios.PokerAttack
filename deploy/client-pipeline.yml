@@ -6,14 +6,6 @@ trigger:
     - main
     - deploy
 
-resources:
-  repositories:
-    - repository: pipelines
-      type: github
-      endpoint: 'ChefKnifeStudios.DevOps'
-      name: ChefKnifeStudios.DevOps/Pipelines
-      ref: main
-
 pool:
   vmImage: ubuntu-latest
 
@@ -56,9 +48,6 @@ stages:
         artifact: 'chefknifestudios-pokerattack-webapp-$(Build.SourceBranchName)'
         publishLocation: 'pipeline'
 
-    # Git tag build number
-    - template: templates/git-tag-build.yaml@pipelines
-
 - stage: DeployProd
   displayName: Deploy Production
   jobs: 
@@ -90,6 +79,3 @@ stages:
               skip_app_build: true
               skip_api_build: true
               azure_static_web_apps_api_token: $(PokerAttackWebDeploymentToken)
-
-          # Git tag Environment and Deployment
-          - template: templates/git-tag-deployment.yaml@pipelines
