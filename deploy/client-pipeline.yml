@@ -1,0 +1,87 @@
+name: $(SourceBranchName)-chefknifestudios-pokerattack-client-$(Date:yyyyMMdd).$(Rev:r)
+
+trigger:
+  branches:
+    include:
+    - main
+    - deploy
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: BuildAndPublish
+  displayName: Build and Publish Overcast.CustomerPortal.Client
+  jobs:
+  - job: BuildAndPublish
+    displayName: Build and Publish ChefKnifeStudios.PokerAttack.Client.WebApp
+    variables:
+      buildConfiguration: 'Release'
+
+    steps:
+    - checkout: self
+      persistCredentials: true # Required for git tagging 
+
+    # Build and Publish ChefKnifeStudios.PokerAttack.Server.WebApp(Blazor WASM app)
+    - task: UseDotNet@2
+      inputs:
+        version: '9.x'
+
+    - task: NuGetAuthenticate@1
+    
+    - script: dotnet workload install wasm-tools
+
+    - task: DotNetCoreCLI@2
+      displayName: Publish ChefKnifeStudios.PokerAttack.Client.WebApp - $(buildConfiguration)
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        projects: 'Client/ChefKnifeStudios.PokerAttack.Client.WebApp/ChefKnifeStudios.PokerAttack.Client.WebApp.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/chefknifestudios-pokerattack-webapp'
+        zipAfterPublish: true
+        modifyOutputPath: false
+
+    - task: PublishPipelineArtifact@1
+      displayName: Publish Artifact - chefknifestudios-pokerattack-webapp-$(Build.SourceBranchName)
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/chefknifestudios-pokerattack-webapp'
+        artifact: 'chefknifestudios-pokerattack-webapp-$(Build.SourceBranchName)'
+        publishLocation: 'pipeline'
+
+    # Git tag build number
+    - template: templates/git-tag-build.yaml@pipelines
+
+- stage: DeployProd
+  displayName: Deploy Production
+  jobs: 
+  - deployment: DeployProd
+    displayName: Deploy ChefKnifeStudios.PokerAttack.Client.WebApp to Prod
+    environment: 'Prod'
+    variables:
+      - group: 'Prod-PokerAttack'
+    strategy:
+      runOnce:   
+        deploy:
+          steps:
+          - checkout: self
+            persistCredentials: true # Required for git tagging  
+
+          - task: ExtractFiles@1
+            inputs:
+              archiveFilePatterns: '$(Pipeline.Workspace)/chefknifestudios-pokerattack-webapp-$(Build.SourceBranchName)/chefknifestudios-pokerattack-webapp.zip'
+              destinationFolder: 'app/' 
+
+          # Update Azure Static Web App config file to set environment header
+          - script: |
+              cd app/wwwroot
+              jq --arg value "prod" '.globalHeaders["Blazor-Environment"] = $value' staticwebapp.config.json > temp.json && mv temp.json staticwebapp.config.json
+
+          - task: AzureStaticWebApp@0
+            inputs:
+              app_location: 'app/wwwroot'
+              skip_app_build: true
+              skip_api_build: true
+              azure_static_web_apps_api_token: $(PokerAttackWebDeploymentToken)
+
+          # Git tag Environment and Deployment
+          - template: templates/git-tag-deployment.yaml@pipelines
