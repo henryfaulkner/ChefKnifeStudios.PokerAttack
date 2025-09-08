@@ -1,0 +1,76 @@
+name: $(SourceBranchName)-chefknifestudios-pokerattack-server-$(Date:yyyyMMdd).$(Rev:r)
+
+trigger:
+  branches:
+    include:
+    - main
+    - deploy
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  azure-subscription-service-connection: PokerAttackSC
+  container-registry: chefknife.azurecr.io
+  container-tag: $(Build.BuildNumber)
+  container-registry-service-connection: AzureContainerRegistrySC
+  api-container-name: chefknifestudios.pokerattack.server.webapi
+  api-container: $(container-registry)/$(api-container-name):$(container-tag)
+
+stages:
+- stage: BuildAndPublish
+  displayName: Build and Publish ChefKnifeStudios.PokerAttack.Server.WebAPI
+  jobs:
+  - job: BuildAndPublish
+    displayName: Build and Publish ChefKnifeStudios.PokerAttack.Server.WebAPI
+
+    variables:
+      buildConfiguration: 'Release'
+
+    steps:
+    - checkout: self
+      persistCredentials: true # Required for git tagging 
+
+    - task: Docker@2
+      inputs:
+        containerRegistry: '$(container-registry-service-connection)'
+        command: 'login'
+
+    - script: |
+        docker compose build
+      displayName: Docker compose build
+      env:
+        CONTAINER_REGISTRY: $(container-registry)
+        CONTAINER_TAG: $(container-tag)
+
+    - script: |
+        docker push $(api-container)
+      displayName: Docker push images
+
+- stage: DeployProd
+  displayName: Deploy Production
+  jobs: 
+  - deployment: DeployProd
+    displayName: Deploy ChefKnifeStudios.PokerAttack.Server.WebAPI to Prod
+    environment: 'Prod'
+    strategy:
+      runOnce:   
+        deploy:
+          steps:
+          - checkout: self
+            persistCredentials: true # Required for git tagging  
+
+          - task: Docker@2
+            inputs:
+              containerRegistry: '$(container-registry-service-connection)'
+              command: 'login'
+
+          # Deploy API Container App
+          - task: AzureContainerApps@1
+            displayName: "Deploy API Container App"
+            inputs:
+              azureSubscription: '$(azure-subscription-service-connection)'
+              imageToDeploy: '$(api-container)'
+              containerAppName: poker-attack-api
+              resourceGroup: 'poker-attack-rg'
+              containerAppEnvironment: 'poker-attack-api-env'

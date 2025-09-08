@@ -1,8 +1,4 @@
 services:
-  redis:
-    image: redis:7.2
-    ports:
-      - "6379:6379"
   chefknifestudios.pokerattack.server.webapi:
     build:
       context: .
