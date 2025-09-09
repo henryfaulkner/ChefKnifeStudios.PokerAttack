@@ -1,0 +1,183 @@
+:root {
+    --clr-1p: #6442d6; /* Primary           - 100% | var(--clr-1p, #6442d6);                   */
+    --clr-on-1p: #fff; /* On Primary        - 100% | var(--clr-on-1p, #fff);                   */
+    --clr-1p-container: #9f86ff; /* Primary Container - 100% | var(--clr-1p-container, #9f86ff);         */
+    --clr-on-1p-container: #1e0060; /* On Primary Cont.  - 100% | var(--clr-on-1p-container, #1e0060);      */
+    --clr-1s: #5d5d74; /* Secondary         - 100% | var(--clr-1s, #5d5d74);                   */
+    --clr-on-1s: #fff; /* On Secondary      - 100% | var(--clr-on-1s, #fff);                   */
+    --clr-1s-container: #dcdaf5; /* Secondary Cont.   - 100% | var(--clr-1s-container, #dcdaf5);         */
+    --clr-on-1s-container: #21182b; /* On Secondary Cont.- 100% | var(--clr-on-1s-container, #21182b);      */
+    --clr-1t: #7d5260;
+    --clr-on-1t: #fff;
+    --clr-1t-container: #f1d3f9; /* Tertiary Container- 100% | var(--clr-1t-container, #f1d3f9);         */
+    --clr-on-1t-container: #271430; /* On Tertiary Cont. - 100% | var(--clr-on-1t-container, #271430);      */
+    --clr-err: #ff6240; /* Error             - 100% | var(--clr-err, #ff6240);                  */
+    --clr-on-err: #490909; /* On Error          - 100% | var(--clr-on-err, #490909);               */
+    --clr-err-container: #f9dedc; /* Error Container   - 100% | var(--clr-err-container, #f9dedc);        */
+    --clr-outline: #787579; /* Outline           - 100% | var(--clr-outline, #787579);              */
+    --clr-surface1: #f8f1f6; /* Surface 1         - 100% | var(--clr-surface1, #f8f1f6);             */
+    --clr-surface2: #f2ecee; /* Surface 2         - 100% | var(--clr-surface2, #f2ecee);             */
+    --clr-surface3: #ece7e9; /* Surface 3         - 100% | var(--clr-surface3, #ece7e9);             */
+    --clr-surface4: #e6e1e3; /* Surface 4         - 100% | var(--clr-surface4, #e6e1e3);             */
+    --clr-surface5: #e6e1e3; /* Surface 5         - 100% | var(--clr-surface5, #e6e1e3);             */
+}
+
+.clr-1p {
+    color: var(--clr-1p, #6442d6);
+}
+
+.clr-on-1p {
+    color: var(--clr-on-1p, #fff);
+}
+
+.clr-1p-container {
+    color: var(--clr-1p-container, #9f86ff);
+}
+
+.clr-on-1p-container {
+    color: var(--clr-on-1p-container, #1e0060);
+}
+
+.clr-1s {
+    color: var(--clr-1s, #5d5d74);
+}
+
+.clr-on-1s {
+    color: var(--clr-on-1s, #fff);
+}
+
+.clr-1s-container {
+    color: var(--clr-1s-container, #dcdaf5);
+}
+
+.clr-on-1s-container {
+    color: var(--clr-on-1s-container, #21182b);
+}
+
+.clr-1t {
+    color: var(--clr-1t, #7d5260);
+}
+
+.clr-on-1t {
+    color: var(--clr-on-1t, #fff);
+}
+
+.clr-1t-container {
+    color: var(--clr-1t-container, #f1d3f9);
+}
+
+.clr-on-1t-container {
+    color: var(--clr-on-1t-container, #271430);
+}
+
+.clr-err {
+    color: var(--clr-err, #ff6240);
+}
+
+.clr-on-err {
+    color: var(--clr-on-err, #490909);
+}
+
+.clr-err-container {
+    color: var(--clr-err-container, #f9dedc);
+}
+
+.clr-outline {
+    color: var(--clr-outline, #787579);
+}
+
+.clr-surface1 {
+    color: var(--clr-surface, #f8f1f6);
+}
+
+.clr-surface2 {
+    color: var(--clr-surface2, #f2ecee);
+}
+
+.clr-surface3 {
+    color: var(--clr-surface3, #ece7e9);
+}
+
+.clr-surface4 {
+    color: var(--clr-surface4, #e6e1e3);
+}
+
+.clr-surface5 {
+    color: var(--clr-surface5, #e6e1e3);
+}
+
+.bgclr-1p {
+    background-color: var(--clr-1p, #6442d6);
+}
+
+.bgclr-on-1p {
+    background-color: var(--clr-on-1p, #fff);
+}
+
+.bgclr-1p-container {
+    background-color: var(--clr-1p-container, #9f86ff);
+}
+
+.bgclr-on-1p-container {
+    background-color: var(--clr-on-1p-container, #1e0060);
+}
+
+.bgclr-1s {
+    background-color: var(--clr-1s, #5d5d74);
+}
+
+.bgclr-on-1s {
+    background-color: var(--clr-on-1s, #fff);
+}
+
+.bgclr-1s-container {
+    background-color: var(--clr-1s-container, #dcdaf5);
+}
+
+.bgclr-on-1s-container {
+    background-color: var(--clr-on-1s-container, #21182b);
+}
+
+.bgclr-1t-container {
+    background-color: var(--clr-1t-container, #f1d3f9);
+}
+
+.bgclr-on-1t-container {
+    background-color: var(--clr-on-1t-container, #271430);
+}
+
+.bgclr-err {
+    background-color: var(--clr-err, #ff6240);
+}
+
+.bgclr-on-err {
+    background-color: var(--clr-on-err, #490909);
+}
+
+.bgclr-err-container {
+    background-color: var(--clr-err-container, #f9dedc);
+}
+
+.bgclr-outline {
+    background-color: var(--clr-outline, #787579);
+}
+
+.bgclr-surface1 {
+    background-color: var(--clr-surface, #f8f1f6);
+}
+
+.bgclr-surface2 {
+    background-color: var(--clr-surface2, #f2ecee);
+}
+
+.bgclr-surface3 {
+    background-color: var(--clr-surface3, #ece7e9);
+}
+
+.bgclr-surface4 {
+    background-color: var(--clr-surface4, #e6e1e3);
+}
+
+.bgclr-surface5 {
+    background-color: var(--clr-surface5, #e6e1e3);
+}

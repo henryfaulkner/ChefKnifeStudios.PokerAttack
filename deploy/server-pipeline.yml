@@ -64,6 +64,13 @@ stages:
               containerRegistry: '$(container-registry-service-connection)'
               command: 'login'
 
+          # DB Migration
+          - script: |
+              docker run --rm -e CONNECTIONSTRINGS__POKERATTACKDB $(migration-container)
+            displayName: 'Run DB Migrations'
+            env:
+              CONNECTIONSTRINGS__POKERATTACKDB: $(ConnectionStrings-PokerAttackDB)
+
           # Deploy API Container App
           - task: AzureContainerApps@1
             displayName: "Deploy API Container App"

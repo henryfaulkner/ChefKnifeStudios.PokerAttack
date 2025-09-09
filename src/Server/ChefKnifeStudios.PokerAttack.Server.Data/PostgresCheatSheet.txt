@@ -1,0 +1,131 @@
+﻿##############################
+# PostgreSQL Cheat Sheet
+# For Linode Server Management
+##############################
+
+----------------------------------
+1. Accessing PostgreSQL
+----------------------------------
+# Switch to the PostgreSQL user:
+sudo -i -u postgres
+
+# Open the PostgreSQL shell:
+psql
+
+----------------------------------
+2. Database Basics
+----------------------------------
+# List all databases:
+\l
+
+# Connect to a database:
+\c <database_name>
+
+# Create a new database:
+CREATE DATABASE mydatabase;
+
+# Drop (delete) a database:
+DROP DATABASE mydatabase;
+
+----------------------------------
+3. User Management
+----------------------------------
+# List all users:
+\du
+
+# Create a new user:
+CREATE USER myuser WITH PASSWORD 'mypassword';
+
+# Grant a user access to a database:
+GRANT ALL PRIVILEGES ON DATABASE mydatabase TO myuser;
+
+# Revoke privileges from a user:
+REVOKE ALL PRIVILEGES ON DATABASE mydatabase FROM myuser;
+
+----------------------------------
+4. Table Management
+----------------------------------
+# List all tables in the current database:
+\dt
+
+# Create a table:
+CREATE TABLE mytable (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+# Insert data into a table:
+INSERT INTO mytable (name) VALUES ('example');
+
+# Select data from a table:
+SELECT * FROM mytable;
+
+# Update data in a table:
+UPDATE mytable SET name = 'newname' WHERE id = 1;
+
+# Delete data from a table:
+DELETE FROM mytable WHERE id = 1;
+
+----------------------------------
+5. Backup and Restore
+----------------------------------
+# Backup a database:
+pg_dump -U postgres -h localhost mydatabase > mydatabase_backup.sql
+
+# Restore a database:
+psql -U postgres -h localhost mydatabase < mydatabase_backup.sql
+
+----------------------------------
+6. Configuration
+----------------------------------
+# Edit the PostgreSQL configuration file:
+sudo nano /etc/postgresql/<version>/main/postgresql.conf
+
+# Edit the client authentication file:
+sudo nano /etc/postgresql/<version>/main/pg_hba.conf
+
+# Restart PostgreSQL after changes:
+sudo systemctl restart postgresql
+
+----------------------------------
+7. Managing PostgreSQL Service
+----------------------------------
+# Start PostgreSQL:
+sudo systemctl start postgresql
+
+# Stop PostgreSQL:
+sudo systemctl stop postgresql
+
+# Check PostgreSQL status:
+sudo systemctl status postgresql
+
+----------------------------------
+8. Security
+----------------------------------
+# Change a user’s password:
+ALTER USER myuser WITH PASSWORD 'newpassword';
+
+# Restrict access to the database:
+# Edit `pg_hba.conf` to allow or restrict IP ranges.
+
+----------------------------------
+9. Logs
+----------------------------------
+# View PostgreSQL logs:
+sudo tail -f /var/log/postgresql/postgresql-<version>-main.log
+
+----------------------------------
+10. Troubleshooting
+----------------------------------
+# Check PostgreSQL service logs:
+journalctl -u postgresql
+
+# Fix `role does not exist` errors:
+# Ensure the user is created and granted privileges on the database.
+CREATE USER myuser WITH PASSWORD 'mypassword';
+GRANT ALL PRIVILEGES ON DATABASE mydatabase TO myuser;
+
+##############################
+# End of Cheat Sheet
+##############################

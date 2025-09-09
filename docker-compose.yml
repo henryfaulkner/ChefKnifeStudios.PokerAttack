@@ -4,3 +4,9 @@ services:
       context: .
       dockerfile: ./src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Dockerfile
     image: ${CONTAINER_REGISTRY:-localhost:5000}/chefknifestudios.pokerattack.server.webapi:${CONTAINER_TAG:-latest}
+
+  chefknifestudios.pokerattack.server.data:
+    build:
+      context: .
+      dockerfile: ./src/ChefKnifeStudios.PokerAttack.Server.Data/Dockerfile
+    image: ${CONTAINER_REGISTRY:-localhost:5000}/chefknifestudios.pokerattack.server.data:${CONTAINER_TAG:-latest}
