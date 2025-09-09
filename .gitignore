@@ -394,15 +394,8 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
-# JetBrains Rider
-*.sln.iml
-
-# app setting files for developer machine
-appsettings.machine-*
-
 .idea/
 **/.DS_Store
 
 assets/
-src/**/appsettings.json
-src/**/appsettings.Development.json
+src/**/appsettings.*.json
