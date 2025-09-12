@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 using Endpoints = ChefKnifeStudios.PokerAttack.Shared.PokerAttackApiEndpoints;
 
-namespace ChefKnifeStudios.PokerAttack.Client.Core.Services;
+namespace ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 
 public interface ITestEndpointsService
 {
@@ -35,7 +35,7 @@ public class TestEndpointsService : ITestEndpointsService
                 reqBody,
                 cancellationToken
             );
-            return res.LogErrors<object>(_logger, "SignalR call");
+            return res.LogErrors(_logger, "SignalR call");
         }
         catch (Exception ex)
         {

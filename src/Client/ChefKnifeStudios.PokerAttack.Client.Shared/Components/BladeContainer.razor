@@ -1,0 +1,11 @@
+﻿<div id="@_elementId" class="blade-container @( _isOpen ? "open" : "" )">
+    <MatIconButton 
+        Icon="close"
+        @onclick="HandleClosePressed" 
+        Class="cross"
+    />
+
+    <div class="content-container">
+        @ContentFragment
+    </div>
+</div>
