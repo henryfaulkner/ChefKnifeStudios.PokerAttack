@@ -1,4 +1,5 @@
 ﻿using Ardalis.Result;
+using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
 
@@ -16,10 +17,10 @@ public static class LobbyEndpoints
             .WithTags("Lobby");
 
         group.MapGet(Endpoints.GetLobbies, async (
-            ILobbyRepository lobbyRepo,
+            ILobbyService lobbyService,
             CancellationToken cancellationToken = default) =>
         {
-            var lobbies = await lobbyRepo.GetLobbiesAsync(cancellationToken);
+            var lobbies = await lobbyService.GetLobbiesAsync(cancellationToken);
             return Result.Success(lobbies);
         })
         .WithName(nameof(Endpoints.GetLobbies))
@@ -29,10 +30,10 @@ public static class LobbyEndpoints
 
         group.MapGet(Endpoints.GetLobby, async (
             string gameId,
-            ILobbyRepository lobbyRepo,
+            ILobbyService lobbyService,
             CancellationToken cancellationToken = default) =>
         {
-            var lobby = await lobbyRepo.GetLobbyAsync(gameId, cancellationToken);
+            var lobby = await lobbyService.GetLobbyAsync(gameId, cancellationToken);
             return Result.Success(lobby);
         })
         .WithName(nameof(Endpoints.GetLobby))
@@ -42,10 +43,10 @@ public static class LobbyEndpoints
 
         group.MapPost(Endpoints.CreateLobby, async (
             CreateLobbyReqDTO reqBody,
-            ILobbyRepository lobbyRepo,
+            ILobbyService lobbyService,
             CancellationToken cancellationToken = default) => 
         {
-            var result = await lobbyRepo.CreateLobbyAsync(reqBody.HostPlayerId, cancellationToken);
+            var result = await lobbyService.CreateLobbyAsync(reqBody.HostPlayerId, cancellationToken);
             return Result.Success(result);
         })
         .WithName(nameof(Endpoints.CreateLobby))
@@ -56,10 +57,10 @@ public static class LobbyEndpoints
 
         group.MapPatch(Endpoints.AddPlayer, async (
             AddPlayerReqDTO reqBody,
-            ILobbyRepository lobbyRepo,
+            ILobbyService lobbyService,
             CancellationToken cancellationToken = default) =>
         {
-            await lobbyRepo.AddPlayerToLobbyAsync(reqBody.GameId, reqBody.PlayerId, cancellationToken);
+            await lobbyService.JoinLobbyAsync(reqBody.GameId, reqBody.PlayerId, cancellationToken);
             return Result.Success();
         })
         .WithName(nameof(Endpoints.AddPlayer))
@@ -70,10 +71,10 @@ public static class LobbyEndpoints
 
         group.MapPatch(Endpoints.RemovePlayer, async (
             RemovePlayerReqDTO reqBody,
-            ILobbyRepository lobbyRepo,
+            ILobbyService lobbyService,
             CancellationToken cancellationToken = default) =>
         {
-            await lobbyRepo.RemovePlayerFromLobbyAsync(reqBody.GameId, reqBody.PlayerId, cancellationToken);
+            await lobbyService.LeaveLobbyAsync(reqBody.GameId, reqBody.PlayerId, cancellationToken);
             return Result.Success();
         })
         .WithName(nameof(Endpoints.RemovePlayer))
@@ -84,10 +85,10 @@ public static class LobbyEndpoints
 
         group.MapDelete(Endpoints.ShutdownLobby, async (
             string gameId,
-            ILobbyRepository lobbyRepo,
+            ILobbyService lobbyService,
             CancellationToken cancellationToken = default) =>
         {
-            await lobbyRepo.ShutDownLobbyAsync(gameId, cancellationToken);
+            await lobbyService.ShutDownLobbyAsync(gameId, cancellationToken);
             return Result.Success();
         })
         .WithName(nameof(Endpoints.ShutdownLobby))

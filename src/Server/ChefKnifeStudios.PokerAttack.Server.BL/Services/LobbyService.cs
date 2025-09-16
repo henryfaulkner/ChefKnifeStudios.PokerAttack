@@ -1,65 +1,167 @@
 ﻿using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
+using ChefKnifeStudios.PokerAttack.Server.Core.Models;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
 
 public interface ILobbyService
 {
-    Task CreateLobbyAsync(string gameId);
-    Task JoinLobbyAsync(string gameId, string playerId);
-    Task LeaveLobbyAsync(string gameId, string playerId);
-    Task<IEnumerable<string>> GetPlayersAsync(string gameId);
+    Task<LobbyDTO> CreateLobbyAsync(string hostPlayerId, CancellationToken cancellationToken = default);
+    Task<LobbyDTO?> GetLobbyAsync(string gameId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<LobbyDTO>> GetLobbiesAsync(CancellationToken cancellationToken = default);
+    Task JoinLobbyAsync(string gameId, string playerId, CancellationToken cancellationToken = default);
+    Task LeaveLobbyAsync(string gameId, string playerId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<string>> ShutDownLobbyAsync(string gameId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<string>> GetPlayersAsync(string gameId, CancellationToken cancellationToken = default);
 }
 
 public class LobbyService : ILobbyService
 {
     private readonly ILobbyRepository _lobbyRepository;
 
-    public LobbyService(
-        ILobbyRepository lobbyRepository)
+    public LobbyService(ILobbyRepository lobbyRepository)
     {
         _lobbyRepository = lobbyRepository;
     }
 
-    /// <summary>
-    /// Creates a new lobby (empty) with the given gameId.
-    /// </summary>
-    public async Task CreateLobbyAsync(string gameId)
+    public async Task<LobbyDTO> CreateLobbyAsync(string hostPlayerId, CancellationToken cancellationToken = default)
     {
-        // Optionally check if lobby already exists
-        bool exists = await _lobbyRepository.LobbyExistsAsync(gameId);
-        if (exists)
+        // Step 1: Ensure the host isn't already in another lobby
+        await RemovePlayerFromAllLobbiesAsync(hostPlayerId, cancellationToken);
+
+        // Step 2: Generate unique game ID
+        var gameId = GenerateGameId();
+
+        if (await _lobbyRepository.LobbyExistsAsync(gameId, cancellationToken))
             throw new InvalidOperationException("Lobby already exists.");
 
-        // Create empty lobby in Redis or cache
-        await _lobbyRepository.CreateLobbyAsync(gameId);
+        // Step 3: Create the lobby with the host as the first player
+        var lobby = new Lobby
+        {
+            HostPlayerId = hostPlayerId,
+            PlayerIds = new() { hostPlayerId }
+        };
+
+        await _lobbyRepository.AddLobbyAsync(gameId, lobby, cancellationToken);
+
+        return lobby.MapToDTO(gameId);
     }
 
-    /// <summary>
-    /// Adds a player to an existing lobby.
-    /// </summary>
-    public async Task JoinLobbyAsync(string gameId, string playerId)
-    {
-        // Business rule: player not already in lobby
-        if (await _lobbyRepository.IsPlayerInLobbyAsync(gameId, playerId))
-            throw new InvalidOperationException("Player already in the lobby.");
 
-        await _lobbyRepository.AddPlayerToLobbyAsync(gameId, playerId);
+    public async Task<LobbyDTO?> GetLobbyAsync(string gameId, CancellationToken cancellationToken = default)
+    {
+        var lobby = await _lobbyRepository.GetLobbyAsync(gameId, cancellationToken);
+        return lobby?.MapToDTO(gameId);
     }
 
-    /// <summary>
-    /// Removes a player from a lobby.
-    /// </summary>
-    public async Task LeaveLobbyAsync(string gameId, string playerId)
+    public async Task<IEnumerable<LobbyDTO>> GetLobbiesAsync(CancellationToken cancellationToken = default)
     {
-        await _lobbyRepository.RemovePlayerFromLobbyAsync(gameId, playerId);
+        var lobbies = await _lobbyRepository.GetAllLobbiesAsync(cancellationToken);
+        return lobbies.Select(kvp => kvp.Value.MapToDTO(kvp.Key!));
     }
 
-    /// <summary>
-    /// Gets all players in a lobby.
-    /// </summary>
-    public async Task<IEnumerable<string>> GetPlayersAsync(string gameId)
+    public async Task JoinLobbyAsync(string gameId, string playerId, CancellationToken cancellationToken = default)
     {
-        return await _lobbyRepository.GetPlayersAsync(gameId);
+        // Ensure target lobby exists
+        var targetLobby = await _lobbyRepository.GetLobbyAsync(gameId, cancellationToken);
+        if (targetLobby is null)
+            throw new KeyNotFoundException("Lobby not found.");
+
+        // Step 1: Ensure player is not in any other lobby
+        await RemovePlayerFromAllLobbiesAsync(playerId, cancellationToken);
+
+        // Step 2: Add player to the new lobby
+        lock (targetLobby.PlayerIds)
+        {
+            if (targetLobby.PlayerIds.Contains(playerId))
+                throw new InvalidOperationException("Player already in the lobby.");
+
+            targetLobby.PlayerIds.Add(playerId);
+        }
+
+        await _lobbyRepository.UpdateLobbyAsync(gameId, targetLobby, cancellationToken);
+    }
+
+    public async Task LeaveLobbyAsync(string gameId, string playerId, CancellationToken cancellationToken = default)
+    {
+        var lobby = await _lobbyRepository.GetLobbyAsync(gameId, cancellationToken);
+        if (lobby is null)
+            throw new KeyNotFoundException("Lobby not found.");
+
+        if (lobby.HostPlayerId == playerId)
+        {
+            // Host leaving shuts down lobby
+            await ShutDownLobbyAsync(gameId, cancellationToken);
+        }
+        else
+        {
+            lock (lobby.PlayerIds)
+            {
+                lobby.PlayerIds.Remove(playerId);
+            }
+            await _lobbyRepository.UpdateLobbyAsync(gameId, lobby, cancellationToken);
+        }
+    }
+
+    public async Task<IEnumerable<string>> ShutDownLobbyAsync(string gameId, CancellationToken cancellationToken = default)
+    {
+        var lobby = await _lobbyRepository.GetLobbyAsync(gameId, cancellationToken);
+        if (lobby is null)
+            return Enumerable.Empty<string>();
+
+        var players = lobby.PlayerIds.ToList();
+        await _lobbyRepository.RemoveLobbyAsync(gameId, cancellationToken);
+
+        return players;
+    }
+
+    public async Task<IEnumerable<string>> GetPlayersAsync(string gameId, CancellationToken cancellationToken = default)
+    {
+        var lobby = await _lobbyRepository.GetLobbyAsync(gameId, cancellationToken);
+        return lobby?.PlayerIds ?? Enumerable.Empty<string>();
+    }
+
+    private static string GenerateGameId()
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        var data = new byte[6];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(data);
+
+        var result = new StringBuilder(6);
+        foreach (var b in data)
+        {
+            result.Append(chars[b % chars.Length]);
+        }
+
+        return result.ToString();
+    }
+
+    private async Task RemovePlayerFromAllLobbiesAsync(string playerId, CancellationToken cancellationToken)
+    {
+        var allLobbyKVPs = await _lobbyRepository.GetAllLobbiesAsync(cancellationToken);
+
+        foreach (var kvp in allLobbyKVPs)
+        {
+            var lobby = kvp.Value;
+            if (!lobby.PlayerIds.Contains(playerId))
+                continue;
+
+            if (lobby.HostPlayerId == playerId)
+            {
+                // Shut down the old lobby if they were host
+                await ShutDownLobbyAsync(kvp.Key!, cancellationToken);
+            }
+            else
+            {
+                lock (lobby.PlayerIds)
+                {
+                    lobby.PlayerIds.Remove(playerId);
+                }
+                await _lobbyRepository.UpdateLobbyAsync(kvp.Key!, lobby, cancellationToken);
+            }
+        }
     }
 }
-

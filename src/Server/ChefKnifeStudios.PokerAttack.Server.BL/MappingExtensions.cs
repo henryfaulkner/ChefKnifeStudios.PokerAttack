@@ -1,7 +1,7 @@
 ﻿using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
 
-namespace ChefKnifeStudios.PokerAttack.Server.WebAPI;
+namespace ChefKnifeStudios.PokerAttack.Server.BL;
 
 public static class MappingExtensions
 {

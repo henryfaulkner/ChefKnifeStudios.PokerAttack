@@ -1,16 +1,13 @@
-﻿using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
+﻿using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 
 namespace ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
 
 public interface ILobbyRepository
 {
-    Task<LobbyDTO> CreateLobbyAsync(string gameId, CancellationToken cancellationToken = default);
+    Task AddLobbyAsync(string gameId, Lobby lobby, CancellationToken cancellationToken = default);
     Task<bool> LobbyExistsAsync(string gameId, CancellationToken cancellationToken = default);
-    Task AddPlayerToLobbyAsync(string gameId, string playerId, CancellationToken cancellationToken = default);
-    Task RemovePlayerFromLobbyAsync(string gameId, string playerId, CancellationToken cancellationToken = default);
-    Task<bool> IsPlayerInLobbyAsync(string gameId, string playerId, CancellationToken cancellationToken = default);
-    Task<IEnumerable<string>> GetPlayersAsync(string gameId, CancellationToken cancellationToken = default);
-    Task<IEnumerable<string>> ShutDownLobbyAsync(string gameId, CancellationToken cancellationToken = default);
-    Task<IEnumerable<LobbyDTO>> GetLobbiesAsync(CancellationToken cancellationToken = default);
-    Task<LobbyDTO?> GetLobbyAsync(string gameId, CancellationToken cancellationToken = default);
+    Task<Lobby?> GetLobbyAsync(string gameId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<KeyValuePair<string, Lobby>>> GetAllLobbiesAsync(CancellationToken cancellationToken = default);
+    Task RemoveLobbyAsync(string gameId, CancellationToken cancellationToken = default);
+    Task UpdateLobbyAsync(string gameId, Lobby lobby, CancellationToken cancellationToken = default);
 }
