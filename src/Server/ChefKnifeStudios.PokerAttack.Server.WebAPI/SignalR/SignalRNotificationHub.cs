@@ -22,21 +22,22 @@ public class SignalRNotificationHub : Hub<ISignalRNotificationClient>
 
     public override async Task OnConnectedAsync()
     {
-        // Add connection to a game group if query string has a gameId
-        var httpContext = Context.GetHttpContext();
-        var gameId = httpContext?.Request.Query["gameId"].FirstOrDefault();
-
-        if (!string.IsNullOrEmpty(gameId))
-        {
-            var groupName = _notificationHelper.GetGameGroupName(gameId);
-            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
-        }
-        
         await base.OnConnectedAsync();
+    }
+
+    public async Task BroadcastLobbyNotification(PokerAttackNotification notification)
+    {
+        await _notificationHelper.BroadcastToAllAsync(notification);
     }
 
     public async Task BroadcastGameNotification(string gameId, PokerAttackNotification notification)
     {
         await _notificationHelper.BroadcastToGameAsync(gameId, notification);
+    }
+
+    public async Task JoinGameGroup(string gameId)
+    {
+        var groupName = _notificationHelper.GetGameGroupName(gameId);
+        await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
     }
 }

@@ -1,0 +1,43 @@
+﻿<div class="lobby-list">
+    @if (LobbyViewModel.IsLoadingLobbies)
+    {
+        <MatBody1>Loading...</MatBody1>
+    }
+    else
+    {
+        <MatAccordion Multi="true">
+            @foreach (var lobby in LobbyViewModel.Lobbies)
+            {
+                <MatExpansionPanel>
+                    <MatExpansionPanelSummary>
+                        <MatExpansionPanelHeader>@lobby.GameId</MatExpansionPanelHeader>
+                        <MatExpansionPanelSubHeader>
+                            <button @onclick="HandleJoinLobbyPressed" @onclick:stopPropagation="true">
+                                <MatIcon
+                                    Class="join-lobby-icon"
+                                    Icon="person_add"
+                                />
+                            </button>
+                        </MatExpansionPanelSubHeader>
+                    </MatExpansionPanelSummary>
+                    <MatExpansionPanelDetails>
+                        <MatTable
+                            Items="lobby.PlayerIds"
+                            PageLabel="Players"
+                            PageRecordCountLabel="Page Size"
+                        >
+                            <MatTableHeader>
+                                <th class="col-header-id">Player Id</th>
+                                <th class="col-header-actions"></th>
+                            </MatTableHeader>
+                            <MatTableRow>
+                                <td class="col-row-id">@context</td>
+                                <td class="col-row-actions"></td>
+                            </MatTableRow>
+                        </MatTable>
+                    </MatExpansionPanelDetails>
+                </MatExpansionPanel>
+            }
+        </MatAccordion>
+    }
+</div>

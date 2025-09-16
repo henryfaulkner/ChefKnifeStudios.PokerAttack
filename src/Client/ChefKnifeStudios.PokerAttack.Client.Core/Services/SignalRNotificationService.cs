@@ -11,7 +11,8 @@ public delegate Task PokerAttackNotificationHandler(PokerAttackNotification noti
 
 public interface ISignalRNotificationService
 {
-    Task InitAsync(string gameId);
+    Task InitAsync();
+    Task JoinGameGroupAsync(string gameId);
     event PokerAttackNotificationHandler? HandleNotificationReceived;
 }
 
@@ -35,7 +36,7 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
         _logger = logger;
     }
 
-    public async Task InitAsync(string gameId)
+    public async Task InitAsync()
     {
         if (_hubConnection != null && _hubConnection.State == HubConnectionState.Connected)
             return;
@@ -72,8 +73,7 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
                     baseUri = new Uri(hostUri, relativeUri);
                 }
 
-                // Pass gameId as query parameter
-                var url = $"{baseUri.ToString().TrimEnd('/')}/cks-notification?gameId={gameId}";
+                var url = $"{baseUri.ToString().TrimEnd('/')}/cks-notification";
 
                 _hubConnection = new HubConnectionBuilder()
                     .WithUrl(url)
@@ -98,6 +98,14 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
     }
 
     public void Dispose() => CloseConnection();
+
+    public async Task JoinGameGroupAsync(string gameId)
+    {
+        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+            throw new InvalidOperationException("SignalR connection is not established.");
+
+        await _hubConnection.InvokeAsync("JoinGameGroup", gameId);
+    }
 
     private void CloseConnection()
     {

@@ -13,6 +13,7 @@ public interface IHttpService
     Task<Result<Y>> PostAsync<Y>(string url, FormUrlEncodedContent formContent, CancellationToken cancellationToken = default);
     Task<Result<Y>> PostAsync<X, Y>(string url, X data, CancellationToken cancellationToken = default);
     Task<Result<Y>> PutAsync<X, Y>(string url, X data, CancellationToken cancellationToken = default);
+    Task<Result<Y>> PatchAsync<X, Y>(string url, X data, CancellationToken cancellationToken = default);
     Task<Result<T>> DeleteAsync<T>(string url, CancellationToken cancellationToken = default);
 }
 
@@ -95,6 +96,26 @@ public class HttpService : IHttpService
             );
 
             var response = await client.PutAsync(url, jsonContent, cancellationToken);
+            return await HandleResponse<Y>(response, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            return Result<Y>.Error(ex.Message);
+        }
+    }
+
+    public async Task<Result<Y>> PatchAsync<X, Y>(string url, X data, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var client = CreateClient();
+            var jsonContent = new StringContent(
+                JsonSerializer.Serialize(data, JsonOptions.Get()),
+                Encoding.UTF8,
+                "application/json"
+            );
+
+            var response = await client.PatchAsync(url, jsonContent, cancellationToken);
             return await HandleResponse<Y>(response, cancellationToken);
         }
         catch (Exception ex)

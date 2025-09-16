@@ -1,13 +1,15 @@
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using ChefKnifeStudios.PokerAttack.Client.WebApp;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
+using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
+using ChefKnifeStudios.PokerAttack.Client.WebApp;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+#region REGISTER SERVICES
 // Setup HttpClients
 var apis = builder.Configuration.GetSection("AppSettings:ExternalApis").GetChildren();
 foreach (var item in apis)
@@ -37,5 +39,11 @@ builder.Services.AddSingleton<IHttpServiceFactory>(sp =>
 
 builder.Services.AddScoped<ISignalRNotificationService, SignalRNotificationService>();
 builder.Services.AddScoped<ITestEndpointsService, TestEndpointsService>();
+builder.Services.AddScoped<ILobbyEndpointsService, LobbyEndpointsService>();
+#endregion
+
+#region REGISTER VIEWMODELS
+builder.Services.AddScoped<ILobbyViewModel, LobbyViewModel>();
+#endregion
 
 await builder.Build().RunAsync();

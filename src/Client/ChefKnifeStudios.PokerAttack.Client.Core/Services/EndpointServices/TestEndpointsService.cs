@@ -4,13 +4,13 @@ using ChefKnifeStudios.PokerAttack.Client.Core.Extensions;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Tests;
 using Microsoft.Extensions.Logging;
 
-using Endpoints = ChefKnifeStudios.PokerAttack.Shared.PokerAttackApiEndpoints;
+using Endpoints = ChefKnifeStudios.PokerAttack.Shared.PokerAttackApiEndpoints.Test;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 
 public interface ITestEndpointsService
 {
-    Task<Result<object>> SignalRAsync(SignalRReq reqBody, CancellationToken cancellationToken = default);
+    Task<Result<Discard>> SignalRAsync(SignalRReq reqBody, CancellationToken cancellationToken = default);
 }
 
 public class TestEndpointsService : ITestEndpointsService
@@ -26,12 +26,12 @@ public class TestEndpointsService : ITestEndpointsService
         _httpService = httpClientFactory.Create(nameof(APIs.PokerAttackAPI));
     }
 
-    public async Task<Result<object>> SignalRAsync(SignalRReq reqBody, CancellationToken cancellationToken = default)
+    public async Task<Result<Discard>> SignalRAsync(SignalRReq reqBody, CancellationToken cancellationToken = default)
     {
         try
         {
-            var res = await _httpService.PostAsync<SignalRReq, object>(
-                Endpoints.Test.SignalR, 
+            var res = await _httpService.PostAsync<SignalRReq, Discard>(
+                Endpoints.SignalR, 
                 reqBody,
                 cancellationToken
             );

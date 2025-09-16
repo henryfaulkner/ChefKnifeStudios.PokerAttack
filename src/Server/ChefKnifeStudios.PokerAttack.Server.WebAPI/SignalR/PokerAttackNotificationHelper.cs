@@ -56,6 +56,18 @@ public class PokerAttackNotificationHelper : IPokerAttackNotificationHelper
     }
 
     /// <summary>
+    /// Send a notification to all players
+    /// </summary>
+    public async Task BroadcastToAllAsync(PokerAttackNotification notification, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await _hubContext.Clients.All.ReceivePokerAttackNotification(notification, cancellationToken);
+        }
+        catch { /* log or swallow */ }
+    }
+
+    /// <summary>
     /// Get or generate the SignalR group name for a game
     /// </summary>
     public string GetGameGroupName(string gameId)

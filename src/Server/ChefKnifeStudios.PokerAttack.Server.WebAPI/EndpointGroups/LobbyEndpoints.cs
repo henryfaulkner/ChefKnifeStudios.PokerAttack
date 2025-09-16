@@ -1,6 +1,5 @@
 ﻿using Ardalis.Result;
 using ChefKnifeStudios.PokerAttack.Server.BL.Services;
-using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
 
 using Endpoints = ChefKnifeStudios.PokerAttack.Shared.PokerAttackApiEndpoints.Lobby;

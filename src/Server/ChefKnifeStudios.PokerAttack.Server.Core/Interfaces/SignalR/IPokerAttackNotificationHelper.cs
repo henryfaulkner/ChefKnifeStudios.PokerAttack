@@ -23,6 +23,11 @@ public interface IPokerAttackNotificationHelper
     Task SendToPlayersAsync(string gameId, IEnumerable<string> playerIds, PokerAttackNotification notification, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Send a notification to all players
+    /// </summary>
+    Task BroadcastToAllAsync(PokerAttackNotification notification, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Get or create the SignalR group name for a game.
     /// </summary>
     string GetGameGroupName(string gameId);
