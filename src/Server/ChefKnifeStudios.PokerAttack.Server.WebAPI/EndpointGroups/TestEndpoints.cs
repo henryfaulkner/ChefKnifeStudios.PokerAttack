@@ -4,7 +4,7 @@ using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Tests;
 using Microsoft.AspNetCore.Mvc;
 
-using Endpoints = ChefKnifeStudios.PokerAttack.Shared.PokerAttackApiEndpoints;
+using Endpoints = ChefKnifeStudios.PokerAttack.Shared.PokerAttackApiEndpoints.Test;
 
 namespace ChefKnifeStudios.PokerAttack.Server.WebAPI.EndpointGroups;
 
@@ -17,7 +17,7 @@ public static class TestEndpoints
             .WithName("Test")
             .WithTags("Test");
 
-        group.MapPost(Endpoints.Test.SignalR, async (
+        group.MapPost(Endpoints.SignalR, async (
             [FromBody] SignalRReq reqBody,
             [FromServices] IPokerAttackNotificationHelper signalRHelper,
             [FromServices] ILoggerFactory loggerFactory,
@@ -45,7 +45,7 @@ public static class TestEndpoints
                 return Result.CriticalError("An unexpected error occurred.");
             }
         })
-        .WithName(nameof(Endpoints.Test.SignalR))
+        .WithName(nameof(Endpoints.SignalR))
         .Produces<IEnumerable<string>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);

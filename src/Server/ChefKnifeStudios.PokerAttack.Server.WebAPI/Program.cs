@@ -1,7 +1,10 @@
+using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
+using ChefKnifeStudios.PokerAttack.Server.Infrastructure;
 using ChefKnifeStudios.PokerAttack.Server.WebAPI.EndpointGroups;
 using ChefKnifeStudios.PokerAttack.Server.WebAPI.SignalR;
 using Scalar.AspNetCore;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +20,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddCors();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IPokerAttackNotificationHelper, PokerAttackNotificationHelper>();
+builder.Services.AddSingleton<ILobbyRepository, InMemoryLobbyRepository>();
+builder.Services.AddScoped<ILobbyService, LobbyService>();
 
 var app = builder.Build();
 
@@ -46,6 +51,7 @@ app.UseCors(policy =>
 
 app.MapHub<SignalRNotificationHub>("/cks-notification");
 app.MapTestEndpoints();
+app.MapLobbyEndpoints();
 
 app.MapDefaultEndpoints();
 
