@@ -1,32 +1,15 @@
-﻿using ChefKnifeStudios.PokerAttack.Client.Core.Services;
+﻿using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 using Microsoft.AspNetCore.Components;
-using System.Data;
 
 namespace ChefKnifeStudios.PokerAttack.Client.WebApp.Pages;
 
 public partial class Lobbies : ComponentBase
 {
-    [Inject] ISignalRNotificationService SignalRNotificationService { get; set; } = null!;
+    [Inject] IApplicationViewModel ApplicationViewModel { get; set; } = null!;
+    [Inject] ILobbyViewModel LobbyViewModel { get; set; } = null!;
 
-    string _playerId = Guid.NewGuid().ToString();
-
-    protected override async Task OnInitializedAsync()
+    void HandleCreateLobbyPressed()
     {
-        try
-        {
-            await SignalRNotificationService.InitAsync();
-
-            SignalRNotificationService.HandleNotificationReceived += async (notification) =>
-            {
-                await InvokeAsync(() =>
-                {
-                    Console.WriteLine($"{notification.NotificationType}: {notification.Payload}");
-                });
-            };
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error: {ex.Message}");
-        }
+        _ = LobbyViewModel.CreateLobbyAsync(ApplicationViewModel.PlayerId);
     }
 }

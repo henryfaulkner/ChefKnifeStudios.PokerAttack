@@ -196,7 +196,7 @@ public class HttpService : IHttpService
             };
         }
 
-        var obj = JsonSerializer.Deserialize<T>(content, JsonOptions.Get());
-        return obj is null ? Result<T>.Error("Response deserialization returned null") : Result<T>.Success(obj);
+        var obj = JsonSerializer.Deserialize<Result<T>>(content, JsonOptions.Get());
+        return obj ?? Result<T>.Error("Response deserialization returned null");
     }
 }

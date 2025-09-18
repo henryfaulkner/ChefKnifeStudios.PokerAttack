@@ -43,6 +43,7 @@ builder.Services.AddScoped<ILobbyEndpointsService, LobbyEndpointsService>();
 #endregion
 
 #region REGISTER VIEWMODELS
+builder.Services.AddScoped<IApplicationViewModel, ApplicationViewModel>();
 builder.Services.AddScoped<ILobbyViewModel, LobbyViewModel>();
 #endregion
 

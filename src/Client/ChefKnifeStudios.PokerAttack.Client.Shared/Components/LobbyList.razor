@@ -12,7 +12,7 @@
                     <MatExpansionPanelSummary>
                         <MatExpansionPanelHeader>@lobby.GameId</MatExpansionPanelHeader>
                         <MatExpansionPanelSubHeader>
-                            <button @onclick="HandleJoinLobbyPressed" @onclick:stopPropagation="true">
+                            <button @onclick="() => HandleJoinLobbyPressed(lobby.GameId)" @onclick:stopPropagation="true">
                                 <MatIcon
                                     Class="join-lobby-icon"
                                     Icon="person_add"

@@ -1,8 +1,12 @@
 ﻿using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
+using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR.EventArgs;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 
 namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
 
@@ -19,11 +23,15 @@ public interface ILobbyService
 
 public class LobbyService : ILobbyService
 {
-    private readonly ILobbyRepository _lobbyRepository;
+    readonly ILobbyRepository _lobbyRepository;
+    readonly IPokerAttackNotificationHelper _notificationHelper;
 
-    public LobbyService(ILobbyRepository lobbyRepository)
+    public LobbyService(
+        ILobbyRepository lobbyRepository,
+        IPokerAttackNotificationHelper notificationHelper)
     {
         _lobbyRepository = lobbyRepository;
+        _notificationHelper = notificationHelper;
     }
 
     public async Task<LobbyDTO> CreateLobbyAsync(string hostPlayerId, CancellationToken cancellationToken = default)
@@ -46,7 +54,15 @@ public class LobbyService : ILobbyService
 
         await _lobbyRepository.AddLobbyAsync(gameId, lobby, cancellationToken);
 
-        return lobby.MapToDTO(gameId);
+        var result = lobby.MapToDTO(gameId);
+
+        await _notificationHelper.BroadcastToAllAsync(
+            new PokerAttackNotification(
+                PokerAttackNotificationType.LobbyCreated,
+                JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = result }, JsonOptions.Get()))
+        );
+
+        return result;
     }
 
 
@@ -82,6 +98,12 @@ public class LobbyService : ILobbyService
         }
 
         await _lobbyRepository.UpdateLobbyAsync(gameId, targetLobby, cancellationToken);
+
+        await _notificationHelper.BroadcastToAllAsync(
+            new PokerAttackNotification(
+                PokerAttackNotificationType.PlayerJoined,
+                JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = targetLobby.MapToDTO(gameId) }, JsonOptions.Get()))
+        );
     }
 
     public async Task LeaveLobbyAsync(string gameId, string playerId, CancellationToken cancellationToken = default)
@@ -94,6 +116,12 @@ public class LobbyService : ILobbyService
         {
             // Host leaving shuts down lobby
             await ShutDownLobbyAsync(gameId, cancellationToken);
+
+            await _notificationHelper.BroadcastToAllAsync(
+                new PokerAttackNotification(
+                    PokerAttackNotificationType.LobbyShutdown,
+                    JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = new LobbyDTO() { GameId = gameId } }, JsonOptions.Get()))
+            );
         }
         else
         {
@@ -102,6 +130,12 @@ public class LobbyService : ILobbyService
                 lobby.PlayerIds.Remove(playerId);
             }
             await _lobbyRepository.UpdateLobbyAsync(gameId, lobby, cancellationToken);
+
+            await _notificationHelper.BroadcastToAllAsync(
+                new PokerAttackNotification(
+                    PokerAttackNotificationType.PlayerLeft,
+                    JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = lobby.MapToDTO(gameId) }, JsonOptions.Get()))
+            );
         }
     }
 
@@ -113,6 +147,12 @@ public class LobbyService : ILobbyService
 
         var players = lobby.PlayerIds.ToList();
         await _lobbyRepository.RemoveLobbyAsync(gameId, cancellationToken);
+
+        await _notificationHelper.BroadcastToAllAsync(
+            new PokerAttackNotification(
+                PokerAttackNotificationType.LobbyShutdown,
+                JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = new LobbyDTO() { GameId = gameId } }, JsonOptions.Get()))
+        );
 
         return players;
     }

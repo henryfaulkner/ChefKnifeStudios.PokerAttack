@@ -5,15 +5,17 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components;
 
 public partial class LobbyList : ComponentBase
 {
+    [Inject] IApplicationViewModel ApplicationViewModel { get; set; } = null!;
     [Inject] ILobbyViewModel LobbyViewModel { get; set; } = null!;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        _ = LobbyViewModel.LoadLobbiesAsync();
+        await base.OnInitializedAsync();
+        await LobbyViewModel.LoadLobbiesAsync();
     }
 
-    void HandleJoinLobbyPressed()
+    void HandleJoinLobbyPressed(string gameId)
     {
-        throw new NotImplementedException();
+        _ = LobbyViewModel.JoinLobbyAsync(gameId, ApplicationViewModel.PlayerId);
     }
 }

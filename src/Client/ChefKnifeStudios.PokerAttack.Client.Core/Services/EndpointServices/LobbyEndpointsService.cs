@@ -12,6 +12,7 @@ public interface ILobbyEndpointsService
 {
     Task<Result<IEnumerable<LobbyDTO>?>> GetLobbiesAsync(CancellationToken cancellationToken = default);
     Task<Result<LobbyDTO?>> GetLobbyAsync(string gameId, CancellationToken cancellationToken = default);
+    Task<Result<LobbyDTO?>> CreateLobbyAsync(CreateLobbyReqDTO reqBody, CancellationToken cancellationToken = default);
     Task<Result<Discard>> AddPlayerAsync(AddPlayerReqDTO reqBody, CancellationToken cancellationToken = default);
     Task<Result<Discard>> RemovePlayerAsync(RemovePlayerReqDTO reqBody, CancellationToken cancellationToken = default);
     Task<Result<Discard>> ShutdownLobbyAsync(string gameId, CancellationToken cancellationToken = default);
@@ -38,7 +39,7 @@ public class LobbyEndpointsService : ILobbyEndpointsService
                 Endpoints.GetLobbies,
                 cancellationToken
             );
-            return res.LogErrors(_logger, "SignalR call");
+            return res.LogErrors(_logger, "Lobby GetLobbiesAsync call");
         }
         catch (Exception ex)
         {
@@ -55,7 +56,25 @@ public class LobbyEndpointsService : ILobbyEndpointsService
                 Endpoints.GetLobby.FormatRoute(gameId),
                 cancellationToken
             );
-            return res.LogErrors(_logger, "SignalR call");
+            return res.LogErrors(_logger, "Lobby GetLobbyAsync call");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occured.");
+            return Result.Error();
+        }
+    }
+
+    public async Task<Result<LobbyDTO?>> CreateLobbyAsync(CreateLobbyReqDTO reqBody, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var res = await _httpService.PostAsync<CreateLobbyReqDTO, LobbyDTO?>(
+                Endpoints.CreateLobby,
+                reqBody,
+                cancellationToken
+            );
+            return res.LogErrors(_logger, "Lobby CreateLobbyAsync call");
         }
         catch (Exception ex)
         {
@@ -73,7 +92,7 @@ public class LobbyEndpointsService : ILobbyEndpointsService
                 reqBody,
                 cancellationToken
             );
-            return res.LogErrors(_logger, "SignalR call");
+            return res.LogErrors(_logger, "Lobby AddPlayerAsync call");
         }
         catch (Exception ex)
         {
@@ -91,7 +110,7 @@ public class LobbyEndpointsService : ILobbyEndpointsService
                 reqBody,
                 cancellationToken
             );
-            return res.LogErrors(_logger, "SignalR call");
+            return res.LogErrors(_logger, "Lobby RemovePlayerAsync call");
         }
         catch (Exception ex)
         {
@@ -108,7 +127,7 @@ public class LobbyEndpointsService : ILobbyEndpointsService
                 Endpoints.ShutdownLobby.FormatRoute(gameId),
                 cancellationToken
             );
-            return res.LogErrors(_logger, "SignalR call");
+            return res.LogErrors(_logger, "Lobby ShutdownLobbyAsync call");
         }
         catch (Exception ex)
         {

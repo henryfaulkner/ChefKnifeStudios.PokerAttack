@@ -6,13 +6,10 @@ public record PokerAttackNotification(
 
 public enum PokerAttackNotificationType
 {
+    LobbyCreated,
     PlayerJoined,
     PlayerLeft,
-    HandPlayed,
-    PowerUsed,
-    RoundStarted,
-    RoundEnded,
-    PlayerEliminated,
-    WinnerDeclared,
+    LobbyShutdown,
+
     Test,
 }

@@ -4,7 +4,9 @@
 
 <div class="main">
     <div class="container">
-
+        <button @onclick="HandleCreateLobbyPressed" @onclick:stopPropagation="true">
+            CREATE LOBBY
+        </button>
 
         <div class="content">
             <LobbyList />
