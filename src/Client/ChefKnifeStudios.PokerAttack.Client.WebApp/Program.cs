@@ -1,5 +1,6 @@
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
+using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 using ChefKnifeStudios.PokerAttack.Client.WebApp;
 using Microsoft.AspNetCore.Components.Web;
@@ -38,6 +39,7 @@ builder.Services.AddSingleton<IHttpServiceFactory>(sp =>
 });
 
 builder.Services.AddScoped<ISignalRNotificationService, SignalRNotificationService>();
+builder.Services.AddScoped<ICardImageProvider, CardImageProvider>();
 builder.Services.AddScoped<ITestEndpointsService, TestEndpointsService>();
 builder.Services.AddScoped<ILobbyEndpointsService, LobbyEndpointsService>();
 #endregion
