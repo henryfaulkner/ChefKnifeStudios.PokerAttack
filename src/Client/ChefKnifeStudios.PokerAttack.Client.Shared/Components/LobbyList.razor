@@ -10,14 +10,16 @@
             {
                 <MatExpansionPanel>
                     <MatExpansionPanelSummary>
-                        <MatExpansionPanelHeader>@lobby.GameId</MatExpansionPanelHeader>
+                        <MatExpansionPanelHeader>Lobby Id: @lobby.GameId</MatExpansionPanelHeader>
                         <MatExpansionPanelSubHeader>
-                            <button @onclick="() => HandleJoinLobbyPressed(lobby.GameId)" @onclick:stopPropagation="true">
-                                <MatIcon
-                                    Class="join-lobby-icon"
-                                    Icon="person_add"
-                                />
-                            </button>
+                            @if (!lobby.PlayerIds.Contains(ApplicationViewModel.PlayerId))
+                            {
+                                <MatButton 
+                                    OnClick="() => HandleJoinLobbyPressed(lobby.GameId)" 
+                                >
+                                    JOIN LOBBY
+                                </MatButton>
+                            }
                         </MatExpansionPanelSubHeader>
                     </MatExpansionPanelSummary>
                     <MatExpansionPanelDetails>
@@ -32,7 +34,16 @@
                             </MatTableHeader>
                             <MatTableRow>
                                 <td class="col-row-id">@context</td>
-                                <td class="col-row-actions"></td>
+                                <td class="col-row-actions">
+                                    @if (@context == ApplicationViewModel.PlayerId)
+                                    {
+                                        <MatButton 
+                                            OnClick="() => HandleLeaveLobbyPressed(lobby.GameId)" 
+                                        >
+                                            LEAVE LOBBY
+                                        </MatButton>
+                                    }
+                                </td>
                             </MatTableRow>
                         </MatTable>
                     </MatExpansionPanelDetails>

@@ -192,7 +192,14 @@ public class LobbyService : ILobbyService
             if (lobby.HostPlayerId == playerId)
             {
                 // Shut down the old lobby if they were host
-                await ShutDownLobbyAsync(kvp.Key!, cancellationToken);
+                var players = lobby.PlayerIds.ToList();
+                await _lobbyRepository.RemoveLobbyAsync(kvp.Key, cancellationToken);
+
+                await _notificationHelper.BroadcastToAllAsync(
+                    new PokerAttackNotification(
+                        PokerAttackNotificationType.LobbyShutdown,
+                        JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = new LobbyDTO() { GameId = kvp.Key } }, JsonOptions.Get()))
+                );
             }
             else
             {
@@ -200,7 +207,13 @@ public class LobbyService : ILobbyService
                 {
                     lobby.PlayerIds.Remove(playerId);
                 }
-                await _lobbyRepository.UpdateLobbyAsync(kvp.Key!, lobby, cancellationToken);
+                await _lobbyRepository.UpdateLobbyAsync(kvp.Key, lobby, cancellationToken);
+
+                await _notificationHelper.BroadcastToAllAsync(
+                    new PokerAttackNotification(
+                        PokerAttackNotificationType.PlayerLeft,
+                        JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = lobby.MapToDTO(kvp.Key) }, JsonOptions.Get()))
+                );
             }
         }
     }

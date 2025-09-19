@@ -46,4 +46,9 @@ public partial class LobbyList : ComponentBase, IDisposable
     {
         _ = LobbyViewModel.JoinLobbyAsync(gameId, ApplicationViewModel.PlayerId);
     }
+
+    void HandleLeaveLobbyPressed(string gameId)
+    {
+        _ = LobbyViewModel.LeaveLobbyAsync(gameId, ApplicationViewModel.PlayerId);
+    }
 }
