@@ -1,6 +1,6 @@
 ﻿using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 
-namespace ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
+namespace ChefKnifeStudios.PokerAttack.Server.Core.Interfaces.Repos;
 
 public interface ILobbyRepository
 {

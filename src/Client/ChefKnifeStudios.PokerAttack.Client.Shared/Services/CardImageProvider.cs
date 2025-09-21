@@ -5,74 +5,74 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 
 public interface ICardImageProvider
 {
-    string GetCardImagePath(Suits suit, Values value);
+    string GetCardImagePath(Suits suit, Ranks value);
 }
 
 public class CardImageProvider : ICardImageProvider
 {
-    static readonly Dictionary<(Suits, Values), string> _cardImagePaths = new()
+    static readonly Dictionary<(Suits, Ranks), string> _cardImagePaths = new()
     {
         // Clubs
-        {(Suits.Club, Values.Ace), FilePaths.AceOfClubs},
-        {(Suits.Club, Values.Two), FilePaths.TwoOfClubs},
-        {(Suits.Club, Values.Three), FilePaths.ThreeOfClubs},
-        {(Suits.Club, Values.Four), FilePaths.FourOfClubs},
-        {(Suits.Club, Values.Five), FilePaths.FiveOfClubs},
-        {(Suits.Club, Values.Six), FilePaths.SixOfClubs},
-        {(Suits.Club, Values.Seven), FilePaths.SevenOfClubs},
-        {(Suits.Club, Values.Eight), FilePaths.EightOfClubs},
-        {(Suits.Club, Values.Nine), FilePaths.NineOfClubs},
-        {(Suits.Club, Values.Ten), FilePaths.TenOfClubs},
-        {(Suits.Club, Values.Jack), FilePaths.JackOfClubs},
-        {(Suits.Club, Values.Queen), FilePaths.QueenOfClubs},
-        {(Suits.Club, Values.King), FilePaths.KingOfClubs},
+        {(Suits.Club, Ranks.Ace), FilePaths.AceOfClubs},
+        {(Suits.Club, Ranks.Two), FilePaths.TwoOfClubs},
+        {(Suits.Club, Ranks.Three), FilePaths.ThreeOfClubs},
+        {(Suits.Club, Ranks.Four), FilePaths.FourOfClubs},
+        {(Suits.Club, Ranks.Five), FilePaths.FiveOfClubs},
+        {(Suits.Club, Ranks.Six), FilePaths.SixOfClubs},
+        {(Suits.Club, Ranks.Seven), FilePaths.SevenOfClubs},
+        {(Suits.Club, Ranks.Eight), FilePaths.EightOfClubs},
+        {(Suits.Club, Ranks.Nine), FilePaths.NineOfClubs},
+        {(Suits.Club, Ranks.Ten), FilePaths.TenOfClubs},
+        {(Suits.Club, Ranks.Jack), FilePaths.JackOfClubs},
+        {(Suits.Club, Ranks.Queen), FilePaths.QueenOfClubs},
+        {(Suits.Club, Ranks.King), FilePaths.KingOfClubs},
 
         // Diamonds
-        {(Suits.Diamond, Values.Ace), FilePaths.AceOfDiamonds},
-        {(Suits.Diamond, Values.Two), FilePaths.TwoOfDiamonds},
-        {(Suits.Diamond, Values.Three), FilePaths.ThreeOfDiamonds},
-        {(Suits.Diamond, Values.Four), FilePaths.FourOfDiamonds},
-        {(Suits.Diamond, Values.Five), FilePaths.FiveOfDiamonds},
-        {(Suits.Diamond, Values.Six), FilePaths.SixOfDiamonds},
-        {(Suits.Diamond, Values.Seven), FilePaths.SevenOfDiamonds},
-        {(Suits.Diamond, Values.Eight), FilePaths.EightOfDiamonds},
-        {(Suits.Diamond, Values.Nine), FilePaths.NineOfDiamonds},
-        {(Suits.Diamond, Values.Ten), FilePaths.TenOfDiamonds},
-        {(Suits.Diamond, Values.Jack), FilePaths.JackOfDiamonds},
-        {(Suits.Diamond, Values.Queen), FilePaths.QueenOfDiamonds},
-        {(Suits.Diamond, Values.King), FilePaths.KingOfDiamonds},
+        {(Suits.Diamond, Ranks.Ace), FilePaths.AceOfDiamonds},
+        {(Suits.Diamond, Ranks.Two), FilePaths.TwoOfDiamonds},
+        {(Suits.Diamond, Ranks.Three), FilePaths.ThreeOfDiamonds},
+        {(Suits.Diamond, Ranks.Four), FilePaths.FourOfDiamonds},
+        {(Suits.Diamond, Ranks.Five), FilePaths.FiveOfDiamonds},
+        {(Suits.Diamond, Ranks.Six), FilePaths.SixOfDiamonds},
+        {(Suits.Diamond, Ranks.Seven), FilePaths.SevenOfDiamonds},
+        {(Suits.Diamond, Ranks.Eight), FilePaths.EightOfDiamonds},
+        {(Suits.Diamond, Ranks.Nine), FilePaths.NineOfDiamonds},
+        {(Suits.Diamond, Ranks.Ten), FilePaths.TenOfDiamonds},
+        {(Suits.Diamond, Ranks.Jack), FilePaths.JackOfDiamonds},
+        {(Suits.Diamond, Ranks.Queen), FilePaths.QueenOfDiamonds},
+        {(Suits.Diamond, Ranks.King), FilePaths.KingOfDiamonds},
 
         // Hearts
-        {(Suits.Heart, Values.Ace), FilePaths.AceOfHearts},
-        {(Suits.Heart, Values.Two), FilePaths.TwoOfHearts},
-        {(Suits.Heart, Values.Three), FilePaths.ThreeOfHearts},
-        {(Suits.Heart, Values.Four), FilePaths.FourOfHearts},
-        {(Suits.Heart, Values.Five), FilePaths.FiveOfHearts},
-        {(Suits.Heart, Values.Six), FilePaths.SixOfHearts},
-        {(Suits.Heart, Values.Seven), FilePaths.SevenOfHearts},
-        {(Suits.Heart, Values.Eight), FilePaths.EightOfHearts},
-        {(Suits.Heart, Values.Nine), FilePaths.NineOfHearts},
-        {(Suits.Heart, Values.Ten), FilePaths.TenOfHearts},
-        {(Suits.Heart, Values.Jack), FilePaths.JackOfHearts},
-        {(Suits.Heart, Values.Queen), FilePaths.QueenOfHearts},
-        {(Suits.Heart, Values.King), FilePaths.KingOfHearts},
+        {(Suits.Heart, Ranks.Ace), FilePaths.AceOfHearts},
+        {(Suits.Heart, Ranks.Two), FilePaths.TwoOfHearts},
+        {(Suits.Heart, Ranks.Three), FilePaths.ThreeOfHearts},
+        {(Suits.Heart, Ranks.Four), FilePaths.FourOfHearts},
+        {(Suits.Heart, Ranks.Five), FilePaths.FiveOfHearts},
+        {(Suits.Heart, Ranks.Six), FilePaths.SixOfHearts},
+        {(Suits.Heart, Ranks.Seven), FilePaths.SevenOfHearts},
+        {(Suits.Heart, Ranks.Eight), FilePaths.EightOfHearts},
+        {(Suits.Heart, Ranks.Nine), FilePaths.NineOfHearts},
+        {(Suits.Heart, Ranks.Ten), FilePaths.TenOfHearts},
+        {(Suits.Heart, Ranks.Jack), FilePaths.JackOfHearts},
+        {(Suits.Heart, Ranks.Queen), FilePaths.QueenOfHearts},
+        {(Suits.Heart, Ranks.King), FilePaths.KingOfHearts},
 
         // Spades
-        {(Suits.Spade, Values.Ace), FilePaths.AceOfSpades},
-        {(Suits.Spade, Values.Two), FilePaths.TwoOfSpades},
-        {(Suits.Spade, Values.Three), FilePaths.ThreeOfSpades},
-        {(Suits.Spade, Values.Four), FilePaths.FourOfSpades},
-        {(Suits.Spade, Values.Five), FilePaths.FiveOfSpades},
-        {(Suits.Spade, Values.Six), FilePaths.SixOfSpades},
-        {(Suits.Spade, Values.Seven), FilePaths.SevenOfSpades},
-        {(Suits.Spade, Values.Eight), FilePaths.EightOfSpades},
-        {(Suits.Spade, Values.Nine), FilePaths.NineOfSpades},
-        {(Suits.Spade, Values.Ten), FilePaths.TenOfSpades},
-        {(Suits.Spade, Values.Jack), FilePaths.JackOfSpades},
-        {(Suits.Spade, Values.Queen), FilePaths.QueenOfSpades},
-        {(Suits.Spade, Values.King), FilePaths.KingOfSpades},
+        {(Suits.Spade, Ranks.Ace), FilePaths.AceOfSpades},
+        {(Suits.Spade, Ranks.Two), FilePaths.TwoOfSpades},
+        {(Suits.Spade, Ranks.Three), FilePaths.ThreeOfSpades},
+        {(Suits.Spade, Ranks.Four), FilePaths.FourOfSpades},
+        {(Suits.Spade, Ranks.Five), FilePaths.FiveOfSpades},
+        {(Suits.Spade, Ranks.Six), FilePaths.SixOfSpades},
+        {(Suits.Spade, Ranks.Seven), FilePaths.SevenOfSpades},
+        {(Suits.Spade, Ranks.Eight), FilePaths.EightOfSpades},
+        {(Suits.Spade, Ranks.Nine), FilePaths.NineOfSpades},
+        {(Suits.Spade, Ranks.Ten), FilePaths.TenOfSpades},
+        {(Suits.Spade, Ranks.Jack), FilePaths.JackOfSpades},
+        {(Suits.Spade, Ranks.Queen), FilePaths.QueenOfSpades},
+        {(Suits.Spade, Ranks.King), FilePaths.KingOfSpades},
     };
 
-    public string GetCardImagePath(Suits suit, Values value) =>
+    public string GetCardImagePath(Suits suit, Ranks value) =>
         _cardImagePaths.TryGetValue((suit, value), out var path) ? path : string.Empty;
 }

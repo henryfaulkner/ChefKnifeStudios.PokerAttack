@@ -1,6 +1,7 @@
 using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
-using ChefKnifeStudios.PokerAttack.Server.Infrastructure;
+using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces.Repos;
+using ChefKnifeStudios.PokerAttack.Server.Infrastructure.Repos;
 using ChefKnifeStudios.PokerAttack.Server.WebAPI.EndpointGroups;
 using ChefKnifeStudios.PokerAttack.Server.WebAPI.SignalR;
 using Scalar.AspNetCore;
@@ -21,7 +22,10 @@ builder.Services.AddCors();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IPokerAttackNotificationHelper, PokerAttackNotificationHelper>();
 builder.Services.AddSingleton<ILobbyRepository, InMemoryLobbyRepository>();
+builder.Services.AddSingleton<IPlayerScoreRepository, InMemoryPlayerScoreRepository>();
+builder.Services.AddSingleton<IPlayerDeckRepository, InMemoryPlayerDeckRepository>();
 builder.Services.AddScoped<ILobbyService, LobbyService>();
+builder.Services.AddScoped<IGameService, GameService>();
 
 var app = builder.Build();
 

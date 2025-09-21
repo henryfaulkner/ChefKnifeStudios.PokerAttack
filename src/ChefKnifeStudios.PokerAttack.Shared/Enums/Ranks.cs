@@ -1,6 +1,6 @@
 ﻿namespace ChefKnifeStudios.PokerAttack.Shared.Enums;
 
-public enum Values
+public enum Ranks
 {
     Ace,
     Two,

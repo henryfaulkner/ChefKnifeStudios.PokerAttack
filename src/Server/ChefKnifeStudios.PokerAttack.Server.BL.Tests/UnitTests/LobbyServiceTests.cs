@@ -1,5 +1,5 @@
 ﻿using ChefKnifeStudios.PokerAttack.Server.BL.Services;
-using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
+using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces.Repos;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using Moq;
 

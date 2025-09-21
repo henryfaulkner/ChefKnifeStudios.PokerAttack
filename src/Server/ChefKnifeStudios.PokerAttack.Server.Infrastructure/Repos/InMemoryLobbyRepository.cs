@@ -1,8 +1,8 @@
-﻿using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
+﻿using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces.Repos;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using System.Collections.Concurrent;
 
-namespace ChefKnifeStudios.PokerAttack.Server.Infrastructure;
+namespace ChefKnifeStudios.PokerAttack.Server.Infrastructure.Repos;
 
 public class InMemoryLobbyRepository : ILobbyRepository
 {

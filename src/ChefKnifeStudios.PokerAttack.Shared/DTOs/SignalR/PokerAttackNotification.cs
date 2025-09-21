@@ -12,4 +12,8 @@ public enum PokerAttackNotificationType
     LobbyShutdown,
 
     Test,
+
+    RunStarted,
+    CardsDealt,
+    HandPlayed,
 }

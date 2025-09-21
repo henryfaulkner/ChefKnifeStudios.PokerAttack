@@ -5,7 +5,7 @@ namespace ChefKnifeStudios.PokerAttack.Server.Core.Models;
 public class Card
 {
     public Suits Suit { get; init; }
-    public Values Value { get; init; }
+    public Ranks Rank { get; init; }
 }
 
 public interface ICardPile { }
@@ -27,12 +27,12 @@ public class Deck : ICardPile
     public void PopulateDeck()
     {
         foreach (var suit in Enum.GetValues<Suits>())
-            foreach (var value in Enum.GetValues<Values>())
+            foreach (var value in Enum.GetValues<Ranks>())
                 Cards.Push(
                     new Card
                     {
                         Suit = suit,
-                        Value = value,
+                        Rank = value,
                     }
                 );
     }
