@@ -49,9 +49,10 @@ app.MapScalarApiReference(options =>
 }).AllowAnonymous();
 
 app.UseCors(policy =>
-    policy.AllowAnyOrigin() // temporarily allowing all origins till the final environments ready
+    policy.WithOrigins("https://localhost:7150", "https://www.henryfaulkner.xyz")
         .AllowAnyMethod()
-        .AllowAnyHeader());
+        .AllowAnyHeader()
+        .AllowCredentials());
 
 app.MapHub<SignalRNotificationHub>("/cks-notification");
 app.MapTestEndpoints();

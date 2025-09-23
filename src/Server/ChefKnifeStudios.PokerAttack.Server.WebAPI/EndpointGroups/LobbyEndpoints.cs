@@ -68,12 +68,19 @@ public static class LobbyEndpoints
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);
 
-        group.MapPatch(Endpoints.RemovePlayer, async (
+        group.MapPost(Endpoints.RemovePlayer, async (
             RemovePlayerReqDTO reqBody,
             ILobbyService lobbyService,
             CancellationToken cancellationToken = default) =>
         {
-            await lobbyService.LeaveLobbyAsync(reqBody.GameId, reqBody.PlayerId, cancellationToken);
+            if (string.IsNullOrWhiteSpace(reqBody.GameId))
+            {
+                await lobbyService.LeaveLobbyAsync(reqBody.PlayerId, cancellationToken);
+            }
+            else
+            {
+                await lobbyService.LeaveLobbyAsync(reqBody.GameId, reqBody.PlayerId, cancellationToken);
+            }
             return Result.Success();
         })
         .WithName(nameof(Endpoints.RemovePlayer))

@@ -5,7 +5,12 @@
             <div 
                 class="card @(card.IsSelected ? "selected" : string.Empty)"
                 @onclick="() => card.IsSelected = !card.IsSelected"
-            ></div>
+            >
+                <img 
+                    src="@CardImageService.GetCardImagePath(card.Suit, card.Rank)" 
+                    alt="" 
+                />
+            </div>
         }
     </div>
 </div>

@@ -17,6 +17,7 @@ public interface ILobbyService
     Task<LobbyDTO?> GetLobbyAsync(string gameId, CancellationToken cancellationToken = default);
     Task<IEnumerable<LobbyDTO>> GetLobbiesAsync(CancellationToken cancellationToken = default);
     Task JoinLobbyAsync(string gameId, string playerId, CancellationToken cancellationToken = default);
+    Task LeaveLobbyAsync(string playerId, CancellationToken cancellationToken = default);
     Task LeaveLobbyAsync(string gameId, string playerId, CancellationToken cancellationToken = default);
     Task<IEnumerable<string>> ShutDownLobbyAsync(string gameId, CancellationToken cancellationToken = default);
     Task<IEnumerable<string>> GetPlayersAsync(string gameId, CancellationToken cancellationToken = default);
@@ -105,6 +106,48 @@ public class LobbyService : ILobbyService
                 PokerAttackNotificationType.PlayerJoined,
                 JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = targetLobby.MapToDTO(gameId) }, JsonOptions.Get()))
         );
+    }
+
+    public async Task LeaveLobbyAsync(string playerId, CancellationToken cancellationToken = default)
+    {
+
+        var lobbiesKvps = await _lobbyRepository.GetAllLobbiesAsync(cancellationToken);
+        KeyValuePair<string, Lobby>? lobbyKvp = null;
+        foreach (var kvp in lobbiesKvps)
+        {
+            if (kvp.Value.PlayerIds.Contains(playerId))
+            {
+                lobbyKvp = kvp; 
+                break;
+            }
+        }
+        if (!lobbyKvp.HasValue) return;
+
+        if (lobbyKvp.Value.Value.HostPlayerId == playerId)
+        {
+            // Host leaving shuts down lobby
+            await ShutDownLobbyAsync(lobbyKvp.Value.Key, cancellationToken);
+
+            await _notificationHelper.BroadcastToAllAsync(
+                new PokerAttackNotification(
+                    PokerAttackNotificationType.LobbyShutdown,
+                    JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = new LobbyDTO() { GameId = lobbyKvp.Value.Key } }, JsonOptions.Get()))
+            );
+        }
+        else
+        {
+            lock (lobbyKvp.Value.Value.PlayerIds)
+            {
+                lobbyKvp.Value.Value.PlayerIds.Remove(playerId);
+            }
+            await _lobbyRepository.UpdateLobbyAsync(lobbyKvp.Value.Key, lobbyKvp.Value.Value, cancellationToken);
+
+            await _notificationHelper.BroadcastToAllAsync(
+                new PokerAttackNotification(
+                    PokerAttackNotificationType.PlayerLeft,
+                    JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = lobbyKvp.Value.Value.MapToDTO(lobbyKvp.Value.Key) }, JsonOptions.Get()))
+            );
+        }
     }
 
     public async Task LeaveLobbyAsync(string gameId, string playerId, CancellationToken cancellationToken = default)

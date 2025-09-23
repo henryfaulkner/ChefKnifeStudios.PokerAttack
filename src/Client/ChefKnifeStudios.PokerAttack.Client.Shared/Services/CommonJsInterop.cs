@@ -34,19 +34,32 @@ public interface ICommonJsInterop
     Task RemoveAllViaQuerySelector(string querySelector);
 }
 
-internal class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
+public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
 {
-    private readonly Lazy<Task<IJSObjectReference>> moduleTask;
-    private DotNetObjectReference<InteropEventHelper>? Reference;
+    readonly Lazy<Task<IJSObjectReference>> moduleTask;
     readonly ILogger<CommonJsInterop> _logger;
 
-    public CommonJsInterop(IJSRuntime jsRuntime, IWebAssemblyHostEnvironment environment, ILogger<CommonJsInterop> logger)
+    DotNetObjectReference<InteropEventHelper>? Reference;
+
+    public CommonJsInterop(
+        IJSRuntime jsRuntime, 
+        IWebAssemblyHostEnvironment environment, 
+        ILogger<CommonJsInterop> logger)
     {
         _logger = logger;
         string assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name ?? ".";
 
         moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
-            "import", $"./_content/{assemblyName}/js/commonJsInterop.js?g={Guid.NewGuid().ToString().ToLower()}").AsTask());
+            "import", $"./_content/{assemblyName}/scripts/commonJsInterop.js?g={Guid.NewGuid().ToString().ToLower()}").AsTask());
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (moduleTask.IsValueCreated)
+        {
+            var module = await moduleTask.Value;
+            await module.DisposeAsync();
+        }
     }
 
     public async ValueTask<string> Prompt(string message)
@@ -165,15 +178,6 @@ internal class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         {
             LogError(ex);
             return null;
-        }
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        if (moduleTask.IsValueCreated)
-        {
-            var module = await moduleTask.Value;
-            await module.DisposeAsync();
         }
     }
 

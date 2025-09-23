@@ -105,7 +105,7 @@ public class LobbyEndpointsService : ILobbyEndpointsService
     {
         try
         {
-            var res = await _httpService.PatchAsync<RemovePlayerReqDTO, Discard> (
+            var res = await _httpService.PostAsync<RemovePlayerReqDTO, Discard> (
                 Endpoints.RemovePlayer,
                 reqBody,
                 cancellationToken

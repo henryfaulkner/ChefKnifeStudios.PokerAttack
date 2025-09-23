@@ -39,7 +39,9 @@ builder.Services.AddSingleton<IHttpServiceFactory>(sp =>
 });
 
 builder.Services.AddScoped<ISignalRNotificationService, SignalRNotificationService>();
-builder.Services.AddScoped<ICardImageProvider, CardImageProvider>();
+builder.Services.AddScoped<ICardImageService, CardImageService>();
+builder.Services.AddTransient<ICommonJsInterop, CommonJsInterop>();
+builder.Services.AddTransient<ILobbyJsInterop, LobbyJsInterop>();
 builder.Services.AddScoped<ITestEndpointsService, TestEndpointsService>();
 builder.Services.AddScoped<ILobbyEndpointsService, LobbyEndpointsService>();
 #endregion

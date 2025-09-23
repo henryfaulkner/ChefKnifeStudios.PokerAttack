@@ -1,8 +1,10 @@
 ﻿@using ChefKnifeStudios.PokerAttack.Client.Core.Services
 @using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices
 @using ChefKnifeStudios.PokerAttack.Shared.DTOs.Tests
+@using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels
 
 @page "/signalr-test"
+@inject IApplicationViewModel ApplicationViewModel
 @inject ISignalRNotificationService NotificationService
 @inject NavigationManager NavigationManager
 @inject ITestEndpointsService TestEndpointsService
@@ -38,7 +40,7 @@
     {
         try
         {
-            await NotificationService.InitAsync(); // Pass gameId here
+            await NotificationService.InitAsync(); 
             connectionStatus = "Connected";
             isConnected = true;
 

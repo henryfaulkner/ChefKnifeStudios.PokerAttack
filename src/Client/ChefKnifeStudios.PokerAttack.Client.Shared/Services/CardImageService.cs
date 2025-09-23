@@ -3,12 +3,12 @@ using ChefKnifeStudios.PokerAttack.Shared.Enums;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 
-public interface ICardImageProvider
+public interface ICardImageService
 {
     string GetCardImagePath(Suits suit, Ranks value);
 }
 
-public class CardImageProvider : ICardImageProvider
+public class CardImageService : ICardImageService
 {
     static readonly Dictionary<(Suits, Ranks), string> _cardImagePaths = new()
     {
