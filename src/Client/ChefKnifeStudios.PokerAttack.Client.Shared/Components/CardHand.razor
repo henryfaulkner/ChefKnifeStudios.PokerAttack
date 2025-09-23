@@ -1,0 +1,11 @@
+﻿<div class="card-hand">
+    <div class="cards">
+        @foreach (var card in _cards)
+        {
+            <div 
+                class="card @(card.IsSelected ? "selected" : string.Empty)"
+                @onclick="() => card.IsSelected = !card.IsSelected"
+            ></div>
+        }
+    </div>
+</div>

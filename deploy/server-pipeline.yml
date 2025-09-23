@@ -30,43 +30,43 @@ stages:
     - checkout: self
       persistCredentials: true # Required for git tagging 
 
-    # - task: UseDotNet@2
-    #   displayName: 'Install .NET 9 SDK'
-    #   inputs:
-    #     packageType: 'sdk'
-    #     version: '9.x'
-    #     installationPath: $(Agent.ToolsDirectory)/dotnet
+    - task: UseDotNet@2
+      displayName: 'Install .NET 9 SDK'
+      inputs:
+        packageType: 'sdk'
+        version: '9.x'
+        installationPath: $(Agent.ToolsDirectory)/dotnet
 
-    # - task: DotNetCoreCLI@2
-    #   displayName: 'Restore NuGet packages'
-    #   inputs:
-    #     command: 'restore'
-    #     projects: '**/*.csproj'
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore NuGet packages'
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
 
-    # - task: DotNetCoreCLI@2
-    #   displayName: 'Build solution'
-    #   inputs:
-    #     command: 'build'
-    #     projects: '**/*.csproj'
-    #     arguments: '--configuration $(buildConfiguration)'
+    - task: DotNetCoreCLI@2
+      displayName: 'Build solution'
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration)'
 
-    # - task: DotNetCoreCLI@2
-    #   displayName: 'Run unit and integration tests'
-    #   inputs:
-    #     command: 'test'
-    #     projects: '**/*Tests.csproj'
-    #     publishTestResults: false  
-    #     arguments: >
-    #       --configuration $(buildConfiguration)
-    #       --logger "trx;LogFileName=test_results.trx"
-    #       --results-directory $(Build.SourcesDirectory)/TestResults
+    - task: DotNetCoreCLI@2
+      displayName: 'Run unit and integration tests'
+      inputs:
+        command: 'test'
+        projects: '**/*Tests.csproj'
+        publishTestResults: false  
+        arguments: >
+          --configuration $(buildConfiguration)
+          --logger "trx;LogFileName=test_results.trx"
+          --results-directory $(Build.SourcesDirectory)/TestResults
 
-    # - task: PublishTestResults@2
-    #   displayName: 'Publish NUnit results'
-    #   inputs:
-    #     testResultsFormat: 'VSTest'
-    #     testResultsFiles: '$(Build.SourcesDirectory)/TestResults/*.trx'
-    #     failTaskOnFailedTests: true
+    - task: PublishTestResults@2
+      displayName: 'Publish NUnit results'
+      inputs:
+        testResultsFormat: 'VSTest'
+        testResultsFiles: '$(Build.SourcesDirectory)/TestResults/*.trx'
+        failTaskOnFailedTests: true
 
     - task: Docker@2
       inputs:

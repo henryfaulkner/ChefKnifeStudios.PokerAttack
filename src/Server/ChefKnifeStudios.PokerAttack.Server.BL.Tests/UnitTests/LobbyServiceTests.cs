@@ -1,4 +1,5 @@
 ﻿using ChefKnifeStudios.PokerAttack.Server.BL.Services;
+using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces.Repos;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using Moq;
@@ -9,6 +10,7 @@ namespace ChefKnifeStudios.PokerAttack.Server.Tests.UnitTests;
 public class LobbyServiceTests
 {
     private Mock<ILobbyRepository> _mockRepo;
+    private Mock<IPokerAttackNotificationHelper> _mockHelper;
     private LobbyService _service;
     private CancellationToken _cancellationToken;
 
@@ -16,7 +18,8 @@ public class LobbyServiceTests
     public void Setup()
     {
         _mockRepo = new Mock<ILobbyRepository>();
-        _service = new LobbyService(_mockRepo.Object);
+        _mockHelper = new Mock<IPokerAttackNotificationHelper>();
+        _service = new LobbyService(_mockRepo.Object, _mockHelper.Object);
         _cancellationToken = CancellationToken.None;
     }
 
