@@ -12,7 +12,7 @@
                     <MatExpansionPanelSummary>
                         <MatExpansionPanelHeader>Lobby Id: @lobby.GameId</MatExpansionPanelHeader>
                         <MatExpansionPanelSubHeader>
-                            @if (!lobby.PlayerIds.Contains(ApplicationViewModel.PlayerId))
+                            @if (!lobby.Players.Select(x => x.Id).Contains(ApplicationViewModel.Player.Id))
                             {
                                 <MatButton 
                                     OnClick="() => HandleJoinLobbyPressed(lobby.GameId)" 
@@ -24,7 +24,7 @@
                     </MatExpansionPanelSummary>
                     <MatExpansionPanelDetails>
                         <MatTable
-                            Items="lobby.PlayerIds"
+                            Items="lobby.Players"
                             PageLabel="Players"
                             PageRecordCountLabel="Page Size"
                         >
@@ -35,7 +35,7 @@
                             <MatTableRow>
                                 <td class="col-row-id">@context</td>
                                 <td class="col-row-actions">
-                                    @if (@context == ApplicationViewModel.PlayerId)
+                                    @if (@context.Id == ApplicationViewModel.Player.Id)
                                     {
                                         <MatButton 
                                             OnClick="() => HandleLeaveLobbyPressed(lobby.GameId)" 

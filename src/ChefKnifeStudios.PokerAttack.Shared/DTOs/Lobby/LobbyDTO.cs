@@ -3,6 +3,6 @@
 public class LobbyDTO
 {
     public required string GameId { get; set; }
-    public string? HostPlayerId { get; set; }
-    public HashSet<string> PlayerIds { get; set; } = new();
+    public required PlayerDTO HostPlayer { get; set; }
+    public HashSet<PlayerDTO> Players { get; set; } = new();
 }

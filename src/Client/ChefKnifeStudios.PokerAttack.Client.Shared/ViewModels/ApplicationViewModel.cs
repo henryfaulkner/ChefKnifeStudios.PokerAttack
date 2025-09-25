@@ -3,24 +3,17 @@ using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
-using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
+using NameGenerator.Generators;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 
 public interface IApplicationViewModel : IViewModel
 {
-    string PlayerId { get; }
+    PlayerDTO Player { get; }
     Task InitAsync();
 }
 
@@ -33,7 +26,11 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
     readonly IWebAssemblyHostEnvironment _hostEnvironment;
 
     [ObservableProperty]
-    string _playerId = Guid.NewGuid().ToString();
+    PlayerDTO _player = new()
+    {
+        Id = Guid.NewGuid().ToString(),
+        Name = string.Empty,
+    };
 
     public ApplicationViewModel(
         ISignalRNotificationService signalRNotificationService,
@@ -45,6 +42,9 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
         _lobbyJsInterop = lobbyJsInterop;
         _logger = logger;
         _configuration = configuration;
+
+        var generator = new GamerTagGenerator();
+        Player.Name = generator.Generate();
     }
 
     public async Task InitAsync()
@@ -104,7 +104,7 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
 
                 var url = $"{baseUri.ToString().TrimEnd('/')}{PokerAttackApiEndpoints.Lobby.RemovePlayer}";
 
-                await _lobbyJsInterop.RegisterNotifyServerOnUnloadAsync(url, new RemovePlayerReqDTO(null, PlayerId));
+                await _lobbyJsInterop.RegisterNotifyServerOnUnloadAsync(url, new RemovePlayerReqDTO(null, new() { Id = Player.Id, Name = Player.Name, }));
             }
         }
         catch (Exception ex)

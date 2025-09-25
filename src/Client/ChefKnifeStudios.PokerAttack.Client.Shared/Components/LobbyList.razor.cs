@@ -44,11 +44,11 @@ public partial class LobbyList : ComponentBase, IDisposable
 
     void HandleJoinLobbyPressed(string gameId)
     {
-        _ = LobbyViewModel.JoinLobbyAsync(gameId, ApplicationViewModel.PlayerId);
+        _ = LobbyViewModel.JoinLobbyAsync(gameId, ApplicationViewModel.Player);
     }
 
     void HandleLeaveLobbyPressed(string gameId)
     {
-        _ = LobbyViewModel.LeaveLobbyAsync(gameId, ApplicationViewModel.PlayerId);
+        _ = LobbyViewModel.LeaveLobbyAsync(gameId, ApplicationViewModel.Player);
     }
 }

@@ -45,7 +45,7 @@ public static class LobbyEndpoints
             ILobbyService lobbyService,
             CancellationToken cancellationToken = default) => 
         {
-            var result = await lobbyService.CreateLobbyAsync(reqBody.HostPlayerId, cancellationToken);
+            var result = await lobbyService.CreateLobbyAsync(reqBody.HostPlayer, cancellationToken);
             return Result.Success(result);
         })
         .WithName(nameof(Endpoints.CreateLobby))
@@ -59,7 +59,7 @@ public static class LobbyEndpoints
             ILobbyService lobbyService,
             CancellationToken cancellationToken = default) =>
         {
-            await lobbyService.JoinLobbyAsync(reqBody.GameId, reqBody.PlayerId, cancellationToken);
+            await lobbyService.JoinLobbyAsync(reqBody.GameId, reqBody.Player, cancellationToken);
             return Result.Success();
         })
         .WithName(nameof(Endpoints.AddPlayer))
@@ -75,11 +75,11 @@ public static class LobbyEndpoints
         {
             if (string.IsNullOrWhiteSpace(reqBody.GameId))
             {
-                await lobbyService.LeaveLobbyAsync(reqBody.PlayerId, cancellationToken);
+                await lobbyService.LeaveLobbyAsync(reqBody.Player, cancellationToken);
             }
             else
             {
-                await lobbyService.LeaveLobbyAsync(reqBody.GameId, reqBody.PlayerId, cancellationToken);
+                await lobbyService.LeaveLobbyAsync(reqBody.GameId, reqBody.Player, cancellationToken);
             }
             return Result.Success();
         })
@@ -88,6 +88,8 @@ public static class LobbyEndpoints
         .Produces(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);
+
+        //group.MapPatch(Endpoints.UpdatePlayer)
 
         group.MapDelete(Endpoints.ShutdownLobby, async (
             string gameId,

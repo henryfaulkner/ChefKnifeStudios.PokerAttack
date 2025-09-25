@@ -17,9 +17,9 @@ public interface ILobbyViewModel : IViewModel
     ObservableCollection<LobbyDTO> Lobbies { get; }
     bool IsLoadingLobbies { get; }
     Task LoadLobbiesAsync(CancellationToken cancellationToken = default);
-    Task CreateLobbyAsync(string playerId, CancellationToken cancellationToken = default);
-    Task JoinLobbyAsync(string gameId, string playerId, CancellationToken cancellationToken = default);
-    Task LeaveLobbyAsync(string gameId, string playerId, CancellationToken cancellationToken = default);
+    Task CreateLobbyAsync(PlayerDTO player, CancellationToken cancellationToken = default);
+    Task JoinLobbyAsync(string gameId, PlayerDTO player, CancellationToken cancellationToken = default);
+    Task LeaveLobbyAsync(string gameId, PlayerDTO player, CancellationToken cancellationToken = default);
     Task ShutdownLobbyAsync(string gameId, CancellationToken cancellationToken = default);
 }
 
@@ -63,14 +63,14 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
         IsLoadingLobbies = false;
     }
 
-    public async Task CreateLobbyAsync(string playerId, CancellationToken cancellationToken = default) =>
-        await _lobbyEndpointsService.CreateLobbyAsync(new (playerId), cancellationToken);
+    public async Task CreateLobbyAsync(PlayerDTO player, CancellationToken cancellationToken = default) =>
+        await _lobbyEndpointsService.CreateLobbyAsync(new (player), cancellationToken);
 
-    public async Task JoinLobbyAsync(string gameId, string playerId, CancellationToken cancellationToken = default) =>
-        await _lobbyEndpointsService.AddPlayerAsync(new (gameId, playerId), cancellationToken);
+    public async Task JoinLobbyAsync(string gameId, PlayerDTO player, CancellationToken cancellationToken = default) =>
+        await _lobbyEndpointsService.AddPlayerAsync(new (gameId, player), cancellationToken);
 
-    public async Task LeaveLobbyAsync(string gameId, string playerId, CancellationToken cancellationToken = default) => 
-        await _lobbyEndpointsService.RemovePlayerAsync(new (gameId, playerId), cancellationToken);
+    public async Task LeaveLobbyAsync(string gameId, PlayerDTO player, CancellationToken cancellationToken = default) => 
+        await _lobbyEndpointsService.RemovePlayerAsync(new (gameId, player), cancellationToken);
     public async Task ShutdownLobbyAsync(string gameId, CancellationToken cancellationToken = default) => 
         await _lobbyEndpointsService.ShutdownLobbyAsync(gameId, cancellationToken);
 

@@ -16,6 +16,7 @@ public class PokerAttackApiEndpoints
         public const string CreateLobby = $"{EndpointGroup}/create-lobby";
         public const string AddPlayer = $"{EndpointGroup}/add-player";
         public const string RemovePlayer = $"{EndpointGroup}/remove-player";
+        public const string UpdatePlayer = $"{EndpointGroup}/update-player";
         public const string ShutdownLobby = $"{EndpointGroup}/shutdown-lobby/{{gameId}}";
     }
 }

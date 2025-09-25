@@ -10,6 +10,6 @@ public partial class Lobbies : ComponentBase
 
     void HandleCreateLobbyPressed()
     {
-        _ = LobbyViewModel.CreateLobbyAsync(ApplicationViewModel.PlayerId);
+        _ = LobbyViewModel.CreateLobbyAsync(ApplicationViewModel.Player);
     }
 }

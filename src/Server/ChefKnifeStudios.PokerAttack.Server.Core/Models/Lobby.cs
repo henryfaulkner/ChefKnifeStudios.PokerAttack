@@ -2,6 +2,6 @@
 
 public class Lobby
 {
-    public string? HostPlayerId { get; set; }
-    public HashSet<string> PlayerIds { get; set; } = new();
+    public required Player HostPlayer { get; set; }
+    public HashSet<Player> Players { get; set; } = new();
 }
