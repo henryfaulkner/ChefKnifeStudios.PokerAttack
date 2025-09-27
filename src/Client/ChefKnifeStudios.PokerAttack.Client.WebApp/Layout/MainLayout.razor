@@ -1,3 +1,22 @@
 ﻿@inherits LayoutComponentBase
 
-@Body
+<div class="page bgclr-surface1">
+    <MatThemeProvider Theme="@_theme">
+        @Body
+        <MatToastContainer />
+    </MatThemeProvider>
+</div>
+
+@code 
+{
+    MatTheme _theme = new()
+    {
+        Background = ColorConstants.Surface1,
+        OnPrimary = ColorConstants.OnPrimary,
+        OnSecondary = ColorConstants.OnSecondaryContainer,
+        OnSurface = ColorConstants.OnTertiaryContainer,
+        Primary = ColorConstants.Primary,
+        Secondary = ColorConstants.SecondaryContainer,
+        Surface = ColorConstants.Surface5,
+    };
+}

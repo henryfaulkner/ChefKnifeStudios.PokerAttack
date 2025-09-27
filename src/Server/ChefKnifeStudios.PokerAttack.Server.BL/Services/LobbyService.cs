@@ -21,6 +21,7 @@ public interface ILobbyService
     Task LeaveLobbyAsync(string gameId, PlayerDTO player, CancellationToken cancellationToken = default);
     Task<IEnumerable<PlayerDTO>> ShutDownLobbyAsync(string gameId, CancellationToken cancellationToken = default);
     Task<IEnumerable<PlayerDTO>> GetPlayersAsync(string gameId, CancellationToken cancellationToken = default);
+    Task UpdatePlayerAsync(PlayerDTO player, CancellationToken cancellationToken = default);
 }
 
 public class LobbyService : ILobbyService
@@ -225,7 +226,61 @@ public class LobbyService : ILobbyService
         return lobby?.Players.Select(x => x.MapToDTO()) ?? Enumerable.Empty<PlayerDTO>();
     }
 
-    private static string GenerateGameId()
+    public async Task UpdatePlayerAsync(PlayerDTO player, CancellationToken cancellationToken = default)
+    {
+        // 1. Find the lobby containing the player
+        var lobbiesKvps = await _lobbyRepository.GetAllLobbiesAsync(cancellationToken);
+        KeyValuePair<string, Lobby>? lobbyKvp = null;
+        foreach (var kvp in lobbiesKvps)
+        {
+            if (kvp.Value.Players.Any(x => x.Id.Equals(player.Id, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                lobbyKvp = kvp;
+                break;
+            }
+        }
+        if (!lobbyKvp.HasValue)
+            throw new KeyNotFoundException("Player not found in any lobby.");
+
+        var lobby = lobbyKvp.Value.Value;
+        var gameId = lobbyKvp.Value.Key;
+
+        // 2. Update the player in the Players collection
+        lock (lobby.Players)
+        {
+            var existingPlayer = lobby.Players.FirstOrDefault(x => x.Id.Equals(player.Id, StringComparison.InvariantCultureIgnoreCase));
+            if (existingPlayer == null)
+                throw new KeyNotFoundException("Player not found in the lobby.");
+
+            lobby.Players.Remove(existingPlayer);
+            lobby.Players.Add(player.MapToModel());
+        }
+
+        // 3. If the player is the host, update HostPlayer as well
+        if (lobby.HostPlayer.Id.Equals(player.Id, StringComparison.InvariantCultureIgnoreCase))
+        {
+            lobby.HostPlayer = player.MapToModel();
+        }
+
+        // 4. Update the lobby in the repository
+        await _lobbyRepository.UpdateLobbyAsync(gameId, lobby, cancellationToken);
+
+        // 5. Optionally, broadcast a notification
+        await _notificationHelper.BroadcastToAllAsync(
+            new PokerAttackNotification(
+                PokerAttackNotificationType.PlayerUpdated,
+                JsonSerializer.Serialize(
+                    new LobbyEventArgs
+                    {
+                        Lobby = lobby.MapToDTO(gameId)
+                    },
+                    JsonOptions.Get()
+                )
+            )
+        );
+    }
+
+    static string GenerateGameId()
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         var data = new byte[6];

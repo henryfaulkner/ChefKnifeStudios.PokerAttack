@@ -10,6 +10,7 @@ public enum PokerAttackNotificationType
     PlayerJoined,
     PlayerLeft,
     LobbyShutdown,
+    PlayerUpdated,
 
     Test,
 

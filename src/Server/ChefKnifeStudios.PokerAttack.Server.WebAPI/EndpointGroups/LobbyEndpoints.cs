@@ -89,7 +89,19 @@ public static class LobbyEndpoints
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);
 
-        //group.MapPatch(Endpoints.UpdatePlayer)
+        group.MapPut(Endpoints.UpdatePlayer, async (
+            PlayerDTO player,
+            ILobbyService lobbyService,
+            CancellationToken cancellationToken = default) =>
+        {
+            await lobbyService.UpdatePlayerAsync(player, cancellationToken);
+            return Result.Success();
+        })
+        .WithName(nameof(Endpoints.UpdatePlayer))
+        .Accepts<PlayerDTO>("application/json")
+        .Produces(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status500InternalServerError);
 
         group.MapDelete(Endpoints.ShutdownLobby, async (
             string gameId,

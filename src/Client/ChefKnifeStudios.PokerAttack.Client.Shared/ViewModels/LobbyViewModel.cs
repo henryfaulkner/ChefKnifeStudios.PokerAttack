@@ -57,9 +57,6 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
         if (res.IsSuccess && res.Value is IEnumerable<LobbyDTO>) 
             Lobbies = res.Value.ToObservableCollection();
 
-        //var fixture = new Fixture();
-        //Lobbies = fixture.CreateMany<LobbyDTO>(20).ToObservableCollection();
-
         IsLoadingLobbies = false;
     }
 
@@ -86,6 +83,7 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
                 }
             case PokerAttackNotificationType.PlayerJoined:
             case PokerAttackNotificationType.PlayerLeft:
+            case PokerAttackNotificationType.PlayerUpdated:
                 {
                     var args = JsonSerializer.Deserialize<LobbyEventArgs>(notification.Payload!, JsonOptions.Get());
                     if (args?.Lobby is not null)

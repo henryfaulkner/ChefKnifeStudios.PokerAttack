@@ -3,6 +3,7 @@ using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 using ChefKnifeStudios.PokerAttack.Client.WebApp;
+using MatBlazor;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -42,13 +43,31 @@ builder.Services.AddScoped<ISignalRNotificationService, SignalRNotificationServi
 builder.Services.AddScoped<ICardImageService, CardImageService>();
 builder.Services.AddTransient<ICommonJsInterop, CommonJsInterop>();
 builder.Services.AddTransient<ILobbyJsInterop, LobbyJsInterop>();
-builder.Services.AddScoped<ITestEndpointsService, TestEndpointsService>();
-builder.Services.AddScoped<ILobbyEndpointsService, LobbyEndpointsService>();
+builder.Services.AddTransient<ITestEndpointsService, TestEndpointsService>();
+builder.Services.AddTransient<ILobbyEndpointsService, LobbyEndpointsService>();
+builder.Services.AddTransient<IToastService, ToastService>();
+
+builder.Services.AddMatBlazor();
+builder.Services.AddMatToaster(config =>
+{
+    config.Position = MatToastPosition.BottomLeft;
+    config.PreventDuplicates = true;
+    config.NewestOnTop = true;
+    config.VisibleStateDuration = 3000;
+    config.ShowCloseButton = true;
+    config.ShowProgressBar = true;
+    config.MaximumOpacity = 100;
+    config.ShowTransitionDuration = 300;
+    config.VisibleStateDuration = 4000;
+    config.HideTransitionDuration = 300;
+    config.RequireInteraction = false;
+});
 #endregion
 
 #region REGISTER VIEWMODELS
 builder.Services.AddScoped<IApplicationViewModel, ApplicationViewModel>();
-builder.Services.AddScoped<ILobbyViewModel, LobbyViewModel>();
+builder.Services.AddTransient<ILobbyViewModel, LobbyViewModel>();
+builder.Services.AddTransient<IPlayerViewModel, PlayerViewModel>();
 #endregion
 
 await builder.Build().RunAsync();
