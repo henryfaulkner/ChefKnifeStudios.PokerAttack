@@ -13,6 +13,7 @@ public interface ISignalRNotificationService
 {
     Task InitAsync();
     Task JoinGameGroupAsync(string gameId);
+    Task LeaveGameGroupAsync(string gameId);
     event PokerAttackNotificationHandler? HandleNotificationReceived;
 }
 
@@ -104,7 +105,15 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
         if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
             throw new InvalidOperationException("SignalR connection is not established.");
 
-        await _hubConnection.InvokeAsync("JoinGameGroup", gameId);
+        await _hubConnection.InvokeAsync("JoinGameGroupAsync", gameId);
+    }
+
+    public async Task LeaveGameGroupAsync(string gameId)
+    {
+        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+            throw new InvalidOperationException("SignalR connection is not established.");
+
+        await _hubConnection.InvokeAsync("LeaveGameGroupAsync", gameId);
     }
 
     private void CloseConnection()

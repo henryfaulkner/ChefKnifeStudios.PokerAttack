@@ -22,6 +22,7 @@ public interface ILobbyService
     Task<IEnumerable<PlayerDTO>> ShutDownLobbyAsync(string gameId, CancellationToken cancellationToken = default);
     Task<IEnumerable<PlayerDTO>> GetPlayersAsync(string gameId, CancellationToken cancellationToken = default);
     Task UpdatePlayerAsync(PlayerDTO player, CancellationToken cancellationToken = default);
+    Task StartGameAsync(string gameId, CancellationToken cancellationToken = default);
 }
 
 public class LobbyService : ILobbyService
@@ -64,7 +65,8 @@ public class LobbyService : ILobbyService
         await _notificationHelper.BroadcastToAllAsync(
             new PokerAttackNotification(
                 PokerAttackNotificationType.LobbyCreated,
-                JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = result }, JsonOptions.Get()))
+                JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = result }, JsonOptions.Get())),
+            cancellationToken
         );
 
         return result;
@@ -107,7 +109,8 @@ public class LobbyService : ILobbyService
         await _notificationHelper.BroadcastToAllAsync(
             new PokerAttackNotification(
                 PokerAttackNotificationType.PlayerJoined,
-                JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = targetLobby.MapToDTO(gameId) }, JsonOptions.Get()))
+                JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = targetLobby.MapToDTO(gameId) }, JsonOptions.Get())),
+            cancellationToken
         );
     }
 
@@ -144,7 +147,8 @@ public class LobbyService : ILobbyService
                             } 
                         }, JsonOptions.Get()
                     )
-                )
+                ),
+                cancellationToken
             );
         }
         else
@@ -164,7 +168,8 @@ public class LobbyService : ILobbyService
                             Lobby = lobbyKvp.Value.Value.MapToDTO(lobbyKvp.Value.Key) 
                         }, JsonOptions.Get()
                     )
-                )
+                ),
+                cancellationToken
             );
         }
     }
@@ -183,7 +188,8 @@ public class LobbyService : ILobbyService
             await _notificationHelper.BroadcastToAllAsync(
                 new PokerAttackNotification(
                     PokerAttackNotificationType.LobbyShutdown,
-                    JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = new LobbyDTO() { GameId = gameId, HostPlayer = lobby.HostPlayer.MapToDTO(), } }, JsonOptions.Get()))
+                    JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = new LobbyDTO() { GameId = gameId, HostPlayer = lobby.HostPlayer.MapToDTO(), } }, JsonOptions.Get())),
+                cancellationToken
             );
         }
         else
@@ -197,7 +203,8 @@ public class LobbyService : ILobbyService
             await _notificationHelper.BroadcastToAllAsync(
                 new PokerAttackNotification(
                     PokerAttackNotificationType.PlayerLeft,
-                    JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = lobby.MapToDTO(gameId) }, JsonOptions.Get()))
+                    JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = lobby.MapToDTO(gameId) }, JsonOptions.Get())),
+                cancellationToken
             );
         }
     }
@@ -214,7 +221,8 @@ public class LobbyService : ILobbyService
         await _notificationHelper.BroadcastToAllAsync(
             new PokerAttackNotification(
                 PokerAttackNotificationType.LobbyShutdown,
-                JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = new LobbyDTO() { GameId = gameId, HostPlayer = lobby.HostPlayer.MapToDTO(), } }, JsonOptions.Get()))
+                JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = new LobbyDTO() { GameId = gameId, HostPlayer = lobby.HostPlayer.MapToDTO(), } }, JsonOptions.Get())),
+            cancellationToken
         );
 
         return players.Select(x => x.MapToDTO());
@@ -276,7 +284,17 @@ public class LobbyService : ILobbyService
                     },
                     JsonOptions.Get()
                 )
-            )
+            ),
+            cancellationToken
+        );
+    }
+
+    public async Task StartGameAsync(string gameId, CancellationToken cancellationToken = default)
+    {
+        await _notificationHelper.BroadcastToGameAsync(
+            gameId,
+            new PokerAttackNotification(PokerAttackNotificationType.GameStarted, string.Empty),
+            cancellationToken
         );
     }
 

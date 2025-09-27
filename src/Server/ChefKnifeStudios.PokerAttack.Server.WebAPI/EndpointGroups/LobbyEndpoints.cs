@@ -116,6 +116,19 @@ public static class LobbyEndpoints
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);
 
+        group.MapGet(Endpoints.StartGame, async (
+            string gameId,
+            ILobbyService lobbyService,
+            CancellationToken cancellationToken = default) =>
+        {
+            await lobbyService.StartGameAsync(gameId, cancellationToken);
+            return Result.Success();
+        })
+        .WithName(nameof(Endpoints.StartGame))
+        .Produces(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status500InternalServerError);
+
         return builder;
     }
 }

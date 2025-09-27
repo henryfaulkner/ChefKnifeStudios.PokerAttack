@@ -45,10 +45,16 @@ public class SignalRNotificationHub : Hub<ISignalRNotificationClient>
         await _notificationHelper.BroadcastToGameAsync(gameId, notification);
     }
 
-    public async Task JoinGameGroup(string gameId)
+    public async Task JoinGameGroupAsync(string gameId)
     {
         var groupName = _notificationHelper.GetGameGroupName(gameId);
         await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+    }
+
+    public async Task LeaveGameGroupAsync(string gameId)
+    {
+        var groupName = _notificationHelper.GetGameGroupName(gameId);
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
     }
 
     // -------------------------

@@ -19,6 +19,14 @@
                                 >
                                     JOIN LOBBY
                                 </MatButton>
+                            } 
+                            else if (lobby.HostPlayer.Id.Equals(ApplicationViewModel.Player.Id, StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                <MatButton 
+                                    OnClick="() => HandleStartGamePressed(lobby.GameId)" 
+                                >
+                                    Start Game
+                                </MatButton>
                             }
                         </MatExpansionPanelSubHeader>
                     </MatExpansionPanelSummary>

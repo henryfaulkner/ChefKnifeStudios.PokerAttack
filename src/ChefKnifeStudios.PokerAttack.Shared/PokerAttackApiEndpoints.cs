@@ -18,5 +18,6 @@ public class PokerAttackApiEndpoints
         public const string RemovePlayer = $"{EndpointGroup}/remove-player";
         public const string UpdatePlayer = $"{EndpointGroup}/update-player";
         public const string ShutdownLobby = $"{EndpointGroup}/shutdown-lobby/{{gameId}}";
+        public const string StartGame = $"{EndpointGroup}/start-game/{{gameId}}";
     }
 }

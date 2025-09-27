@@ -42,13 +42,12 @@ public partial class LobbyList : ComponentBase, IDisposable
         Task.Run(async () => await InvokeAsync(StateHasChanged));
     }
 
-    void HandleJoinLobbyPressed(string gameId)
-    {
+    void HandleJoinLobbyPressed(string gameId) =>
         _ = LobbyViewModel.JoinLobbyAsync(gameId, ApplicationViewModel.Player);
-    }
 
-    void HandleLeaveLobbyPressed(string gameId)
-    {
+    void HandleLeaveLobbyPressed(string gameId) =>
         _ = LobbyViewModel.LeaveLobbyAsync(gameId, ApplicationViewModel.Player);
-    }
+
+    void HandleStartGamePressed(string gameId) =>
+        _ = LobbyViewModel.StartGameAsync(gameId);
 }
