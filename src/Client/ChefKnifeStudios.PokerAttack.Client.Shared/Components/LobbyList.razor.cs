@@ -12,8 +12,8 @@ public partial class LobbyList : ComponentBase, IDisposable
 
     readonly string[] _subscriptions =
     [
-        nameof(LobbyViewModel.Lobbies),
-        nameof(LobbyViewModel.IsLoadingLobbies),
+        nameof(ILobbyViewModel.Lobbies),
+        nameof(ILobbyViewModel.IsLoadingLobbies),
     ];
 
     protected override async Task OnInitializedAsync()
@@ -25,15 +25,15 @@ public partial class LobbyList : ComponentBase, IDisposable
         LobbyViewModel.Lobbies.CollectionChanged += Lobbies_CollectionChanged;
     }
 
-    private void Lobbies_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        InvokeAsync(StateHasChanged);
-    }
-
     public void Dispose()
     {
         LobbyViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
         LobbyViewModel.Lobbies.CollectionChanged -= Lobbies_CollectionChanged;
+    }
+
+    private void Lobbies_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
     }
 
     void ViewModel_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

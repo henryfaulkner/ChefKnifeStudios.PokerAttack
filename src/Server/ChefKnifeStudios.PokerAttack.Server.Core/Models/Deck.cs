@@ -1,14 +1,7 @@
-﻿using ChefKnifeStudios.PokerAttack.Shared.Enums;
+﻿using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
 
 namespace ChefKnifeStudios.PokerAttack.Server.Core.Models;
-
-public class Card
-{
-    public Suits Suit { get; init; }
-    public Ranks Rank { get; init; }
-}
-
-public interface ICardPile { }
 
 public class Deck : ICardPile
 {
@@ -65,12 +58,4 @@ public class Deck : ICardPile
         DiscardPile.AddCard(card);
         return card;
     }
-}
-
-public class DiscardPile : ICardPile
-{
-    Stack<Card> _cardPile { get; set; } = new Stack<Card>();
-
-    public void AddCard(Card card) => _cardPile.Push(card);
-    public void EmptyPile() => _cardPile.Clear();
 }

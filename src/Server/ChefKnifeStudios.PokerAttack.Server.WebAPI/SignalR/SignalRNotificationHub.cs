@@ -1,10 +1,12 @@
-﻿using ChefKnifeStudios.PokerAttack.Server.BL.Services;
+﻿using ChefKnifeStudios.PokerAttack.Server.BL;
+using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
-using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Shared;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using System.Linq;
 using System.Text.Json;
 
 namespace ChefKnifeStudios.PokerAttack.Server.WebAPI.SignalR;
@@ -67,12 +69,12 @@ public class SignalRNotificationHub : Hub<ISignalRNotificationClient>
         await _gameService.StartPlayerRunAsync(playerId);
 
         // Deal initial hand
-        var initialHand = await _gameService.DealHandAsync(playerId, 5);
+        var initialHand = await _gameService.DealHandAsync(playerId, 8);
 
         await Clients.Caller.ReceivePokerAttackNotification(new PokerAttackNotification
         (
             PokerAttackNotificationType.RunStarted,
-            JsonSerializer.Serialize(initialHand, JsonOptions.Get())
+            JsonSerializer.Serialize(initialHand.Select(x => x.MapToDTO()), JsonOptions.Get())
         ));
     }
 
@@ -84,26 +86,22 @@ public class SignalRNotificationHub : Hub<ISignalRNotificationClient>
         await Clients.Caller.ReceivePokerAttackNotification(new PokerAttackNotification
         (
             PokerAttackNotificationType.CardsDealt,
-            JsonSerializer.Serialize(hand, JsonOptions.Get())
+            JsonSerializer.Serialize(hand.Select(x => x.MapToDTO()), JsonOptions.Get())
         ));
     }
 
     // Play a hand and report score
-    public async Task PlayHand(string playerId, List<Card> hand)
+    public async Task PlayHand(string playerId, List<CardDTO> hand)
     {
         var result = await _gameService.PlayHandAsync(playerId, hand);
-        var totalScore = await _gameService.GetPlayerScoreAsync(playerId);
+        var totalPlayerScore = await _gameService.GetPlayerScoreAsync(playerId);
+
+        if (result is null) return;
 
         await Clients.Caller.ReceivePokerAttackNotification(new PokerAttackNotification
         (
             PokerAttackNotificationType.HandPlayed,
-            JsonSerializer.Serialize(new
-            {
-                result.HandType,
-                result.BaseChips,
-                result.BaseMultiplier,
-                Score = totalScore
-            }, JsonOptions.Get())
+            JsonSerializer.Serialize(result.MapToDTO(totalPlayerScore ?? 0), JsonOptions.Get())
         ));
     }
 }

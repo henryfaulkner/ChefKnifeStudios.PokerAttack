@@ -50,7 +50,7 @@ builder.Services.AddTransient<IToastService, ToastService>();
 builder.Services.AddMatBlazor();
 builder.Services.AddMatToaster(config =>
 {
-    config.Position = MatToastPosition.BottomLeft;
+    config.Position = MatToastPosition.TopLeft;
     config.PreventDuplicates = true;
     config.NewestOnTop = true;
     config.VisibleStateDuration = 3000;
@@ -66,6 +66,7 @@ builder.Services.AddMatToaster(config =>
 
 #region REGISTER VIEWMODELS
 builder.Services.AddScoped<IApplicationViewModel, ApplicationViewModel>();
+builder.Services.AddTransient<IGameplayViewModel, GameplayViewModel>();
 builder.Services.AddTransient<ILobbyViewModel, LobbyViewModel>();
 builder.Services.AddTransient<IPlayerViewModel, PlayerViewModel>();
 #endregion
