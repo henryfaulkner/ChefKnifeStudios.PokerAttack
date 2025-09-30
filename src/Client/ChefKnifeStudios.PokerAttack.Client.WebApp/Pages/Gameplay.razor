@@ -3,5 +3,12 @@
 @page "/gameplay"
 
 <div class="gameplay">
-    <CardHand />
+    <CardHand Cards="@GameplayViewModel.CardsInHand.ToList()" />
+    <button @onclick="HandlePlayHandPressed" @onclick:stopPropagation="true">
+        PLAY HAND
+    </button>
+    <button @onclick="HandleDiscardPressed" @onclick:stopPropagation="true">
+        DISCARD
+    </button>
+    <h1>Score: @GameplayViewModel.Score</h1>
 </div>

@@ -15,6 +15,9 @@ public interface IGameplayViewModel : IViewModel
     int Score { get; }
     ObservableCollection<CardItem> CardsInHand { get; }
     Task StartRunAsync(string playerId, CancellationToken cancellationToken = default);
+    Task PlaySelectedCardsAsync(string playerId, CancellationToken cancellationToken = default);
+    Task DiscardSelectedCardsAsync(string playerId, CancellationToken cancellationToken = default);
+    void ToggleCardSelection(int index);
 }
 
 public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDisposable
@@ -46,6 +49,33 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     public async Task StartRunAsync(string playerId, CancellationToken cancellationToken = default)
     {
         await _signalRNotificationService.StartRunAsync(playerId);
+    }
+
+    public async Task PlaySelectedCardsAsync(string playerId, CancellationToken cancellationToken = default)
+    {
+        var selectedCards = CardsInHand.Where(x => x.IsSelected).ToList();
+        await _signalRNotificationService.PlayHandAsync(
+            playerId,
+            selectedCards
+                .Select(x => new CardDTO { Rank = x.Rank, Suit = x.Suit, })
+                .ToList()
+        );
+
+        foreach (var selectedCard in selectedCards) CardsInHand.Remove(selectedCard);
+        await _signalRNotificationService.DealHandAsync(playerId, selectedCards.Count());
+    }
+
+    public async Task DiscardSelectedCardsAsync(string playerId, CancellationToken cancellationToken = default)
+    {
+        var selectedCards = CardsInHand.Where(x => x.IsSelected).ToList();
+        foreach (var selectedCard in selectedCards) CardsInHand.Remove(selectedCard);
+        await _signalRNotificationService.DealHandAsync(playerId, selectedCards.Count());
+    }
+
+    public void ToggleCardSelection(int index)
+    {
+        if (index >= 0 && index < CardsInHand.Count)
+            CardsInHand[index].IsSelected = !CardsInHand[index].IsSelected;
     }
 
     Task HandleSignalRNotificationReceived(PokerAttackNotification notification)

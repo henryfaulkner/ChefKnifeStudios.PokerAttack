@@ -19,10 +19,6 @@
   
     &.selected {
         transform: translateY(-100px);
-    
-        &:hover {
-            transform: translateY(-100px) scale(1.05);
-        }
     }
 }
 

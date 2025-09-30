@@ -8,24 +8,22 @@ public static class HandEvaluator
 {
     public static HandResult EvaluateHand(IEnumerable<Card> cards)
     {
-        // Assuming cards has exactly 5 cards
         var cardList = cards.ToList();
-        if (cardList.Count != 5)
-            throw new ArgumentException("Must evaluate exactly 5 cards for base scoring.");
+        if (cardList.Count < 1 || cardList.Count > 5)
+            throw new ArgumentException("Must evaluate between 1 and 5 cards for base scoring.");
 
-        bool isFlush = cardList.All(c => c.Suit == cardList[0].Suit);
-
-        bool isStraight = IsStraight(cardList, out Ranks highestInStraight);
+        bool isFlush = cardList.Count == 5 && cardList.All(c => c.Suit == cardList[0].Suit);
+        bool isStraight = cardList.Count == 5 && IsStraight(cardList, out Ranks highestInStraight);
 
         var groups = cardList
             .GroupBy(c => c.Rank)
             .OrderByDescending(g => g.Count())
-            .ThenByDescending(g => g.Key) // for tie-breaks etc.
+            .ThenByDescending(g => g.Key)
             .ToList();
 
-        // Determine hand type
         PokerHandType type;
-        if (isStraight && isFlush)
+
+        if (cardList.Count == 5 && isStraight && isFlush)
         {
             type = PokerHandType.StraightFlush;
         }
@@ -33,15 +31,15 @@ public static class HandEvaluator
         {
             type = PokerHandType.FourOfAKind;
         }
-        else if (groups[0].Count() == 3 && groups[1].Count() == 2)
+        else if (cardList.Count == 5 && groups[0].Count() == 3 && groups.Count > 1 && groups[1].Count() == 2)
         {
             type = PokerHandType.FullHouse;
         }
-        else if (isFlush)
+        else if (cardList.Count == 5 && isFlush)
         {
             type = PokerHandType.Flush;
         }
-        else if (isStraight)
+        else if (cardList.Count == 5 && isStraight)
         {
             type = PokerHandType.Straight;
         }
@@ -49,7 +47,7 @@ public static class HandEvaluator
         {
             type = PokerHandType.ThreeOfAKind;
         }
-        else if (groups[0].Count() == 2 && groups[1].Count() == 2)
+        else if (groups[0].Count() == 2 && groups.Count > 1 && groups[1].Count() == 2)
         {
             type = PokerHandType.TwoPair;
         }
@@ -62,7 +60,6 @@ public static class HandEvaluator
             type = PokerHandType.HighCard;
         }
 
-        // Map to base chips/mult
         var (chips, mult) = GetBaseForHand(type);
 
         return new HandResult { HandType = type, BaseChips = chips, BaseMultiplier = mult };

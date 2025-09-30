@@ -39,10 +39,12 @@ builder.Services.AddSingleton<IHttpServiceFactory>(sp =>
     return new HttpServiceFactory(name => clientFactory.CreateClient(name));
 });
 
+builder.Services.AddSingleton<IInputService, InputService>();
+builder.Services.AddSingleton<IInputJsInterop, InputJsInterop>();
+builder.Services.AddSingleton<ICommonJsInterop, CommonJsInterop>();
+builder.Services.AddSingleton<ILobbyJsInterop, LobbyJsInterop>();
 builder.Services.AddScoped<ISignalRNotificationService, SignalRNotificationService>();
 builder.Services.AddScoped<ICardImageService, CardImageService>();
-builder.Services.AddTransient<ICommonJsInterop, CommonJsInterop>();
-builder.Services.AddTransient<ILobbyJsInterop, LobbyJsInterop>();
 builder.Services.AddTransient<ITestEndpointsService, TestEndpointsService>();
 builder.Services.AddTransient<ILobbyEndpointsService, LobbyEndpointsService>();
 builder.Services.AddTransient<IToastService, ToastService>();
