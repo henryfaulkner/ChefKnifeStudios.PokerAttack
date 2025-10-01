@@ -12,6 +12,7 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 
 public interface IGameplayViewModel : IViewModel
 {
+    int RunTimeInSeconds { get; }
     int Score { get; }
     ObservableCollection<CardItem> CardsInHand { get; }
     Task StartRunAsync(string playerId, CancellationToken cancellationToken = default);
@@ -26,10 +27,15 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     readonly IToastService _toastService;
 
     [ObservableProperty]
+    int _runTimeInSeconds = 0;
+
+    [ObservableProperty]
     int _score = 0;
 
     [ObservableProperty]
     ObservableCollection<CardItem> _cardsInHand = [];
+
+    CancellationTokenSource _timerToken;
 
     public GameplayViewModel(
         ISignalRNotificationService signalRNotificationService,
@@ -39,11 +45,16 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         _toastService = toastService;
 
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
+        _timerToken = SetInterval(() =>
+        {
+            if (RunTimeInSeconds > 0) RunTimeInSeconds--;
+        }, 1000);
     }
 
     public void Dispose()
     {
         _signalRNotificationService.HandleNotificationReceived -= HandleSignalRNotificationReceived;
+        _timerToken.Cancel();
     }
 
     public async Task StartRunAsync(string playerId, CancellationToken cancellationToken = default)
@@ -83,6 +94,18 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         switch (notification.NotificationType)
         {
             case PokerAttackNotificationType.RunStarted:
+                {
+                    var args = JsonSerializer.Deserialize<RunStartedDTO>(notification.Payload!, JsonOptions.Get());
+                    if (args is RunStartedDTO runStartedDTO)
+                    {
+                        RunTimeInSeconds = runStartedDTO.RunTimeInSeconds;
+                        foreach (CardItem card in runStartedDTO.Cards.Select(x => new CardItem(x)))
+                        {
+                            CardsInHand.Add(card);
+                        }
+                    }
+                    break;
+                }
             case PokerAttackNotificationType.CardsDealt:
                 {
                     var args = JsonSerializer.Deserialize<IEnumerable<CardDTO>>(notification.Payload!, JsonOptions.Get());
@@ -100,12 +123,38 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                     var args = JsonSerializer.Deserialize<HandResultDTO>(notification.Payload!, JsonOptions.Get());
                     if (args is HandResultDTO handResult)
                     {
-                        _toastService.ShowSuccess($"{handResult.BaseChips} x {handResult.BaseMultiplier}", handResult.HandType.ToString());
+                        _toastService.ShowSuccess($"({string.Join(" + ", handResult.CardValues)} + {handResult.BaseChips}) x {handResult.BaseMultiplier}", $"{handResult.HandType.GetDescription()} - {handResult.HandScore}");
                         Score = handResult.TotalPlayerScore;
                     }
                     break;
                 }
         }
         return Task.CompletedTask;
+    }
+
+    static CancellationTokenSource SetInterval(Action action, int interval)
+    {
+        var cancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = cancellationTokenSource.Token;
+
+        Task.Run(async () =>
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    action();
+                    await Task.Delay(interval, cancellationToken);
+                }
+                catch (TaskCanceledException ex)
+                {
+                    // Task was canceled
+                    Console.WriteLine($"SetInterval still running after cancellation. {ex.Message}");
+                    break;
+                }
+            }
+        }, cancellationToken);
+
+        return cancellationTokenSource;
     }
 }

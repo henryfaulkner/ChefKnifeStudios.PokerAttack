@@ -10,7 +10,7 @@
     background-color: transparent;
     height: 150px;
     width: 125px;
-    transition: transform 0.2s ease-in-out 0.2s;
+    transition: transform 0.1s ease-in-out 0.2s;
     cursor: pointer;
   
     &:hover {

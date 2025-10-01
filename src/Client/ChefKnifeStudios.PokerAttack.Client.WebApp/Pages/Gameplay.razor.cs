@@ -15,6 +15,7 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
 
     readonly string[] _subscriptions =
     [
+        nameof(IGameplayViewModel.RunTimeInSeconds),
         nameof(IGameplayViewModel.Score),
         nameof(IGameplayViewModel.CardsInHand),
     ];
@@ -89,5 +90,11 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
         GameplayViewModel.ToggleCardSelection(index);
         StateHasChanged();
         return Task.CompletedTask;
+    }
+
+    static string FormatAsMinutesSeconds(int totalSeconds)
+    {
+        TimeSpan time = TimeSpan.FromSeconds(totalSeconds);
+        return time.ToString(@"mm\:ss");
     }
 }

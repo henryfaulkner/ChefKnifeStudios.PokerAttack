@@ -1,7 +1,9 @@
 ﻿<div class="card-hand">
     <div class="cards">
+        @{ int i = 1; }
         @foreach (var card in Cards)
         {
+            int ii = i;
             <div 
                 class="card @(card.IsSelected ? "selected" : string.Empty)"
                 @onclick="() => card.IsSelected = !card.IsSelected"
@@ -10,7 +12,9 @@
                     src="@CardImageService.GetCardImagePath(card.Suit, card.Rank)" 
                     alt="" 
                 />
+                <span>[@ii]</span>
             </div>
+            i++;
         }
     </div>
 </div>

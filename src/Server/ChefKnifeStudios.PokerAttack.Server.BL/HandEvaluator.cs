@@ -60,9 +60,35 @@ public static class HandEvaluator
             type = PokerHandType.HighCard;
         }
 
+        int[] cardValues = cardList
+            .Select(c => c.Rank switch
+            {
+                Ranks.Ace => 11,
+                Ranks.King or Ranks.Queen or Ranks.Jack => 10,
+                Ranks.Ten => 10,
+                Ranks.Nine => 9,
+                Ranks.Eight => 8,
+                Ranks.Seven => 7,
+                Ranks.Six => 6,
+                Ranks.Five => 5,
+                Ranks.Four => 4,
+                Ranks.Three => 3,
+                Ranks.Two => 2,
+                _ => 0
+            })
+            .ToArray();
+        int cardValueSum = cardValues.Sum();
+
         var (chips, mult) = GetBaseForHand(type);
 
-        return new HandResult { HandType = type, BaseChips = chips, BaseMultiplier = mult };
+        return new HandResult 
+        { 
+            HandType = type, 
+            CardValues = cardValues,
+            BaseChips = chips, 
+            BaseMultiplier = mult,
+            HandScore = (cardValueSum + chips) * mult,
+        };
     }
 
     static (int chips, int mult) GetBaseForHand(PokerHandType type)

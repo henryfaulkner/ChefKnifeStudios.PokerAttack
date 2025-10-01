@@ -71,10 +71,16 @@ public class SignalRNotificationHub : Hub<ISignalRNotificationClient>
         // Deal initial hand
         var initialHand = await _gameService.DealHandAsync(playerId, 8);
 
+        var resBody = new RunStartedDTO()
+        {
+            RunTimeInSeconds = 120,
+            Cards = initialHand.Select(x => x.MapToDTO()),
+        };
+
         await Clients.Caller.ReceivePokerAttackNotification(new PokerAttackNotification
         (
             PokerAttackNotificationType.RunStarted,
-            JsonSerializer.Serialize(initialHand.Select(x => x.MapToDTO()), JsonOptions.Get())
+            JsonSerializer.Serialize(resBody, JsonOptions.Get())
         ));
     }
 

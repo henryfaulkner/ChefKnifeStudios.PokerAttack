@@ -66,8 +66,10 @@ public static class MappingExtensions
         return new()
         {
             HandType = model.HandType,
+            CardValues = model.CardValues,
             BaseChips = model.BaseChips,
             BaseMultiplier = model.BaseMultiplier,
+            HandScore = model.HandScore,
             TotalPlayerScore = totalPlayerScore,
         };
     }
@@ -77,8 +79,10 @@ public static class MappingExtensions
         return new()
         {
             HandType = dto.HandType,
+            CardValues = dto.CardValues,
             BaseChips = dto.BaseChips,
             BaseMultiplier = dto.BaseMultiplier,
+            HandScore = dto.HandScore,
         };
     }
 }
