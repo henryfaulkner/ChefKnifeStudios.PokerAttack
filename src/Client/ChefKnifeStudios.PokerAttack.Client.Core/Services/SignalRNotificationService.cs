@@ -12,10 +12,10 @@ public delegate Task PokerAttackNotificationHandler(PokerAttackNotification noti
 
 public interface ISignalRNotificationService
 {
-    Task InitAsync();
+    Task InitAsync(string playerId);
     Task JoinGameGroupAsync(string gameId);
     Task LeaveGameGroupAsync(string gameId);
-    Task StartRunAsync(string playerId);
+    Task StartRoundAsync(string gameId, string hostId);
     Task DealHandAsync(string playerId, int count);
     Task PlayHandAsync(string playerId, List<CardDTO> hand);
     event PokerAttackNotificationHandler? HandleNotificationReceived;
@@ -41,7 +41,7 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
         _logger = logger;
     }
 
-    public async Task InitAsync()
+    public async Task InitAsync(string playerId)
     {
         if (_hubConnection != null && _hubConnection.State == HubConnectionState.Connected)
             return;
@@ -78,7 +78,7 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
                     baseUri = new Uri(hostUri, relativeUri);
                 }
 
-                var url = $"{baseUri.ToString().TrimEnd('/')}/cks-notification";
+                var url = $"{baseUri.ToString().TrimEnd('/')}/cks-notification?playerId={playerId}";
 
                 _hubConnection = new HubConnectionBuilder()
                     .WithUrl(url)
@@ -130,12 +130,12 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
     #endregion
 
     #region Gameplay Notifications
-    public async Task StartRunAsync(string playerId)
+    public async Task StartRoundAsync(string gameId, string hostId)
     {
         if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
             throw new InvalidOperationException("SignalR connection is not established.");
 
-        await _hubConnection.InvokeAsync("StartRun", playerId);
+        await _hubConnection.InvokeAsync("StartRound", gameId, hostId);
     }
 
     public async Task DealHandAsync(string playerId, int count)

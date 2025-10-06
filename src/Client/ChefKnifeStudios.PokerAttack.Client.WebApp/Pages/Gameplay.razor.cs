@@ -8,6 +8,8 @@ namespace ChefKnifeStudios.PokerAttack.Client.WebApp.Pages;
 
 public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
 {
+    [SupplyParameterFromQuery] public required string GameId { get; set; }
+
     [Inject] IApplicationViewModel ApplicationViewModel { get; set; } = null!;
     [Inject] IGameplayViewModel GameplayViewModel { get; set; } = null!;
     [Inject] IInputService InputService { get; set; } = null!;
@@ -39,8 +41,9 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await GameplayViewModel.StartRunAsync(ApplicationViewModel.Player.Id);
 
+        GameplayViewModel.Init(GameId);
+        await GameplayViewModel.StartRoundAsync(ApplicationViewModel.Player.Id);
 
         GameplayViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
         GameplayViewModel.CardsInHand.CollectionChanged += CardsInHand_CollectionChanged;

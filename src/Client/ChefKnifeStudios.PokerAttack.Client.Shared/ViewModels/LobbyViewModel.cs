@@ -132,7 +132,12 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
                 }
             case PokerAttackNotificationType.GameStarted:
                 {
-                    _navigationManager.NavigateTo("/gameplay", replace: true);
+                    var args = JsonSerializer.Deserialize<LobbyEventArgs>(notification.Payload!, JsonOptions.Get());
+                    if (args is { Lobby: LobbyDTO lobby })
+                    {
+                        _navigationManager
+                            .NavigateTo($"/gameplay?gameid={lobby.GameId}", replace: true);
+                    }
                     break;
                 }
         }

@@ -12,10 +12,12 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 
 public interface IGameplayViewModel : IViewModel
 {
+    string GameId { get; }
     int RunTimeInSeconds { get; }
     int Score { get; }
     ObservableCollection<CardItem> CardsInHand { get; }
-    Task StartRunAsync(string playerId, CancellationToken cancellationToken = default);
+    void Init(string gameId);
+    Task StartRoundAsync(string playerId, CancellationToken cancellationToken = default);
     Task PlaySelectedCardsAsync(string playerId, CancellationToken cancellationToken = default);
     Task DiscardSelectedCardsAsync(string playerId, CancellationToken cancellationToken = default);
     void ToggleCardSelection(int index);
@@ -25,6 +27,9 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 {
     readonly ISignalRNotificationService _signalRNotificationService;
     readonly IToastService _toastService;
+
+    [ObservableProperty]
+    string _gameId = Guid.Empty.ToString();
 
     [ObservableProperty]
     int _runTimeInSeconds = 0;
@@ -57,9 +62,11 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         _timerToken.Cancel();
     }
 
-    public async Task StartRunAsync(string playerId, CancellationToken cancellationToken = default)
+    public void Init(string gameId) => GameId = gameId;
+
+    public async Task StartRoundAsync(string playerId, CancellationToken cancellationToken = default)
     {
-        await _signalRNotificationService.StartRunAsync(playerId);
+        await _signalRNotificationService.StartRoundAsync(GameId, playerId);
     }
 
     public async Task PlaySelectedCardsAsync(string playerId, CancellationToken cancellationToken = default)

@@ -291,9 +291,21 @@ public class LobbyService : ILobbyService
 
     public async Task StartGameAsync(string gameId, CancellationToken cancellationToken = default)
     {
+        var lobbyDTO = await GetLobbyAsync(gameId, cancellationToken);
+        if (lobbyDTO is null) return;
+
         await _notificationHelper.BroadcastToGameAsync(
             gameId,
-            new PokerAttackNotification(PokerAttackNotificationType.GameStarted, string.Empty),
+            new PokerAttackNotification(
+                PokerAttackNotificationType.GameStarted,
+                JsonSerializer.Serialize(
+                    new LobbyEventArgs
+                    {
+                        Lobby = lobbyDTO,
+                    },
+                    JsonOptions.Get()
+                )
+            ),
             cancellationToken
         );
     }

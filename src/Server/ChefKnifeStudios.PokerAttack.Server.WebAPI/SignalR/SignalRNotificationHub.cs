@@ -19,15 +19,18 @@ public interface ISignalRNotificationClient
 [AllowAnonymous]
 public class SignalRNotificationHub : Hub<ISignalRNotificationClient>
 {
-    private readonly IPokerAttackNotificationHelper _notificationHelper;
-    private readonly IGameService _gameService;
+    readonly IPokerAttackNotificationHelper _notificationHelper;
+    readonly IGameService _gameService;
+    readonly ILobbyService _lobbyService;
 
     public SignalRNotificationHub(
         IPokerAttackNotificationHelper notificationHelper,
-        IGameService gameService)
+        IGameService gameService,
+        ILobbyService lobbyService)
     {
         _notificationHelper = notificationHelper;
         _gameService = gameService;
+        _lobbyService = lobbyService;
     }
 
     public override async Task OnConnectedAsync()
@@ -63,8 +66,31 @@ public class SignalRNotificationHub : Hub<ISignalRNotificationClient>
     // Game-specific methods
     // -------------------------
 
+    public async Task StartRound(string gameId, string hostId)
+    {
+        const int _RUN_TIME_IN_SECONDS = 120;
+
+        var lobby = await _lobbyService.GetLobbyAsync(gameId);
+        if (lobby == null 
+            || !lobby.HostPlayer.Id.Equals(hostId, StringComparison.InvariantCultureIgnoreCase)) return;
+
+        foreach (var player in lobby.Players)
+        {
+            await StartRun(player.Id, _RUN_TIME_IN_SECONDS);
+        }
+
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(_RUN_TIME_IN_SECONDS * 1000);
+            await _notificationHelper.BroadcastToGameAsync(
+                gameId,
+                new PokerAttackNotification(PokerAttackNotificationType.RoundEnded, string.Empty)
+            );
+        });
+    }
+
     // Start a run (per-player deck)
-    public async Task StartRun(string playerId)
+    async Task StartRun(string playerId, int runTimeInSeconds)
     {
         await _gameService.StartPlayerRunAsync(playerId);
 
@@ -73,11 +99,11 @@ public class SignalRNotificationHub : Hub<ISignalRNotificationClient>
 
         var resBody = new RunStartedDTO()
         {
-            RunTimeInSeconds = 120,
+            RunTimeInSeconds = runTimeInSeconds,
             Cards = initialHand.Select(x => x.MapToDTO()),
         };
 
-        await Clients.Caller.ReceivePokerAttackNotification(new PokerAttackNotification
+        await _notificationHelper.SendToPlayerAsync(playerId, new PokerAttackNotification
         (
             PokerAttackNotificationType.RunStarted,
             JsonSerializer.Serialize(resBody, JsonOptions.Get())
@@ -89,7 +115,7 @@ public class SignalRNotificationHub : Hub<ISignalRNotificationClient>
     {
         var hand = await _gameService.DealHandAsync(playerId, count);
 
-        await Clients.Caller.ReceivePokerAttackNotification(new PokerAttackNotification
+        await _notificationHelper.SendToPlayerAsync(playerId, new PokerAttackNotification
         (
             PokerAttackNotificationType.CardsDealt,
             JsonSerializer.Serialize(hand.Select(x => x.MapToDTO()), JsonOptions.Get())
@@ -104,7 +130,7 @@ public class SignalRNotificationHub : Hub<ISignalRNotificationClient>
 
         if (result is null) return;
 
-        await Clients.Caller.ReceivePokerAttackNotification(new PokerAttackNotification
+        await _notificationHelper.SendToPlayerAsync(playerId, new PokerAttackNotification
         (
             PokerAttackNotificationType.HandPlayed,
             JsonSerializer.Serialize(result.MapToDTO(totalPlayerScore ?? 0), JsonOptions.Get())

@@ -4,6 +4,7 @@ using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces.Repos;
 using ChefKnifeStudios.PokerAttack.Server.Infrastructure.Repos;
 using ChefKnifeStudios.PokerAttack.Server.WebAPI.EndpointGroups;
 using ChefKnifeStudios.PokerAttack.Server.WebAPI.SignalR;
+using Microsoft.AspNetCore.SignalR;
 using Scalar.AspNetCore;
 using StackExchange.Redis;
 
@@ -19,7 +20,8 @@ builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 
 builder.Services.AddCors();
-builder.Services.AddSignalR();
+builder.Services.AddSignalR(); 
+builder.Services.AddSingleton<IUserIdProvider, PlayerIdProvider>();
 builder.Services.AddSingleton<IPokerAttackNotificationHelper, PokerAttackNotificationHelper>();
 builder.Services.AddSingleton<ILobbyRepository, InMemoryLobbyRepository>();
 builder.Services.AddSingleton<IPlayerScoreRepository, InMemoryPlayerScoreRepository>();

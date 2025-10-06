@@ -18,4 +18,5 @@ public enum PokerAttackNotificationType
     RunStarted,
     CardsDealt,
     HandPlayed,
+    RoundEnded,
 }

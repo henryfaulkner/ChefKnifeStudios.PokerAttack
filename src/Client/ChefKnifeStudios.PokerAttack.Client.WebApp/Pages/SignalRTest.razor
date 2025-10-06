@@ -40,7 +40,7 @@
     {
         try
         {
-            await NotificationService.InitAsync(); 
+            await NotificationService.InitAsync(ApplicationViewModel.Player.Id); 
             connectionStatus = "Connected";
             isConnected = true;
 

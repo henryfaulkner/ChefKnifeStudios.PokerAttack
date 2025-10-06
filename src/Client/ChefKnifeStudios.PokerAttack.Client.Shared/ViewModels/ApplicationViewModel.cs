@@ -36,12 +36,14 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
         ISignalRNotificationService signalRNotificationService,
         ILobbyJsInterop lobbyJsInterop,
         ILogger<ApplicationViewModel> logger,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IWebAssemblyHostEnvironment hostEnvironment)
     {
         _signalRNotificationService = signalRNotificationService;
         _lobbyJsInterop = lobbyJsInterop;
         _logger = logger;
         _configuration = configuration;
+        _hostEnvironment = hostEnvironment;
 
         var generator = new GamerTagGenerator();
         Player.Name = generator.Generate();
@@ -51,7 +53,7 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
     { 
         try
         {
-            await _signalRNotificationService.InitAsync();
+            await _signalRNotificationService.InitAsync(Player.Id);
 
             _signalRNotificationService.HandleNotificationReceived += async (notification) =>
             {
