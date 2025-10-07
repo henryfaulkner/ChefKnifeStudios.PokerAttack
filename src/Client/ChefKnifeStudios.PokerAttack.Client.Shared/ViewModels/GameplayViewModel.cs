@@ -135,6 +135,11 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                     }
                     break;
                 }
+            case PokerAttackNotificationType.RoundEnded:
+                {
+                    Console.WriteLine("RoundEnded");
+                    break;
+                }
         }
         return Task.CompletedTask;
     }

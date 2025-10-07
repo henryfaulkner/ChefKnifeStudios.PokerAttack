@@ -2,7 +2,7 @@
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using Microsoft.AspNetCore.Components;
 
-namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components;
+namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.Gameplay;
 
 public partial class CardHand : ComponentBase
 {

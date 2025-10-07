@@ -74,10 +74,12 @@ public class SignalRNotificationHub : Hub<ISignalRNotificationClient>
         if (lobby == null 
             || !lobby.HostPlayer.Id.Equals(hostId, StringComparison.InvariantCultureIgnoreCase)) return;
 
+        List<Task> taskList = [];
         foreach (var player in lobby.Players)
         {
-            await StartRun(player.Id, _RUN_TIME_IN_SECONDS);
+            taskList.Add(StartRun(player.Id, _RUN_TIME_IN_SECONDS));
         }
+        await Task.WhenAll(taskList);
 
         _ = Task.Run(async () =>
         {

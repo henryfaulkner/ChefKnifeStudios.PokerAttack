@@ -69,6 +69,7 @@ builder.Services.AddMatToaster(config =>
 #region REGISTER VIEWMODELS
 builder.Services.AddScoped<IApplicationViewModel, ApplicationViewModel>();
 builder.Services.AddTransient<IGameplayViewModel, GameplayViewModel>();
+builder.Services.AddTransient<IGameStateMachineViewModel, GameStateMachineViewModel>();
 builder.Services.AddTransient<ILobbyViewModel, LobbyViewModel>();
 builder.Services.AddTransient<IPlayerViewModel, PlayerViewModel>();
 #endregion

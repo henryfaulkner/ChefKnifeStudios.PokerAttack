@@ -20,4 +20,11 @@ public class PokerAttackApiEndpoints
         public const string ShutdownLobby = $"{EndpointGroup}/shutdown-lobby/{{gameId}}";
         public const string StartGame = $"{EndpointGroup}/start-game/{{gameId}}";
     }
+
+    public class Gameplay
+    {
+        const string EndpointGroup = "/gameply";
+
+        public const string GetPlayerScores = $"{EndpointGroup}/player-scores/{{gameId}}";
+    }
 }
