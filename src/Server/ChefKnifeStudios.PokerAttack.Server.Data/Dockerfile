@@ -8,7 +8,7 @@ RUN dotnet build -c Release
 
 FROM build AS publish
 
-WORKDIR /src/ChefKnifeStudios.PokerAttack.Server.Data
+WORKDIR /src/Server/ChefKnifeStudios.PokerAttack.Server.Data
 
 RUN dotnet tool install dotnet-ef -g --version 9.0.5 
 ENV PATH="$PATH:/root/.dotnet/tools"
