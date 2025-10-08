@@ -16,6 +16,8 @@ variables:
   container-registry-service-connection: AzureContainerRegistrySC
   api-container-name: chefknifestudios.pokerattack.server.webapi
   api-container: $(container-registry)/$(api-container-name):$(container-tag)
+  migration-container-name: chefknifestudios.pokerattack.server.data
+  migration-container: $(container-registry)/$(migration-container-name):$(container-tag)
 
 stages:
 - stage: BuildAndPublish
@@ -45,6 +47,7 @@ stages:
 
     - script: |
         docker push $(api-container)
+        docker push $(migration-container)
       displayName: Docker push images
 
 - stage: DeployProd
