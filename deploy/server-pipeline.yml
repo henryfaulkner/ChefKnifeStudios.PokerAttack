@@ -56,6 +56,8 @@ stages:
   - deployment: DeployProd
     displayName: Deploy ChefKnifeStudios.PokerAttack.Server.WebAPI to Prod
     environment: 'Prod'
+    variables:
+    - group: 'Prod-PokerAttack'
     strategy:
       runOnce:   
         deploy:
