@@ -1,3 +1,64 @@
 ﻿<div class="scoreboard-list">
-
+    @* @if (LobbyViewModel.IsLoadingLobbies)
+    {
+        <MatBody1>Loading...</MatBody1>
+    }
+    else
+    {
+        <MatAccordion Multi="true">
+            @foreach (var lobby in LobbyViewModel.Lobbies)
+            {
+                <MatExpansionPanel>
+                    <MatExpansionPanelSummary>
+                        <MatExpansionPanelHeader>Lobby Id: @lobby.GameId</MatExpansionPanelHeader>
+                        <MatExpansionPanelSubHeader>
+                            @if (!lobby.Players.Select(x => x.Id).Contains(ApplicationViewModel.Player.Id))
+                            {
+                                <MatButton 
+                                    OnClick="() => HandleJoinLobbyPressed(lobby.GameId)" 
+                                >
+                                    JOIN LOBBY
+                                </MatButton>
+                            } 
+                            else if (lobby.HostPlayer.Id.Equals(ApplicationViewModel.Player.Id, StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                <MatButton 
+                                    OnClick="() => HandleStartGamePressed(lobby.GameId)" 
+                                >
+                                    Start Game
+                                </MatButton>
+                            }
+                        </MatExpansionPanelSubHeader>
+                    </MatExpansionPanelSummary>
+                    <MatExpansionPanelDetails>
+                        <MatTable
+                            Items="lobby.Players"
+                            PageLabel="Players"
+                            PageRecordCountLabel="Page Size"
+                        >
+                            <MatTableHeader>
+                                <th class="col-header-id">Player Id</th>
+                                <th class="col-header-name">Player Name</th>
+                                <th class="col-header-actions"></th>
+                            </MatTableHeader>
+                            <MatTableRow>
+                                <td class="col-row-id">@context.Id</td>
+                                <td class="col-row-name">@context.Name</td>
+                                <td class="col-row-actions">
+                                    @if (@context.Id == ApplicationViewModel.Player.Id)
+                                    {
+                                        <MatButton 
+                                            OnClick="() => HandleLeaveLobbyPressed(lobby.GameId)" 
+                                        >
+                                            LEAVE LOBBY
+                                        </MatButton>
+                                    }
+                                </td>
+                            </MatTableRow>
+                        </MatTable>
+                    </MatExpansionPanelDetails>
+                </MatExpansionPanel>
+            }
+        </MatAccordion>
+    } *@
 </div>

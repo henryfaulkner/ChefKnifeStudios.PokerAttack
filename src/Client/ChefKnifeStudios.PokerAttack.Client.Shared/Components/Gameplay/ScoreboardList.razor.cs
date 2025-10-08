@@ -5,5 +5,7 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.Gameplay;
 
 public partial class ScoreboardList : ComponentBase
 {
-    [Inject] public ScoreboardViewModel ScoreboardViewModel { get; set; } = null!;
+    [Parameter] public required string GameId { get; set; } = null!;
+
+    [Inject] IScoreboardViewModel ScoreboardViewModel { get; set; } = null!;
 }

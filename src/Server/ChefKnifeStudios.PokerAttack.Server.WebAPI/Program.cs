@@ -1,6 +1,7 @@
 using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces.Repos;
+using ChefKnifeStudios.PokerAttack.Server.Data;
 using ChefKnifeStudios.PokerAttack.Server.Infrastructure.Repos;
 using ChefKnifeStudios.PokerAttack.Server.WebAPI.EndpointGroups;
 using ChefKnifeStudios.PokerAttack.Server.WebAPI.SignalR;
@@ -12,6 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add service defaults & Aspire client integrations.
 builder.AddServiceDefaults();
+
+string connectionString = builder.Configuration.GetConnectionString("PokerAttackDB")!;
+builder.Services.RegisterDataServices(connectionString);
 
 // Add services to the container.
 builder.Services.AddProblemDetails();

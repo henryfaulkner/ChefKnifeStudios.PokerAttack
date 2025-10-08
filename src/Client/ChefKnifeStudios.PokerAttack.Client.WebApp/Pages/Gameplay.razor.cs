@@ -21,6 +21,7 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
         nameof(IGameplayViewModel.RunTimeInSeconds),
         nameof(IGameplayViewModel.Score),
         nameof(IGameplayViewModel.CardsInHand),
+        nameof(IGameStateMachineViewModel.GameState),
     ];
 
     protected override void OnInitialized()
