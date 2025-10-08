@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 COPY ["./src", "/src"]
 
-WORKDIR /src/ChefKnifeStudios.PokerAttack.Server.Data
+WORKDIR /src/Server/ChefKnifeStudios.PokerAttack.Server.Data
 
 RUN dotnet build -c Release
 
