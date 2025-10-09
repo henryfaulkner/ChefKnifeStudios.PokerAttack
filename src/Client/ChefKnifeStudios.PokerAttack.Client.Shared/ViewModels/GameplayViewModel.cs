@@ -22,6 +22,9 @@ public interface IGameplayViewModel : IViewModel
     Task PlaySelectedCardsAsync(string playerId, CancellationToken cancellationToken = default);
     Task DiscardSelectedCardsAsync(string playerId, CancellationToken cancellationToken = default);
     void ToggleCardSelection(int index);
+    void SortByRank();
+    void SortBySuit();
+    void ClearSelections();
 }
 
 public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDisposable
@@ -109,6 +112,36 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     {
         if (index >= 0 && index < CardsInHand.Count)
             CardsInHand[index].IsSelected = !CardsInHand[index].IsSelected;
+    }
+
+    public void SortByRank()
+    {
+        // Sort ascending by rank, then by suit to make ordering stable
+        var sorted = CardsInHand.OrderBy(c => c.Rank).ThenBy(c => c.Suit).ToList();
+
+        // Reorder the observable collection (not replace it, to trigger UI update correctly)
+        CardsInHand.Clear();
+        foreach (var card in sorted)
+            CardsInHand.Add(card);
+    }
+
+    public void SortBySuit()
+    {
+        // Sort ascending by suit, then by rank
+        var sorted = CardsInHand.OrderBy(c => c.Suit).ThenBy(c => c.Rank).ToList();
+
+        CardsInHand.Clear();
+        foreach (var card in sorted)
+            CardsInHand.Add(card);
+    }
+
+    public void ClearSelections()
+    {
+        foreach (var card in CardsInHand)
+        {
+            if (card.IsSelected)
+                card.IsSelected = false;
+        }
     }
 
     Task HandleSignalRNotificationReceived(PokerAttackNotification notification)

@@ -8,7 +8,7 @@ public interface IScoreboardViewModel : IViewModel
 {
     bool IsLoading { get; }
     RoundDTO Round { get; }
-    Task LoadLatestRoundAsync(string lobbyId);
+    Task LoadLatestRoundAsync(string lobbyId, CancellationToken cancellationToken = default);
 }
 
 public partial class ScoreboardViewModel(
@@ -20,7 +20,7 @@ public partial class ScoreboardViewModel(
     [ObservableProperty]
     RoundDTO? _round;
 
-    public async Task LoadLatestRoundAsync(string lobbyId)
+    public async Task LoadLatestRoundAsync(string lobbyId, CancellationToken cancellationToken = default)
     {
         IsLoading = true;
         Round = await gameplayEndpointsService.GetLatestRoundAsync(lobbyId);

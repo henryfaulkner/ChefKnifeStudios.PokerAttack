@@ -30,6 +30,9 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
 
         InputService.RegisterKeyAction("q", () => GameplayViewModel.PlaySelectedCardsAsync(ApplicationViewModel.Player.Id));
         InputService.RegisterKeyAction("w", () => GameplayViewModel.DiscardSelectedCardsAsync(ApplicationViewModel.Player.Id));
+        InputService.RegisterKeyAction("e", () => Task.Run(() => GameplayViewModel.SortByRank()));
+        InputService.RegisterKeyAction("r", () => Task.Run(() => GameplayViewModel.SortBySuit()));
+        InputService.RegisterKeyAction("t", () => Task.Run(() => GameplayViewModel.ClearSelections()));
         InputService.RegisterKeyAction("1", () => ToggleCardSelectionAsync(0));
         InputService.RegisterKeyAction("2", () => ToggleCardSelectionAsync(1));
         InputService.RegisterKeyAction("3", () => ToggleCardSelectionAsync(2));
@@ -91,6 +94,14 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
 
     void HandleDiscardPressed() =>
         _ = GameplayViewModel.DiscardSelectedCardsAsync(ApplicationViewModel.Player.Id);
+
+    void HandleSortByRankPressed() =>
+        GameplayViewModel.SortByRank();
+
+    void HandleSortBySuitPressed() =>
+        GameplayViewModel.SortBySuit();
+    void HandleClearSelectionsPressed() =>
+        GameplayViewModel.ClearSelections();
 
     Task ToggleCardSelectionAsync(int index)
     {

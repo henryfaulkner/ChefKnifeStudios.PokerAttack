@@ -24,6 +24,24 @@
                         </button>
                         <span>[W]</span>
                     </div>
+                    <div>
+                        <button @onclick="HandleSortByRankPressed" @onclick:stopPropagation="true">
+                            SORT BY RANK
+                        </button>
+                        <span>[E]</span>
+                    </div>
+                    <div>
+                        <button @onclick="HandleSortBySuitPressed" @onclick:stopPropagation="true">
+                            SORT BY SUIT
+                        </button>
+                        <span>[R]</span>
+                    </div>
+                    <div>
+                        <button @onclick="HandleClearSelectionsPressed" @onclick:stopPropagation="true">
+                            CLEAR SELECTIONS
+                        </button>
+                        <span>[T]</span>
+                    </div>
                 </div>
 
                 <h1>Score: @GameplayViewModel.Score</h1>
