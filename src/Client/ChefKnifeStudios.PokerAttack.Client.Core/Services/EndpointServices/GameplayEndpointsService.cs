@@ -10,7 +10,7 @@ namespace ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 
 public interface IGameplayEndpointsService
 {
-    Task<Result<IEnumerable<PlayerScoreDTO>?>> GetPlayerScores(string gameId, CancellationToken cancellationToken = default);
+    Task<Result<RoundDTO?>> GetLatestRoundAsync(string gameId, CancellationToken cancellationToken = default);
 }
 
 public class GameplayEndpointsService : IGameplayEndpointsService
@@ -26,15 +26,15 @@ public class GameplayEndpointsService : IGameplayEndpointsService
         _httpService = httpServiceFactory.Create(nameof(APIs.PokerAttackAPI));
     }
 
-    public async Task<Result<IEnumerable<PlayerScoreDTO>?>> GetPlayerScores(string gameId, CancellationToken cancellationToken = default)
+    public async Task<Result<RoundDTO?>> GetLatestRoundAsync(string gameId, CancellationToken cancellationToken = default)
     {
         try
         {
-            var res = await _httpService.GetAsync<IEnumerable<PlayerScoreDTO>?>(
-                Endpoints.GetPlayerScores.FormatRoute(gameId),
+            var res = await _httpService.GetAsync<RoundDTO?>(
+                Endpoints.GetLatestRound.FormatRoute(gameId),
                 cancellationToken
             );
-            return res.LogErrors(_logger, "Gameplay GetPlayerScores call");
+            return res.LogErrors(_logger, $"Gameplay GetLatestRound call. Lobby Id {gameId}");
         }
         catch (Exception ex)
         {

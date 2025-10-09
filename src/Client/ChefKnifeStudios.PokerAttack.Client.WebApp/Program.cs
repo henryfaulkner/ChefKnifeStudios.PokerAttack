@@ -43,10 +43,12 @@ builder.Services.AddSingleton<IInputService, InputService>();
 builder.Services.AddSingleton<IInputJsInterop, InputJsInterop>();
 builder.Services.AddSingleton<ICommonJsInterop, CommonJsInterop>();
 builder.Services.AddSingleton<ILobbyJsInterop, LobbyJsInterop>();
+builder.Services.AddScoped<IEventNotificationService, EventNotificationService>();
 builder.Services.AddScoped<ISignalRNotificationService, SignalRNotificationService>();
 builder.Services.AddScoped<ICardImageService, CardImageService>();
 builder.Services.AddTransient<ITestEndpointsService, TestEndpointsService>();
 builder.Services.AddTransient<ILobbyEndpointsService, LobbyEndpointsService>();
+builder.Services.AddTransient<IGameplayEndpointsService, GameplayEndpointsService>();
 builder.Services.AddTransient<IToastService, ToastService>();
 
 builder.Services.AddMatBlazor();
@@ -72,6 +74,7 @@ builder.Services.AddTransient<IGameplayViewModel, GameplayViewModel>();
 builder.Services.AddTransient<IGameStateMachineViewModel, GameStateMachineViewModel>();
 builder.Services.AddTransient<ILobbyViewModel, LobbyViewModel>();
 builder.Services.AddTransient<IPlayerViewModel, PlayerViewModel>();
+builder.Services.AddTransient<IScoreboardViewModel, ScoreboardViewModel>();
 #endregion
 
 await builder.Build().RunAsync();

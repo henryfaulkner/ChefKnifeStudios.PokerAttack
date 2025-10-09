@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ChefKnifeStudios.PokerAttack.Server.Data.Configuration;
 
-internal class UserRoundConfiguration : IEntityTypeConfiguration<UserRound>
+internal class RoundScoreConfiguration : IEntityTypeConfiguration<RoundScore>
 {
-    public void Configure(EntityTypeBuilder<UserRound> builder)
+    public void Configure(EntityTypeBuilder<RoundScore> builder)
     {
-        builder.ToTable("UserRounds", DbSchemas.PokerAttack);
+        builder.ToTable("RoundScores", DbSchemas.PokerAttack);
 
         builder.HasKey(x => x.Id);
         builder.Property(e => e.Id)
@@ -17,9 +17,7 @@ internal class UserRoundConfiguration : IEntityTypeConfiguration<UserRound>
           .UseIdentityColumn();
         builder.HasQueryFilter(x => !x.IsDeleted);
 
-        builder.HasOne(x => x.User)
-            .WithMany(x => x.UserRounds);
         builder.HasOne(x => x.Round)
-            .WithMany(x => x.UserRounds);
+            .WithMany(x => x.RoundScores);
     }
 }

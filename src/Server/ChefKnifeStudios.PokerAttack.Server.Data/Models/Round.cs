@@ -2,5 +2,8 @@
 
 public class Round : BaseEntity
 {
-    public ICollection<UserRound>? UserRounds { get; init; }
+    public int GameId { get; init; }
+
+    public Game? Game { get; init; }
+    public ICollection<RoundScore>? RoundScores { get; init; }
 }

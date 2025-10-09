@@ -17,7 +17,9 @@ internal class RoundConfiguration : IEntityTypeConfiguration<Round>
           .UseIdentityColumn();
         builder.HasQueryFilter(x => !x.IsDeleted);
 
-        builder.HasMany(x => x.UserRounds)
+        builder.HasOne(x => x.Game)
+            .WithMany(x => x.Rounds);
+        builder.HasMany(x => x.RoundScores)
             .WithOne(x => x.Round);
     }
 }

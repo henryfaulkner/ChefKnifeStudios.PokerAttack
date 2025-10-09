@@ -49,6 +49,7 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
 
         GameplayViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
         GameplayViewModel.CardsInHand.CollectionChanged += CardsInHand_CollectionChanged;
+        GameStateMachineViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -71,6 +72,7 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
     {
         GameplayViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
         GameplayViewModel.CardsInHand.CollectionChanged -= CardsInHand_CollectionChanged;
+        GameStateMachineViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
     }
 
     void CardsInHand_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

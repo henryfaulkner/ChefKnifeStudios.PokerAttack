@@ -1,4 +1,5 @@
 ﻿using ChefKnifeStudios.PokerAttack.Server.Core.Models;
+using ChefKnifeStudios.PokerAttack.Server.Data.Models;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
 
@@ -84,5 +85,25 @@ public static class MappingExtensions
             BaseMultiplier = dto.BaseMultiplier,
             HandScore = dto.HandScore,
         };
+    }
+
+    public static RoundDTO MapToDTO(this Round round)
+    {
+        if (round == null)
+            throw new ArgumentNullException(nameof(round));
+
+        var dto = new RoundDTO
+        {
+            Scores = round.RoundScores?
+                .Select(rs => new RoundDTO.RoundScoreDTO
+                {
+                    ClientUserId = rs.ClientUserId,
+                    ClientUserDisplayName = rs.ClientUserDisplayName,
+                    Score = rs.Score
+                })
+                .ToList() ?? new List<RoundDTO.RoundScoreDTO>()
+        };
+
+        return dto;
     }
 }

@@ -17,7 +17,7 @@ internal class GameConfiguration : IEntityTypeConfiguration<Game>
           .UseIdentityColumn();
         builder.HasQueryFilter(x => !x.IsDeleted);
 
-        builder.HasMany(x => x.UserGames)
+        builder.HasMany(x => x.Rounds)
             .WithOne(x => x.Game);
     }
 }

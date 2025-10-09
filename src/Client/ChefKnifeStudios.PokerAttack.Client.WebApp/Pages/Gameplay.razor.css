@@ -1,1 +1,8 @@
-﻿
+﻿.action-buttons {
+    display: flex;
+    column-gap: 0.5rem;
+
+    & span {
+        display: block;
+    }
+}

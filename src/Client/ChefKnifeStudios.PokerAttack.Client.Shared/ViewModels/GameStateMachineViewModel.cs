@@ -41,7 +41,7 @@ public interface IGameStateMachineViewModel : IViewModel
     void Transition(GameEvents gameEvent);
 }
 
-public partial class GameStateMachineViewModel : BaseViewModel, IGameStateMachineViewModel
+public partial class GameStateMachineViewModel : BaseViewModel, IGameStateMachineViewModel, IDisposable
 {
     readonly ILogger<GameStateMachineViewModel> _logger;
     readonly IEventNotificationService _eventNotificationService;
@@ -57,6 +57,11 @@ public partial class GameStateMachineViewModel : BaseViewModel, IGameStateMachin
         _eventNotificationService = eventNotificationService;
 
         _eventNotificationService.EventReceived += HandleEventReceived;
+    }
+
+    public void Dispose()
+    {
+        _eventNotificationService.EventReceived -= HandleEventReceived;
     }
 
     public void Transition(GameEvents gameEvent)

@@ -25,6 +25,6 @@ public class PokerAttackApiEndpoints
     {
         const string EndpointGroup = "/gameply";
 
-        public const string GetPlayerScores = $"{EndpointGroup}/player-scores/{{gameId}}";
+        public const string GetLatestRound = $"{EndpointGroup}/latest-round/{{gameId}}";
     }
 }

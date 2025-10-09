@@ -1,4 +1,5 @@
 ﻿@using ChefKnifeStudios.PokerAttack.Client.Shared.Components
+@using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Gameplay
 @using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels
 
 @page "/gameplay"
@@ -9,15 +10,28 @@
         case GameStates.InGame:
             {
                 <CardHand Cards="@GameplayViewModel.CardsInHand.ToList()" />
-                <button @onclick="HandlePlayHandPressed" @onclick:stopPropagation="true">
-                    PLAY HAND
-                </button>
-                <button @onclick="HandleDiscardPressed" @onclick:stopPropagation="true">
-                    DISCARD
-                </button>
+                
+                <div class="action-buttons">
+                    <div>
+                        <button @onclick="HandlePlayHandPressed" @onclick:stopPropagation="true">
+                            PLAY HAND
+                        </button>
+                        <span>[Q]</span>
+                    </div>
+                    <div>
+                        <button @onclick="HandleDiscardPressed" @onclick:stopPropagation="true">
+                            DISCARD
+                        </button>
+                        <span>[W]</span>
+                    </div>
+                </div>
+
                 <h1>Score: @GameplayViewModel.Score</h1>
                 <h2>@FormatAsMinutesSeconds(GameplayViewModel.RunTimeInSeconds)</h2>
             }
+            break;
+        case GameStates.Scoreboard:
+            <ScoreboardList GameId="@GameId" />
             break;
         case GameStates.Elimination:
         case GameStates.Upgrade:

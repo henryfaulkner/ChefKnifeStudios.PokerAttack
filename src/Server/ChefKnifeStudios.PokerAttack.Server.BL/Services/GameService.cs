@@ -1,5 +1,8 @@
 ﻿using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces.Repos;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
+using ChefKnifeStudios.PokerAttack.Server.Data.Models;
+using ChefKnifeStudios.PokerAttack.Server.Data.Repos;
+using ChefKnifeStudios.PokerAttack.Server.Data.Specifications;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
 
@@ -11,39 +14,35 @@ public interface IGameService
     Task<List<Card>> DealHandAsync(string playerId, int count, CancellationToken ct = default);
     Task<HandResult> PlayHandAsync(string playerId, List<CardDTO> hand, CancellationToken ct = default);
     Task<int?> GetPlayerScoreAsync(string playerId, CancellationToken ct = default);
+    Task EndRoundAsync(string lobbyId, CancellationToken ct = default);
+    Task<RoundDTO> GetLatestRoundFromGame(string lobbyId, CancellationToken ct = default);
 }
 
-public class GameService : IGameService
+public class GameService(
+    ILobbyRepository lobbyRepository,
+    IPlayerScoreRepository scoreRepository,
+    IPlayerDeckRepository deckRepository,
+    IRepository<Game> gameRepository,
+    IRepository<Round> roundRepository) : IGameService
 {
-    readonly IPlayerScoreRepository _scoreRepository;
-    readonly IPlayerDeckRepository _deckRepository;
-
-    public GameService(
-        IPlayerScoreRepository scoreRepository,
-        IPlayerDeckRepository deckRepository)
-    {
-        _scoreRepository = scoreRepository;
-        _deckRepository = deckRepository;
-    }
-
     public async Task StartPlayerRunAsync(string playerId, CancellationToken ct = default)
     {
         var deck = new Deck();
         deck.RandomizeDeck();
-        await _deckRepository.AddDeckAsync(playerId, deck, ct);
-        await _scoreRepository.AddAsync(playerId, 0, ct);
+        await deckRepository.AddDeckAsync(playerId, deck, ct);
+        await scoreRepository.AddAsync(playerId, 0, ct);
     }
 
     public async Task<List<Card>> DealHandAsync(string playerId, int count, CancellationToken ct = default)
     {
-        var deck = await _deckRepository.GetDeckAsync(playerId, ct)
+        var deck = await deckRepository.GetDeckAsync(playerId, ct)
             ?? throw new KeyNotFoundException("Player deck not found");
 
         var hand = new List<Card>();
         for (int i = 0; i < count; i++)
             hand.Add(deck.PullCard());
 
-        await _deckRepository.UpdateDeckAsync(playerId, deck, ct);
+        await deckRepository.UpdateDeckAsync(playerId, deck, ct);
         return hand;
     }
 
@@ -53,12 +52,56 @@ public class GameService : IGameService
         var result = HandEvaluator.EvaluateHand(hand);
         int totalScore = result.BaseChips * result.BaseMultiplier;
 
-        var current = await _scoreRepository.GetAsync(playerId, ct) ?? 0;
-        await _scoreRepository.UpdateAsync(playerId, current + totalScore, ct);
+        var current = await scoreRepository.GetAsync(playerId, ct) ?? 0;
+        await scoreRepository.UpdateAsync(playerId, current + totalScore, ct);
 
         return result;
     }
 
     public Task<int?> GetPlayerScoreAsync(string playerId, CancellationToken ct = default)
-        => _scoreRepository.GetAsync(playerId, ct);
+        => scoreRepository.GetAsync(playerId, ct);
+
+    public async Task EndRoundAsync(string lobbyId, CancellationToken ct = default)
+    {
+        var lobby = await lobbyRepository.GetLobbyAsync(lobbyId, ct)
+            ?? throw new ApplicationException($"Lobby not found: Lobby Id {lobbyId}");
+        var game = await gameRepository.FirstOrDefaultAsync(new GetGameByClientIdSpec(lobbyId), ct)
+            ?? throw new ApplicationException($"Game not found: Lobby Id {lobbyId}"); ;
+
+        List<RoundScore> roundScores = [];
+        foreach (var lobbyPlayer in lobby.Players)
+        {
+            int score = await scoreRepository.GetAsync(lobbyPlayer.Id, ct) ?? 0;
+            roundScores.Add(
+                new RoundScore
+                {
+                    ClientUserId = lobbyPlayer.Id,
+                    ClientUserDisplayName = lobbyPlayer.Name,
+                    Score = score,
+                }
+            );
+
+            // Clear temp player data
+            await scoreRepository.DeleteAsync(lobbyPlayer.Id, ct);
+            await deckRepository.DeleteDeckAsync(lobbyPlayer.Id, ct);
+        }
+
+        await roundRepository.AddAsync(
+            new Round
+            {
+                GameId = game.Id,
+                RoundScores = roundScores,
+            },
+            ct
+        );
+    }
+
+    public async Task<RoundDTO> GetLatestRoundFromGame(string lobbyId, CancellationToken ct = default)
+    {
+        var game = await gameRepository.FirstOrDefaultAsync(new GetGameByClientIdSpec(lobbyId), ct)
+            ?? throw new ApplicationException($"Game not found: Lobby Id {lobbyId}");
+        var latestRound = await roundRepository.FirstOrDefaultAsync(new GetLatestRoundByGameIdSpec(game.Id), ct)
+            ?? throw new ApplicationException($"Latest Round not found: Game Id {game.Id}");
+        return latestRound.MapToDTO();
+    }
 }

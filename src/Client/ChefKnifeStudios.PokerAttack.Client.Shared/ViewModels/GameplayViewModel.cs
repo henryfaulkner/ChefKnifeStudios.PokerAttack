@@ -1,4 +1,5 @@
 ﻿using ChefKnifeStudios.PokerAttack.Client.Core.Services;
+using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Shared;
@@ -27,6 +28,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 {
     readonly ISignalRNotificationService _signalRNotificationService;
     readonly IToastService _toastService;
+    readonly IEventNotificationService _eventNotificationService;
 
     [ObservableProperty]
     string _gameId = Guid.Empty.ToString();
@@ -44,7 +46,8 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 
     public GameplayViewModel(
         ISignalRNotificationService signalRNotificationService,
-        IToastService toastService)
+        IToastService toastService,
+        IEventNotificationService eventNotificationService)
     {
         _signalRNotificationService = signalRNotificationService;
         _toastService = toastService;
@@ -54,6 +57,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         {
             if (RunTimeInSeconds > 0) RunTimeInSeconds--;
         }, 1000);
+        _eventNotificationService = eventNotificationService;
     }
 
     public void Dispose()
@@ -72,6 +76,17 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     public async Task PlaySelectedCardsAsync(string playerId, CancellationToken cancellationToken = default)
     {
         var selectedCards = CardsInHand.Where(x => x.IsSelected).ToList();
+
+        if (selectedCards.Count() < 1)
+        {
+            return;
+        }
+        if (selectedCards.Count() > 5)
+        {
+            _toastService.ShowWarning("A Hand has a 5 card limit");
+            return;
+        }
+
         await _signalRNotificationService.PlayHandAsync(
             playerId,
             selectedCards
@@ -130,6 +145,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                     var args = JsonSerializer.Deserialize<HandResultDTO>(notification.Payload!, JsonOptions.Get());
                     if (args is HandResultDTO handResult)
                     {
+                        
                         _toastService.ShowSuccess($"({string.Join(" + ", handResult.CardValues)} + {handResult.BaseChips}) x {handResult.BaseMultiplier}", $"{handResult.HandType.GetDescription()} - {handResult.HandScore}");
                         Score = handResult.TotalPlayerScore;
                     }
@@ -137,7 +153,13 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                 }
             case PokerAttackNotificationType.RoundEnded:
                 {
-                    Console.WriteLine("RoundEnded");
+                    _eventNotificationService.PostEvent(
+                        this,
+                        new GameTransitionEventArgs
+                        { 
+                            Data = new () { GameEvent = GameEvents.Next },
+                        }
+                    );
                     break;
                 }
         }

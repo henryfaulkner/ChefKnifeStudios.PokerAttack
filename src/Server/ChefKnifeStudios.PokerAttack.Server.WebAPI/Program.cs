@@ -7,7 +7,6 @@ using ChefKnifeStudios.PokerAttack.Server.WebAPI.EndpointGroups;
 using ChefKnifeStudios.PokerAttack.Server.WebAPI.SignalR;
 using Microsoft.AspNetCore.SignalR;
 using Scalar.AspNetCore;
-using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,8 +60,9 @@ app.UseCors(policy =>
         .AllowCredentials());
 
 app.MapHub<SignalRNotificationHub>("/cks-notification");
-app.MapTestEndpoints();
-app.MapLobbyEndpoints();
+app.MapTestEndpoints()
+   .MapLobbyEndpoints()
+   .MapGameplayEndpoints();
 
 app.MapDefaultEndpoints();
 
