@@ -1,58 +1,79 @@
 ﻿@using ChefKnifeStudios.PokerAttack.Client.Shared.Components
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Gameplay
+@using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs
 @using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels
+@using ChefKnifeStudios.PokerAttack.Shared.Enums
 
 @page "/gameplay"
 
 <div class="gameplay">
-    @switch (GameStateMachineViewModel.GameState)
-    {
-        case GameStates.InGame:
-            {
-                <CardHand Cards="@GameplayViewModel.CardsInHand.ToList()" />
+    <CascadingValue Value="GameStateMachineViewModel">
+        @switch (GameStateMachineViewModel.GameState)
+        {
+            case GameStates.InGame:
+                {
+                    <CardHand Cards="@GameplayViewModel.CardsInHand.ToList()" />
                 
-                <div class="action-buttons">
-                    <div>
-                        <button @onclick="HandlePlayHandPressed" @onclick:stopPropagation="true">
-                            PLAY HAND
-                        </button>
-                        <span>[Q]</span>
+                    <div class="action-buttons">
+                        <div>
+                            <button @onclick="HandlePlayHandPressed" @onclick:stopPropagation="true">
+                                PLAY HAND
+                            </button>
+                            <span>[Q]</span>
+                        </div>
+                        <div>
+                            <button @onclick="HandleDiscardPressed" @onclick:stopPropagation="true">
+                                DISCARD
+                            </button>
+                            <span>[W]</span>
+                        </div>
+                        <div>
+                            <button @onclick="HandleSortByRankPressed" @onclick:stopPropagation="true">
+                                SORT BY RANK
+                            </button>
+                            <span>[E]</span>
+                        </div>
+                        <div>
+                            <button @onclick="HandleSortBySuitPressed" @onclick:stopPropagation="true">
+                                SORT BY SUIT
+                            </button>
+                            <span>[R]</span>
+                        </div>
+                        <div>
+                            <button @onclick="HandleClearSelectionsPressed" @onclick:stopPropagation="true">
+                                CLEAR SELECTIONS
+                            </button>
+                            <span>[T]</span>
+                        </div>
                     </div>
-                    <div>
-                        <button @onclick="HandleDiscardPressed" @onclick:stopPropagation="true">
-                            DISCARD
-                        </button>
-                        <span>[W]</span>
-                    </div>
-                    <div>
-                        <button @onclick="HandleSortByRankPressed" @onclick:stopPropagation="true">
-                            SORT BY RANK
-                        </button>
-                        <span>[E]</span>
-                    </div>
-                    <div>
-                        <button @onclick="HandleSortBySuitPressed" @onclick:stopPropagation="true">
-                            SORT BY SUIT
-                        </button>
-                        <span>[R]</span>
-                    </div>
-                    <div>
-                        <button @onclick="HandleClearSelectionsPressed" @onclick:stopPropagation="true">
-                            CLEAR SELECTIONS
-                        </button>
-                        <span>[T]</span>
-                    </div>
-                </div>
 
-                <h1>Score: @GameplayViewModel.Score</h1>
-                <h2>@FormatAsMinutesSeconds(GameplayViewModel.RunTimeInSeconds)</h2>
-            }
-            break;
-        case GameStates.Scoreboard:
-            <ScoreboardList GameId="@GameId" />
-            break;
-        case GameStates.Elimination:
-        case GameStates.Upgrade:
-            break;
-    }
+                    <h1>Score: @GameplayViewModel.Score</h1>
+                    <h2>@FormatAsMinutesSeconds(GameplayViewModel.RunTimeInSeconds)</h2>
+                    <h2>Hands Available: @GameplayViewModel.AvailablePlayHands</h2>
+                    <h2>Discards Available: @GameplayViewModel.AvailableDiscards</h2>
+                }
+                break;
+            case GameStates.Scoreboard:
+            case GameStates.Elimination:
+                var nextBtnText = GameStateMachineViewModel.GameState switch
+                {
+                    GameStates.Scoreboard => "ELIMINATE LOW SCORERS",
+                    GameStates.Elimination => "PLAY NEXT ROUND",
+                    _ => "NEXT"
+                };
+
+                <ScoreboardList GameId="@GameId" />
+                <button @onclick="HandleNextPressed">@nextBtnText</button>
+                break;
+            case GameStates.Upgrade:
+                EventNotificationService.PostEvent(
+                    this,
+                    new GameTransitionEventArgs
+                    {
+                        Data = new () { GameId = GameId, GameEvent = GameEvents.Next, },
+                    }
+                );
+                break;
+        }
+    </CascadingValue>
 </div>

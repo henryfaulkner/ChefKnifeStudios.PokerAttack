@@ -5,4 +5,5 @@ public class Game : BaseEntity
     public required string ClientId { get; init; }
 
     public ICollection<Round>? Rounds { get; init; }
+    public required string HostPlayerClientId { get; init; }
 }

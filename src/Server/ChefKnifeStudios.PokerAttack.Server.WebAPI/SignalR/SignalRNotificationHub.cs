@@ -4,6 +4,7 @@ using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
 using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System.Linq;
@@ -21,6 +22,7 @@ public class SignalRNotificationHub(
     ILogger<SignalRNotificationHub> logger,
     IPokerAttackNotificationHelper notificationHelper,
     IGameService gameService,
+    IGameStateMachineService gameStateMachineService,
     ILobbyService lobbyService,
     IServiceScopeFactory serviceScopeFactory) : Hub<ISignalRNotificationClient>
 {
@@ -59,7 +61,7 @@ public class SignalRNotificationHub(
 
     public async Task StartRound(string lobbyId, string hostId)
     {
-        const int _RUN_TIME_IN_SECONDS = 120;
+        const int _RUN_TIME_IN_SECONDS = 5;
 
         var lobby = await lobbyService.GetLobbyAsync(lobbyId);
         if (lobby == null 
@@ -141,6 +143,18 @@ public class SignalRNotificationHub(
         (
             PokerAttackNotificationType.HandPlayed,
             JsonSerializer.Serialize(result.MapToDTO(totalPlayerScore ?? 0), JsonOptions.Get())
+        ));
+    }
+
+    // Transition Game State and broadcast change
+    public async Task TransitionGameState(string playerId, string gameId, GameEvents gameEvent)
+    {
+        await gameStateMachineService.TransitionAsync(playerId, gameId, gameEvent);
+        var newGameState = await gameStateMachineService.GetGameStateAsync(gameId);
+        await notificationHelper.BroadcastToGameAsync(gameId, new PokerAttackNotification
+        (
+            PokerAttackNotificationType.GameStateChanged,
+            JsonSerializer.Serialize(newGameState, JsonOptions.Get())
         ));
     }
 }

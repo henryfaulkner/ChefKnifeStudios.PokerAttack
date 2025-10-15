@@ -16,6 +16,7 @@
                             {
                                 <MatButton 
                                     OnClick="() => HandleJoinLobbyPressed(lobby.GameId)" 
+                                    OnClickStopPropagation="true"
                                 >
                                     JOIN LOBBY
                                 </MatButton>
@@ -24,6 +25,7 @@
                             {
                                 <MatButton 
                                     OnClick="() => HandleStartGamePressed(lobby.GameId)" 
+                                    OnClickStopPropagation="true"
                                 >
                                     Start Game
                                 </MatButton>

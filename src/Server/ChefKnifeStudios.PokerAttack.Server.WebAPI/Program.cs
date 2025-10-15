@@ -29,8 +29,10 @@ builder.Services.AddSingleton<IPokerAttackNotificationHelper, PokerAttackNotific
 builder.Services.AddSingleton<ILobbyRepository, InMemoryLobbyRepository>();
 builder.Services.AddSingleton<IPlayerScoreRepository, InMemoryPlayerScoreRepository>();
 builder.Services.AddSingleton<IPlayerDeckRepository, InMemoryPlayerDeckRepository>();
+builder.Services.AddSingleton<IGameStateRepository, InMemoryGameStateRepository>();
 builder.Services.AddScoped<ILobbyService, LobbyService>();
 builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IGameStateMachineService, GameStateMachineService>();
 
 var app = builder.Build();
 

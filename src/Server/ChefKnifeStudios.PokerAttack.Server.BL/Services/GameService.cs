@@ -50,10 +50,9 @@ public class GameService(
     {
         var hand = handDTO.Select(x => x.MapToModel()).ToList();
         var result = HandEvaluator.EvaluateHand(hand);
-        int totalScore = result.BaseChips * result.BaseMultiplier;
-
-        var current = await scoreRepository.GetAsync(playerId, ct) ?? 0;
-        await scoreRepository.UpdateAsync(playerId, current + totalScore, ct);
+        
+        var currentScore = await scoreRepository.GetAsync(playerId, ct) ?? 0;
+        await scoreRepository.UpdateAsync(playerId, currentScore + result.HandScore, ct);
 
         return result;
     }

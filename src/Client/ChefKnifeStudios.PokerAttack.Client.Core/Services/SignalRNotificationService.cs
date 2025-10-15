@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Core.Services;
 
@@ -18,6 +19,7 @@ public interface ISignalRNotificationService
     Task StartRoundAsync(string gameId, string hostId);
     Task DealHandAsync(string playerId, int count);
     Task PlayHandAsync(string playerId, List<CardDTO> hand);
+    Task TransitionGameStateAsync(string playerId, string gameId, GameEvents gameEvent);
     event PokerAttackNotificationHandler? HandleNotificationReceived;
 }
 
@@ -154,4 +156,12 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
         await _hubConnection.InvokeAsync("PlayHand", playerId, hand);
     }
     #endregion
+
+    public async Task TransitionGameStateAsync(string playerId, string gameId, GameEvents gameEvent)
+    {
+        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+            throw new InvalidOperationException("SignalR connection is not established.");
+
+        await _hubConnection.InvokeAsync("TransitionGameState", playerId, gameId, gameEvent);
+    }
 }

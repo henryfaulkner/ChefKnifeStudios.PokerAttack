@@ -30,7 +30,8 @@ public interface ILobbyService
 public class LobbyService(
     ILobbyRepository lobbyRepository,
     IPokerAttackNotificationHelper notificationHelper,
-    IRepository<Game> gameRepository) : ILobbyService
+    IRepository<Game> gameRepository,
+    IGameStateRepository gameStateRepository) : ILobbyService
 {
     public async Task<LobbyDTO> CreateLobbyAsync(PlayerDTO hostPlayer, CancellationToken cancellationToken = default)
     {
@@ -292,9 +293,12 @@ public class LobbyService(
             new Game
             { 
                 ClientId = lobbyDTO.GameId,
+                HostPlayerClientId = lobbyDTO.HostPlayer.Id,
             },
             cancellationToken
         );
+
+        await gameStateRepository.AddAsync(gameId, Shared.Enums.GameStates.InGame, cancellationToken);
 
         await notificationHelper.BroadcastToGameAsync(
             gameId,

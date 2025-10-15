@@ -1,1 +1,7 @@
-﻿
+﻿::deep .mdc-table-row:has(.eliminating) {
+    background: red;
+}
+
+::deep .mdc-table-row:has(.eliminated) {
+    display: none;
+}

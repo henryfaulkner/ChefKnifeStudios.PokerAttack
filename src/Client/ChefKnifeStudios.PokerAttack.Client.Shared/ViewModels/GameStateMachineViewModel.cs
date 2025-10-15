@@ -1,49 +1,24 @@
 ﻿using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
+using ChefKnifeStudios.PokerAttack.Shared;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
-
-public enum GameStates
-{
-    InGame,
-    Scoreboard,
-    Elimination,
-    Upgrade,
-}
-
-public enum GameEvents
-{
-    Next,
-}
-
-public record GameTransition(GameStates CurrState, GameEvents GameEvent, GameStates NextState);
-
-public static class GameTransitions
-{
-    public static GameTransition? Get(GameStates currState, GameEvents gameEvent) =>
-        Get().FirstOrDefault(x => x.CurrState == currState && x.GameEvent == gameEvent);
-
-    public static GameTransition[] Get() =>
-        new GameTransition[] 
-        {
-            new GameTransition(GameStates.InGame, GameEvents.Next, GameStates.Scoreboard),
-            new GameTransition(GameStates.Scoreboard, GameEvents.Next, GameStates.Elimination),
-            new GameTransition(GameStates.Elimination, GameEvents.Next, GameStates.Upgrade),
-            new GameTransition(GameStates.Upgrade, GameEvents.Next, GameStates.InGame),
-        };
-}
 
 public interface IGameStateMachineViewModel : IViewModel
 {
     GameStates GameState { get; }
-    void Transition(GameEvents gameEvent);
 }
 
 public partial class GameStateMachineViewModel : BaseViewModel, IGameStateMachineViewModel, IDisposable
 {
     readonly ILogger<GameStateMachineViewModel> _logger;
+    readonly IApplicationViewModel _applicationViewModel;
+    readonly ISignalRNotificationService _signalRNotificationService;
     readonly IEventNotificationService _eventNotificationService;
 
     [ObservableProperty]
@@ -51,38 +26,44 @@ public partial class GameStateMachineViewModel : BaseViewModel, IGameStateMachin
 
     public GameStateMachineViewModel(
         ILogger<GameStateMachineViewModel> logger,
+        IApplicationViewModel applicationViewModel,
+        ISignalRNotificationService signalRNotificationService,
         IEventNotificationService eventNotificationService)
     {
         _logger = logger;
+        _applicationViewModel = applicationViewModel;
+        _signalRNotificationService = signalRNotificationService;
         _eventNotificationService = eventNotificationService;
 
+        _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
         _eventNotificationService.EventReceived += HandleEventReceived;
     }
 
     public void Dispose()
     {
+        _signalRNotificationService.HandleNotificationReceived -= HandleSignalRNotificationReceived;
         _eventNotificationService.EventReceived -= HandleEventReceived;
     }
 
-    public void Transition(GameEvents gameEvent)
+    Task HandleSignalRNotificationReceived(PokerAttackNotification notification)
     {
-        var transition = GameTransitions.Get(GameState, gameEvent);
-        if (transition is not GameTransition)
+        switch (notification.NotificationType)
         {
-            _logger.LogWarning("GameTransition does not exist. GameState: {0}. GameEvent: {1}.", GameState, gameEvent);
-            return;
+            case PokerAttackNotificationType.GameStateChanged:
+                GameState = JsonSerializer.Deserialize<GameStates>(notification.Payload!, JsonOptions.Get());
+                break;
         }
-        GameState = transition.NextState;
+        return Task.CompletedTask;
     }
 
-    Task HandleEventReceived(object sender, IEventArgs args)
+    async Task HandleEventReceived(object sender, IEventArgs args)
     {
         switch (args)
         {
             case GameTransitionEventArgs gameTransitionEventArgs:
-                Transition(gameTransitionEventArgs.Data.GameEvent);
+                await _signalRNotificationService.TransitionGameStateAsync(_applicationViewModel.Player.Id, gameTransitionEventArgs.Data.GameId, gameTransitionEventArgs.Data.GameEvent);
                 break;
         }
-        return Task.CompletedTask;
+        await Task.CompletedTask;
     }
 }

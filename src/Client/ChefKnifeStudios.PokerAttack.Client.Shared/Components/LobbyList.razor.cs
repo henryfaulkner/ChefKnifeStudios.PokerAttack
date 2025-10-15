@@ -22,16 +22,16 @@ public partial class LobbyList : ComponentBase, IDisposable
         await LobbyViewModel.LoadLobbiesAsync();
 
         LobbyViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
-        LobbyViewModel.Lobbies.CollectionChanged += Lobbies_CollectionChanged;
+        LobbyViewModel.Lobbies.CollectionChanged += HandleCollectionChanged;
     }
 
     public void Dispose()
     {
         LobbyViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
-        LobbyViewModel.Lobbies.CollectionChanged -= Lobbies_CollectionChanged;
+        LobbyViewModel.Lobbies.CollectionChanged -= HandleCollectionChanged;
     }
 
-    private void Lobbies_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         InvokeAsync(StateHasChanged);
     }

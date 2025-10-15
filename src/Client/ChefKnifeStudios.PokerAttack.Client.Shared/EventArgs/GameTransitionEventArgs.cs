@@ -1,5 +1,5 @@
 ﻿using ChefKnifeStudios.PokerAttack.Client.Core.Services;
-using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
 
@@ -7,6 +7,7 @@ public class GameTransitionEventArgs : IEventArgs
 {
     public class EventData
     {
+        public required string GameId { get; init; }
         public required GameEvents GameEvent { get; init; }
     }
 

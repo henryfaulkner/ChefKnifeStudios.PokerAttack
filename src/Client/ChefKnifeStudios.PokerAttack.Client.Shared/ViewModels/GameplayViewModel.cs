@@ -5,6 +5,7 @@ using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Text.Json;
@@ -17,6 +18,9 @@ public interface IGameplayViewModel : IViewModel
     int RunTimeInSeconds { get; }
     int Score { get; }
     ObservableCollection<CardItem> CardsInHand { get; }
+    int AvailablePlayHands { get; }
+    int AvailableDiscards { get; }
+
     void Init(string gameId);
     Task StartRoundAsync(string playerId, CancellationToken cancellationToken = default);
     Task PlaySelectedCardsAsync(string playerId, CancellationToken cancellationToken = default);
@@ -44,6 +48,12 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 
     [ObservableProperty]
     ObservableCollection<CardItem> _cardsInHand = [];
+
+    [ObservableProperty]
+    int _availablePlayHands = 5;
+
+    [ObservableProperty]
+    int _availableDiscards = 5;
 
     CancellationTokenSource _timerToken;
 
@@ -78,6 +88,12 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 
     public async Task PlaySelectedCardsAsync(string playerId, CancellationToken cancellationToken = default)
     {
+        if (AvailablePlayHands <= 0)
+        {
+            _toastService.ShowWarning("No hands left");
+            return;
+        }
+
         var selectedCards = CardsInHand.Where(x => x.IsSelected).ToList();
 
         if (selectedCards.Count() < 1)
@@ -99,13 +115,27 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 
         foreach (var selectedCard in selectedCards) CardsInHand.Remove(selectedCard);
         await _signalRNotificationService.DealHandAsync(playerId, selectedCards.Count());
+        AvailablePlayHands--;
     }
 
     public async Task DiscardSelectedCardsAsync(string playerId, CancellationToken cancellationToken = default)
     {
+        if (AvailableDiscards <= 0)
+        {
+            _toastService.ShowWarning("No hands left");
+            return;
+        }
+
         var selectedCards = CardsInHand.Where(x => x.IsSelected).ToList();
+
+        if (selectedCards.Count() < 1)
+        {
+            return;
+        }
+
         foreach (var selectedCard in selectedCards) CardsInHand.Remove(selectedCard);
         await _signalRNotificationService.DealHandAsync(playerId, selectedCards.Count());
+        AvailableDiscards--;
     }
 
     public void ToggleCardSelection(int index)
@@ -190,7 +220,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                         this,
                         new GameTransitionEventArgs
                         { 
-                            Data = new () { GameEvent = GameEvents.Next },
+                            Data = new () { GameId = GameId, GameEvent = GameEvents.Next },
                         }
                     );
                     break;

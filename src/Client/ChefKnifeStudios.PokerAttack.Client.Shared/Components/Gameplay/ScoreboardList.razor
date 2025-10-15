@@ -6,7 +6,7 @@
     else
     {
         <MatTable
-            Items="ScoreboardViewModel.Round.Scores"
+            Items="ScoreboardViewModel.Items"
             PageLabel="Scores"
             PageRecordCountLabel="Page Size"
         >
@@ -16,7 +16,15 @@
                 <th class="col-header-actions">Score</th>
             </MatTableHeader>
             <MatTableRow>
-                <td class="col-row-id">@context.ClientUserId</td>
+                @{
+                    var rowClass = context switch
+                    {
+                        { IsEliminating: true } => "eliminating",
+                        { IsEliminated: true } => "eliminated",
+                        _ => string.Empty
+                    };
+                }
+                <td class="col-row-id @rowClass">@context.ClientUserId</td>
                 <td class="col-row-name">@context.ClientUserDisplayName</td>
                 <td class="col-row-actions">@context.Score</td>
             </MatTableRow>

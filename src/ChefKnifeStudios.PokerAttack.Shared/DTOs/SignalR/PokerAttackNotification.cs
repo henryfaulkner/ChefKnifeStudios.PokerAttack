@@ -19,4 +19,6 @@ public enum PokerAttackNotificationType
     CardsDealt,
     HandPlayed,
     RoundEnded,
+
+    GameStateChanged,
 }

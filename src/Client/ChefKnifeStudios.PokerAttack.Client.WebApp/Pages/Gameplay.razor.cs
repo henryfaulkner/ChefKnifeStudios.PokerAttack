@@ -1,5 +1,8 @@
-﻿using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
+﻿using ChefKnifeStudios.PokerAttack.Client.Core.Services;
+using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
+using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -15,12 +18,16 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
     [Inject] IGameStateMachineViewModel GameStateMachineViewModel { get; set; } = null!;
     [Inject] IInputService InputService { get; set; } = null!;
     [Inject] IInputJsInterop InputJsInterop { get; set; } = null!;
+    [Inject] IToastService ToastService { get; set; } = null!;
+    [Inject] IEventNotificationService EventNotificationService { get; set; } = null!;
 
     readonly string[] _subscriptions =
     [
         nameof(IGameplayViewModel.RunTimeInSeconds),
         nameof(IGameplayViewModel.Score),
         nameof(IGameplayViewModel.CardsInHand),
+        nameof(IGameplayViewModel.AvailablePlayHands),
+        nameof(IGameplayViewModel.AvailableDiscards),
         nameof(IGameStateMachineViewModel.GameState),
     ];
 
@@ -28,11 +35,11 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
     {
         base.OnInitialized();
 
-        InputService.RegisterKeyAction("q", () => GameplayViewModel.PlaySelectedCardsAsync(ApplicationViewModel.Player.Id));
-        InputService.RegisterKeyAction("w", () => GameplayViewModel.DiscardSelectedCardsAsync(ApplicationViewModel.Player.Id));
-        InputService.RegisterKeyAction("e", () => Task.Run(() => GameplayViewModel.SortByRank()));
-        InputService.RegisterKeyAction("r", () => Task.Run(() => GameplayViewModel.SortBySuit()));
-        InputService.RegisterKeyAction("t", () => Task.Run(() => GameplayViewModel.ClearSelections()));
+        InputService.RegisterKeyAction("q", () => Task.Run(() => HandlePlayHandPressed()));
+        InputService.RegisterKeyAction("w", () => Task.Run(() => HandleDiscardPressed()));
+        InputService.RegisterKeyAction("e", () => Task.Run(() => HandleSortByRankPressed()));
+        InputService.RegisterKeyAction("r", () => Task.Run(() => HandleSortBySuitPressed()));
+        InputService.RegisterKeyAction("t", () => Task.Run(() => HandleClearSelectionsPressed()));
         InputService.RegisterKeyAction("1", () => ToggleCardSelectionAsync(0));
         InputService.RegisterKeyAction("2", () => ToggleCardSelectionAsync(1));
         InputService.RegisterKeyAction("3", () => ToggleCardSelectionAsync(2));
@@ -89,7 +96,7 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
         Task.Run(async () => await InvokeAsync(StateHasChanged));
     }
 
-    void HandlePlayHandPressed() =>
+    void HandlePlayHandPressed() => 
         _ = GameplayViewModel.PlaySelectedCardsAsync(ApplicationViewModel.Player.Id);
 
     void HandleDiscardPressed() =>
@@ -109,6 +116,15 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
         StateHasChanged();
         return Task.CompletedTask;
     }
+
+    void HandleNextPressed() =>
+        EventNotificationService.PostEvent(
+            this,
+            new GameTransitionEventArgs
+            {
+                Data = new () { GameId = GameId, GameEvent = GameEvents.Next, },
+            }
+        );
 
     static string FormatAsMinutesSeconds(int totalSeconds)
     {
