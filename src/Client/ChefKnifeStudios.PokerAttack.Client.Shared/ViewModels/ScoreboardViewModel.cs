@@ -2,6 +2,7 @@
 using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.AspNetCore.Components;
 using System.Collections.ObjectModel;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
@@ -15,7 +16,6 @@ public partial class ScoreboardListItem : ObservableObject
         Score = roundScore.Score;
         IsEliminating = false;
         IsEliminated = false;
-
     }
 
     [ObservableProperty]
@@ -40,7 +40,9 @@ public interface IScoreboardViewModel : IViewModel
 }
 
 public partial class ScoreboardViewModel(
-    IGameplayEndpointsService gameplayEndpointsService) : BaseViewModel, IScoreboardViewModel
+    IApplicationViewModel applicationViewModel,
+    IGameplayEndpointsService gameplayEndpointsService,
+    NavigationManager navigationManager) : BaseViewModel, IScoreboardViewModel
 {
     [ObservableProperty]
     bool _isLoading;
@@ -58,14 +60,15 @@ public partial class ScoreboardViewModel(
 
     // Mark all ScoreboardListItem in Items as IsEliminating if their score is in the bottom 25% by score.
     // If no item is included bottom 25% by score, mark the lowest scoring item as IsEliminating.
+    // Always leave at least one player uneliminated.
     public async Task StartEliminatingAsync(CancellationToken cancellationToken = default)
     {
         if (Items == null || Items.Count == 0)
             return;
 
-        // Order by score (ascending: lowest first)
+        // Get non-eliminated players and order by score ascending
         var orderedByScore = Items
-            .Where(i => !i.IsEliminated) // ignore already eliminated players
+            .Where(i => !i.IsEliminated)
             .OrderBy(i => i.Score)
             .ToList();
 
@@ -77,13 +80,20 @@ public partial class ScoreboardViewModel(
         if (bottomCount == 0)
             bottomCount = 1;
 
-        // Get the cutoff score
+        // Cutoff score (handles ties)
         int cutoffScore = orderedByScore[bottomCount - 1].Score;
 
-        // Include ALL players <= cutoffScore (handles tie)
+        // Select all players at or below cutoff
         var toEliminate = orderedByScore
             .Where(x => x.Score <= cutoffScore)
             .ToList();
+
+        // Rule: Never eliminate everyone
+        if (toEliminate.Count >= orderedByScore.Count)
+        {
+            // Edge case: tied elimination would remove all players
+            toEliminate.Clear();
+        }
 
         // Mark items for elimination
         foreach (var item in Items)
@@ -105,6 +115,18 @@ public partial class ScoreboardViewModel(
                 item.IsEliminated = true;
 
             item.IsEliminating = false;
+        }
+
+        var me = Items.FirstOrDefault(x => x.ClientUserId == applicationViewModel.Player.Id);
+        bool amILoser = Items.Any(x => x.IsEliminated && x.ClientUserId == applicationViewModel.Player.Id);
+        bool amIWinner = Items.Count == 1;
+        if (amILoser)
+        {
+            navigationManager.NavigateTo($"/game-over?result=loser&score={me?.Score ?? 0}", replace: true);
+        }
+        else if (amIWinner)
+        {
+            navigationManager.NavigateTo($"/game-over?result=winner&score={me?.Score ?? 0}", replace: true);
         }
 
         await Task.CompletedTask;

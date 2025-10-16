@@ -210,9 +210,9 @@ public class LobbyService(
         if (lobby is null)
             return Enumerable.Empty<PlayerDTO>();
 
-        var players = lobby.Players.ToList();
         await lobbyRepository.RemoveLobbyAsync(gameId, cancellationToken);
 
+        var players = lobby.Players.ToList();
         await notificationHelper.BroadcastToAllAsync(
             new PokerAttackNotification(
                 PokerAttackNotificationType.LobbyShutdown,
@@ -289,6 +289,9 @@ public class LobbyService(
         var lobbyDTO = await GetLobbyAsync(gameId, cancellationToken);
         if (lobbyDTO is null) return;
 
+        lobbyDTO.InProgress = true;
+        await lobbyRepository.UpdateLobbyAsync(gameId, lobbyDTO.MapToModel(), cancellationToken);
+
         await gameRepository.AddAsync(
             new Game
             { 
@@ -300,6 +303,19 @@ public class LobbyService(
 
         await gameStateRepository.AddAsync(gameId, Shared.Enums.GameStates.InGame, cancellationToken);
 
+        await notificationHelper.BroadcastToAllAsync(
+            new PokerAttackNotification(
+                PokerAttackNotificationType.LobbiesChanged,
+                JsonSerializer.Serialize(
+                    new LobbyEventArgs
+                    {
+                        Lobby = lobbyDTO,
+                    },
+                    JsonOptions.Get()
+                )
+            ),
+            cancellationToken
+        );
         await notificationHelper.BroadcastToGameAsync(
             gameId,
             new PokerAttackNotification(

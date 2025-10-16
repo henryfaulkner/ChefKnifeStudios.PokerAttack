@@ -89,11 +89,6 @@ public partial class ScoreboardList : ComponentBase, IDisposable
 
     void HandleItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        // Watch row changes like IsEliminating or IsEliminated
-        if (e.PropertyName == nameof(ScoreboardListItem.IsEliminating) ||
-            e.PropertyName == nameof(ScoreboardListItem.IsEliminated))
-        {
-            InvokeAsync(StateHasChanged);
-        }
+        InvokeAsync(StateHasChanged);
     }
 }

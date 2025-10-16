@@ -10,12 +10,34 @@ using System.Text.Json;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR.EventArgs;
 using ChefKnifeStudios.PokerAttack.Shared;
 using Microsoft.AspNetCore.Components;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 
+public partial class LobbyListItem : ObservableObject
+{
+    [SetsRequiredMembers]
+    public LobbyListItem(LobbyDTO lobby)
+    {
+        _gameId = lobby.GameId;
+        _hostPlayer = lobby.HostPlayer;
+        _players = lobby.Players;
+        _inProgress = lobby.InProgress;
+    }
+
+    [ObservableProperty]
+    public required string _gameId;
+    [ObservableProperty]
+    public required PlayerDTO _hostPlayer;
+    [ObservableProperty]
+    public HashSet<PlayerDTO> _players = new();
+    [ObservableProperty]
+    public bool _inProgress;
+}
+
 public interface ILobbyViewModel : IViewModel
 {
-    ObservableCollection<LobbyDTO> Lobbies { get; }
+    ObservableCollection<LobbyListItem> Lobbies { get; }
     bool IsLoadingLobbies { get; }
     Task LoadLobbiesAsync(CancellationToken cancellationToken = default);
     Task CreateLobbyAsync(PlayerDTO player, CancellationToken cancellationToken = default);
@@ -32,7 +54,7 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
     readonly NavigationManager _navigationManager;
 
     [ObservableProperty]
-    ObservableCollection<LobbyDTO> _lobbies = [];
+    ObservableCollection<LobbyListItem> _lobbies = [];
 
     [ObservableProperty]
     bool _isLoadingLobbies = false;
@@ -60,7 +82,7 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
 
         var res = await _lobbyEndpointsService.GetLobbiesAsync(cancellationToken);
         if (res.IsSuccess && res.Value is IEnumerable<LobbyDTO>) 
-            Lobbies = res.Value.ToObservableCollection();
+            Lobbies = res.Value.Select(x => new LobbyListItem(x)).ToObservableCollection();
 
         IsLoadingLobbies = false;
     }
@@ -99,12 +121,13 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
             case PokerAttackNotificationType.LobbyCreated:
                 {
                     var args = JsonSerializer.Deserialize<LobbyEventArgs>(notification.Payload!, JsonOptions.Get());
-                    Lobbies.Add(args!.Lobby);
+                    Lobbies.Add(new LobbyListItem(args!.Lobby));
                     break;
                 }
             case PokerAttackNotificationType.PlayerJoined:
             case PokerAttackNotificationType.PlayerLeft:
             case PokerAttackNotificationType.PlayerUpdated:
+            case PokerAttackNotificationType.LobbiesChanged:
                 {
                     var args = JsonSerializer.Deserialize<LobbyEventArgs>(notification.Payload!, JsonOptions.Get());
                     if (args?.Lobby is not null)
@@ -115,7 +138,7 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
 
                         if (index >= 0)
                         {
-                            Lobbies[index] = args.Lobby;
+                            Lobbies[index] = new LobbyListItem(args.Lobby);
                         }
                     }
                     break;
@@ -135,8 +158,7 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
                     var args = JsonSerializer.Deserialize<LobbyEventArgs>(notification.Payload!, JsonOptions.Get());
                     if (args is { Lobby: LobbyDTO lobby })
                     {
-                        _navigationManager
-                            .NavigateTo($"/gameplay?gameid={lobby.GameId}", replace: true);
+                        _navigationManager.NavigateTo($"/gameplay?gameid={lobby.GameId}", replace: true);
                     }
                     break;
                 }

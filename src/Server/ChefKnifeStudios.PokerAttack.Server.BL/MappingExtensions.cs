@@ -13,6 +13,7 @@ public static class MappingExtensions
         {
             GameId = gameId,
             HostPlayer = model.HostPlayer.MapToDTO(),
+            InProgress = model.InProgress,
             Players = model.Players.Select(x => x.MapToDTO()).ToHashSet(),
         };
     }
@@ -22,6 +23,7 @@ public static class MappingExtensions
         return new()
         {
             HostPlayer = dto.HostPlayer.MapToModel(),
+            InProgress = dto.InProgress,
             Players = dto.Players.Select(x => x.MapToModel()).ToHashSet(),
         };
     }

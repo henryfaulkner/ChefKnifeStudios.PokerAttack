@@ -12,7 +12,11 @@
                     <MatExpansionPanelSummary>
                         <MatExpansionPanelHeader>Lobby Id: @lobby.GameId</MatExpansionPanelHeader>
                         <MatExpansionPanelSubHeader>
-                            @if (!lobby.Players.Select(x => x.Id).Contains(ApplicationViewModel.Player.Id))
+                            @if (lobby.InProgress)
+                            {
+                                <span>MATCH IN PROGRESS</span>
+                            }
+                            else if (!lobby.Players.Select(x => x.Id).Contains(ApplicationViewModel.Player.Id))
                             {
                                 <MatButton 
                                     OnClick="() => HandleJoinLobbyPressed(lobby.GameId)" 

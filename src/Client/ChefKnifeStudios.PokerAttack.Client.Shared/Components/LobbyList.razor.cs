@@ -23,16 +23,46 @@ public partial class LobbyList : ComponentBase, IDisposable
 
         LobbyViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
         LobbyViewModel.Lobbies.CollectionChanged += HandleCollectionChanged;
+        foreach (var item in LobbyViewModel.Lobbies)
+        {
+            if (item is INotifyPropertyChanged npc)
+                npc.PropertyChanged += HandleItemPropertyChanged;
+        }
     }
 
     public void Dispose()
     {
         LobbyViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
         LobbyViewModel.Lobbies.CollectionChanged -= HandleCollectionChanged;
+        foreach (var item in LobbyViewModel.Lobbies)
+        {
+            if (item is INotifyPropertyChanged npc)
+                npc.PropertyChanged -= HandleItemPropertyChanged;
+        }
     }
 
     void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
+        // New items added?
+        if (e.NewItems is not null)
+        {
+            foreach (var item in e.NewItems)
+            {
+                if (item is INotifyPropertyChanged npc)
+                    npc.PropertyChanged += HandleItemPropertyChanged;
+            }
+        }
+
+        // Items removed?
+        if (e.OldItems is not null)
+        {
+            foreach (var item in e.OldItems)
+            {
+                if (item is INotifyPropertyChanged npc)
+                    npc.PropertyChanged -= HandleItemPropertyChanged;
+            }
+        }
+
         InvokeAsync(StateHasChanged);
     }
 
@@ -50,4 +80,9 @@ public partial class LobbyList : ComponentBase, IDisposable
 
     void HandleStartGamePressed(string gameId) =>
         _ = LobbyViewModel.StartGameAsync(gameId);
+
+    void HandleItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
 }
