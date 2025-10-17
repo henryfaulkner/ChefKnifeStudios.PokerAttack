@@ -1,11 +1,12 @@
 ﻿using ChefKnifeStudios.PokerAttack.Client.Core.Enums;
-using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using ChefKnifeStudios.PokerAttack.Shared.Enums;
+using System.Threading.Tasks;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Core.Services;
 
@@ -17,8 +18,8 @@ public interface ISignalRNotificationService
     Task JoinGameGroupAsync(string gameId);
     Task LeaveGameGroupAsync(string gameId);
     Task StartRoundAsync(string gameId, string hostId);
-    Task DealHandAsync(string playerId, int count);
     Task PlayHandAsync(string playerId, List<CardDTO> hand);
+    Task DiscardAsync(string playerId, List<CardDTO> discardCards);
     Task TransitionGameStateAsync(string playerId, string gameId, GameEvents gameEvent);
     event PokerAttackNotificationHandler? HandleNotificationReceived;
 }
@@ -140,20 +141,20 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
         await _hubConnection.InvokeAsync("StartRound", gameId, hostId);
     }
 
-    public async Task DealHandAsync(string playerId, int count)
-    {
-        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-            throw new InvalidOperationException("SignalR connection is not established.");
-
-        await _hubConnection.InvokeAsync("DealHand", playerId, count);
-    }
-
     public async Task PlayHandAsync(string playerId, List<CardDTO> hand)
     {
         if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
             throw new InvalidOperationException("SignalR connection is not established.");
 
         await _hubConnection.InvokeAsync("PlayHand", playerId, hand);
+    }
+
+    public async Task DiscardAsync(string playerId, List<CardDTO> discardCards)
+    {
+        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+            throw new InvalidOperationException("SignalR connection is not established.");
+
+        await _hubConnection.InvokeAsync("Discard", playerId, discardCards);
     }
     #endregion
 

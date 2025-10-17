@@ -119,14 +119,14 @@ public partial class ScoreboardViewModel(
 
         var me = Items.FirstOrDefault(x => x.ClientUserId == applicationViewModel.Player.Id);
         bool amILoser = Items.Any(x => x.IsEliminated && x.ClientUserId == applicationViewModel.Player.Id);
-        bool amIWinner = Items.Count == 1;
+        bool amIWinner = Items.Where(x => !x.IsEliminated).Count() == 1;
         if (amILoser)
         {
-            navigationManager.NavigateTo($"/game-over?result=loser&score={me?.Score ?? 0}", replace: true);
+            navigationManager.NavigateTo($"/game-over?result=loser", replace: true);
         }
         else if (amIWinner)
         {
-            navigationManager.NavigateTo($"/game-over?result=winner&score={me?.Score ?? 0}", replace: true);
+            navigationManager.NavigateTo($"/game-over?result=winner", replace: true);
         }
 
         await Task.CompletedTask;

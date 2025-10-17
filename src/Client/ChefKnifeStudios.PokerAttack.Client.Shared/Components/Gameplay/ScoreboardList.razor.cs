@@ -55,7 +55,7 @@ public partial class ScoreboardList : ComponentBase, IDisposable
             Task.Run(async () =>
             {
                 await ScoreboardViewModel.StartEliminatingAsync();
-                await Task.Delay(3000);
+                //await Task.Delay(3000);
                 await ScoreboardViewModel.FinishEliminatingAsync();
             });
         }
