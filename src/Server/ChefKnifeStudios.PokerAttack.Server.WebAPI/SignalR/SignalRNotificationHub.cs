@@ -1,6 +1,7 @@
 ﻿using ChefKnifeStudios.PokerAttack.Server.BL;
 using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
+using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
@@ -61,7 +62,7 @@ public class SignalRNotificationHub(
 
     public async Task StartRound(string lobbyId, string hostId)
     {
-        const int _RUN_TIME_IN_SECONDS = 5;
+        const int _RUN_TIME_IN_SECONDS = 90;
 
         var lobby = await lobbyService.GetLobbyAsync(lobbyId);
         if (lobby == null 
@@ -99,62 +100,26 @@ public class SignalRNotificationHub(
     }
 
     // Start a run (per-player deck)
-    async Task StartRun(string playerId, int runTimeInSeconds)
-    {
-        await gameService.StartPlayerRunAsync(playerId);
-
-        // Deal initial hand
-        var initialHand = await gameService.DealHandAsync(playerId, 8);
-
-        var resBody = new RunStartedDTO()
-        {
-            RunTimeInSeconds = runTimeInSeconds,
-            Cards = initialHand.Select(x => x.MapToDTO()),
-        };
-
-        await notificationHelper.SendToPlayerAsync(playerId, new PokerAttackNotification
-        (
-            PokerAttackNotificationType.RunStarted,
-            JsonSerializer.Serialize(resBody, JsonOptions.Get())
-        ));
-    }
-
-    // Deal additional cards
-    public async Task DealHand(string playerId, int count)
-    {
-        var hand = await gameService.DealHandAsync(playerId, count);
-
-        await notificationHelper.SendToPlayerAsync(playerId, new PokerAttackNotification
-        (
-            PokerAttackNotificationType.CardsDealt,
-            JsonSerializer.Serialize(hand.Select(x => x.MapToDTO()), JsonOptions.Get())
-        ));
-    }
+    async Task StartRun(string playerId, int runTimeInSeconds) =>
+        await gameService.StartPlayerRunAsync(playerId, runTimeInSeconds);
 
     // Play a hand and report score
-    public async Task PlayHand(string playerId, List<CardDTO> hand)
-    {
-        var result = await gameService.PlayHandAsync(playerId, hand);
-        var totalPlayerScore = await gameService.GetPlayerScoreAsync(playerId);
+    public async Task PlayHand(string playerId, List<CardDTO> hand) =>
+        await gameService.PlayHandAsync(playerId, hand);
 
-        if (result is null) return;
-
-        await notificationHelper.SendToPlayerAsync(playerId, new PokerAttackNotification
-        (
-            PokerAttackNotificationType.HandPlayed,
-            JsonSerializer.Serialize(result.MapToDTO(totalPlayerScore ?? 0), JsonOptions.Get())
-        ));
-    }
+    // Discard from Cards in Hand
+    public async Task Discard(string playerId, List<CardDTO> discardCards) =>
+        await gameService.DiscardAsync(playerId, discardCards);
 
     // Transition Game State and broadcast change
-    public async Task TransitionGameState(string playerId, string gameId, GameEvents gameEvent)
-    {
+    public async Task TransitionGameState(string playerId, string gameId, GameEvents gameEvent) => 
         await gameStateMachineService.TransitionAsync(playerId, gameId, gameEvent);
-        var newGameState = await gameStateMachineService.GetGameStateAsync(gameId);
-        await notificationHelper.BroadcastToGameAsync(gameId, new PokerAttackNotification
-        (
-            PokerAttackNotificationType.GameStateChanged,
-            JsonSerializer.Serialize(newGameState, JsonOptions.Get())
-        ));
-    }
+
+    // End game / clear game state
+    public async Task EndGame(string gameId) => 
+        await gameService.EndGameAsync(gameId);
+
+    // Remove Game Player game
+    public async Task LeaveGame(string gameId, string playerId) =>
+        await gameService.LeaveGameAsync(gameId, playerId);
 }

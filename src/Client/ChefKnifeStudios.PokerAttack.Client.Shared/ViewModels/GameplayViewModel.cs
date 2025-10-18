@@ -1,4 +1,5 @@
-﻿using ChefKnifeStudios.PokerAttack.Client.Core.Services;
+﻿using ChefKnifeStudios.PokerAttack.Client.Core.Extensions;
+using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
@@ -57,6 +58,15 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 
     CancellationTokenSource _timerToken;
 
+    enum SortMode
+    {
+        None,
+        ByRank,
+        BySuit
+    }
+
+    SortMode _currentSortMode = SortMode.None;
+
     public GameplayViewModel(
         ISignalRNotificationService signalRNotificationService,
         IToastService toastService,
@@ -64,13 +74,14 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     {
         _signalRNotificationService = signalRNotificationService;
         _toastService = toastService;
+        _eventNotificationService = eventNotificationService;
 
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
+
         _timerToken = SetInterval(() =>
         {
             if (RunTimeInSeconds > 0) RunTimeInSeconds--;
         }, 1000);
-        _eventNotificationService = eventNotificationService;
     }
 
     public void Dispose()
@@ -96,11 +107,8 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 
         var selectedCards = CardsInHand.Where(x => x.IsSelected).ToList();
 
-        if (selectedCards.Count() < 1)
-        {
-            return;
-        }
-        if (selectedCards.Count() > 5)
+        if (selectedCards.Count < 1) return;
+        if (selectedCards.Count > 5)
         {
             _toastService.ShowWarning("A Hand has a 5 card limit");
             return;
@@ -108,13 +116,8 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 
         await _signalRNotificationService.PlayHandAsync(
             playerId,
-            selectedCards
-                .Select(x => new CardDTO { Rank = x.Rank, Suit = x.Suit, })
-                .ToList()
+            selectedCards.Select(x => new CardDTO { Rank = x.Rank, Suit = x.Suit }).ToList()
         );
-
-        foreach (var selectedCard in selectedCards) CardsInHand.Remove(selectedCard);
-        await _signalRNotificationService.DealHandAsync(playerId, selectedCards.Count());
         AvailablePlayHands--;
     }
 
@@ -128,13 +131,12 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 
         var selectedCards = CardsInHand.Where(x => x.IsSelected).ToList();
 
-        if (selectedCards.Count() < 1)
-        {
-            return;
-        }
+        if (selectedCards.Count < 1) return;
 
-        foreach (var selectedCard in selectedCards) CardsInHand.Remove(selectedCard);
-        await _signalRNotificationService.DealHandAsync(playerId, selectedCards.Count());
+        await _signalRNotificationService.DiscardAsync(
+            playerId,
+            selectedCards.Select(x => new CardDTO { Rank = x.Rank, Suit = x.Suit }).ToList()
+        );
         AvailableDiscards--;
     }
 
@@ -144,21 +146,29 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
             CardsInHand[index].IsSelected = !CardsInHand[index].IsSelected;
     }
 
+    // --- Sort methods updated to track current mode ---
     public void SortByRank()
     {
-        // Sort ascending by rank, then by suit to make ordering stable
-        var sorted = CardsInHand.OrderBy(c => c.Rank).ThenBy(c => c.Suit).ToList();
-
-        // Reorder the observable collection (not replace it, to trigger UI update correctly)
-        CardsInHand.Clear();
-        foreach (var card in sorted)
-            CardsInHand.Add(card);
+        _currentSortMode = SortMode.ByRank;
+        ApplySort();
     }
 
     public void SortBySuit()
     {
-        // Sort ascending by suit, then by rank
-        var sorted = CardsInHand.OrderBy(c => c.Suit).ThenBy(c => c.Rank).ToList();
+        _currentSortMode = SortMode.BySuit;
+        ApplySort();
+    }
+
+    private void ApplySort()
+    {
+        if (_currentSortMode == SortMode.None) return;
+
+        var sorted = _currentSortMode switch
+        {
+            SortMode.ByRank => CardsInHand.OrderBy(c => c.Rank).ThenBy(c => c.Suit).ToList(),
+            SortMode.BySuit => CardsInHand.OrderBy(c => c.Suit).ThenBy(c => c.Rank).ToList(),
+            _ => CardsInHand.ToList()
+        };
 
         CardsInHand.Clear();
         foreach (var card in sorted)
@@ -168,10 +178,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     public void ClearSelections()
     {
         foreach (var card in CardsInHand)
-        {
-            if (card.IsSelected)
-                card.IsSelected = false;
-        }
+            card.IsSelected = false;
     }
 
     Task HandleSignalRNotificationReceived(PokerAttackNotification notification)
@@ -184,22 +191,18 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                     if (args is RunStartedDTO runStartedDTO)
                     {
                         RunTimeInSeconds = runStartedDTO.RunTimeInSeconds;
-                        foreach (CardItem card in runStartedDTO.Cards.Select(x => new CardItem(x)))
-                        {
-                            CardsInHand.Add(card);
-                        }
+                        CardsInHand = runStartedDTO.Cards.Select(x => new CardItem(x)).ToObservableCollection();
+                        ApplySort();
                     }
                     break;
                 }
             case PokerAttackNotificationType.CardsDealt:
                 {
                     var args = JsonSerializer.Deserialize<IEnumerable<CardDTO>>(notification.Payload!, JsonOptions.Get());
-                    if (args is IEnumerable<CardDTO> newCards)
+                    if (args != null)
                     {
-                        foreach (CardItem card in newCards.Select(x => new CardItem(x)))
-                        {
-                            CardsInHand.Add(card);
-                        }
+                        CardsInHand = args.Select(x => new CardItem(x)).ToObservableCollection();
+                        ApplySort();
                     }
                     break;
                 }
@@ -208,8 +211,10 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                     var args = JsonSerializer.Deserialize<HandResultDTO>(notification.Payload!, JsonOptions.Get());
                     if (args is HandResultDTO handResult)
                     {
-                        
-                        _toastService.ShowSuccess($"({string.Join(" + ", handResult.CardValues)} + {handResult.BaseChips}) x {handResult.BaseMultiplier}", $"{handResult.HandType.GetDescription()} - {handResult.HandScore}");
+                        _toastService.ShowSuccess(
+                            $"({string.Join(" + ", handResult.CardValues)} + {handResult.BaseChips}) x {handResult.BaseMultiplier}",
+                            $"{handResult.HandType.GetDescription()} - {handResult.HandScore}"
+                        );
                         Score = handResult.TotalPlayerScore;
                     }
                     break;
@@ -219,8 +224,8 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                     _eventNotificationService.PostEvent(
                         this,
                         new GameTransitionEventArgs
-                        { 
-                            Data = new () { GameId = GameId, GameEvent = GameEvents.Next },
+                        {
+                            Data = new() { GameId = GameId, GameEvent = GameEvents.Next },
                         }
                     );
                     break;
@@ -231,27 +236,26 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 
     static CancellationTokenSource SetInterval(Action action, int interval)
     {
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        var cts = new CancellationTokenSource();
+        var token = cts.Token;
 
         Task.Run(async () =>
         {
-            while (!cancellationToken.IsCancellationRequested)
+            while (!token.IsCancellationRequested)
             {
                 try
                 {
                     action();
-                    await Task.Delay(interval, cancellationToken);
+                    await Task.Delay(interval, token);
                 }
-                catch (TaskCanceledException ex)
+                catch (TaskCanceledException)
                 {
-                    // Task was canceled
-                    Console.WriteLine($"SetInterval still running after cancellation. {ex.Message}");
                     break;
                 }
             }
-        }, cancellationToken);
+        }, token);
 
-        return cancellationTokenSource;
+        return cts;
     }
 }
+

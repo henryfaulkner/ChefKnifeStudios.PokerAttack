@@ -32,7 +32,8 @@ public partial class ScoreboardList : ComponentBase, IDisposable
         }
         GameStateMachineViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
 
-        _ = ScoreboardViewModel.LoadLatestRoundAsync(GameId);
+        ScoreboardViewModel.Init(GameId);
+        _ = ScoreboardViewModel.LoadLatestRoundAsync();
     }
 
     public void Dispose()
@@ -55,7 +56,7 @@ public partial class ScoreboardList : ComponentBase, IDisposable
             Task.Run(async () =>
             {
                 await ScoreboardViewModel.StartEliminatingAsync();
-                await Task.Delay(3000);
+                //await Task.Delay(3000);
                 await ScoreboardViewModel.FinishEliminatingAsync();
             });
         }

@@ -1,4 +1,5 @@
 ﻿using ChefKnifeStudios.PokerAttack.Client.Core.Extensions;
+using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -32,9 +33,11 @@ public partial class ScoreboardListItem : ObservableObject
 
 public interface IScoreboardViewModel : IViewModel
 {
+    string GameId { get; }
     bool IsLoading { get; }
     ObservableCollection<ScoreboardListItem> Items { get; }
-    Task LoadLatestRoundAsync(string lobbyId, CancellationToken cancellationToken = default);
+    void Init(string gameId);
+    Task LoadLatestRoundAsync(CancellationToken cancellationToken = default);
     Task StartEliminatingAsync(CancellationToken cancellationToken = default);
     Task FinishEliminatingAsync(CancellationToken cancellationToken = default);
 }
@@ -45,15 +48,24 @@ public partial class ScoreboardViewModel(
     NavigationManager navigationManager) : BaseViewModel, IScoreboardViewModel
 {
     [ObservableProperty]
+    string? _gameId;
+
+    [ObservableProperty]
     bool _isLoading;
 
     [ObservableProperty]
     ObservableCollection<ScoreboardListItem> _items = [];
 
-    public async Task LoadLatestRoundAsync(string lobbyId, CancellationToken cancellationToken = default)
+    public void Init(string gameId)
     {
+        GameId = gameId;
+    }
+
+    public async Task LoadLatestRoundAsync(CancellationToken cancellationToken = default)
+    {
+        if (GameId is null) throw new ApplicationException("ScoreboardViewModel must Init before loading rounds.");
         IsLoading = true;
-        var round = (await gameplayEndpointsService.GetLatestRoundAsync(lobbyId)).Value;
+        var round = (await gameplayEndpointsService.GetLatestRoundAsync(GameId)).Value;
         Items = round?.Scores.Select(x => new ScoreboardListItem(x)).ToObservableCollection() ?? [];
         IsLoading = false;
     }
@@ -119,14 +131,14 @@ public partial class ScoreboardViewModel(
 
         var me = Items.FirstOrDefault(x => x.ClientUserId == applicationViewModel.Player.Id);
         bool amILoser = Items.Any(x => x.IsEliminated && x.ClientUserId == applicationViewModel.Player.Id);
-        bool amIWinner = Items.Count == 1;
+        bool amIWinner = Items.Where(x => !x.IsEliminated).Count() == 1;
         if (amILoser)
         {
-            navigationManager.NavigateTo($"/game-over?result=loser&score={me?.Score ?? 0}", replace: true);
+            navigationManager.NavigateTo($"/game-over?result=loser&gameid={GameId}", replace: true);
         }
         else if (amIWinner)
         {
-            navigationManager.NavigateTo($"/game-over?result=winner&score={me?.Score ?? 0}", replace: true);
+            navigationManager.NavigateTo($"/game-over?result=winner&gameid={GameId}", replace: true);
         }
 
         await Task.CompletedTask;
