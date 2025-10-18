@@ -69,7 +69,8 @@ app.UseCors(policy =>
 app.MapHub<SignalRNotificationHub>("/cks-notification");
 app.MapTestEndpoints()
    .MapLobbyEndpoints()
-   .MapGameplayEndpoints();
+   .MapGameplayEndpoints()
+   .MapPlayerPowerEndpoints();
 
 app.MapDefaultEndpoints();
 

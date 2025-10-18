@@ -23,8 +23,16 @@ public class PokerAttackApiEndpoints
 
     public class Gameplay
     {
-        const string EndpointGroup = "/gameply";
+        const string EndpointGroup = "/gameplay";
 
         public const string GetLatestRound = $"{EndpointGroup}/latest-round/{{gameId}}";
+    }
+
+    public class PlayerPower
+    {
+        const string EndpointGroup = "/player-power";
+
+        public const string GetSomePowers = $"{EndpointGroup}/{{count:int}}";
+        public const string SelectPlayerPower = $"{EndpointGroup}/{{playerId}}/{{powerId}}";
     }
 }

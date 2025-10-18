@@ -9,7 +9,7 @@ namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
 public interface IPlayerPowerService
 {
     IEnumerable<PlayerPowerDTO> GetSomePowers(int count);
-    Task SelectPowerAsync(string playerId, string powerId, CancellationToken ct = default);
+    Task SelectPlayerPowerAsync(string playerId, string powerId, CancellationToken ct = default);
     void Activate(GamePlayer source, GamePlayer? target = null);
 }
 
@@ -24,7 +24,7 @@ public class PlayerPowerService(
         return powerRepository.GetRandomNumber(count).Select(x => x.MapToDTO());
     }
 
-    public async Task SelectPowerAsync(string playerId, string powerId, CancellationToken ct = default)
+    public async Task SelectPlayerPowerAsync(string playerId, string powerId, CancellationToken ct = default)
     {
         var gamePlayer = await gamePlayerRepository.GetAsync(playerId, ct)
             ?? throw new KeyNotFoundException("Game Player not found");

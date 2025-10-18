@@ -49,6 +49,7 @@ builder.Services.AddScoped<ICardImageService, CardImageService>();
 builder.Services.AddTransient<ITestEndpointsService, TestEndpointsService>();
 builder.Services.AddTransient<ILobbyEndpointsService, LobbyEndpointsService>();
 builder.Services.AddTransient<IGameplayEndpointsService, GameplayEndpointsService>();
+builder.Services.AddTransient<IPlayerPowerEndpointsService, PlayerPowerEndpointsService>();
 builder.Services.AddTransient<IToastService, ToastService>();
 
 builder.Services.AddMatBlazor();
@@ -75,6 +76,7 @@ builder.Services.AddTransient<IGameStateMachineViewModel, GameStateMachineViewMo
 builder.Services.AddTransient<ILobbyViewModel, LobbyViewModel>();
 builder.Services.AddTransient<IPlayerViewModel, PlayerViewModel>();
 builder.Services.AddTransient<IScoreboardViewModel, ScoreboardViewModel>();
+builder.Services.AddTransient<IPlayerPowerListViewModel, PlayerPowerListViewModel>();
 #endregion
 
 await builder.Build().RunAsync();
