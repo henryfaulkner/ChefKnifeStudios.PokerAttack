@@ -1,5 +1,6 @@
 ﻿using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Server.Data.Models;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
 
@@ -52,6 +53,7 @@ public static class MappingExtensions
         {
             Suit = model.Suit,
             Rank = model.Rank,
+            IsFaceDown = model.IsFaceDown,
         };
     }
 
@@ -61,6 +63,7 @@ public static class MappingExtensions
         {
             Suit = dto.Suit,
             Rank = dto.Rank,
+            IsFaceDown = dto.IsFaceDown,
         };
     }
 
@@ -89,14 +92,14 @@ public static class MappingExtensions
         };
     }
 
-    public static RoundDTO MapToDTO(this Round round)
+    public static RoundDTO MapToDTO(this Round model)
     {
-        if (round == null)
-            throw new ArgumentNullException(nameof(round));
+        if (model == null)
+            throw new ArgumentNullException(nameof(model));
 
         var dto = new RoundDTO
         {
-            Scores = round.RoundScores?
+            Scores = model.RoundScores?
                 .Select(rs => new RoundDTO.RoundScoreDTO
                 {
                     ClientUserId = rs.ClientUserId,
@@ -107,5 +110,16 @@ public static class MappingExtensions
         };
 
         return dto;
+    }
+
+    public static PlayerPowerDTO MapToDTO(this PlayerPower model)
+    {
+        return new PlayerPowerDTO
+        {
+            Id = model.Id,
+            Name = model.Name,
+            Description = model.Description,
+            PointCost = model.PointCost,
+        };
     }
 }

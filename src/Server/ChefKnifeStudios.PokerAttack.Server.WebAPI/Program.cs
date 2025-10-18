@@ -1,3 +1,4 @@
+using ChefKnifeStudios.PokerAttack.Server.Infrastructure.PlayerPowers;
 using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces.Repos;
@@ -32,6 +33,11 @@ builder.Services.AddSingleton<IGameStateRepository, InMemoryGameStateRepository>
 builder.Services.AddScoped<ILobbyService, LobbyService>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IGameStateMachineService, GameStateMachineService>();
+
+// Register Player Powers
+builder.Services.AddSingleton<IPlayerPowerRepository, PlayerPowerRepository>();
+builder.Services.AddSingleton<IPlayerPowerEffectRegistry, PlayerPowerEffectRegistry>();
+builder.Services.AddScoped<IPlayerPowerService, PlayerPowerService>();
 
 var app = builder.Build();
 
