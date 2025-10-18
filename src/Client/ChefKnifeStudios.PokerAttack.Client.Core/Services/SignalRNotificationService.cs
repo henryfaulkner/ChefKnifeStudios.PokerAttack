@@ -14,6 +14,8 @@ public delegate Task PokerAttackNotificationHandler(PokerAttackNotification noti
 
 public interface ISignalRNotificationService
 {
+    event PokerAttackNotificationHandler? HandleNotificationReceived;
+
     Task InitAsync(string playerId);
     Task JoinGameGroupAsync(string gameId);
     Task LeaveGameGroupAsync(string gameId);
@@ -21,7 +23,10 @@ public interface ISignalRNotificationService
     Task PlayHandAsync(string playerId, List<CardDTO> hand);
     Task DiscardAsync(string playerId, List<CardDTO> discardCards);
     Task TransitionGameStateAsync(string playerId, string gameId, GameEvents gameEvent);
-    event PokerAttackNotificationHandler? HandleNotificationReceived;
+
+    // TODO: remove for server-run implimentation
+    Task EndGameAsync(string gameId);
+    Task LeaveGameAsync(string gameId, string playerId);
 }
 
 public class SignalRNotificationService : ISignalRNotificationService, IDisposable
@@ -164,5 +169,21 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
             throw new InvalidOperationException("SignalR connection is not established.");
 
         await _hubConnection.InvokeAsync("TransitionGameState", playerId, gameId, gameEvent);
+    }
+
+    public async Task EndGameAsync(string gameId)
+    {
+        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+            throw new InvalidOperationException("SignalR connection is not established.");
+
+        await _hubConnection.InvokeAsync("EndGame", gameId);
+    }
+
+    public async Task LeaveGameAsync(string gameId, string playerId)
+    {
+        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+            throw new InvalidOperationException("SignalR connection is not established.");
+
+        await _hubConnection.InvokeAsync("LeaveGame", gameId, playerId);
     }
 }

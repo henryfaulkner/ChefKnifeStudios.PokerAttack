@@ -128,23 +128,6 @@ public class LobbyService(
         {
             // Host leaving shuts down lobby
             await ShutDownLobbyAsync(lobbyKvp.Value.Key, cancellationToken);
-
-            await notificationHelper.BroadcastToAllAsync(
-                new PokerAttackNotification(
-                    PokerAttackNotificationType.LobbyShutdown,
-                    JsonSerializer.Serialize(
-                        new LobbyEventArgs() 
-                        { 
-                            Lobby = new LobbyDTO() 
-                            { 
-                                GameId = lobbyKvp.Value.Key, 
-                                HostPlayer = lobbyKvp.Value.Value.HostPlayer.MapToDTO(), 
-                            } 
-                        }, JsonOptions.Get()
-                    )
-                ),
-                cancellationToken
-            );
         }
         else
         {
@@ -216,7 +199,17 @@ public class LobbyService(
         await notificationHelper.BroadcastToAllAsync(
             new PokerAttackNotification(
                 PokerAttackNotificationType.LobbyShutdown,
-                JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = new LobbyDTO() { GameId = gameId, HostPlayer = lobby.HostPlayer.MapToDTO(), } }, JsonOptions.Get())),
+                JsonSerializer.Serialize(
+                    new LobbyEventArgs()
+                    {
+                        Lobby = new LobbyDTO()
+                        {
+                            GameId = gameId,
+                            HostPlayer = lobby.HostPlayer.MapToDTO(),
+                        }
+                    }, JsonOptions.Get()
+                )
+            ),
             cancellationToken
         );
 

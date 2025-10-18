@@ -6,9 +6,14 @@ using ChefKnifeStudios.PokerAttack.Server.Data.Repos;
 using ChefKnifeStudios.PokerAttack.Server.Data.Specifications;
 using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR.EventArgs;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using System.Threading;
+using static ChefKnifeStudios.PokerAttack.Shared.PokerAttackApiEndpoints;
 
 namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
 
@@ -20,9 +25,12 @@ public interface IGameService
     Task<int> GetPlayerScoreAsync(string playerId, CancellationToken ct = default);
     Task EndRoundAsync(string lobbyId, CancellationToken ct = default);
     Task<RoundDTO> GetLatestRoundFromGame(string lobbyId, CancellationToken ct = default);
+    Task EndGameAsync(string gameId, CancellationToken ct = default);
+    Task LeaveGameAsync(string gameId, string playerId, CancellationToken ct = default);
 }
 
 public class GameService(
+    ILogger<GameService> logger,
     ILobbyRepository lobbyRepository,
     IGamePlayerRepository gamePlayerRepository,
     IRepository<Game> gameRepository,
@@ -166,6 +174,49 @@ public class GameService(
         return latestRound.MapToDTO();
     }
 
+    public async Task EndGameAsync(string gameId, CancellationToken ct = default)
+    {
+        var lobby = await lobbyRepository.GetLobbyAsync(gameId, ct)
+            ?? throw new ApplicationException($"Lobby not found: Lobby Id {gameId}");
+        
+        foreach (var gamePlayer in lobby.Players) await gamePlayerRepository.DeleteAsync(gamePlayer.Id, ct);
+        await lobbyRepository.RemoveLobbyAsync(gameId, ct);
+
+        await notificationHelper.BroadcastToAllAsync(
+            new PokerAttackNotification(
+                PokerAttackNotificationType.LobbyShutdown,
+                JsonSerializer.Serialize(
+                    new LobbyEventArgs()
+                    {
+                        Lobby = new LobbyDTO()
+                        {
+                            GameId = gameId,
+                            HostPlayer = lobby.HostPlayer.MapToDTO(),
+                        }
+                    }, JsonOptions.Get()
+                )
+            ),
+            ct
+        );
+    }
+
+    public async Task LeaveGameAsync(string gameId, string playerId, CancellationToken ct = default)
+    {
+        try
+        {
+            var lobby = await lobbyRepository.GetLobbyAsync(gameId, ct)
+                ?? throw new ApplicationException($"Lobby not found: Lobby Id {gameId}");
+
+            lobby.Players.RemoveWhere(x => x.Id == playerId);
+            await gamePlayerRepository.DeleteAsync(playerId, ct);
+            await lobbyRepository.UpdateLobbyAsync(gameId, lobby, ct);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Game ended before loser could leave (expected race-condition at game end).");
+        }
+    }
+
     async Task ReplenishHandAsync(string playerId, CancellationToken ct = default)
     {
         var gamePlayer = await gamePlayerRepository.GetAsync(playerId, ct)
@@ -175,6 +226,7 @@ public class GameService(
         for (int i = 0; i < numCardsToAdd; i++)
             gamePlayer.CardsInHand.Add(deck.PullCard());
         await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
+
         await notificationHelper.SendToPlayerAsync(playerId, new PokerAttackNotification
         (
             PokerAttackNotificationType.CardsDealt,

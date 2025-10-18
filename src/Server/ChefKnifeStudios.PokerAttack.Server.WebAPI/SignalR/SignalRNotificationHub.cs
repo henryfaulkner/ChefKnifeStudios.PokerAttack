@@ -1,6 +1,7 @@
 ﻿using ChefKnifeStudios.PokerAttack.Server.BL;
 using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
+using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
@@ -113,4 +114,12 @@ public class SignalRNotificationHub(
     // Transition Game State and broadcast change
     public async Task TransitionGameState(string playerId, string gameId, GameEvents gameEvent) => 
         await gameStateMachineService.TransitionAsync(playerId, gameId, gameEvent);
+
+    // End game / clear game state
+    public async Task EndGame(string gameId) => 
+        await gameService.EndGameAsync(gameId);
+
+    // Remove Game Player game
+    public async Task LeaveGame(string gameId, string playerId) =>
+        await gameService.LeaveGameAsync(gameId, playerId);
 }
