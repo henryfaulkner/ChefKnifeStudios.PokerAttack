@@ -24,6 +24,7 @@ public interface IGameplayViewModel : IViewModel
     bool ArePlayerPowersReadied { get; }
 
     void Init(string gameId);
+    Task StartGameAsync(string playerId, CancellationToken cancellationToken = default);
     Task StartRoundAsync(string playerId, CancellationToken cancellationToken = default);
     Task PlaySelectedCardsAsync(string playerId, CancellationToken cancellationToken = default);
     Task DiscardSelectedCardsAsync(string playerId, CancellationToken cancellationToken = default);
@@ -95,6 +96,11 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     }
 
     public void Init(string gameId) => GameId = gameId;
+
+    public async Task StartGameAsync(string playerId, CancellationToken cancellationToken = default)
+    {
+        await _signalRNotificationService.StartGameAsync(GameId, playerId);
+    }
 
     public async Task StartRoundAsync(string playerId, CancellationToken cancellationToken = default)
     {

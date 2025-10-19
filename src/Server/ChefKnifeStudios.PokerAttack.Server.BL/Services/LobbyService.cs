@@ -294,7 +294,7 @@ public class LobbyService(
             cancellationToken
         );
 
-        await gameStateRepository.AddAsync(gameId, Shared.Enums.GameStates.InGame, cancellationToken);
+        await gameStateRepository.AddAsync(gameId, Shared.Enums.GameStates.GameStart, cancellationToken);
 
         await notificationHelper.BroadcastToAllAsync(
             new PokerAttackNotification(

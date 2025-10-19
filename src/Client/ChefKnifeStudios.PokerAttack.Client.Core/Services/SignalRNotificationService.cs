@@ -19,6 +19,7 @@ public interface ISignalRNotificationService
     Task InitAsync(string playerId);
     Task JoinGameGroupAsync(string gameId);
     Task LeaveGameGroupAsync(string gameId);
+    Task StartGameAsync(string gameId, string hostId);
     Task StartRoundAsync(string gameId, string hostId);
     Task PlayHandAsync(string playerId, List<CardDTO> hand);
     Task DiscardAsync(string playerId, List<CardDTO> discardCards);
@@ -138,6 +139,14 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
     #endregion
 
     #region Gameplay Notifications
+    public async Task StartGameAsync(string gameId, string hostId)
+    {
+        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+            throw new InvalidOperationException("SignalR connection is not established.");
+
+        await _hubConnection.InvokeAsync("StartGame", gameId, hostId);
+    }
+
     public async Task StartRoundAsync(string gameId, string hostId)
     {
         if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)

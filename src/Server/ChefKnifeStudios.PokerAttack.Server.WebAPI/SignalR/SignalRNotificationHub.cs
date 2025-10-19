@@ -1,15 +1,10 @@
-﻿using ChefKnifeStudios.PokerAttack.Server.BL;
-using ChefKnifeStudios.PokerAttack.Server.BL.Services;
+﻿using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
-using ChefKnifeStudios.PokerAttack.Server.Core.Models;
-using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using System.Linq;
-using System.Text.Json;
 
 namespace ChefKnifeStudios.PokerAttack.Server.WebAPI.SignalR;
 
@@ -59,6 +54,14 @@ public class SignalRNotificationHub(
     // -------------------------
     // Game-specific methods
     // -------------------------
+    public async Task StartGame(string lobbyId, string hostId)
+    {
+        var lobby = await lobbyService.GetLobbyAsync(lobbyId);
+        if (lobby == null
+            || !lobby.HostPlayer.Id.Equals(hostId, StringComparison.InvariantCultureIgnoreCase)) return;
+
+        await gameService.StartGameAsync(lobbyId);
+    }
 
     public async Task StartRound(string lobbyId, string hostId)
     {

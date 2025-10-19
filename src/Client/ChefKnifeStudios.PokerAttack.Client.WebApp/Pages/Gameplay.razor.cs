@@ -56,7 +56,7 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
         await base.OnInitializedAsync();
 
         GameplayViewModel.Init(GameId);
-        await GameplayViewModel.StartRoundAsync(ApplicationViewModel.Player.Id);
+        await GameplayViewModel.StartGameAsync(ApplicationViewModel.Player.Id);
 
         GameplayViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
         GameplayViewModel.CardsInHand.CollectionChanged += CardsInHand_CollectionChanged;
@@ -94,6 +94,13 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
     void ViewModel_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (_subscriptions.Contains(e.PropertyName) is false) return;
+        if (sender is IGameStateMachineViewModel && e.PropertyName == nameof(IGameStateMachineViewModel.GameState))
+        {
+            if (GameStateMachineViewModel.GameState == GameStates.InGame)
+            {
+                Task.Run(async () => await GameplayViewModel.StartRoundAsync(ApplicationViewModel.Player.Id));
+            }
+        }
         Task.Run(async () => await InvokeAsync(StateHasChanged));
     }
 
