@@ -11,7 +11,7 @@ namespace ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 public interface IPlayerPowerEndpointsService
 {
     Task<Result<IEnumerable<PlayerPowerDTO>>> GetSomePowersAsync(CancellationToken cancellationToken = default);
-    Task<Result<Discard>> SelectPlayerPowerAsync(string playerId, string powerId, CancellationToken cancellationToken = default);
+    Task<Result<Discard>> SelectPlayerPowerAsync(string gameId, string playerId, string powerId, CancellationToken cancellationToken = default);
 }
 
 public class PlayerPowerEndpointsService : IPlayerPowerEndpointsService
@@ -32,7 +32,7 @@ public class PlayerPowerEndpointsService : IPlayerPowerEndpointsService
         try
         {
             var res = await _httpService.GetAsync<IEnumerable<PlayerPowerDTO>>(
-                Endpoints.GetSomePowers,
+                Endpoints.GetSomePowers.FormatRoute(3),
                 cancellationToken
             );
             return res.LogErrors(_logger, $"PlayerPower GetSomePowersAsync call.");
@@ -44,12 +44,12 @@ public class PlayerPowerEndpointsService : IPlayerPowerEndpointsService
         }
     }
 
-    public async Task<Result<Discard>> SelectPlayerPowerAsync(string playerId, string powerId, CancellationToken cancellationToken = default)
+    public async Task<Result<Discard>> SelectPlayerPowerAsync(string gameId, string playerId, string powerId, CancellationToken cancellationToken = default)
     {
         try
         {
             var res = await _httpService.GetAsync<Discard>(
-                Endpoints.SelectPlayerPower.FormatRoute(playerId).FormatRoute(powerId),
+                Endpoints.SelectPlayerPower.FormatRoute(gameId).FormatRoute(playerId).FormatRoute(powerId),
                 cancellationToken
             );
             return res.LogErrors(_logger, $"PlayerPower SelectPlayerPowerAsync call.");

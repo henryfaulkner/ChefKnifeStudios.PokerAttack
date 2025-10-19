@@ -21,6 +21,7 @@ public interface IGameplayViewModel : IViewModel
     ObservableCollection<CardItem> CardsInHand { get; }
     int AvailablePlayHands { get; }
     int AvailableDiscards { get; }
+    bool ArePlayerPowersReadied { get; }
 
     void Init(string gameId);
     Task StartRoundAsync(string playerId, CancellationToken cancellationToken = default);
@@ -55,6 +56,9 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 
     [ObservableProperty]
     int _availableDiscards = 5;
+
+    [ObservableProperty]
+    bool _arePlayerPowersReadied = false;
 
     CancellationTokenSource _timerToken;
 
@@ -228,6 +232,11 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                             Data = new() { GameId = GameId, GameEvent = GameEvents.Next },
                         }
                     );
+                    break;
+                }
+            case PokerAttackNotificationType.PlayerPowersReadied:
+                {
+                    ArePlayerPowersReadied = true;
                     break;
                 }
         }

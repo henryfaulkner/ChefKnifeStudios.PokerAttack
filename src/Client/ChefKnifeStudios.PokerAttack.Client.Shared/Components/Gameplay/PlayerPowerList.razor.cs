@@ -5,40 +5,40 @@ using System.ComponentModel;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.Gameplay;
 
-public partial class ScoreboardList : ComponentBase, IDisposable
+public partial class PlayerPowerList : ComponentBase
 {
-    [Parameter] public required string GameId { get; set; } = null!;
+    [Parameter] public required string GameId { get; set; }
     [CascadingParameter] public IGameStateMachineViewModel GameStateMachineViewModel { get; set; } = null!;
-    [Inject] IScoreboardViewModel ScoreboardViewModel { get; set; } = null!;
+    [Inject] IPlayerPowerListViewModel PlayerPowerListViewModel { get; set; } = null!;
 
     readonly string[] _subscriptions =
     [
-        nameof(IScoreboardViewModel.IsLoading),
-        nameof(IScoreboardViewModel.Items),
+        nameof(IPlayerPowerListViewModel.IsLoading),
+        nameof(IPlayerPowerListViewModel.Items),
         nameof(IGameStateMachineViewModel.GameState),
     ];
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        ScoreboardViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
-        ScoreboardViewModel.Items.CollectionChanged += HandleCollectionChanged;
-        foreach (var item in ScoreboardViewModel.Items)
+        PlayerPowerListViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
+        PlayerPowerListViewModel.Items.CollectionChanged += HandleCollectionChanged;
+        foreach (var item in PlayerPowerListViewModel.Items)
         {
             if (item is INotifyPropertyChanged npc)
                 npc.PropertyChanged += HandleItemPropertyChanged;
         }
         GameStateMachineViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
 
-        ScoreboardViewModel.Init(GameId);
-        _ = ScoreboardViewModel.LoadLatestRoundAsync();
+        PlayerPowerListViewModel.Init(GameId);
+        _ = PlayerPowerListViewModel.LoadItemsAsync();
     }
 
     public void Dispose()
     {
-        ScoreboardViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
-        ScoreboardViewModel.Items.CollectionChanged -= HandleCollectionChanged;
-        foreach (var item in ScoreboardViewModel.Items)
+        PlayerPowerListViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
+        PlayerPowerListViewModel.Items.CollectionChanged -= HandleCollectionChanged;
+        foreach (var item in PlayerPowerListViewModel.Items)
         {
             if (item is INotifyPropertyChanged npc)
                 npc.PropertyChanged -= HandleItemPropertyChanged;
@@ -49,15 +49,6 @@ public partial class ScoreboardList : ComponentBase, IDisposable
     void ViewModel_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName is null || _subscriptions.Contains(e.PropertyName) is false) return;
-        if (sender is IGameStateMachineViewModel && e.PropertyName.Equals(nameof(IGameStateMachineViewModel.GameState)))
-        {
-            Task.Run(async () =>
-            {
-                await ScoreboardViewModel.StartEliminatingAsync();
-                //await Task.Delay(3000);
-                await ScoreboardViewModel.FinishEliminatingAsync();
-            });
-        }
         Task.Run(async () => await InvokeAsync(StateHasChanged));
     }
 
@@ -90,4 +81,7 @@ public partial class ScoreboardList : ComponentBase, IDisposable
     {
         InvokeAsync(StateHasChanged);
     }
+
+    void HandlePowerSelected(PlayerPowerListItem playerPower) =>
+        PlayerPowerListViewModel.SubmitSelectedItemAsync(playerPower);
 }

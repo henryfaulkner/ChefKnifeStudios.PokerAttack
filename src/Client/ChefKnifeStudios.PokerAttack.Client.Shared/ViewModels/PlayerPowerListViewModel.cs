@@ -32,10 +32,12 @@ public partial class PlayerPowerListItem : ObservableObject
 
 public interface IPlayerPowerListViewModel : IViewModel
 {
+    string GameId { get; }
     bool IsLoading { get; }
     ObservableCollection<PlayerPowerListItem> Items { get; }
+    void Init(string gameId);
     Task LoadItemsAsync(CancellationToken cancellationToken = default);
-    Task SubmitSelectedItemAsync(CancellationToken cancellationToken = default);
+    Task SubmitSelectedItemAsync(PlayerPowerListItem playerPower, CancellationToken cancellationToken = default);
 }
 
 public partial class PlayerPowerListViewModel(
@@ -44,10 +46,18 @@ public partial class PlayerPowerListViewModel(
     IToastService toastService) : BaseViewModel, IPlayerPowerListViewModel
 {
     [ObservableProperty]
+    string? _gameId;
+
+    [ObservableProperty]
     bool _isLoading;
 
     [ObservableProperty]
     ObservableCollection<PlayerPowerListItem> _items = [];
+
+    public void Init(string gameId)
+    {
+        GameId = gameId;
+    }
 
     public async Task LoadItemsAsync(CancellationToken cancellationToken = default)
     {
@@ -57,19 +67,21 @@ public partial class PlayerPowerListViewModel(
         IsLoading = false;
     }
 
-    public async Task SubmitSelectedItemAsync(CancellationToken cancellationToken = default)
+    public async Task SubmitSelectedItemAsync(PlayerPowerListItem playerPower, CancellationToken cancellationToken = default)
     {
+        if (GameId is null) throw new ApplicationException("ScoreboardViewModel must Init before loading rounds.");
         IsLoading = true;
-        var selectedPower = Items.FirstOrDefault(x => x.IsSelected);
-        if (selectedPower is null)
+        playerPower.IsSelected = true;
+        if (playerPower is null)
         {
             toastService.ShowWarning("Select a power");
             return;
         }
 
         await playerPowerEndpointsService.SelectPlayerPowerAsync(
+            GameId,
             applicationViewModel.Player.Id,
-            selectedPower.Id,
+            playerPower.Id,
             cancellationToken
         );
         IsLoading = false;

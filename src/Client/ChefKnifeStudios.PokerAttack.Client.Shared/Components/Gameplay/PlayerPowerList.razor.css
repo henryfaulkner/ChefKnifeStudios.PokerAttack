@@ -1,0 +1,18 @@
+﻿.player-power-list {
+    display: flex;
+    flex-direction: row;
+    row-gap: 1rem;
+    padding: 1rem;
+}
+
+.player-power-card {
+    border: 1px solid black;
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    column-gap: 0.75rem;
+
+    &.selected {
+        border: 3px solid black;
+    }
+}

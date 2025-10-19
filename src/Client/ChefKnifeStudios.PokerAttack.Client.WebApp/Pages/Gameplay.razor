@@ -66,13 +66,15 @@
                 <button @onclick="HandleNextPressed">@nextBtnText</button>
                 break;
             case GameStates.Upgrade:
-                EventNotificationService.PostEvent(
-                    this,
-                    new GameTransitionEventArgs
-                    {
-                        Data = new () { GameId = GameId, GameEvent = GameEvents.Next, },
-                    }
-                );
+                <PlayerPowerList GameId="@GameId" />
+                @if (GameplayViewModel.ArePlayerPowersReadied)
+                {
+                    <button @onclick="HandleNextPressed">PLAY NEXT ROUND</button>
+                }
+                else
+                {
+                    <span>WAITING ON OTHER PLAYERS' SELECTION</span>
+                }
                 break;
         }
     </CascadingValue>

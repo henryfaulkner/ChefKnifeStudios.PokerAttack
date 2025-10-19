@@ -1,0 +1,26 @@
+﻿<div class="player-power-list">
+    @if (PlayerPowerListViewModel.IsLoading)
+    {
+        <MatBody1>Loading...</MatBody1>
+    }
+    else
+    {
+        @foreach (var powerOption in PlayerPowerListViewModel.Items)
+        {
+            <div class="player-power-card @(powerOption.IsSelected ? "selected": string.Empty)">
+                <span>@powerOption.Name</span>
+                <span>@powerOption.Description</span>
+                <span>Cost: @powerOption.PointCost</span>
+
+                @if (powerOption.IsSelected)
+                {
+                    <span>SELECTED</span>
+                }
+                else
+                {
+                    <button @onclick="() => HandlePowerSelected(powerOption)">SELECT POWER</button>
+                }
+            </div>
+        }
+    }
+</div>

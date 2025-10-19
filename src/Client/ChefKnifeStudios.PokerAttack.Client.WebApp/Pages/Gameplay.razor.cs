@@ -28,6 +28,7 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
         nameof(IGameplayViewModel.CardsInHand),
         nameof(IGameplayViewModel.AvailablePlayHands),
         nameof(IGameplayViewModel.AvailableDiscards),
+        nameof(IGameplayViewModel.ArePlayerPowersReadied),
         nameof(IGameStateMachineViewModel.GameState),
     ];
 

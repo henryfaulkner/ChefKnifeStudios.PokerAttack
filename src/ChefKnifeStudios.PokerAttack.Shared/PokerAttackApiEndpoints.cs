@@ -32,7 +32,7 @@ public class PokerAttackApiEndpoints
     {
         const string EndpointGroup = "/player-power";
 
-        public const string GetSomePowers = $"{EndpointGroup}/{{count:int}}";
-        public const string SelectPlayerPower = $"{EndpointGroup}/{{playerId}}/{{powerId}}";
+        public const string GetSomePowers = $"{EndpointGroup}/{{countStr}}";
+        public const string SelectPlayerPower = $"{EndpointGroup}/{{gameId}}/{{playerId}}/{{powerId}}";
     }
 }

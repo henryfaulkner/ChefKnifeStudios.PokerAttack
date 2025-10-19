@@ -1,7 +1,10 @@
-﻿using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces.Repos;
+﻿using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
+using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces.Repos;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
+using ChefKnifeStudios.PokerAttack.Server.Data.Models;
 using ChefKnifeStudios.PokerAttack.Server.Infrastructure.PlayerPowers;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using Microsoft.Extensions.Logging;
 
 namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
@@ -9,7 +12,7 @@ namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
 public interface IPlayerPowerService
 {
     IEnumerable<PlayerPowerDTO> GetSomePowers(int count);
-    Task SelectPlayerPowerAsync(string playerId, string powerId, CancellationToken ct = default);
+    Task SelectPlayerPowerAsync(string gameId, string playerId, string powerId, CancellationToken ct = default);
     void Activate(GamePlayer source, GamePlayer? target = null);
 }
 
@@ -17,14 +20,16 @@ public class PlayerPowerService(
     ILogger<PlayerPowerService> logger,
     IPlayerPowerEffectRegistry effectRegistry,
     IPlayerPowerRepository powerRepository,
-    IGamePlayerRepository gamePlayerRepository) : IPlayerPowerService
+    IGamePlayerRepository gamePlayerRepository,
+    ILobbyRepository lobbyRepository,
+    IPokerAttackNotificationHelper notificationHelper) : IPlayerPowerService
 {
     public IEnumerable<PlayerPowerDTO> GetSomePowers(int count)
     {
         return powerRepository.GetRandomNumber(count).Select(x => x.MapToDTO());
     }
 
-    public async Task SelectPlayerPowerAsync(string playerId, string powerId, CancellationToken ct = default)
+    public async Task SelectPlayerPowerAsync(string gameId, string playerId, string powerId, CancellationToken ct = default)
     {
         var gamePlayer = await gamePlayerRepository.GetAsync(playerId, ct)
             ?? throw new KeyNotFoundException("Game Player not found");
@@ -32,6 +37,18 @@ public class PlayerPowerService(
         var playerPower = powerRepository.Get(powerId);
         gamePlayer.PlayerPower = playerPower;
         await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
+
+        var lobby = await lobbyRepository.GetLobbyAsync(gameId, ct);
+        if (lobby is Lobby && await DoesEveryPlayersInLobbyHaveAPower(lobby))
+        {
+            await notificationHelper.SendToPlayerAsync(
+                lobby.HostPlayer.Id,
+                new PokerAttackNotification(
+                    PokerAttackNotificationType.PlayerPowersReadied,
+                    string.Empty
+                ), ct
+            );
+        }
     }
 
     public void Activate(GamePlayer sourcePlayer, GamePlayer? targetPlayer = null)
@@ -88,5 +105,17 @@ public class PlayerPowerService(
                     effectInstance?.Type, power.Name);
             }
         }
+    }
+
+    async Task<bool> DoesEveryPlayersInLobbyHaveAPower(Lobby lobby, CancellationToken ct = default)
+    {
+        bool result = true;
+        foreach (var player in lobby.Players)
+        {
+            var gamePlayer = await gamePlayerRepository.GetAsync(player.Id, ct)
+                ?? throw new KeyNotFoundException("Game Player not found");
+            if (gamePlayer.PlayerPower is not PlayerPower) result = false;
+        }
+        return result;
     }
 }

@@ -17,8 +17,10 @@ public static class PlayerPowerEndpoints
 
         group.MapGet(Endpoints.GetSomePowers, (
             IPlayerPowerService playerPowerService,
-            int count) =>
+            string countStr) =>
         {
+            bool canParse = int.TryParse(countStr, out int count);
+            if (!canParse) return Result.Invalid();       
             var result = playerPowerService.GetSomePowers(count);
             return Result.Success(result);
         })
@@ -29,11 +31,12 @@ public static class PlayerPowerEndpoints
 
         group.MapGet(Endpoints.SelectPlayerPower, async (
             IPlayerPowerService playerPowerService,
+            string gameId,
             string playerId,
             string powerId,
             CancellationToken cancellationToken = default) =>
         {
-            await playerPowerService.SelectPlayerPowerAsync(playerId, powerId, cancellationToken);
+            await playerPowerService.SelectPlayerPowerAsync(gameId, playerId, powerId, cancellationToken);
             return Result.Success();
         })
         .WithName(nameof(Endpoints.SelectPlayerPower))

@@ -1,4 +1,5 @@
 ﻿using ChefKnifeStudios.PokerAttack.Server.Core.Models;
+using ChefKnifeStudios.PokerAttack.Shared;
 using System.Text.Json;
 
 namespace ChefKnifeStudios.PokerAttack.Server.Infrastructure.PlayerPowers;
@@ -8,12 +9,9 @@ public class PlayerPowerRepository : IPlayerPowerRepository
     readonly Dictionary<string, PlayerPower> _powers = new();
     readonly Random _rng = new Random();
 
-    public PlayerPowerRepository(string jsonFilePath)
+    public PlayerPowerRepository()
     {
-        var powers = JsonSerializer.Deserialize<List<PlayerPower>>(_json, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        }) ?? new List<PlayerPower>();
+        var powers = JsonSerializer.Deserialize<List<PlayerPower>>(_json, JsonOptions.Get()) ?? new List<PlayerPower>();
 
         foreach (var power in powers)
         {
