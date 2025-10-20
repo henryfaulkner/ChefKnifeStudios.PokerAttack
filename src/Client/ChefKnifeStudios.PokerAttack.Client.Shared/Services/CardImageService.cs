@@ -5,7 +5,7 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 
 public interface ICardImageService
 {
-    string GetCardImagePath(Suits suit, Ranks value);
+    string GetCardImagePath(Suits suit, Ranks value, bool isFaceDown);
 }
 
 public class CardImageService : ICardImageService
@@ -73,6 +73,9 @@ public class CardImageService : ICardImageService
         {(Suits.Spade, Ranks.King), FilePaths.KingOfSpades},
     };
 
-    public string GetCardImagePath(Suits suit, Ranks value) =>
-        _cardImagePaths.TryGetValue((suit, value), out var path) ? path : string.Empty;
+    public string GetCardImagePath(Suits suit, Ranks value, bool isFaceDown)
+    {
+        if (isFaceDown) return FilePaths.FaceDown;
+        return _cardImagePaths.TryGetValue((suit, value), out var path) ? path : string.Empty;
+    }
 }

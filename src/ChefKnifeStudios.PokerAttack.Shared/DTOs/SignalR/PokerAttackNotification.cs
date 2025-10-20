@@ -24,4 +24,6 @@ public enum PokerAttackNotificationType
     GameStateChanged,
 
     PlayerPowersReadied,
+
+    MessageSent,
 }

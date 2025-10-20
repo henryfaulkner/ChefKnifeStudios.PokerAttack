@@ -1,8 +1,11 @@
 ﻿using ChefKnifeStudios.PokerAttack.Client.Core.Extensions;
+using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
+using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
@@ -41,9 +44,11 @@ public interface IPlayerPowerListViewModel : IViewModel
 }
 
 public partial class PlayerPowerListViewModel(
+    ILogger<PlayerPowerListViewModel> logger,
     IApplicationViewModel applicationViewModel,
     IPlayerPowerEndpointsService playerPowerEndpointsService,
-    IToastService toastService) : BaseViewModel, IPlayerPowerListViewModel
+    IToastService toastService,
+    IEventNotificationService eventNotificationService) : BaseViewModel, IPlayerPowerListViewModel
 {
     [ObservableProperty]
     string? _gameId;
@@ -70,20 +75,47 @@ public partial class PlayerPowerListViewModel(
     public async Task SubmitSelectedItemAsync(PlayerPowerListItem playerPower, CancellationToken cancellationToken = default)
     {
         if (GameId is null) throw new ApplicationException("ScoreboardViewModel must Init before loading rounds.");
-        IsLoading = true;
-        playerPower.IsSelected = true;
-        if (playerPower is null)
+        try
         {
-            toastService.ShowWarning("Select a power");
-            return;
-        }
+            IsLoading = true;
+            foreach (var pp in Items) pp.IsSelected = false;
+            playerPower.IsSelected = true;
+            if (playerPower is null)
+            {
+                toastService.ShowWarning("Select a power");
+                return;
+            }
 
-        await playerPowerEndpointsService.SelectPlayerPowerAsync(
-            GameId,
-            applicationViewModel.Player.Id,
-            playerPower.Id,
-            cancellationToken
-        );
-        IsLoading = false;
+            var res = await playerPowerEndpointsService.SelectPlayerPowerAsync(
+                GameId,
+                applicationViewModel.Player.Id,
+                playerPower.Id,
+                cancellationToken
+            );
+
+            if (!res.IsSuccess && res.Value is not PlayerPowerDTO)
+            {
+                toastService.ShowError("Player power was not selected");
+                playerPower.IsSelected = false;
+                return;
+            }
+
+            eventNotificationService.PostEvent(
+                this,
+                new PlayerPowerEventArgs
+                {
+                    Type = PlayerPowerEventArgs.EventTypes.Selection,
+                    Data = new PlayerPowerEventArgs.EventData { PlayerPower = res.Value },
+                }
+            );
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred");
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 }

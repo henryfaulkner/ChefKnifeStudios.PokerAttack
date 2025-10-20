@@ -3,17 +3,19 @@ using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces.Repos;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Server.Data.Models;
 using ChefKnifeStudios.PokerAttack.Server.Infrastructure.PlayerPowers;
+using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
 
 public interface IPlayerPowerService
 {
     IEnumerable<PlayerPowerDTO> GetSomePowers(int count);
-    Task SelectPlayerPowerAsync(string gameId, string playerId, string powerId, CancellationToken ct = default);
-    void Activate(GamePlayer source, GamePlayer? target = null);
+    Task<PlayerPowerDTO> SelectPlayerPowerAsync(string gameId, string playerId, string powerId, CancellationToken ct = default);
+    Task ActivateAsync(string gameId, string playerId, CancellationToken ct = default);
 }
 
 public class PlayerPowerService(
@@ -29,12 +31,13 @@ public class PlayerPowerService(
         return powerRepository.GetRandomNumber(count).Select(x => x.MapToDTO());
     }
 
-    public async Task SelectPlayerPowerAsync(string gameId, string playerId, string powerId, CancellationToken ct = default)
+    public async Task<PlayerPowerDTO> SelectPlayerPowerAsync(string gameId, string playerId, string powerId, CancellationToken ct = default)
     {
         var gamePlayer = await gamePlayerRepository.GetAsync(playerId, ct)
             ?? throw new KeyNotFoundException("Game Player not found");
 
-        var playerPower = powerRepository.Get(powerId);
+        var playerPower = powerRepository.Get(powerId)
+            ?? throw new KeyNotFoundException("Player Power not found");
         gamePlayer.PlayerPower = playerPower;
         await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
 
@@ -49,11 +52,27 @@ public class PlayerPowerService(
                 ), ct
             );
         }
+
+        return playerPower.MapToDTO();
     }
 
-    public void Activate(GamePlayer sourcePlayer, GamePlayer? targetPlayer = null)
+    public async Task ActivateAsync(string gameId, string playerId, CancellationToken ct = default)
     {
-        var power = sourcePlayer.PlayerPower;
+        var lobby = await lobbyRepository.GetLobbyAsync(gameId)
+            ?? throw new KeyNotFoundException("Lobby not found");
+        var lobbyPlayers = lobby.Players.ToHashSet();
+
+        var sourcePlayer = lobbyPlayers.FirstOrDefault(x => x.Id == playerId);
+        lobbyPlayers.RemoveWhere(x => x.Id == playerId);
+        var targetPlayerIfApplicable = lobbyPlayers.Any() ? lobbyPlayers.ToList()[Random.Shared.Next(0, lobbyPlayers.Count())] : null;
+        var targetGamePlayerIdIfApplicable = targetPlayerIfApplicable?.Id;
+
+        var sourceGamePlayer = await gamePlayerRepository.GetAsync(playerId)
+            ?? throw new KeyNotFoundException("Source Game Player not found");
+        var targetGamePlayer = targetGamePlayerIdIfApplicable is string ? await gamePlayerRepository.GetAsync(targetGamePlayerIdIfApplicable) : null;
+
+
+        var power = sourceGamePlayer.PlayerPower;
 
         if (power == null)
         {
@@ -69,7 +88,7 @@ public class PlayerPowerService(
         }
 
         // Check power points/energy
-        if (sourcePlayer.PowerPoints < power.PointCost)
+        if (sourceGamePlayer.PowerPoints < power.PointCost)
         {
             logger.LogDebug("Player does not have enough PP to activate {PowerName}.",
                 power.Name);
@@ -77,7 +96,12 @@ public class PlayerPowerService(
         }
 
         // Deduct power points
-        sourcePlayer.PowerPoints -= power.PointCost;
+        sourceGamePlayer.PowerPoints -= power.PointCost;
+
+        var selfTargeted = false;
+        var selfTargetMsg = string.Empty;
+        var targetTargeted = false;
+        var targetTargetMsg = string.Empty;
 
         // Execute each effect
         foreach (var effectInstance in power.Effects)
@@ -87,23 +111,68 @@ public class PlayerPowerService(
                 continue;
 
             // Determine target
-            GamePlayer actualTarget = effectInstance.Target switch
+            GamePlayer actualTarget;
+
+            switch (effectInstance.Target)
             {
-                PowerTarget.Self => sourcePlayer,
-                PowerTarget.Opponent => targetPlayer ??
-                    throw new InvalidOperationException($"Power {power.Name} requires a target player."),
-                _ => sourcePlayer // Default to self if unspecified
-            };
+                case PowerTarget.Self:
+                    selfTargeted = true;
+                    actualTarget = sourceGamePlayer;
+                    selfTargetMsg += $"{effectInstance.PowerMessage}. ";
+                    break;
+
+                case PowerTarget.Opponent:
+                    if (targetGamePlayer == null)
+                        throw new InvalidOperationException($"Power {power.Name} requires a target player.");
+                    targetTargeted = true;
+                    targetTargetMsg += $"{effectInstance.PowerMessage}. ";
+                    actualTarget = targetGamePlayer;
+                    break;
+
+                default:
+                    // Default to self if unspecified
+                    selfTargeted = true;
+                    selfTargetMsg += $"{effectInstance.PowerMessage}. ";
+                    actualTarget = sourceGamePlayer;
+                    break;
+            }
 
             try
             {
-                effectRegistry.Get(effectInstance.Type).Apply(sourcePlayer, actualTarget, effectInstance.Parameters);
+                effectRegistry.Get(effectInstance.Type).Apply(sourceGamePlayer, actualTarget, effectInstance.Parameters);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error applying effect {EffectType} for power {PowerName}.",
                     effectInstance?.Type, power.Name);
             }
+        }
+
+        if (selfTargeted)
+        {
+            await notificationHelper.SendToPlayerAsync(playerId, new PokerAttackNotification
+            (
+                PokerAttackNotificationType.CardsDealt,
+                JsonSerializer.Serialize(sourceGamePlayer.CardsInHand.Select(x => x.MapToDTO()), JsonOptions.Get())
+            ));
+            await notificationHelper.SendToPlayerAsync(playerId, new PokerAttackNotification
+            (
+                PokerAttackNotificationType.MessageSent,
+                JsonSerializer.Serialize(new MessageDTO { Title = $"{sourcePlayer?.Name} played power", Message = selfTargetMsg, Type = MessageDTO.MessageType.Success, })
+            ));
+        }
+        if (targetTargeted && targetGamePlayerIdIfApplicable is string && targetGamePlayer is GamePlayer)
+        {
+            await notificationHelper.SendToPlayerAsync(targetGamePlayerIdIfApplicable, new PokerAttackNotification
+            (
+                PokerAttackNotificationType.CardsDealt,
+                JsonSerializer.Serialize(targetGamePlayer.CardsInHand.Select(x => x.MapToDTO()), JsonOptions.Get())
+            ));
+            await notificationHelper.SendToPlayerAsync(targetGamePlayerIdIfApplicable, new PokerAttackNotification
+            (
+                PokerAttackNotificationType.MessageSent,
+                JsonSerializer.Serialize(new MessageDTO { Title = $"{sourcePlayer?.Name} attacked {targetPlayerIfApplicable?.Name}", Message = targetTargetMsg, Type = MessageDTO.MessageType.Success, })
+            ));
         }
     }
 

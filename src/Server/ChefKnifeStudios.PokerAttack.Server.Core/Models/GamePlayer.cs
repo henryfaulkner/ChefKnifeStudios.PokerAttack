@@ -24,7 +24,7 @@ public class GamePlayer
             .Where(x => !x.IsFaceDown)
             .ToList();
         nonFlippedCards = GetShuffleCards(nonFlippedCards);
-        if (nonFlippedCards.Count() > count)
+        if (nonFlippedCards.Count() < count)
         {
             foreach (var card in nonFlippedCards)
             {
@@ -43,18 +43,37 @@ public class GamePlayer
     public void ChangeRandomCardsToRandomSuit(int count)
     {
         var shuffledCards = GetShuffleCards(CardsInHand);
-        if (shuffledCards.Count() > count)
+        if (shuffledCards.Count() < count)
         {
             foreach (var card in shuffledCards)
             {
-                card.Suit = (Suits)Rand.Next(0, 4);
+                card.Suit = (Suits)Random.Shared.Next(0, 4);
             }
         }
         else
         {
             for (int i = 0; i < count; i += 1)
             {
-                shuffledCards[i].Suit = (Suits)Rand.Next(0, 4);
+                shuffledCards[i].Suit = (Suits)Random.Shared.Next(0, 4);
+            }
+        }
+    }
+
+    public void ChangeRandomCardsToRandomRank(int count)
+    {
+        var shuffledCards = GetShuffleCards(CardsInHand);
+        if (shuffledCards.Count() < count)
+        {
+            foreach (var card in shuffledCards)
+            {
+                card.Rank = (Ranks)Random.Shared.Next(0, 13);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < count; i += 1)
+            {
+                shuffledCards[i].Suit = (Suits)Random.Shared.Next(0, 4);
             }
         }
     }
@@ -81,18 +100,18 @@ public class GamePlayer
         }
     }
 
-    const int _NUM_SHIFTS = 1000; 
-    static readonly Random Rand = new Random();
     List<Card> GetShuffleCards(List<Card> cardList)
     {
         var result = cardList.ToList();
-        for (int i = 0; i < _NUM_SHIFTS; i++)
+        int n = result.Count;
+        if (n <= 1) return result;
+
+        for (int i = n - 1; i > 0; i--)
         {
-            int randNumOne = Rand.Next(52);
-            int randNumTwo = Rand.Next(52);
-            Card tempCard = result[randNumOne];
-            result[randNumOne] = result[randNumTwo];
-            result[randNumTwo] = tempCard;
+            int j = Random.Shared.Next(i + 1); // 0..i
+            var tmp = result[i];
+            result[i] = result[j];
+            result[j] = tmp;
         }
         return result;
     }

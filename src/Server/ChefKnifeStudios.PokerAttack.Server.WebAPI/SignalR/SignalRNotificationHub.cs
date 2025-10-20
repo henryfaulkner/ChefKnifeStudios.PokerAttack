@@ -1,5 +1,6 @@
 ﻿using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
+using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces.Repos;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
@@ -20,8 +21,11 @@ public class SignalRNotificationHub(
     IGameService gameService,
     IGameStateMachineService gameStateMachineService,
     ILobbyService lobbyService,
-    IServiceScopeFactory serviceScopeFactory) : Hub<ISignalRNotificationClient>
+    IServiceScopeFactory serviceScopeFactory,
+    IPlayerPowerService playerPowerService) : Hub<ISignalRNotificationClient>
 {
+    static readonly Random Rand = new Random();
+
     public override async Task OnConnectedAsync()
     {
         await base.OnConnectedAsync();
@@ -125,4 +129,7 @@ public class SignalRNotificationHub(
     // Remove Game Player game
     public async Task LeaveGame(string gameId, string playerId) =>
         await gameService.LeaveGameAsync(gameId, playerId);
+
+    public async Task ActivatePlayerPower(string gameId, string playerId) =>
+        await playerPowerService.ActivateAsync(gameId, playerId);
 }

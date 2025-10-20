@@ -1,8 +1,11 @@
 ﻿.action-buttons {
+    margin: 1rem 0.5rem;
+}
+
+.action-buttons > .row {
     display: flex;
     column-gap: 0.5rem;
-    padding: 3rem 0;
-
+    padding: 1rem 0;
     & span {
         display: block;
     }

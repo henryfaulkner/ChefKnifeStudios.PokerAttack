@@ -1,13 +1,19 @@
 ﻿using ChefKnifeStudios.PokerAttack.Client.Core.Enums;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
+using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
+using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Shared;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NameGenerator.Generators;
+using System.Text.Json;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 
@@ -17,13 +23,14 @@ public interface IApplicationViewModel : IViewModel
     Task InitAsync();
 }
 
-public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
+public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel, IDisposable
 {
     readonly ISignalRNotificationService _signalRNotificationService;
     readonly ILobbyJsInterop _lobbyJsInterop;
     readonly ILogger<ApplicationViewModel> _logger;
     readonly IConfiguration _configuration;
     readonly IWebAssemblyHostEnvironment _hostEnvironment;
+    readonly IToastService _toastService;
 
     [ObservableProperty]
     PlayerDTO _player = new()
@@ -37,16 +44,25 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
         ILobbyJsInterop lobbyJsInterop,
         ILogger<ApplicationViewModel> logger,
         IConfiguration configuration,
-        IWebAssemblyHostEnvironment hostEnvironment)
+        IWebAssemblyHostEnvironment hostEnvironment,
+        IToastService toastService)
     {
         _signalRNotificationService = signalRNotificationService;
         _lobbyJsInterop = lobbyJsInterop;
         _logger = logger;
         _configuration = configuration;
         _hostEnvironment = hostEnvironment;
+        _toastService = toastService;
 
         var generator = new GamerTagGenerator();
         Player.Name = generator.Generate();
+
+        _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
+    }
+
+    public void Dispose()
+    {
+        _signalRNotificationService.HandleNotificationReceived -= HandleSignalRNotificationReceived;
     }
 
     public async Task InitAsync()
@@ -113,5 +129,42 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
         {
             _logger.LogError(ex, "Error registering browser close event");
         }
+    }
+
+    Task HandleSignalRNotificationReceived(PokerAttackNotification notification)
+    {
+        switch (notification.NotificationType)
+        {
+            case PokerAttackNotificationType.MessageSent:
+                {
+                    var args = JsonSerializer.Deserialize<MessageDTO>(notification.Payload!, JsonOptions.Get());
+                    if (args is MessageDTO messageDTO)
+                    {
+                        switch (messageDTO)
+                        {
+                            case { Type: MessageDTO.MessageType.Success, Title: string }:
+                                _toastService.ShowSuccess(messageDTO.Title, messageDTO.Message);
+                                break;
+                            case { Type: MessageDTO.MessageType.Success, Title: not string }:
+                                _toastService.ShowSuccess(messageDTO.Message);
+                                break;
+                            case { Type: MessageDTO.MessageType.Warning, Title: string }:
+                                _toastService.ShowWarning(messageDTO.Title, messageDTO.Message);
+                                break;
+                            case { Type: MessageDTO.MessageType.Warning, Title: not string }:
+                                _toastService.ShowWarning(messageDTO.Message);
+                                break;
+                            case { Type: MessageDTO.MessageType.Error, Title: string }:
+                                _toastService.ShowError(messageDTO.Title, messageDTO.Message);
+                                break;
+                            case { Type: MessageDTO.MessageType.Error, Title: not string }:
+                                _toastService.ShowError(messageDTO.Message);
+                                break;
+                        }
+                    }
+                    break;
+                }
+        }
+        return Task.CompletedTask;
     }
 }

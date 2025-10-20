@@ -28,6 +28,9 @@ public class PowerEffectInstance
     [JsonPropertyName("type")]
     public required string Type { get; set; }  // effect ID
 
+    [JsonPropertyName("powerMessage")]
+    public required string PowerMessage { get; set; }  // message presented to user
+
     [JsonPropertyName("target")]
     public PowerTarget Target { get; set; } = PowerTarget.Self;
 

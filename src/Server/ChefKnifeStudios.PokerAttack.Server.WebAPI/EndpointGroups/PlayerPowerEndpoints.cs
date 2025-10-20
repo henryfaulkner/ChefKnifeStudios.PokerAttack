@@ -1,5 +1,6 @@
 ﻿using Ardalis.Result;
 using ChefKnifeStudios.PokerAttack.Server.BL.Services;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 
 using Endpoints = ChefKnifeStudios.PokerAttack.Shared.PokerAttackApiEndpoints.PlayerPower;
@@ -25,7 +26,7 @@ public static class PlayerPowerEndpoints
             return Result.Success(result);
         })
         .WithName(nameof(Endpoints.GetSomePowers))
-        .Produces<RoundDTO?>(StatusCodes.Status200OK)
+        .Produces<IEnumerable<PlayerPowerDTO>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);
 
@@ -36,11 +37,11 @@ public static class PlayerPowerEndpoints
             string powerId,
             CancellationToken cancellationToken = default) =>
         {
-            await playerPowerService.SelectPlayerPowerAsync(gameId, playerId, powerId, cancellationToken);
-            return Result.Success();
+            var playerPower = await playerPowerService.SelectPlayerPowerAsync(gameId, playerId, powerId, cancellationToken);
+            return Result.Success(playerPower);
         })
         .WithName(nameof(Endpoints.SelectPlayerPower))
-        .Produces<RoundDTO?>(StatusCodes.Status200OK)
+        .Produces<PlayerPowerDTO>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);
 

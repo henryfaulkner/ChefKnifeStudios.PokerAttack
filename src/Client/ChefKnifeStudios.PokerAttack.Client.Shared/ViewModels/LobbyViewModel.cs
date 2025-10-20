@@ -158,7 +158,7 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
                     var args = JsonSerializer.Deserialize<LobbyEventArgs>(notification.Payload!, JsonOptions.Get());
                     if (args is { Lobby: LobbyDTO lobby })
                     {
-                        _navigationManager.NavigateTo($"/gameplay?gameid={lobby.GameId}", replace: true);
+                        _navigationManager.NavigateTo($"/gameplay?gameid={lobby.GameId}&hostid={lobby.HostPlayer.Id}", replace: true);
                     }
                     break;
                 }

@@ -63,16 +63,16 @@ public class GameService(
 
     public async Task StartPlayerRunAsync(string playerId, int runTimeInSeconds, CancellationToken ct = default)
     {
-        var gamePlayer = await gamePlayerRepository.GetAsync(playerId, ct);
+        var gamePlayer = await gamePlayerRepository.GetAsync(playerId, ct)
+            ?? throw new KeyNotFoundException("Game Player not found");
 
         var deck = new Deck();
         deck.RandomizeDeck();
-        gamePlayer = new GamePlayer
-        {
-            Deck = deck,
-            Score = 0,
-            PowerPoints = 0,
-        };
+
+        gamePlayer.Deck = deck;
+        gamePlayer.CardsInHand.Clear();
+        gamePlayer.Score = 0;
+        gamePlayer.PowerPoints = 0;
         await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
         await ReplenishHandAsync(playerId, ct);
 
@@ -165,18 +165,28 @@ public class GameService(
         List<RoundScore> roundScores = [];
         foreach (var lobbyPlayer in lobby.Players)
         {
-            int score = (await gamePlayerRepository.GetAsync(lobbyPlayer.Id, ct))?.Score ?? 0;
+            string playerId = lobbyPlayer.Id;
+            int score = (await gamePlayerRepository.GetAsync(playerId, ct))?.Score ?? 0;
             roundScores.Add(
                 new RoundScore
                 {
-                    ClientUserId = lobbyPlayer.Id,
+                    ClientUserId = playerId,
                     ClientUserDisplayName = lobbyPlayer.Name,
                     Score = score,
                 }
             );
 
             // Clear temp player data
-            await gamePlayerRepository.DeleteAsync(lobbyPlayer.Id, ct);
+            var gamePlayer = await gamePlayerRepository.GetAsync(playerId, ct)
+                ?? throw new KeyNotFoundException("Game Player not found");
+            var deck = new Deck();
+            deck.RandomizeDeck();
+            gamePlayer.Deck = deck;
+            gamePlayer.CardsInHand.Clear();
+            gamePlayer.Score = 0;
+            gamePlayer.PowerPoints = 0;
+            await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
+            await ReplenishHandAsync(playerId, ct);
         }
 
         await roundRepository.AddAsync(

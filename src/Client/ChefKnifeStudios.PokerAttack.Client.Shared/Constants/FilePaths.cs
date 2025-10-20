@@ -20,6 +20,9 @@
 
         const string PathToCards = $"{PathToImages}cards/";
 
+        // FaceDown 
+        public const string FaceDown = $"{PathToCards}cardBack_red5.png";
+
         // Clubs
         public const string AceOfClubs = $"{PathToCards}cardClubsA.png";
         public const string TwoOfClubs = $"{PathToCards}cardClubs2.png";

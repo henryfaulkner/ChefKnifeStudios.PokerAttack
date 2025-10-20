@@ -57,10 +57,11 @@ public class PlayerPowerRepository : IPlayerPowerRepository
             "name": "Unflip All",
             "description": "Turns all your cards face-up.",
             "powerKind": "active",
-            "pointCost": 2,
+            "pointCost": 0,
             "effects": [
               {
                 "type": "unflipAllCards",
+                "powerMessage": "All cards were flipped face-up",
                 "target": "self",
                 "parameters": {},
                 "trigger": "none"
@@ -72,11 +73,12 @@ public class PlayerPowerRepository : IPlayerPowerRepository
             "name": "Flip Random",
             "description": "Flips 2 of your cards randomly.",
             "powerKind": "active",
-            "pointCost": 3,
+            "pointCost": 0,
             "effects": [
               {
                 "type": "flipRandomCards",
-                "target": "self",
+                "powerMessage": "The cards were flipped face-down",
+                "target": "opponent",
                 "parameters": { "count": "2" },
                 "trigger": "none"
               }
@@ -87,27 +89,29 @@ public class PlayerPowerRepository : IPlayerPowerRepository
             "name": "Change Suit Random",
             "description": "Changes the suit of 2 random cards.",
             "powerKind": "active",
-            "pointCost": 3,
+            "pointCost": 0,
             "effects": [
               {
                 "type": "changeRandomCardsToRandomSuit",
-                "target": "self",
+                "powerMessage": "The suit of 2 cards were changed",
+                "target": "opponent",
                 "parameters": { "count": "2" },
                 "trigger": "none"
               }
             ]
           },
           {
-            "id": "change_selected_suit",
-            "name": "Change Suit Selected",
-            "description": "Changes the suit of selected cards to Hearts.",
+            "id": "change_random_rank",
+            "name": "Change Rank Random",
+            "description": "Changes the rank of 2 random cards.",
             "powerKind": "active",
-            "pointCost": 4,
+            "pointCost": 0,
             "effects": [
               {
-                "type": "changeSelectedCardsToSuit",
-                "target": "self",
-                "parameters": { "suit": "Hearts", "selectedCards": "[]" },
+                "type": "changeRandomCardsToRandomRank",
+                "powerMessage": "The rank of 2 cards were changed",
+                "target": "opponent",
+                "parameters": { "count": "2" },
                 "trigger": "none"
               }
             ]

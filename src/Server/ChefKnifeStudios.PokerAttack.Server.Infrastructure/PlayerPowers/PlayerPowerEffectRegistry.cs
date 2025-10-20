@@ -11,6 +11,7 @@ public class PlayerPowerEffectRegistry : IPlayerPowerEffectRegistry
         Register("unflipAllCards", new UnflipAllCardsEffect());
         Register("flipRandomCards", new FlipRandomCardsEffect());
         Register("changeRandomCardsToRandomSuit", new ChangeRandomCardsToRandomSuitEffect());
+        Register("changeRandomCardsToRandomRank", new ChangeRandomCardsToRandomRankEffect());
         Register("changeSelectedCardsToSuit", new ChangeSelectedCardsToSuitEffect());
     }
 

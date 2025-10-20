@@ -35,6 +35,15 @@ public class ChangeRandomCardsToRandomSuitEffect : IPlayerPowerEffect
     }
 }
 
+public class ChangeRandomCardsToRandomRankEffect : IPlayerPowerEffect
+{
+    public void Apply(GamePlayer source, GamePlayer target, Dictionary<string, string>? args)
+    {
+        int count = int.Parse(args?["count"] ?? "1");
+        target.ChangeRandomCardsToRandomRank(count);
+    }
+}
+
 public class ChangeSelectedCardsToSuitEffect : IPlayerPowerEffect
 {
     public void Apply(GamePlayer source, GamePlayer target, Dictionary<string, string>? args)
