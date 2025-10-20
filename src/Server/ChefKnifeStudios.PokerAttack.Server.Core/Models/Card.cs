@@ -4,7 +4,8 @@ namespace ChefKnifeStudios.PokerAttack.Server.Core.Models;
 
 public class Card
 {
-    public Suits Suit { get; init; }
-    public Ranks Rank { get; init; }
+    public Suits Suit { get; set; }
+    public Ranks Rank { get; set; }
+    public bool IsFaceDown { get; set; } = false;
 }
 

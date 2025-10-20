@@ -6,4 +6,5 @@ public class CardDTO
 {
     public Suits Suit { get; init; }
     public Ranks Rank { get; init; }
+    public bool IsFaceDown { get; init; }
 }

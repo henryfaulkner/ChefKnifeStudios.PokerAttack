@@ -2,6 +2,7 @@
 
 public enum GameStates
 {
+    GameStart,
     InGame,
     Scoreboard,
     Elimination,

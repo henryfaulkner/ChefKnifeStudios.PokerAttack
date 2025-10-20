@@ -4,6 +4,7 @@ using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Shared;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
@@ -21,8 +22,12 @@ public interface IGameplayViewModel : IViewModel
     ObservableCollection<CardItem> CardsInHand { get; }
     int AvailablePlayHands { get; }
     int AvailableDiscards { get; }
+    bool ArePlayerPowersReadied { get; }
+    PlayerPowerDTO? ActivePlayerPower { get; }
+    int PowerCharges { get; }
 
     void Init(string gameId);
+    Task StartGameAsync(string playerId, CancellationToken cancellationToken = default);
     Task StartRoundAsync(string playerId, CancellationToken cancellationToken = default);
     Task PlaySelectedCardsAsync(string playerId, CancellationToken cancellationToken = default);
     Task DiscardSelectedCardsAsync(string playerId, CancellationToken cancellationToken = default);
@@ -30,6 +35,7 @@ public interface IGameplayViewModel : IViewModel
     void SortByRank();
     void SortBySuit();
     void ClearSelections();
+    Task ActivatePlayerPowerAsync(string playerId, CancellationToken cancellationToken = default);
 }
 
 public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDisposable
@@ -56,6 +62,16 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     [ObservableProperty]
     int _availableDiscards = 5;
 
+    [ObservableProperty]
+    bool _arePlayerPowersReadied = false;
+
+    [ObservableProperty]
+    PlayerPowerDTO? _activePlayerPower;
+
+    const int _INIT_POWER_CHARGES = 2;
+    [ObservableProperty]
+    int _powerCharges;
+
     CancellationTokenSource _timerToken;
 
     enum SortMode
@@ -77,6 +93,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         _eventNotificationService = eventNotificationService;
 
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
+        _eventNotificationService.EventReceived += HandleEventReceived;
 
         _timerToken = SetInterval(() =>
         {
@@ -92,8 +109,14 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 
     public void Init(string gameId) => GameId = gameId;
 
+    public async Task StartGameAsync(string playerId, CancellationToken cancellationToken = default)
+    {
+        await _signalRNotificationService.StartGameAsync(GameId, playerId);
+    }
+
     public async Task StartRoundAsync(string playerId, CancellationToken cancellationToken = default)
     {
+        PowerCharges = _INIT_POWER_CHARGES;
         await _signalRNotificationService.StartRoundAsync(GameId, playerId);
     }
 
@@ -181,6 +204,12 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
             card.IsSelected = false;
     }
 
+    public async Task ActivatePlayerPowerAsync(string playerId, CancellationToken cancellationToken = default)
+    {
+        await _signalRNotificationService.ActivatePlayerPowerAsync(GameId, playerId);
+        PowerCharges--;
+    }
+
     Task HandleSignalRNotificationReceived(PokerAttackNotification notification)
     {
         switch (notification.NotificationType)
@@ -228,6 +257,28 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                             Data = new() { GameId = GameId, GameEvent = GameEvents.Next },
                         }
                     );
+                    break;
+                }
+            case PokerAttackNotificationType.PlayerPowersReadied:
+                {
+                    ArePlayerPowersReadied = true;
+                    break;
+                }
+        }
+        return Task.CompletedTask;
+    }
+
+    Task HandleEventReceived(object sender, IEventArgs args)
+    {
+        switch (args)
+        {
+            case PlayerPowerEventArgs playerPowerEventArgs:
+                {
+                    if (playerPowerEventArgs.Type == PlayerPowerEventArgs.EventTypes.Selection
+                        && playerPowerEventArgs.Data is PlayerPowerEventArgs.EventData eventData)
+                    {
+                        ActivePlayerPower = eventData.PlayerPower;
+                    }
                     break;
                 }
         }

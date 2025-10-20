@@ -12,6 +12,7 @@ namespace ChefKnifeStudios.PokerAttack.Client.WebApp.Pages;
 public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
 {
     [SupplyParameterFromQuery] public required string GameId { get; set; }
+    [SupplyParameterFromQuery] public required string HostId { get; set; }
 
     [Inject] IApplicationViewModel ApplicationViewModel { get; set; } = null!;
     [Inject] IGameplayViewModel GameplayViewModel { get; set; } = null!;
@@ -28,6 +29,8 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
         nameof(IGameplayViewModel.CardsInHand),
         nameof(IGameplayViewModel.AvailablePlayHands),
         nameof(IGameplayViewModel.AvailableDiscards),
+        nameof(IGameplayViewModel.ArePlayerPowersReadied),
+        nameof(IGameplayViewModel.PowerCharges),
         nameof(IGameStateMachineViewModel.GameState),
     ];
 
@@ -37,9 +40,10 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
 
         InputService.RegisterKeyAction("q", () => Task.Run(() => HandlePlayHandPressed()));
         InputService.RegisterKeyAction("w", () => Task.Run(() => HandleDiscardPressed()));
-        InputService.RegisterKeyAction("e", () => Task.Run(() => HandleSortByRankPressed()));
-        InputService.RegisterKeyAction("r", () => Task.Run(() => HandleSortBySuitPressed()));
-        InputService.RegisterKeyAction("t", () => Task.Run(() => HandleClearSelectionsPressed()));
+        InputService.RegisterKeyAction("e", () => Task.Run(() => HandleActivatePowerPressed()));
+        InputService.RegisterKeyAction("a", () => Task.Run(() => HandleSortByRankPressed()));
+        InputService.RegisterKeyAction("s", () => Task.Run(() => HandleSortBySuitPressed()));
+        InputService.RegisterKeyAction("d", () => Task.Run(() => HandleClearSelectionsPressed()));
         InputService.RegisterKeyAction("1", () => ToggleCardSelectionAsync(0));
         InputService.RegisterKeyAction("2", () => ToggleCardSelectionAsync(1));
         InputService.RegisterKeyAction("3", () => ToggleCardSelectionAsync(2));
@@ -55,7 +59,7 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
         await base.OnInitializedAsync();
 
         GameplayViewModel.Init(GameId);
-        await GameplayViewModel.StartRoundAsync(ApplicationViewModel.Player.Id);
+        await GameplayViewModel.StartGameAsync(ApplicationViewModel.Player.Id);
 
         GameplayViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
         GameplayViewModel.CardsInHand.CollectionChanged += CardsInHand_CollectionChanged;
@@ -93,6 +97,13 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
     void ViewModel_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (_subscriptions.Contains(e.PropertyName) is false) return;
+        if (sender is IGameStateMachineViewModel && e.PropertyName == nameof(IGameStateMachineViewModel.GameState))
+        {
+            if (GameStateMachineViewModel.GameState == GameStates.InGame)
+            {
+                Task.Run(async () => await GameplayViewModel.StartRoundAsync(ApplicationViewModel.Player.Id));
+            }
+        }
         Task.Run(async () => await InvokeAsync(StateHasChanged));
     }
 
@@ -107,8 +118,12 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
 
     void HandleSortBySuitPressed() =>
         GameplayViewModel.SortBySuit();
+
     void HandleClearSelectionsPressed() =>
         GameplayViewModel.ClearSelections();
+
+    void HandleActivatePowerPressed() =>
+        _ = GameplayViewModel.ActivatePlayerPowerAsync(ApplicationViewModel.Player.Id);
 
     Task ToggleCardSelectionAsync(int index)
     {
