@@ -2,7 +2,6 @@
 
 public enum Ranks
 {
-    Ace,
     Two,
     Three,
     Four,
@@ -15,4 +14,5 @@ public enum Ranks
     Jack,
     Queen,
     King,
+    Ace,
 }

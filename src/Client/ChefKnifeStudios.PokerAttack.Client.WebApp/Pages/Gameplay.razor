@@ -15,35 +15,45 @@
                     <CardHand Cards="@GameplayViewModel.CardsInHand.ToList()" />
                 
                     <div class="action-buttons">
-                        <div>
-                            <button @onclick="HandlePlayHandPressed" @onclick:stopPropagation="true">
-                                PLAY HAND
-                            </button>
-                            <span>[Q]</span>
+                        <div class="row">
+                            <div>
+                                <button @onclick="HandlePlayHandPressed" @onclick:stopPropagation="true">
+                                    PLAY HAND
+                                </button>
+                                <span>[Q]</span>
+                            </div>
+                            <div>
+                                <button @onclick="HandleDiscardPressed" @onclick:stopPropagation="true">
+                                    DISCARD
+                                </button>
+                                <span>[W]</span>
+                            </div>
+                            <div>
+                                <button @onclick="HandleActivatePowerPressed" @onclick:stopPropagation="true">
+                                    ACTIVATE POWER
+                                </button>
+                                <span>[E]</span>
+                            </div>
                         </div>
-                        <div>
-                            <button @onclick="HandleDiscardPressed" @onclick:stopPropagation="true">
-                                DISCARD
-                            </button>
-                            <span>[W]</span>
-                        </div>
-                        <div>
-                            <button @onclick="HandleSortByRankPressed" @onclick:stopPropagation="true">
-                                SORT BY RANK
-                            </button>
-                            <span>[E]</span>
-                        </div>
-                        <div>
-                            <button @onclick="HandleSortBySuitPressed" @onclick:stopPropagation="true">
-                                SORT BY SUIT
-                            </button>
-                            <span>[R]</span>
-                        </div>
-                        <div>
-                            <button @onclick="HandleClearSelectionsPressed" @onclick:stopPropagation="true">
-                                CLEAR SELECTIONS
-                            </button>
-                            <span>[T]</span>
+                        <div class="row">
+                            <div>
+                                <button @onclick="HandleSortByRankPressed" @onclick:stopPropagation="true">
+                                    SORT BY RANK
+                                </button>
+                                <span>[A]</span>
+                            </div>
+                            <div>
+                                <button @onclick="HandleSortBySuitPressed" @onclick:stopPropagation="true">
+                                    SORT BY SUIT
+                                </button>
+                                <span>[S]</span>
+                            </div>
+                            <div>
+                                <button @onclick="HandleClearSelectionsPressed" @onclick:stopPropagation="true">
+                                    CLEAR SELECTIONS
+                                </button>
+                                <span>[D]</span>
+                            </div>
                         </div>
                     </div>
 
@@ -51,6 +61,9 @@
                     <h2>@FormatAsMinutesSeconds(GameplayViewModel.RunTimeInSeconds)</h2>
                     <h2>Hands Available: @GameplayViewModel.AvailablePlayHands</h2>
                     <h2>Discards Available: @GameplayViewModel.AvailableDiscards</h2>
+
+                    <h2>Power: @(GameplayViewModel.ActivePlayerPower?.Name ?? "No Power???")</h2>
+                    <h2>Power Charges: @GameplayViewModel.PowerCharges/2</h2>
                 }
                 break;
             case GameStates.Scoreboard:
@@ -63,17 +76,31 @@
                 };
 
                 <ScoreboardList GameId="@GameId" />
-                <button @onclick="HandleNextPressed">@nextBtnText</button>
+
+                if (ApplicationViewModel.Player.Id == HostId)
+                {
+                    <button @onclick="HandleNextPressed">@nextBtnText</button>
+                }
                 break;
             case GameStates.Upgrade:
-                EventNotificationService.PostEvent(
-                    this,
-                    new GameTransitionEventArgs
+                <PlayerPowerList GameId="@GameId" />
+                if (ApplicationViewModel.Player.Id == HostId)
+                {
+                    @if (GameplayViewModel.ArePlayerPowersReadied)
                     {
-                        Data = new () { GameId = GameId, GameEvent = GameEvents.Next, },
+                        <button @onclick="HandleNextPressed">PLAY NEXT ROUND</button>
                     }
-                );
+                    else
+                    {
+                        <span>WAITING ON OTHER PLAYERS' SELECTION</span>
+                    }
+                }
                 break;
+            case GameStates.GameStart:
+                {
+                    <span>GAME STARTING</span>
+                    break;
+                }
         }
     </CascadingValue>
 </div>

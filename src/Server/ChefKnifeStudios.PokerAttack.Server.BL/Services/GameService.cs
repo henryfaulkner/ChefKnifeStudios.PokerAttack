@@ -5,20 +5,19 @@ using ChefKnifeStudios.PokerAttack.Server.Data.Models;
 using ChefKnifeStudios.PokerAttack.Server.Data.Repos;
 using ChefKnifeStudios.PokerAttack.Server.Data.Specifications;
 using ChefKnifeStudios.PokerAttack.Shared;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR.EventArgs;
-using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
-using System.Threading;
-using static ChefKnifeStudios.PokerAttack.Shared.PokerAttackApiEndpoints;
 
 namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
 
 public interface IGameService
 {
+    Task StartGameAsync(string lobbyId, CancellationToken ct = default);
     Task StartPlayerRunAsync(string playerId, int runTimeInSeconds, CancellationToken ct = default);
     Task PlayHandAsync(string playerId, List<CardDTO> hand, CancellationToken ct = default);
     Task DiscardAsync(string playerId, List<CardDTO> discardCards, CancellationToken ct = default);
@@ -35,21 +34,46 @@ public class GameService(
     IGamePlayerRepository gamePlayerRepository,
     IRepository<Game> gameRepository,
     IRepository<Round> roundRepository,
-    IPokerAttackNotificationHelper notificationHelper) : IGameService
+    IPokerAttackNotificationHelper notificationHelper,
+    IGameStateMachineService gameStateMachineService) : IGameService
 {
     const int NumCardsInHand = 8;
 
+    public async Task StartGameAsync(string lobbyId, CancellationToken ct = default)
+    {
+        var lobby = await lobbyRepository.GetLobbyAsync(lobbyId, ct)
+            ?? throw new KeyNotFoundException("Lobby not found");
+
+        foreach (var player in lobby.Players)
+        {
+            var deck = new Deck();
+            deck.RandomizeDeck();
+            var gamePlayer = new GamePlayer
+            {
+                Deck = deck,
+                Score = 0,
+                PowerPoints = 0,
+            };
+            await gamePlayerRepository.AddAsync(player.Id, gamePlayer, ct);
+            await ReplenishHandAsync(player.Id, ct);
+        }
+
+        await gameStateMachineService.TransitionAsync(lobbyId, GameEvents.Next, ct);
+    }
+
     public async Task StartPlayerRunAsync(string playerId, int runTimeInSeconds, CancellationToken ct = default)
     {
+        var gamePlayer = await gamePlayerRepository.GetAsync(playerId, ct)
+            ?? throw new KeyNotFoundException("Game Player not found");
+
         var deck = new Deck();
         deck.RandomizeDeck();
-        var gamePlayer = new GamePlayer
-        {
-            Deck = deck,
-            Score = 0,
-            PowerPoints = 0,
-        };
-        await gamePlayerRepository.AddAsync(playerId, gamePlayer, ct);
+
+        gamePlayer.Deck = deck;
+        gamePlayer.CardsInHand.Clear();
+        gamePlayer.Score = 0;
+        gamePlayer.PowerPoints = 0;
+        await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
         await ReplenishHandAsync(playerId, ct);
 
         var resBody = new RunStartedDTO()
@@ -141,18 +165,28 @@ public class GameService(
         List<RoundScore> roundScores = [];
         foreach (var lobbyPlayer in lobby.Players)
         {
-            int score = (await gamePlayerRepository.GetAsync(lobbyPlayer.Id, ct))?.Score ?? 0;
+            string playerId = lobbyPlayer.Id;
+            int score = (await gamePlayerRepository.GetAsync(playerId, ct))?.Score ?? 0;
             roundScores.Add(
                 new RoundScore
                 {
-                    ClientUserId = lobbyPlayer.Id,
+                    ClientUserId = playerId,
                     ClientUserDisplayName = lobbyPlayer.Name,
                     Score = score,
                 }
             );
 
             // Clear temp player data
-            await gamePlayerRepository.DeleteAsync(lobbyPlayer.Id, ct);
+            var gamePlayer = await gamePlayerRepository.GetAsync(playerId, ct)
+                ?? throw new KeyNotFoundException("Game Player not found");
+            var deck = new Deck();
+            deck.RandomizeDeck();
+            gamePlayer.Deck = deck;
+            gamePlayer.CardsInHand.Clear();
+            gamePlayer.Score = 0;
+            gamePlayer.PowerPoints = 0;
+            await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
+            await ReplenishHandAsync(playerId, ct);
         }
 
         await roundRepository.AddAsync(

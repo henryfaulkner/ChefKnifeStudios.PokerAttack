@@ -9,10 +9,12 @@ public class CardItem
     {
         Suit = card.Suit;
         Rank = card.Rank;
+        IsFaceDown = card.IsFaceDown;
         IsSelected = false;
     }
 
     public Suits Suit { get; init; }
     public Ranks Rank { get; init; }
+    public bool IsFaceDown { get; init; }
     public bool IsSelected { get; set; }
 }

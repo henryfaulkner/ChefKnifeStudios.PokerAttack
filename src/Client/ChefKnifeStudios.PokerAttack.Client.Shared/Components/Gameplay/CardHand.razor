@@ -9,7 +9,7 @@
                 @onclick="() => card.IsSelected = !card.IsSelected"
             >
                 <img 
-                    src="@CardImageService.GetCardImagePath(card.Suit, card.Rank)" 
+                    src="@CardImageService.GetCardImagePath(card.Suit, card.Rank, card.IsFaceDown)" 
                     alt="" 
                 />
                 <span>[@ii]</span>
