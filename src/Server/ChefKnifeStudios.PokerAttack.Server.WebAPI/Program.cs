@@ -55,7 +55,7 @@ app.MapScalarApiReference(options =>
 }).AllowAnonymous();
 
 app.UseCors(policy =>
-    policy.WithOrigins("https://localhost:7150", "https://www.henryfaulkner.xyz")
+    policy.WithOrigins("https://localhost:7150", "https://www.henryfaulkner.xyz", "https://henryfaulkner.xyz")
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials());
