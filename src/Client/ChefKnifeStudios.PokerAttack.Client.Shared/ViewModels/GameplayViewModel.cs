@@ -111,13 +111,13 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 
     public async Task StartGameAsync(string playerId, CancellationToken cancellationToken = default)
     {
-        await _signalRNotificationService.StartGameAsync(GameId, playerId);
+        await _signalRNotificationService.StartGameAsync(GameId);
     }
 
     public async Task StartRoundAsync(string playerId, CancellationToken cancellationToken = default)
     {
         PowerCharges = _INIT_POWER_CHARGES;
-        await _signalRNotificationService.StartRoundAsync(GameId, playerId);
+        await _signalRNotificationService.StartRoundAsync(GameId);
     }
 
     public async Task PlaySelectedCardsAsync(string playerId, CancellationToken cancellationToken = default)

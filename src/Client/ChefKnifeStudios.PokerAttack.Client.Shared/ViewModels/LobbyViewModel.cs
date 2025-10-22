@@ -1,16 +1,16 @@
 ﻿using AutoFixture;
+using ChefKnifeStudios.PokerAttack.Client.Core.Extensions;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
+using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
-using CommunityToolkit.Mvvm.ComponentModel;
-using System.Collections.ObjectModel;
-using ChefKnifeStudios.PokerAttack.Client.Core.Extensions;
-using System.Text.Json;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR.EventArgs;
-using ChefKnifeStudios.PokerAttack.Shared;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.AspNetCore.Components;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 
@@ -19,20 +19,20 @@ public partial class LobbyListItem : ObservableObject
     [SetsRequiredMembers]
     public LobbyListItem(LobbyDTO lobby)
     {
-        _gameId = lobby.GameId;
+        _id = lobby.Id;
         _hostPlayer = lobby.HostPlayer;
         _players = lobby.Players;
-        _inProgress = lobby.InProgress;
+        _gameId = lobby.GameId;
     }
 
     [ObservableProperty]
-    public required string _gameId;
+    public required string _id;
     [ObservableProperty]
     public required PlayerDTO _hostPlayer;
     [ObservableProperty]
     public HashSet<PlayerDTO> _players = new();
     [ObservableProperty]
-    public bool _inProgress;
+    public string? _gameId;
 }
 
 public interface ILobbyViewModel : IViewModel
@@ -41,10 +41,10 @@ public interface ILobbyViewModel : IViewModel
     bool IsLoadingLobbies { get; }
     Task LoadLobbiesAsync(CancellationToken cancellationToken = default);
     Task CreateLobbyAsync(PlayerDTO player, CancellationToken cancellationToken = default);
-    Task JoinLobbyAsync(string gameId, PlayerDTO player, CancellationToken cancellationToken = default);
-    Task LeaveLobbyAsync(string gameId, PlayerDTO player, CancellationToken cancellationToken = default);
-    Task ShutdownLobbyAsync(string gameId, CancellationToken cancellationToken = default);
-    Task StartGameAsync(string gameId, CancellationToken cancellationToken = default);
+    Task JoinLobbyAsync(string lobbyId, PlayerDTO player, CancellationToken cancellationToken = default);
+    Task LeaveLobbyAsync(string lobbyId, PlayerDTO player, CancellationToken cancellationToken = default);
+    Task ShutdownLobbyAsync(string lobbyId, CancellationToken cancellationToken = default);
+    Task StartGameAsync(string lobbyId, CancellationToken cancellationToken = default);
 }
 
 public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposable
@@ -90,29 +90,29 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
     public async Task CreateLobbyAsync(PlayerDTO player, CancellationToken cancellationToken = default)
     {
         var res = await _lobbyEndpointsService.CreateLobbyAsync(new(player), cancellationToken);
-        if (res.IsSuccess && res.Value is LobbyDTO lobby) await _signalRNotificationService.JoinGameGroupAsync(lobby.GameId);
+        if (res.IsSuccess && res.Value is LobbyDTO lobby) await _signalRNotificationService.JoinLobbyGroupAsync(lobby.Id);
     }
 
-    public async Task JoinLobbyAsync(string gameId, PlayerDTO player, CancellationToken cancellationToken = default)
+    public async Task JoinLobbyAsync(string lobbyId, PlayerDTO player, CancellationToken cancellationToken = default)
     {
-        var res = await _lobbyEndpointsService.AddPlayerAsync(new(gameId, player), cancellationToken);
-        if (res.IsSuccess) await _signalRNotificationService.JoinGameGroupAsync(gameId);
+        var res = await _lobbyEndpointsService.AddPlayerAsync(new(lobbyId, player), cancellationToken);
+        if (res.IsSuccess) await _signalRNotificationService.JoinGameGroupAsync(lobbyId);
     }
 
-    public async Task LeaveLobbyAsync(string gameId, PlayerDTO player, CancellationToken cancellationToken = default)
+    public async Task LeaveLobbyAsync(string lobbyId, PlayerDTO player, CancellationToken cancellationToken = default)
     {
-        var res = await _lobbyEndpointsService.RemovePlayerAsync(new(gameId, player), cancellationToken);
-        if (res.IsSuccess) await _signalRNotificationService.LeaveGameGroupAsync(gameId);
+        var res = await _lobbyEndpointsService.RemovePlayerAsync(new(lobbyId, player), cancellationToken);
+        if (res.IsSuccess) await _signalRNotificationService.LeaveGameGroupAsync(lobbyId);
     }
 
-    public async Task ShutdownLobbyAsync(string gameId, CancellationToken cancellationToken = default)
+    public async Task ShutdownLobbyAsync(string lobbyId, CancellationToken cancellationToken = default)
     {
-        var res = await _lobbyEndpointsService.ShutdownLobbyAsync(gameId, cancellationToken);
-        if (res.IsSuccess) await _signalRNotificationService.LeaveGameGroupAsync(gameId);
+        var res = await _lobbyEndpointsService.ShutdownLobbyAsync(lobbyId, cancellationToken);
+        if (res.IsSuccess) await _signalRNotificationService.LeaveGameGroupAsync(lobbyId);
     }
 
-    public async Task StartGameAsync(string gameId, CancellationToken cancellationToken = default) =>
-        await _lobbyEndpointsService.StartGameAsync(gameId, cancellationToken);
+    public async Task StartGameAsync(string lobbyId, CancellationToken cancellationToken = default) =>
+        await _lobbyEndpointsService.StartGameAsync(lobbyId, cancellationToken);
 
     Task HandleSignalRNotificationReceived(PokerAttackNotification notification)
     {
@@ -134,7 +134,7 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
                     {
                         var index = Lobbies
                             .Select((lobby, i) => new { lobby, i })
-                            .FirstOrDefault(x => x.lobby.GameId == args.Lobby.GameId)?.i ?? -1;
+                            .FirstOrDefault(x => x.lobby.Id == args.Lobby.Id)?.i ?? -1;
 
                         if (index >= 0)
                         {
@@ -146,7 +146,7 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
             case PokerAttackNotificationType.LobbyShutdown:
                 {
                     var args = JsonSerializer.Deserialize<LobbyEventArgs>(notification.Payload!, JsonOptions.Get());
-                    var lobbyToRemove = Lobbies.FirstOrDefault(x => x.GameId == args!.Lobby.GameId);
+                    var lobbyToRemove = Lobbies.FirstOrDefault(x => x.Id == args!.Lobby.Id);
                     if (lobbyToRemove != null)
                     {
                         Lobbies.Remove(lobbyToRemove);
@@ -155,10 +155,10 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
                 }
             case PokerAttackNotificationType.GameStarted:
                 {
-                    var args = JsonSerializer.Deserialize<LobbyEventArgs>(notification.Payload!, JsonOptions.Get());
-                    if (args is { Lobby: LobbyDTO lobby })
+                    var args = JsonSerializer.Deserialize<GameStartedEventArgs>(notification.Payload!, JsonOptions.Get());
+                    if (args is { GameId: string gameId })
                     {
-                        _navigationManager.NavigateTo($"/gameplay?gameid={lobby.GameId}&hostid={lobby.HostPlayer.Id}", replace: true);
+                        _navigationManager.NavigateTo($"/gameplay?gameid={gameId}", replace: true);
                     }
                     break;
                 }

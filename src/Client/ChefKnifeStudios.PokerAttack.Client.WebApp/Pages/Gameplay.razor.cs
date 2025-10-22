@@ -12,7 +12,6 @@ namespace ChefKnifeStudios.PokerAttack.Client.WebApp.Pages;
 public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
 {
     [SupplyParameterFromQuery] public required string GameId { get; set; }
-    [SupplyParameterFromQuery] public required string HostId { get; set; }
 
     [Inject] IApplicationViewModel ApplicationViewModel { get; set; } = null!;
     [Inject] IGameplayViewModel GameplayViewModel { get; set; } = null!;

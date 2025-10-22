@@ -19,6 +19,7 @@ public class SignalRNotificationHub(
     ILogger<SignalRNotificationHub> logger,
     IPokerAttackNotificationHelper notificationHelper,
     IGameService gameService,
+    IActiveGameRepository activeGameRepository,
     IGameStateMachineService gameStateMachineService,
     ILobbyService lobbyService,
     IServiceScopeFactory serviceScopeFactory,
@@ -31,10 +32,28 @@ public class SignalRNotificationHub(
         await base.OnConnectedAsync();
     }
 
-    // Lobby-wide notifications
-    public async Task BroadcastLobbyNotification(PokerAttackNotification notification)
+    // Server-wide notifications
+    public async Task BroadcastServerNotification(PokerAttackNotification notification)
     {
         await notificationHelper.BroadcastToAllAsync(notification);
+    }
+
+    // Lobby group notifications
+    public async Task BroadcastLobbyNotification(string lobbyId, PokerAttackNotification notification)
+    {
+        await notificationHelper.BroadcastToGameAsync(lobbyId, notification);
+    }
+
+    public async Task JoinLobbyGroupAsync(string lobbyId)
+    {
+        var groupName = notificationHelper.GetLobbyGroupName(lobbyId);
+        await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+    }
+
+    public async Task LeaveLobbyGroupAsync(string lobbyId)
+    {
+        var groupName = notificationHelper.GetLobbyGroupName(lobbyId);
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
     }
 
     // Game group notifications
@@ -58,25 +77,22 @@ public class SignalRNotificationHub(
     // -------------------------
     // Game-specific methods
     // -------------------------
-    public async Task StartGame(string lobbyId, string hostId)
+    public async Task StartGame(string gameId)
     {
-        var lobby = await lobbyService.GetLobbyAsync(lobbyId);
-        if (lobby == null
-            || !lobby.HostPlayer.Id.Equals(hostId, StringComparison.InvariantCultureIgnoreCase)) return;
-
-        await gameService.StartGameAsync(lobbyId);
+        // TODO: THIS IS GONNA RUN FOR ALL PLAYERS WHICH IS WRONG
+        var game = await activeGameRepository.GetAsync(gameId);
+        await gameService.StartGameAsync(gameId);
     }
 
-    public async Task StartRound(string lobbyId, string hostId)
+    public async Task StartRound(string gameId)
     {
+        // TODO: THIS IS GONNA RUN FOR ALL PLAYERS WHICH IS WRONG
         const int _RUN_TIME_IN_SECONDS = 90;
 
-        var lobby = await lobbyService.GetLobbyAsync(lobbyId);
-        if (lobby == null 
-            || !lobby.HostPlayer.Id.Equals(hostId, StringComparison.InvariantCultureIgnoreCase)) return;
+        var game = await activeGameRepository.GetAsync(gameId);
 
         List<Task> taskList = [];
-        foreach (var player in lobby.Players)
+        foreach (var player in game.Players)
         {
             taskList.Add(StartRun(player.Id, _RUN_TIME_IN_SECONDS));
         }
@@ -93,9 +109,9 @@ public class SignalRNotificationHub(
 
             try
             {
-                await scopedGameService.EndRoundAsync(lobbyId);
+                await scopedGameService.EndRoundAsync(gameId);
                 await scopedNotificationHelper.BroadcastToGameAsync(
-                    lobbyId,
+                    gameId,
                     new PokerAttackNotification(PokerAttackNotificationType.RoundEnded, string.Empty)
                 );
             }

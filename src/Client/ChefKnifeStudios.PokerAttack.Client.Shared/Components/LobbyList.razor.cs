@@ -72,14 +72,14 @@ public partial class LobbyList : ComponentBase, IDisposable
         Task.Run(async () => await InvokeAsync(StateHasChanged));
     }
 
-    void HandleJoinLobbyPressed(string gameId) =>
-        _ = LobbyViewModel.JoinLobbyAsync(gameId, ApplicationViewModel.Player);
+    void HandleJoinLobbyPressed(string lobbyId) =>
+        _ = LobbyViewModel.JoinLobbyAsync(lobbyId, ApplicationViewModel.Player);
 
-    void HandleLeaveLobbyPressed(string gameId) =>
-        _ = LobbyViewModel.LeaveLobbyAsync(gameId, ApplicationViewModel.Player);
+    void HandleLeaveLobbyPressed(string lobbyId) =>
+        _ = LobbyViewModel.LeaveLobbyAsync(lobbyId, ApplicationViewModel.Player);
 
-    void HandleStartGamePressed(string gameId) =>
-        _ = LobbyViewModel.StartGameAsync(gameId);
+    void HandleStartGamePressed(string lobbyId) =>
+        _ = LobbyViewModel.StartGameAsync(lobbyId);
 
     void HandleItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {

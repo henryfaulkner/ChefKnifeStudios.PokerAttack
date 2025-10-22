@@ -17,20 +17,20 @@ namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
 
 public interface IGameService
 {
-    Task StartGameAsync(string lobbyId, CancellationToken ct = default);
+    Task StartGameAsync(string gameId, CancellationToken ct = default);
     Task StartPlayerRunAsync(string playerId, int runTimeInSeconds, CancellationToken ct = default);
     Task PlayHandAsync(string playerId, List<CardDTO> hand, CancellationToken ct = default);
     Task DiscardAsync(string playerId, List<CardDTO> discardCards, CancellationToken ct = default);
     Task<int> GetPlayerScoreAsync(string playerId, CancellationToken ct = default);
-    Task EndRoundAsync(string lobbyId, CancellationToken ct = default);
-    Task<RoundDTO> GetLatestRoundFromGame(string lobbyId, CancellationToken ct = default);
+    Task EndRoundAsync(string gameId, CancellationToken ct = default);
+    Task<RoundDTO> GetLatestRoundFromGame(string gameId, CancellationToken ct = default);
     Task EndGameAsync(string gameId, CancellationToken ct = default);
     Task LeaveGameAsync(string gameId, string playerId, CancellationToken ct = default);
 }
 
 public class GameService(
     ILogger<GameService> logger,
-    ILobbyRepository lobbyRepository,
+    IActiveGameRepository activeGameRepository,
     IGamePlayerRepository gamePlayerRepository,
     IRepository<Game> gameRepository,
     IRepository<Round> roundRepository,
@@ -39,10 +39,10 @@ public class GameService(
 {
     const int NumCardsInHand = 8;
 
-    public async Task StartGameAsync(string lobbyId, CancellationToken ct = default)
+    public async Task StartGameAsync(string gameId, CancellationToken ct = default)
     {
-        var lobby = await lobbyRepository.GetLobbyAsync(lobbyId, ct)
-            ?? throw new KeyNotFoundException("Lobby not found");
+        var lobby = await activeGameRepository.GetAsync(gameId, ct)
+            ?? throw new KeyNotFoundException("Game not found");
 
         foreach (var player in lobby.Players)
         {
@@ -58,7 +58,7 @@ public class GameService(
             await ReplenishHandAsync(player.Id, ct);
         }
 
-        await gameStateMachineService.TransitionAsync(lobbyId, GameEvents.Next, ct);
+        await gameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
     }
 
     public async Task StartPlayerRunAsync(string playerId, int runTimeInSeconds, CancellationToken ct = default)
@@ -155,23 +155,23 @@ public class GameService(
         => (await gamePlayerRepository.GetAsync(playerId, ct)
             ?? throw new KeyNotFoundException("Game Player not found")).Score;
 
-    public async Task EndRoundAsync(string lobbyId, CancellationToken ct = default)
+    public async Task EndRoundAsync(string gameId, CancellationToken ct = default)
     {
-        var lobby = await lobbyRepository.GetLobbyAsync(lobbyId, ct)
-            ?? throw new ApplicationException($"Lobby not found: Lobby Id {lobbyId}");
-        var game = await gameRepository.FirstOrDefaultAsync(new GetGameByClientIdSpec(lobbyId), ct)
-            ?? throw new ApplicationException($"Game not found: Lobby Id {lobbyId}"); ;
+        var activeGame = await activeGameRepository.GetAsync(gameId, ct)
+            ?? throw new ApplicationException($"Active Game not found: Active Game Id {gameId}");
+        var game = await gameRepository.FirstOrDefaultAsync(new GetGameByClientIdSpec(gameId), ct)
+            ?? throw new ApplicationException($"Game Record not found: Game Record Id {gameId}"); ;
 
         List<RoundScore> roundScores = [];
-        foreach (var lobbyPlayer in lobby.Players)
+        foreach (var activeGamePlayer in activeGame.Players)
         {
-            string playerId = lobbyPlayer.Id;
+            string playerId = activeGamePlayer.Id;
             int score = (await gamePlayerRepository.GetAsync(playerId, ct))?.Score ?? 0;
             roundScores.Add(
                 new RoundScore
                 {
                     ClientUserId = playerId,
-                    ClientUserDisplayName = lobbyPlayer.Name,
+                    ClientUserDisplayName = activeGamePlayer.Name,
                     Score = score,
                 }
             );
@@ -199,10 +199,10 @@ public class GameService(
         );
     }
 
-    public async Task<RoundDTO> GetLatestRoundFromGame(string lobbyId, CancellationToken ct = default)
+    public async Task<RoundDTO> GetLatestRoundFromGame(string gameId, CancellationToken ct = default)
     {
-        var game = await gameRepository.FirstOrDefaultAsync(new GetGameByClientIdSpec(lobbyId), ct)
-            ?? throw new ApplicationException($"Game not found: Lobby Id {lobbyId}");
+        var game = await gameRepository.FirstOrDefaultAsync(new GetGameByClientIdSpec(gameId), ct)
+            ?? throw new ApplicationException($"Game not found: Game Id {gameId}");
         var latestRound = await roundRepository.FirstOrDefaultAsync(new GetLatestRoundByGameIdSpec(game.Id), ct)
             ?? throw new ApplicationException($"Latest Round not found: Game Id {game.Id}");
         return latestRound.MapToDTO();
@@ -210,40 +210,41 @@ public class GameService(
 
     public async Task EndGameAsync(string gameId, CancellationToken ct = default)
     {
-        var lobby = await lobbyRepository.GetLobbyAsync(gameId, ct)
-            ?? throw new ApplicationException($"Lobby not found: Lobby Id {gameId}");
+        var lobby = await activeGameRepository.GetAsync(gameId, ct)
+            ?? throw new ApplicationException($"Active Game not found: Game Id {gameId}");
         
         foreach (var gamePlayer in lobby.Players) await gamePlayerRepository.DeleteAsync(gamePlayer.Id, ct);
-        await lobbyRepository.RemoveLobbyAsync(gameId, ct);
+        await activeGameRepository.DeleteAsync(gameId, ct);
 
-        await notificationHelper.BroadcastToAllAsync(
-            new PokerAttackNotification(
-                PokerAttackNotificationType.LobbyShutdown,
-                JsonSerializer.Serialize(
-                    new LobbyEventArgs()
-                    {
-                        Lobby = new LobbyDTO()
-                        {
-                            GameId = gameId,
-                            HostPlayer = lobby.HostPlayer.MapToDTO(),
-                        }
-                    }, JsonOptions.Get()
-                )
-            ),
-            ct
-        );
+        // TODO need to resolve lobby shutdown
+        //await notificationHelper.BroadcastToAllAsync(
+        //    new PokerAttackNotification(
+        //        PokerAttackNotificationType.LobbyShutdown,
+        //        JsonSerializer.Serialize(
+        //            new LobbyEventArgs()
+        //            {
+        //                Lobby = new LobbyDTO()
+        //                {
+        //                    GameId = gameId,
+        //                    HostPlayer = lobby.HostPlayer.MapToDTO(),
+        //                }
+        //            }, JsonOptions.Get()
+        //        )
+        //    ),
+        //    ct
+        //);
     }
 
     public async Task LeaveGameAsync(string gameId, string playerId, CancellationToken ct = default)
     {
         try
         {
-            var lobby = await lobbyRepository.GetLobbyAsync(gameId, ct)
-                ?? throw new ApplicationException($"Lobby not found: Lobby Id {gameId}");
+            var lobby = await activeGameRepository.GetAsync(gameId, ct)
+                ?? throw new ApplicationException($"Active Game not found: Game Id {gameId}");
 
             lobby.Players.RemoveWhere(x => x.Id == playerId);
             await gamePlayerRepository.DeleteAsync(playerId, ct);
-            await lobbyRepository.UpdateLobbyAsync(gameId, lobby, ct);
+            await activeGameRepository.UpdateAsync(gameId, lobby, ct);
         }
         catch (Exception ex)
         {

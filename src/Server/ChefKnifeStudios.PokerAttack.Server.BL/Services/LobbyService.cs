@@ -4,6 +4,7 @@ using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Server.Data.Models;
 using ChefKnifeStudios.PokerAttack.Server.Data.Repos;
 using ChefKnifeStudios.PokerAttack.Shared;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR.EventArgs;
@@ -16,22 +17,23 @@ namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
 public interface ILobbyService
 {
     Task<LobbyDTO> CreateLobbyAsync(PlayerDTO hostPlayer, CancellationToken cancellationToken = default);
-    Task<LobbyDTO?> GetLobbyAsync(string gameId, CancellationToken cancellationToken = default);
+    Task<LobbyDTO?> GetLobbyAsync(string lobbyId, CancellationToken cancellationToken = default);
     Task<IEnumerable<LobbyDTO>> GetLobbiesAsync(CancellationToken cancellationToken = default);
-    Task JoinLobbyAsync(string gameId, PlayerDTO player, CancellationToken cancellationToken = default);
+    Task JoinLobbyAsync(string lobbyId, PlayerDTO player, CancellationToken cancellationToken = default);
     Task LeaveLobbyAsync(PlayerDTO player, CancellationToken cancellationToken = default);
-    Task LeaveLobbyAsync(string gameId, PlayerDTO player, CancellationToken cancellationToken = default);
-    Task<IEnumerable<PlayerDTO>> ShutDownLobbyAsync(string gameId, CancellationToken cancellationToken = default);
-    Task<IEnumerable<PlayerDTO>> GetPlayersAsync(string gameId, CancellationToken cancellationToken = default);
+    Task LeaveLobbyAsync(string lobbyId, PlayerDTO player, CancellationToken cancellationToken = default);
+    Task<IEnumerable<PlayerDTO>> ShutDownLobbyAsync(string lobbyId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<PlayerDTO>> GetPlayersAsync(string lobbyId, CancellationToken cancellationToken = default);
     Task UpdatePlayerAsync(PlayerDTO player, CancellationToken cancellationToken = default);
-    Task StartGameAsync(string gameId, CancellationToken cancellationToken = default);
+    Task StartGameAsync(string lobbyId, CancellationToken cancellationToken = default);
 }
 
 public class LobbyService(
     ILobbyRepository lobbyRepository,
     IPokerAttackNotificationHelper notificationHelper,
     IRepository<Game> gameRepository,
-    IGameStateRepository gameStateRepository) : ILobbyService
+    IGameStateRepository gameStateRepository,
+    IActiveGameRepository activeGameRepository) : ILobbyService
 {
     public async Task<LobbyDTO> CreateLobbyAsync(PlayerDTO hostPlayer, CancellationToken cancellationToken = default)
     {
@@ -39,9 +41,9 @@ public class LobbyService(
         await RemovePlayerFromAllLobbiesAsync(hostPlayer.Id, cancellationToken);
 
         // Step 2: Generate unique game ID
-        var gameId = GenerateGameId();
+        var lobbyId = GenerateLobbyId();
 
-        if (await lobbyRepository.LobbyExistsAsync(gameId, cancellationToken))
+        if (await lobbyRepository.LobbyExistsAsync(lobbyId, cancellationToken))
             throw new InvalidOperationException("Lobby already exists.");
 
         var hostPlayerModel = hostPlayer.MapToModel();
@@ -49,13 +51,14 @@ public class LobbyService(
         // Step 3: Create the lobby with the host as the first player
         var lobby = new Lobby
         {
+            Id = lobbyId,
             HostPlayer = hostPlayerModel,
             Players = new() { hostPlayerModel },
         };
 
-        await lobbyRepository.AddLobbyAsync(gameId, lobby, cancellationToken);
+        await lobbyRepository.AddLobbyAsync(lobbyId, lobby, cancellationToken);
 
-        var result = lobby.MapToDTO(gameId);
+        var result = lobby.MapToDTO();
 
         await notificationHelper.BroadcastToAllAsync(
             new PokerAttackNotification(
@@ -68,22 +71,22 @@ public class LobbyService(
     }
 
 
-    public async Task<LobbyDTO?> GetLobbyAsync(string gameId, CancellationToken cancellationToken = default)
+    public async Task<LobbyDTO?> GetLobbyAsync(string lobbyId, CancellationToken cancellationToken = default)
     {
-        var lobby = await lobbyRepository.GetLobbyAsync(gameId, cancellationToken);
-        return lobby?.MapToDTO(gameId);
+        var lobby = await lobbyRepository.GetLobbyAsync(lobbyId, cancellationToken);
+        return lobby?.MapToDTO();
     }
 
     public async Task<IEnumerable<LobbyDTO>> GetLobbiesAsync(CancellationToken cancellationToken = default)
     {
         var lobbies = await lobbyRepository.GetAllLobbiesAsync(cancellationToken);
-        return lobbies.Select(kvp => kvp.Value.MapToDTO(kvp.Key!));
+        return lobbies.Select(kvp => kvp.Value.MapToDTO());
     }
 
-    public async Task JoinLobbyAsync(string gameId, PlayerDTO player, CancellationToken cancellationToken = default)
+    public async Task JoinLobbyAsync(string lobbyId, PlayerDTO player, CancellationToken cancellationToken = default)
     {
         // Ensure target lobby exists
-        var targetLobby = await lobbyRepository.GetLobbyAsync(gameId, cancellationToken);
+        var targetLobby = await lobbyRepository.GetLobbyAsync(lobbyId, cancellationToken);
         if (targetLobby is null)
             throw new KeyNotFoundException("Lobby not found.");
 
@@ -99,12 +102,12 @@ public class LobbyService(
             targetLobby.Players.Add(player.MapToModel());
         }
 
-        await lobbyRepository.UpdateLobbyAsync(gameId, targetLobby, cancellationToken);
+        await lobbyRepository.UpdateLobbyAsync(lobbyId, targetLobby, cancellationToken);
 
         await notificationHelper.BroadcastToAllAsync(
             new PokerAttackNotification(
                 PokerAttackNotificationType.PlayerJoined,
-                JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = targetLobby.MapToDTO(gameId) }, JsonOptions.Get())),
+                JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = targetLobby.MapToDTO() }, JsonOptions.Get())),
             cancellationToken
         );
     }
@@ -143,7 +146,7 @@ public class LobbyService(
                     JsonSerializer.Serialize(
                         new LobbyEventArgs() 
                         { 
-                            Lobby = lobbyKvp.Value.Value.MapToDTO(lobbyKvp.Value.Key) 
+                            Lobby = lobbyKvp.Value.Value.MapToDTO() 
                         }, JsonOptions.Get()
                     )
                 ),
@@ -152,21 +155,21 @@ public class LobbyService(
         }
     }
 
-    public async Task LeaveLobbyAsync(string gameId, PlayerDTO player, CancellationToken cancellationToken = default)
+    public async Task LeaveLobbyAsync(string lobbyId, PlayerDTO player, CancellationToken cancellationToken = default)
     {
-        var lobby = await lobbyRepository.GetLobbyAsync(gameId, cancellationToken);
+        var lobby = await lobbyRepository.GetLobbyAsync(lobbyId, cancellationToken);
         if (lobby is null || lobby.HostPlayer is null)
             throw new KeyNotFoundException("Lobby not found.");
 
         if (lobby.HostPlayer.Id == player.Id)
         {
             // Host leaving shuts down lobby
-            await ShutDownLobbyAsync(gameId, cancellationToken);
+            await ShutDownLobbyAsync(lobbyId, cancellationToken);
 
             await notificationHelper.BroadcastToAllAsync(
                 new PokerAttackNotification(
                     PokerAttackNotificationType.LobbyShutdown,
-                    JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = new LobbyDTO() { GameId = gameId, HostPlayer = lobby.HostPlayer.MapToDTO(), } }, JsonOptions.Get())),
+                    JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = new LobbyDTO() { Id = lobbyId, HostPlayer = lobby.HostPlayer.MapToDTO(), } }, JsonOptions.Get())),
                 cancellationToken
             );
         }
@@ -176,24 +179,24 @@ public class LobbyService(
             {
                 lobby.Players.RemoveWhere(x => x.Id.Equals(player.Id, StringComparison.InvariantCultureIgnoreCase));
             }
-            await lobbyRepository.UpdateLobbyAsync(gameId, lobby, cancellationToken);
+            await lobbyRepository.UpdateLobbyAsync(lobbyId, lobby, cancellationToken);
 
             await notificationHelper.BroadcastToAllAsync(
                 new PokerAttackNotification(
                     PokerAttackNotificationType.PlayerLeft,
-                    JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = lobby.MapToDTO(gameId) }, JsonOptions.Get())),
+                    JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = lobby.MapToDTO() }, JsonOptions.Get())),
                 cancellationToken
             );
         }
     }
 
-    public async Task<IEnumerable<PlayerDTO>> ShutDownLobbyAsync(string gameId, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<PlayerDTO>> ShutDownLobbyAsync(string lobbyId, CancellationToken cancellationToken = default)
     {
-        var lobby = await lobbyRepository.GetLobbyAsync(gameId, cancellationToken);
+        var lobby = await lobbyRepository.GetLobbyAsync(lobbyId, cancellationToken);
         if (lobby is null)
             return Enumerable.Empty<PlayerDTO>();
 
-        await lobbyRepository.RemoveLobbyAsync(gameId, cancellationToken);
+        await lobbyRepository.RemoveLobbyAsync(lobbyId, cancellationToken);
 
         var players = lobby.Players.ToList();
         await notificationHelper.BroadcastToAllAsync(
@@ -204,7 +207,7 @@ public class LobbyService(
                     {
                         Lobby = new LobbyDTO()
                         {
-                            GameId = gameId,
+                            Id = lobbyId,
                             HostPlayer = lobby.HostPlayer.MapToDTO(),
                         }
                     }, JsonOptions.Get()
@@ -216,9 +219,9 @@ public class LobbyService(
         return players.Select(x => x.MapToDTO());
     }
 
-    public async Task<IEnumerable<PlayerDTO>> GetPlayersAsync(string gameId, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<PlayerDTO>> GetPlayersAsync(string lobbyId, CancellationToken cancellationToken = default)
     {   
-        var lobby = await lobbyRepository.GetLobbyAsync(gameId, cancellationToken);
+        var lobby = await lobbyRepository.GetLobbyAsync(lobbyId, cancellationToken);
         return lobby?.Players.Select(x => x.MapToDTO()) ?? Enumerable.Empty<PlayerDTO>();
     }
 
@@ -239,7 +242,7 @@ public class LobbyService(
             throw new KeyNotFoundException("Player not found in any lobby.");
 
         var lobby = lobbyKvp.Value.Value;
-        var gameId = lobbyKvp.Value.Key;
+        var lobbyId = lobbyKvp.Value.Key;
 
         // 2. Update the player in the Players collection
         lock (lobby.Players)
@@ -259,7 +262,7 @@ public class LobbyService(
         }
 
         // 4. Update the lobby in the repository
-        await lobbyRepository.UpdateLobbyAsync(gameId, lobby, cancellationToken);
+        await lobbyRepository.UpdateLobbyAsync(lobbyId, lobby, cancellationToken);
 
         // 5. Optionally, broadcast a notification
         await notificationHelper.BroadcastToAllAsync(
@@ -268,7 +271,7 @@ public class LobbyService(
                 JsonSerializer.Serialize(
                     new LobbyEventArgs
                     {
-                        Lobby = lobby.MapToDTO(gameId)
+                        Lobby = lobby.MapToDTO()
                     },
                     JsonOptions.Get()
                 )
@@ -277,24 +280,31 @@ public class LobbyService(
         );
     }
 
-    public async Task StartGameAsync(string gameId, CancellationToken cancellationToken = default)
+    public async Task StartGameAsync(string lobbyId, CancellationToken cancellationToken = default)
     {
-        var lobbyDTO = await GetLobbyAsync(gameId, cancellationToken);
+        var lobbyDTO = await GetLobbyAsync(lobbyId, cancellationToken);
         if (lobbyDTO is null) return;
 
-        lobbyDTO.InProgress = true;
-        await lobbyRepository.UpdateLobbyAsync(gameId, lobbyDTO.MapToModel(), cancellationToken);
+        string activeGameId = Guid.NewGuid().ToString();
+        lobbyDTO.GameId = activeGameId;
+        await lobbyRepository.UpdateLobbyAsync(lobbyId, lobbyDTO.MapToModel(), cancellationToken);
 
         await gameRepository.AddAsync(
             new Game
             { 
-                ClientId = lobbyDTO.GameId,
+                ClientId = activeGameId,
                 HostPlayerClientId = lobbyDTO.HostPlayer.Id,
             },
             cancellationToken
         );
 
-        await gameStateRepository.AddAsync(gameId, Shared.Enums.GameStates.GameStart, cancellationToken);
+        var activeGame = new ActiveGame
+        {
+            Id = activeGameId,
+            Players = lobbyDTO.Players.Select(x => x.MapToModel()).ToHashSet(),
+        };
+        await activeGameRepository.AddAsync(activeGameId, activeGame, cancellationToken);
+        await gameStateRepository.AddAsync(lobbyId, Shared.Enums.GameStates.GameStart, cancellationToken);
 
         await notificationHelper.BroadcastToAllAsync(
             new PokerAttackNotification(
@@ -309,14 +319,14 @@ public class LobbyService(
             ),
             cancellationToken
         );
-        await notificationHelper.BroadcastToGameAsync(
-            gameId,
+        await notificationHelper.BroadcastToLobbyAsync(
+            lobbyId,
             new PokerAttackNotification(
                 PokerAttackNotificationType.GameStarted,
                 JsonSerializer.Serialize(
-                    new LobbyEventArgs
+                    new GameStartedEventArgs
                     {
-                        Lobby = lobbyDTO,
+                        GameId = activeGameId,
                     },
                     JsonOptions.Get()
                 )
@@ -325,7 +335,7 @@ public class LobbyService(
         );
     }
 
-    static string GenerateGameId()
+    static string GenerateLobbyId()
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         var data = new byte[6];
@@ -365,7 +375,7 @@ public class LobbyService(
                             { 
                                 Lobby = new LobbyDTO() 
                                 { 
-                                    GameId = kvp.Key,
+                                    Id = kvp.Key,
                                     HostPlayer = lobby.HostPlayer.MapToDTO(),
                                 } 
                             }, JsonOptions.Get()
@@ -384,7 +394,7 @@ public class LobbyService(
                 await notificationHelper.BroadcastToAllAsync(
                     new PokerAttackNotification(
                         PokerAttackNotificationType.PlayerLeft,
-                        JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = lobby.MapToDTO(kvp.Key) }, JsonOptions.Get()))
+                        JsonSerializer.Serialize(new LobbyEventArgs() { Lobby = lobby.MapToDTO() }, JsonOptions.Get()))
                 );
             }
         }

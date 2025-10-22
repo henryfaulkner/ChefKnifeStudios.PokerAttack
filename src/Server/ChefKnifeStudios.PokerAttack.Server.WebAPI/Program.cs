@@ -28,6 +28,7 @@ builder.Services.AddSignalR();
 builder.Services.AddSingleton<IUserIdProvider, PlayerIdProvider>();
 builder.Services.AddSingleton<IPokerAttackNotificationHelper, PokerAttackNotificationHelper>();
 builder.Services.AddSingleton<ILobbyRepository, InMemoryLobbyRepository>();
+builder.Services.AddSingleton<IActiveGameRepository, InMemoryActiveGameRepository>();
 builder.Services.AddSingleton<IGamePlayerRepository, InMemoryGamePlayerRepository>();
 builder.Services.AddSingleton<IGameStateRepository, InMemoryGameStateRepository>();
 builder.Services.AddScoped<ILobbyService, LobbyService>();

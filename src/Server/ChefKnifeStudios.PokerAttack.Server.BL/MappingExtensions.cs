@@ -8,13 +8,13 @@ namespace ChefKnifeStudios.PokerAttack.Server.BL;
 
 public static class MappingExtensions
 {
-    public static LobbyDTO MapToDTO(this Lobby model, string gameId)
+    public static LobbyDTO MapToDTO(this Lobby model)
     {
         return new()
         {
-            GameId = gameId,
+            Id = model.Id,
             HostPlayer = model.HostPlayer.MapToDTO(),
-            InProgress = model.InProgress,
+            GameId = model.GameId,
             Players = model.Players.Select(x => x.MapToDTO()).ToHashSet(),
         };
     }
@@ -23,8 +23,9 @@ public static class MappingExtensions
     {
         return new()
         {
+            Id = dto.Id,
             HostPlayer = dto.HostPlayer.MapToModel(),
-            InProgress = dto.InProgress,
+            GameId = dto.GameId,
             Players = dto.Players.Select(x => x.MapToModel()).ToHashSet(),
         };
     }

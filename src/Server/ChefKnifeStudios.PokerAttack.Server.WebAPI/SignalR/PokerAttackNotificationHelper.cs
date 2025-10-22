@@ -7,7 +7,8 @@ namespace ChefKnifeStudios.PokerAttack.Server.WebAPI.SignalR;
 public class PokerAttackNotificationHelper : IPokerAttackNotificationHelper
 {
     private readonly IHubContext<SignalRNotificationHub, ISignalRNotificationClient> _hubContext;
-
+    // Cache group names (lobbyId → group)
+    private readonly Dictionary<string, string> _lobbyGroups = new();
     // Cache group names (gameId → group)
     private readonly Dictionary<string, string> _gameGroups = new();
 
@@ -24,6 +25,20 @@ public class PokerAttackNotificationHelper : IPokerAttackNotificationHelper
         try
         {
             await _hubContext.Clients.User(playerId).ReceivePokerAttackNotification(notification, cancellationToken);
+        }
+        catch { /* log or swallow */ }
+    }
+
+    /// <summary>
+    /// Broadcast update to all players in a lobby
+    /// </summary>
+    public async Task BroadcastToLobbyAsync(string lobbyId, PokerAttackNotification notification, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var groupName = GetLobbyGroupName(lobbyId);
+            var group = _hubContext.Clients.Group(groupName);
+            await group.ReceivePokerAttackNotification(notification, cancellationToken);
         }
         catch { /* log or swallow */ }
     }
@@ -65,6 +80,20 @@ public class PokerAttackNotificationHelper : IPokerAttackNotificationHelper
             await _hubContext.Clients.All.ReceivePokerAttackNotification(notification, cancellationToken);
         }
         catch { /* log or swallow */ }
+    }
+
+    /// <summary>
+    /// Get or generate the SignalR group name for a lobby
+    /// </summary>
+    public string GetLobbyGroupName(string lobbyId)
+    {
+        if (_gameGroups.TryGetValue(lobbyId, out var groupName))
+            return groupName;
+
+        groupName = $"lobby_{lobbyId}";
+        _lobbyGroups[lobbyId] = groupName;
+
+        return groupName;
     }
 
     /// <summary>

@@ -10,16 +10,16 @@
             {
                 <MatExpansionPanel>
                     <MatExpansionPanelSummary>
-                        <MatExpansionPanelHeader>Lobby Id: @lobby.GameId</MatExpansionPanelHeader>
+                        <MatExpansionPanelHeader>Lobby Id: @lobby.Id</MatExpansionPanelHeader>
                         <MatExpansionPanelSubHeader>
-                            @if (lobby.InProgress)
+                            @if (lobby.GameId is string)
                             {
                                 <span>MATCH IN PROGRESS</span>
                             }
                             else if (!lobby.Players.Select(x => x.Id).Contains(ApplicationViewModel.Player.Id))
                             {
                                 <MatButton 
-                                    OnClick="() => HandleJoinLobbyPressed(lobby.GameId)" 
+                                    OnClick="() => HandleJoinLobbyPressed(lobby.Id)" 
                                     OnClickStopPropagation="true"
                                 >
                                     JOIN LOBBY
@@ -28,7 +28,7 @@
                             else if (lobby.HostPlayer.Id.Equals(ApplicationViewModel.Player.Id, StringComparison.InvariantCultureIgnoreCase))
                             {
                                 <MatButton 
-                                    OnClick="() => HandleStartGamePressed(lobby.GameId)" 
+                                    OnClick="() => HandleStartGamePressed(lobby.Id)" 
                                     OnClickStopPropagation="true"
                                 >
                                     Start Game
@@ -54,7 +54,7 @@
                                     @if (@context.Id == ApplicationViewModel.Player.Id)
                                     {
                                         <MatButton 
-                                            OnClick="() => HandleLeaveLobbyPressed(lobby.GameId)" 
+                                            OnClick="() => HandleLeaveLobbyPressed(lobby.Id)" 
                                         >
                                             LEAVE LOBBY
                                         </MatButton>

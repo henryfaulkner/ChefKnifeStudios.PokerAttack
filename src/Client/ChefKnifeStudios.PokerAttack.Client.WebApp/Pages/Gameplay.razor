@@ -76,24 +76,17 @@
                 };
 
                 <ScoreboardList GameId="@GameId" />
-
-                if (ApplicationViewModel.Player.Id == HostId)
-                {
-                    <button @onclick="HandleNextPressed">@nextBtnText</button>
-                }
+                <button @onclick="HandleNextPressed">@nextBtnText</button>
                 break;
             case GameStates.Upgrade:
                 <PlayerPowerList GameId="@GameId" />
-                if (ApplicationViewModel.Player.Id == HostId)
+                @if (GameplayViewModel.ArePlayerPowersReadied)
                 {
-                    @if (GameplayViewModel.ArePlayerPowersReadied)
-                    {
-                        <button @onclick="HandleNextPressed">PLAY NEXT ROUND</button>
-                    }
-                    else
-                    {
-                        <span>WAITING ON OTHER PLAYERS' SELECTION</span>
-                    }
+                    <button @onclick="HandleNextPressed">PLAY NEXT ROUND</button>
+                }
+                else
+                {
+                    <span>WAITING ON OTHER PLAYERS' SELECTION</span>
                 }
                 break;
             case GameStates.GameStart:
