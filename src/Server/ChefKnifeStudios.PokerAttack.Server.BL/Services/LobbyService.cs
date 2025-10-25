@@ -32,8 +32,12 @@ public class LobbyService(
     IPokerAttackNotificationHelper notificationHelper,
     IRepository<Game> gameRepository,
     IKeyValueRepository<GameStates> gameStateRepository,
-    IKeyValueRepository<ActiveGame> activeGameRepository) : ILobbyService
+    IKeyValueRepository<ActiveGame> activeGameRepository,
+    IGameStateMachineService gameStateMachineService,
+    IKeyValueRepository<GamePlayer> gamePlayerRepository) : ILobbyService
 {
+    const int NumCardsInHand = 8;
+
     public async Task<LobbyDTO> CreateLobbyAsync(PlayerDTO hostPlayer, CancellationToken cancellationToken = default)
     {
         // Step 1: Ensure the host isn't already in another lobby
@@ -58,6 +62,8 @@ public class LobbyService(
         await lobbyRepository.AddAsync(lobbyId, lobby, cancellationToken);
 
         var result = lobby.MapToDTO();
+
+        await notificationHelper.JoinLobbyGroupForUserAsync(hostPlayer.Id, lobbyId, cancellationToken);
 
         await notificationHelper.BroadcastToAllAsync(
             new PokerAttackNotification(
@@ -103,6 +109,8 @@ public class LobbyService(
 
         await lobbyRepository.UpdateAsync(lobbyId, targetLobby, cancellationToken);
 
+        await notificationHelper.JoinLobbyGroupForUserAsync(player.Id, lobbyId, cancellationToken);
+
         await notificationHelper.BroadcastToAllAsync(
             new PokerAttackNotification(
                 PokerAttackNotificationType.PlayerJoined,
@@ -138,6 +146,8 @@ public class LobbyService(
                 lobbyKvp.Value.Value.Players.RemoveWhere(x => x.Id.Equals(player.Id, StringComparison.InvariantCultureIgnoreCase));
             }
             await lobbyRepository.UpdateAsync(lobbyKvp.Value.Key, lobbyKvp.Value.Value, cancellationToken);
+
+            await notificationHelper.LeaveLobbyGroupForUserAsync(player.Id, lobbyKvp.Value.Key, cancellationToken);
 
             await notificationHelper.BroadcastToAllAsync(
                 new PokerAttackNotification(
@@ -198,6 +208,9 @@ public class LobbyService(
         await lobbyRepository.DeleteAsync(lobbyId, cancellationToken);
 
         var players = lobby.Players.ToList();
+
+        foreach (var player in players) await notificationHelper.LeaveLobbyGroupForUserAsync(player.Id, lobbyId, cancellationToken);
+
         await notificationHelper.BroadcastToAllAsync(
             new PokerAttackNotification(
                 PokerAttackNotificationType.LobbyShutdown,
@@ -303,7 +316,7 @@ public class LobbyService(
             Players = lobbyDTO.Players.Select(x => x.MapToModel()).ToHashSet(),
         };
         await activeGameRepository.AddAsync(activeGameId, activeGame, cancellationToken);
-        await gameStateRepository.AddAsync(activeGameId, Shared.Enums.GameStates.GameStart, cancellationToken);
+        await gameStateRepository.AddAsync(activeGameId, GameStates.Upgrade, cancellationToken);
 
         await notificationHelper.BroadcastToAllAsync(
             new PokerAttackNotification(
@@ -332,6 +345,26 @@ public class LobbyService(
             ),
             cancellationToken
         );
+
+        var lobby = await activeGameRepository.GetAsync(activeGameId, cancellationToken)
+            ?? throw new KeyNotFoundException("Game not found");
+
+        foreach (var player in lobby.Players)
+        {
+            var deck = new Deck();
+            deck.RandomizeDeck();
+            var gamePlayer = new GamePlayer
+            {
+                Deck = deck,
+                Score = 0,
+                PowerPoints = 0,
+            };
+            int numCardsToAdd = NumCardsInHand - gamePlayer.CardsInHand.Count();
+            for (int i = 0; i < numCardsToAdd; i++)
+                gamePlayer.CardsInHand.Add(deck.PullCard());
+            await gamePlayerRepository.AddAsync(player.Id, gamePlayer, cancellationToken);
+            await notificationHelper.JoinGameGroupForUserAsync(player.Id, activeGameId, cancellationToken);
+        }
     }
 
     static string GenerateLobbyId()

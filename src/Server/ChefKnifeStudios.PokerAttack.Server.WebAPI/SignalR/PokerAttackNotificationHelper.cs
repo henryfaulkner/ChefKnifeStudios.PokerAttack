@@ -6,15 +6,20 @@ namespace ChefKnifeStudios.PokerAttack.Server.WebAPI.SignalR;
 
 public class PokerAttackNotificationHelper : IPokerAttackNotificationHelper
 {
-    private readonly IHubContext<SignalRNotificationHub, ISignalRNotificationClient> _hubContext;
-    // Cache group names (lobbyId → group)
-    private readonly Dictionary<string, string> _lobbyGroups = new();
-    // Cache group names (gameId → group)
-    private readonly Dictionary<string, string> _gameGroups = new();
+    readonly IHubContext<SignalRNotificationHub, ISignalRNotificationClient> _hubContext;
+    readonly IPlayerConnectionTracker _connectionTracker;
 
-    public PokerAttackNotificationHelper(IHubContext<SignalRNotificationHub, ISignalRNotificationClient> hubContext)
+    // Cache group names (lobbyId → group)
+    readonly Dictionary<string, string> _lobbyGroups = new();
+    // Cache group names (gameId → group)
+    readonly Dictionary<string, string> _gameGroups = new();
+
+    public PokerAttackNotificationHelper(
+        IHubContext<SignalRNotificationHub, ISignalRNotificationClient> hubContext,
+        IPlayerConnectionTracker connectionTracker)
     {
         _hubContext = hubContext;
+        _connectionTracker = connectionTracker;
     }
 
     /// <summary>
@@ -108,5 +113,63 @@ public class PokerAttackNotificationHelper : IPokerAttackNotificationHelper
         _gameGroups[gameId] = groupName;
 
         return groupName;
+    }
+
+    // --- convenience user-based methods that resolve connection ids using tracker ---
+
+    public async Task JoinLobbyGroupForUserAsync(string userId, string lobbyId, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var conns = _connectionTracker.GetConnections(userId);
+            if (conns.Count == 0) return;
+            var groupName = GetLobbyGroupName(lobbyId);
+
+            foreach (var conn in conns)
+                await _hubContext.Groups.AddToGroupAsync(conn, groupName, cancellationToken);
+        }
+        catch { /* log or swallow */ }
+    }
+
+    public async Task LeaveLobbyGroupForUserAsync(string userId, string lobbyId, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var conns = _connectionTracker.GetConnections(userId);
+            if (conns.Count == 0) return;
+            var groupName = GetLobbyGroupName(lobbyId);
+
+            foreach (var conn in conns)
+                await _hubContext.Groups.RemoveFromGroupAsync(conn, groupName, cancellationToken);
+        }
+        catch { /* log or swallow */ }
+    }
+
+    public async Task JoinGameGroupForUserAsync(string userId, string gameId, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var conns = _connectionTracker.GetConnections(userId);
+            if (conns.Count == 0) return;
+            var groupName = GetGameGroupName(gameId);
+
+            foreach (var conn in conns)
+                await _hubContext.Groups.AddToGroupAsync(conn, groupName, cancellationToken);
+        }
+        catch { /* log or swallow */ }
+    }
+
+    public async Task LeaveGameGroupForUserAsync(string userId, string gameId, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var conns = _connectionTracker.GetConnections(userId);
+            if (conns.Count == 0) return;
+            var groupName = GetGameGroupName(gameId);
+
+            foreach (var conn in conns)
+                await _hubContext.Groups.RemoveFromGroupAsync(conn, groupName, cancellationToken);
+        }
+        catch { /* log or swallow */ }
     }
 }

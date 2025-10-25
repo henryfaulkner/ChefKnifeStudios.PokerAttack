@@ -21,7 +21,7 @@ public class PlayerPowerService(
     IPlayerPowerEffectRegistry effectRegistry,
     IPlayerPowerRepository powerRepository,
     IKeyValueRepository<GamePlayer> gamePlayerRepository,
-    IKeyValueRepository<Lobby> lobbyRepository,
+    IKeyValueRepository<ActiveGame> activeGameRepository,
     IPokerAttackNotificationHelper notificationHelper) : IPlayerPowerService
 {
     public IEnumerable<PlayerPowerDTO> GetSomePowers(int count)
@@ -39,11 +39,11 @@ public class PlayerPowerService(
         gamePlayer.PlayerPower = playerPower;
         await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
 
-        var lobby = await lobbyRepository.GetAsync(gameId, ct);
-        if (lobby is Lobby && await DoesEveryPlayersInLobbyHaveAPower(lobby))
+        var activeGame = await activeGameRepository.GetAsync(gameId, ct);
+        if (activeGame is ActiveGame && await DoesEveryPlayersInGameHaveAPower(activeGame))
         {
-            await notificationHelper.SendToPlayerAsync(
-                lobby.HostPlayer.Id,
+            await notificationHelper.BroadcastToGameAsync(
+                gameId,
                 new PokerAttackNotification(
                     PokerAttackNotificationType.PlayerPowersReadied,
                     string.Empty
@@ -56,13 +56,13 @@ public class PlayerPowerService(
 
     public async Task ActivateAsync(string gameId, string playerId, CancellationToken ct = default)
     {
-        var lobby = await lobbyRepository.GetAsync(gameId)
+        var activeGame = await activeGameRepository.GetAsync(gameId)
             ?? throw new KeyNotFoundException("Lobby not found");
-        var lobbyPlayers = lobby.Players.ToHashSet();
+        var players = activeGame.Players.ToHashSet();
 
-        var sourcePlayer = lobbyPlayers.FirstOrDefault(x => x.Id == playerId);
-        lobbyPlayers.RemoveWhere(x => x.Id == playerId);
-        var targetPlayerIfApplicable = lobbyPlayers.Any() ? lobbyPlayers.ToList()[Random.Shared.Next(0, lobbyPlayers.Count())] : null;
+        var sourcePlayer = players.FirstOrDefault(x => x.Id == playerId);
+        players.RemoveWhere(x => x.Id == playerId);
+        var targetPlayerIfApplicable = players.Any() ? players.ToList()[Random.Shared.Next(0, players.Count())] : null;
         var targetGamePlayerIdIfApplicable = targetPlayerIfApplicable?.Id;
 
         var sourceGamePlayer = await gamePlayerRepository.GetAsync(playerId)
@@ -174,10 +174,10 @@ public class PlayerPowerService(
         }
     }
 
-    async Task<bool> DoesEveryPlayersInLobbyHaveAPower(Lobby lobby, CancellationToken ct = default)
+    async Task<bool> DoesEveryPlayersInGameHaveAPower(ActiveGame activeGame, CancellationToken ct = default)
     {
         bool result = true;
-        foreach (var player in lobby.Players)
+        foreach (var player in activeGame.Players)
         {
             var gamePlayer = await gamePlayerRepository.GetAsync(player.Id, ct)
                 ?? throw new KeyNotFoundException("Game Player not found");

@@ -31,31 +31,13 @@ public class GameService(
     IKeyValueRepository<GamePlayer> gamePlayerRepository,
     IRepository<Game> gameRepository,
     IRepository<Round> roundRepository,
-    IPokerAttackNotificationHelper notificationHelper,
-    IGameStateMachineService gameStateMachineService) : IGameService
+    IPokerAttackNotificationHelper notificationHelper) : IGameService
 {
     const int NumCardsInHand = 8;
 
     public async Task StartGameAsync(string gameId, CancellationToken ct = default)
     {
-        var lobby = await activeGameRepository.GetAsync(gameId, ct)
-            ?? throw new KeyNotFoundException("Game not found");
-
-        foreach (var player in lobby.Players)
-        {
-            var deck = new Deck();
-            deck.RandomizeDeck();
-            var gamePlayer = new GamePlayer
-            {
-                Deck = deck,
-                Score = 0,
-                PowerPoints = 0,
-            };
-            await gamePlayerRepository.AddAsync(player.Id, gamePlayer, ct);
-            await ReplenishHandAsync(player.Id, ct);
-        }
-
-        await gameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
+        
     }
 
     public async Task StartPlayerRunAsync(string playerId, int runTimeInSeconds, CancellationToken ct = default)
@@ -207,11 +189,16 @@ public class GameService(
 
     public async Task EndGameAsync(string gameId, CancellationToken ct = default)
     {
-        var lobby = await activeGameRepository.GetAsync(gameId, ct)
+        var activeGame = await activeGameRepository.GetAsync(gameId, ct)
             ?? throw new ApplicationException($"Active Game not found: Game Id {gameId}");
         
-        foreach (var gamePlayer in lobby.Players) await gamePlayerRepository.DeleteAsync(gamePlayer.Id, ct);
+        foreach (var gamePlayer in activeGame.Players) await gamePlayerRepository.DeleteAsync(gamePlayer.Id, ct);
         await activeGameRepository.DeleteAsync(gameId, ct);
+
+        foreach (var player in activeGame.Players)
+        {
+            await notificationHelper.LeaveGameGroupForUserAsync(player.Id, gameId, ct);
+        }
 
         // TODO need to resolve lobby shutdown
         //await notificationHelper.BroadcastToAllAsync(

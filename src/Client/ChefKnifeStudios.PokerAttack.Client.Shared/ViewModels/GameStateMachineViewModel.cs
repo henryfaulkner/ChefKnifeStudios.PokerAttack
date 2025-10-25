@@ -22,7 +22,7 @@ public partial class GameStateMachineViewModel : BaseViewModel, IGameStateMachin
     readonly IEventNotificationService _eventNotificationService;
 
     [ObservableProperty]
-    public GameStates _gameState = GameStates.GameStart;
+    public GameStates _gameState = GameStates.Upgrade;
 
     public GameStateMachineViewModel(
         ILogger<GameStateMachineViewModel> logger,

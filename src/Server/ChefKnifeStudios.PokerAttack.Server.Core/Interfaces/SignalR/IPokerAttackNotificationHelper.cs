@@ -41,4 +41,10 @@ public interface IPokerAttackNotificationHelper
     /// Get or create the SignalR group name for a game.
     /// </summary>
     string GetGameGroupName(string gameId);
+
+    // Convenience group membership helpers (by user id) — helper will resolve user's active connection ids and operate on them.
+    Task JoinLobbyGroupForUserAsync(string userId, string lobbyId, CancellationToken cancellationToken = default);
+    Task LeaveLobbyGroupForUserAsync(string userId, string lobbyId, CancellationToken cancellationToken = default);
+    Task JoinGameGroupForUserAsync(string userId, string gameId, CancellationToken cancellationToken = default);
+    Task LeaveGameGroupForUserAsync(string userId, string gameId, CancellationToken cancellationToken = default);
 }

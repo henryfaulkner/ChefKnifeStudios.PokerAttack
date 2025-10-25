@@ -30,6 +30,7 @@ builder.Services.AddCors();
 builder.Services.AddSignalR(); 
 builder.Services.AddSingleton<IUserIdProvider, PlayerIdProvider>();
 builder.Services.AddSingleton<IPokerAttackNotificationHelper, PokerAttackNotificationHelper>();
+builder.Services.AddSingleton<IPlayerConnectionTracker, PlayerConnectionTracker>();
 
 // Register Key-Value Stores
 builder.Services.AddSingleton<IKeyValueRepository<Lobby>, InMemoryKeyValueRepository<Lobby>>();

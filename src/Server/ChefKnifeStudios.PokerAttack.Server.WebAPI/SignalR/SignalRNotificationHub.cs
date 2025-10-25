@@ -22,13 +22,27 @@ public class SignalRNotificationHub(
     IKeyValueRepository<ActiveGame> activeGameRepository,
     IGameStateMachineService gameStateMachineService,
     IServiceScopeFactory serviceScopeFactory,
-    IPlayerPowerService playerPowerService) : Hub<ISignalRNotificationClient>
+    IPlayerPowerService playerPowerService,
+    IPlayerConnectionTracker connectionTracker) : Hub<ISignalRNotificationClient>
 {
-    static readonly Random Rand = new Random();
-
     public override async Task OnConnectedAsync()
     {
+        var userId = Context.UserIdentifier;
+        var connectionId = Context.ConnectionId;
+        if (!string.IsNullOrEmpty(userId))
+            connectionTracker.Add(userId, connectionId);
+
         await base.OnConnectedAsync();
+    }
+
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        var userId = Context.UserIdentifier;
+        var connectionId = Context.ConnectionId;
+        if (!string.IsNullOrEmpty(userId))
+            connectionTracker.Remove(userId, connectionId);
+
+        await base.OnDisconnectedAsync(exception);
     }
 
     // Server-wide notifications
@@ -78,7 +92,6 @@ public class SignalRNotificationHub(
     // -------------------------
     public async Task StartGame(string gameId)
     {
-        // TODO: THIS IS GONNA RUN FOR ALL PLAYERS WHICH IS WRONG
         var game = await activeGameRepository.GetAsync(gameId);
         await gameService.StartGameAsync(gameId);
     }

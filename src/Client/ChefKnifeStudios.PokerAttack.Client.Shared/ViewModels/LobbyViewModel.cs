@@ -2,6 +2,7 @@
 using ChefKnifeStudios.PokerAttack.Client.Core.Extensions;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
+using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
@@ -52,6 +53,7 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
     readonly ILobbyEndpointsService _lobbyEndpointsService;
     readonly ISignalRNotificationService _signalRNotificationService;
     readonly NavigationManager _navigationManager;
+    readonly IToastService _toastService;
 
     [ObservableProperty]
     ObservableCollection<LobbyListItem> _lobbies = [];
@@ -62,11 +64,13 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
     public LobbyViewModel(
         ILobbyEndpointsService lobbyEndpointsService,
         ISignalRNotificationService signalRNotificationService,
-        NavigationManager navigationManager)
+        NavigationManager navigationManager,
+        IToastService toastService)
     {
         _lobbyEndpointsService = lobbyEndpointsService;
         _signalRNotificationService = signalRNotificationService;
         _navigationManager = navigationManager;
+        _toastService = toastService;
 
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
     }
@@ -90,25 +94,25 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
     public async Task CreateLobbyAsync(PlayerDTO player, CancellationToken cancellationToken = default)
     {
         var res = await _lobbyEndpointsService.CreateLobbyAsync(new(player), cancellationToken);
-        if (res.IsSuccess && res.Value is LobbyDTO lobby) await _signalRNotificationService.JoinLobbyGroupAsync(lobby.Id);
+        if (!res.IsSuccess) _toastService.ShowError("Lobby could not be created");
     }
 
     public async Task JoinLobbyAsync(string lobbyId, PlayerDTO player, CancellationToken cancellationToken = default)
     {
         var res = await _lobbyEndpointsService.AddPlayerAsync(new(lobbyId, player), cancellationToken);
-        if (res.IsSuccess) await _signalRNotificationService.JoinGameGroupAsync(lobbyId);
+        if (!res.IsSuccess) _toastService.ShowError("Lobby could not be joined");
     }
 
     public async Task LeaveLobbyAsync(string lobbyId, PlayerDTO player, CancellationToken cancellationToken = default)
     {
         var res = await _lobbyEndpointsService.RemovePlayerAsync(new(lobbyId, player), cancellationToken);
-        if (res.IsSuccess) await _signalRNotificationService.LeaveGameGroupAsync(lobbyId);
+        if (!res.IsSuccess) _toastService.ShowError("Lobby could not be left");
     }
 
     public async Task ShutdownLobbyAsync(string lobbyId, CancellationToken cancellationToken = default)
     {
         var res = await _lobbyEndpointsService.ShutdownLobbyAsync(lobbyId, cancellationToken);
-        if (res.IsSuccess) await _signalRNotificationService.LeaveGameGroupAsync(lobbyId);
+        if (!res.IsSuccess) _toastService.ShowError("Lobby could not be shutdown");
     }
 
     public async Task StartGameAsync(string lobbyId, CancellationToken cancellationToken = default) =>
