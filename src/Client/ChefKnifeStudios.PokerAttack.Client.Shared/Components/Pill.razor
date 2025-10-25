@@ -1,0 +1,12 @@
+﻿<button 
+    class="pill @PillHelper.GetPillCssClass(Type)"
+    @onclick="@OnClickCallback"
+    @onclick:stopPropagation="@StopPropagation"
+>
+    <span class="pill__text">@Text</span>
+
+    @if (Icon is string icon)
+    {
+        <MatIcon Icon="@icon" />
+    }
+</button>

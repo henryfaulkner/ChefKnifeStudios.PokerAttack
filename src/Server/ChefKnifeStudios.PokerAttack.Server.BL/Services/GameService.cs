@@ -5,11 +5,9 @@ using ChefKnifeStudios.PokerAttack.Server.Data.Models;
 using ChefKnifeStudios.PokerAttack.Server.Data.Repos;
 using ChefKnifeStudios.PokerAttack.Server.Data.Specifications;
 using ChefKnifeStudios.PokerAttack.Shared;
-using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
-using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
-using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR.EventArgs;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 

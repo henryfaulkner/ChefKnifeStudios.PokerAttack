@@ -12,4 +12,9 @@ public partial class Lobbies : ComponentBase
     {
         _ = LobbyViewModel.CreateLobbyAsync(ApplicationViewModel.Player);
     }
+
+    void HandlePillPressed()
+    {
+        Console.WriteLine("Pill was pressed");
+    }
 }

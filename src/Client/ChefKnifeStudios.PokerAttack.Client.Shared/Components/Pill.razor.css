@@ -1,0 +1,51 @@
+﻿.pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    width: fit-content;
+    height: fit-content;
+}
+
+.pill-primary {
+    color: #004080;
+    background-color: #EBF6FF; /* 100 */
+
+    &:hover {
+        background-color: #9ED5FF; /* 200 */
+    }
+
+    &:active {
+        background-color: #75C4FF; /* 300 */
+    }
+}
+
+.pill-secondary {
+    color: #121F3B;
+    background-color: #EFF4FA;
+
+    &:hover {
+        background-color: #91B0DE;
+    }
+
+    &:active {
+        background-color: #7299D5;
+    }
+}
+
+.pill-danger {
+    color: #A01F0E;
+    background-color: #FFECEB;
+
+    &:hover {
+        background-color: #FAC7C7;
+    }
+
+    &:active {
+        background-color: #F7A1A2;
+    }
+}

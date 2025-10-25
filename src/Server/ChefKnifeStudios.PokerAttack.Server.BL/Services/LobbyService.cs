@@ -304,7 +304,7 @@ public class LobbyService(
             Players = lobbyDTO.Players.Select(x => x.MapToModel()).ToHashSet(),
         };
         await activeGameRepository.AddAsync(activeGameId, activeGame, cancellationToken);
-        await gameStateRepository.AddAsync(lobbyId, Shared.Enums.GameStates.GameStart, cancellationToken);
+        await gameStateRepository.AddAsync(activeGameId, Shared.Enums.GameStates.GameStart, cancellationToken);
 
         await notificationHelper.BroadcastToAllAsync(
             new PokerAttackNotification(
