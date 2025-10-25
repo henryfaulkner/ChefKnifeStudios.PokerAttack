@@ -1,7 +1,5 @@
 ﻿using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
-using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces.Repos;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
-using ChefKnifeStudios.PokerAttack.Server.Data.Models;
 using ChefKnifeStudios.PokerAttack.Server.Infrastructure.PlayerPowers;
 using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs;
@@ -22,8 +20,8 @@ public class PlayerPowerService(
     ILogger<PlayerPowerService> logger,
     IPlayerPowerEffectRegistry effectRegistry,
     IPlayerPowerRepository powerRepository,
-    IGamePlayerRepository gamePlayerRepository,
-    ILobbyRepository lobbyRepository,
+    IKeyValueRepository<GamePlayer> gamePlayerRepository,
+    IKeyValueRepository<Lobby> lobbyRepository,
     IPokerAttackNotificationHelper notificationHelper) : IPlayerPowerService
 {
     public IEnumerable<PlayerPowerDTO> GetSomePowers(int count)
@@ -41,7 +39,7 @@ public class PlayerPowerService(
         gamePlayer.PlayerPower = playerPower;
         await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
 
-        var lobby = await lobbyRepository.GetLobbyAsync(gameId, ct);
+        var lobby = await lobbyRepository.GetAsync(gameId, ct);
         if (lobby is Lobby && await DoesEveryPlayersInLobbyHaveAPower(lobby))
         {
             await notificationHelper.SendToPlayerAsync(
@@ -58,7 +56,7 @@ public class PlayerPowerService(
 
     public async Task ActivateAsync(string gameId, string playerId, CancellationToken ct = default)
     {
-        var lobby = await lobbyRepository.GetLobbyAsync(gameId)
+        var lobby = await lobbyRepository.GetAsync(gameId)
             ?? throw new KeyNotFoundException("Lobby not found");
         var lobbyPlayers = lobby.Players.ToHashSet();
 

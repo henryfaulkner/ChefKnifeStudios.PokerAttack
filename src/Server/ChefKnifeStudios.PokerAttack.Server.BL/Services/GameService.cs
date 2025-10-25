@@ -1,5 +1,4 @@
 ﻿using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
-using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces.Repos;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Server.Data.Models;
 using ChefKnifeStudios.PokerAttack.Server.Data.Repos;
@@ -28,8 +27,8 @@ public interface IGameService
 
 public class GameService(
     ILogger<GameService> logger,
-    IActiveGameRepository activeGameRepository,
-    IGamePlayerRepository gamePlayerRepository,
+    IKeyValueRepository<ActiveGame> activeGameRepository,
+    IKeyValueRepository<GamePlayer> gamePlayerRepository,
     IRepository<Game> gameRepository,
     IRepository<Round> roundRepository,
     IPokerAttackNotificationHelper notificationHelper,
