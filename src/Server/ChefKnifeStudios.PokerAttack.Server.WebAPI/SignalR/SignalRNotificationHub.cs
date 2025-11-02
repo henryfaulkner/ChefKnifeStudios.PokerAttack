@@ -98,40 +98,43 @@ public class SignalRNotificationHub(
 
     public async Task StartRound(string gameId)
     {
-        // TODO: THIS IS GONNA RUN FOR ALL PLAYERS WHICH IS WRONG
-        const int _RUN_TIME_IN_SECONDS = 90;
+        const int _RUN_TIME_IN_SECONDS = 10;
 
-        var game = await activeGameRepository.GetAsync(gameId);
+        var game = await activeGameRepository.GetAsync(gameId)
+            ?? throw new KeyNotFoundException($"Game not found. Game Id {gameId}");
 
         List<Task> taskList = [];
+        int i = 0;
         foreach (var player in game.Players)
         {
             taskList.Add(StartRun(player.Id, _RUN_TIME_IN_SECONDS));
         }
         await Task.WhenAll(taskList);
 
-        // Create background work with its own scope
-        _ = Task.Run(async () =>
+        _ = StartServerTimerToEndRound(gameId, _RUN_TIME_IN_SECONDS);
+    }
+
+
+    async Task StartServerTimerToEndRound(string gameId, int runTime)
+    {
+        await Task.Delay(runTime * 1000);
+
+        using var scope = serviceScopeFactory.CreateScope();
+        var scopedGameService = scope.ServiceProvider.GetRequiredService<IGameService>();
+        var scopedNotificationHelper = scope.ServiceProvider.GetRequiredService<IPokerAttackNotificationHelper>();
+
+        try
         {
-            await Task.Delay(_RUN_TIME_IN_SECONDS * 1000);
-
-            using var scope = serviceScopeFactory.CreateScope();
-            var scopedGameService = scope.ServiceProvider.GetRequiredService<IGameService>();
-            var scopedNotificationHelper = scope.ServiceProvider.GetRequiredService<IPokerAttackNotificationHelper>();
-
-            try
-            {
-                await scopedGameService.EndRoundAsync(gameId);
-                await scopedNotificationHelper.BroadcastToGameAsync(
-                    gameId,
-                    new PokerAttackNotification(PokerAttackNotificationType.RoundEnded, string.Empty)
-                );
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "An error occurred");
-            }
-        });
+            await scopedGameService.EndRoundAsync(gameId);
+            await scopedNotificationHelper.BroadcastToGameAsync(
+                gameId,
+                new PokerAttackNotification(PokerAttackNotificationType.RoundEnded, string.Empty)
+            );
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred");
+        }
     }
 
     // Start a run (per-player deck)
@@ -147,8 +150,8 @@ public class SignalRNotificationHub(
         await gameService.DiscardAsync(playerId, discardCards);
 
     // Transition Game State and broadcast change
-    public async Task TransitionGameState(string playerId, string gameId, GameEvents gameEvent) => 
-        await gameStateMachineService.TransitionAsync(playerId, gameId, gameEvent);
+    public async Task TransitionGameState(string gameId, GameEvents gameEvent) => 
+        await gameStateMachineService.TransitionAsync(gameId, gameEvent);
 
     // End game / clear game state
     public async Task EndGame(string gameId) => 

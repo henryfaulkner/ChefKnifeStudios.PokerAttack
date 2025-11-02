@@ -26,7 +26,7 @@ public interface ISignalRNotificationService
     Task PlayHandAsync(string playerId, List<CardDTO> hand);
     Task DiscardAsync(string playerId, List<CardDTO> discardCards);
     Task ActivatePlayerPowerAsync(string gameId, string playerId);
-    Task TransitionGameStateAsync(string playerId, string gameId, GameEvents gameEvent);
+    Task TransitionGameStateAsync(string gameId, GameEvents gameEvent);
 
     // TODO: remove for server-run implimentation
     Task EndGameAsync(string gameId);
@@ -95,6 +95,9 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
                 _hubConnection = new HubConnectionBuilder()
                     .WithUrl(url)
                     .WithAutomaticReconnect()
+                    .ConfigureLogging(logging => {
+                        logging.SetMinimumLevel(LogLevel.Debug);
+                    })
                     .Build();
 
                 _logger.LogInformation("Connecting to SignalR hub: {host}", baseUri.Host);
@@ -114,112 +117,227 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
         }
     }
 
-    public void Dispose() => CloseConnection();
+    public void Dispose()
+    {
+        try
+        {
+            CloseConnection();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error disposing SignalR connection");
+            throw;
+        }
+    }
 
     private void CloseConnection()
     {
-        if (_hubConnection == null) return;
-        _ = _hubConnection.StopAsync();
-        _hubConnection = null;
+        try
+        {
+            if (_hubConnection == null) return;
+            _ = _hubConnection.StopAsync();
+            _hubConnection = null;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error closing SignalR connection");
+            throw;
+        }
     }
 
     #region Lobby Notifications
     public async Task JoinLobbyGroupAsync(string lobbyId)
     {
-        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-            throw new InvalidOperationException("SignalR connection is not established.");
+        try
+        {
+            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+                throw new InvalidOperationException("SignalR connection is not established.");
 
-        await _hubConnection.InvokeAsync("JoinLobbyGroupAsync", lobbyId);
+            await _hubConnection.InvokeAsync("JoinLobbyGroupAsync", lobbyId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error joining lobby group {lobbyId}", lobbyId);
+            throw;
+        }
     }
 
     public async Task LeaveLobbyGroupAsync(string lobbyId)
     {
-        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-            throw new InvalidOperationException("SignalR connection is not established.");
+        try
+        {
+            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+                throw new InvalidOperationException("SignalR connection is not established.");
 
-        await _hubConnection.InvokeAsync("LeaveLobbyGroupAsync", lobbyId);
+            await _hubConnection.InvokeAsync("LeaveLobbyGroupAsync", lobbyId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error leaving lobby group {lobbyId}", lobbyId);
+            throw;
+        }
     }
     #endregion
 
     #region Gameplay Notifications
     public async Task JoinGameGroupAsync(string gameId)
     {
-        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-            throw new InvalidOperationException("SignalR connection is not established.");
+        try
+        {
+            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+                throw new InvalidOperationException("SignalR connection is not established.");
 
-        await _hubConnection.InvokeAsync("JoinGameGroupAsync", gameId);
+            await _hubConnection.InvokeAsync("JoinGameGroupAsync", gameId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error joining game group {gameId}", gameId);
+            throw;
+        }
     }
 
     public async Task LeaveGameGroupAsync(string gameId)
     {
-        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-            throw new InvalidOperationException("SignalR connection is not established.");
+        try
+        {
+            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+                throw new InvalidOperationException("SignalR connection is not established.");
 
-        await _hubConnection.InvokeAsync("LeaveGameGroupAsync", gameId);
+            await _hubConnection.InvokeAsync("LeaveGameGroupAsync", gameId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error leaving game group {gameId}", gameId);
+            throw;
+        }
     }
 
     public async Task StartGameAsync(string gameId)
     {
-        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-            throw new InvalidOperationException("SignalR connection is not established.");
+        try
+        {
+            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+                throw new InvalidOperationException("SignalR connection is not established.");
 
-        await _hubConnection.InvokeAsync("StartGame", gameId);
+            await _hubConnection.InvokeAsync("StartGame", gameId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error starting game {gameId}", gameId);
+            throw;
+        }
     }
 
     public async Task StartRoundAsync(string gameId)
     {
-        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-            throw new InvalidOperationException("SignalR connection is not established.");
+        try
+        {
+            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+                throw new InvalidOperationException("SignalR connection is not established.");
 
-        await _hubConnection.InvokeAsync("StartRound", gameId);
+            await _hubConnection.InvokeAsync("StartRound", gameId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error starting round for game {gameId}", gameId);
+            throw;
+        }
     }
 
     public async Task PlayHandAsync(string playerId, List<CardDTO> hand)
     {
-        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-            throw new InvalidOperationException("SignalR connection is not established.");
+        try
+        {
+            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+                throw new InvalidOperationException("SignalR connection is not established.");
 
-        await _hubConnection.InvokeAsync("PlayHand", playerId, hand);
+            await _hubConnection.InvokeAsync("PlayHand", playerId, hand);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error playing hand for player {playerId}", playerId);
+            throw;
+        }
     }
 
     public async Task DiscardAsync(string playerId, List<CardDTO> discardCards)
     {
-        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-            throw new InvalidOperationException("SignalR connection is not established.");
+        try
+        {
+            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+                throw new InvalidOperationException("SignalR connection is not established.");
 
-        await _hubConnection.InvokeAsync("Discard", playerId, discardCards);
+            await _hubConnection.InvokeAsync("Discard", playerId, discardCards);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error discarding cards for player {playerId}", playerId);
+            throw;
+        }
     }
 
     public async Task ActivatePlayerPowerAsync(string gameId, string playerId)
     {
-        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-            throw new InvalidOperationException("SignalR connection is not established.");
+        try
+        {
+            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+                throw new InvalidOperationException("SignalR connection is not established.");
 
-        await _hubConnection.InvokeAsync("ActivatePlayerPower", gameId, playerId);
+            await _hubConnection.InvokeAsync("ActivatePlayerPower", gameId, playerId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error activating player power for player {playerId} in game {gameId}", playerId, gameId);
+            throw;
+        }
     }
     #endregion
 
-    public async Task TransitionGameStateAsync(string playerId, string gameId, GameEvents gameEvent)
+    public async Task TransitionGameStateAsync(string gameId, GameEvents gameEvent)
     {
-        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-            throw new InvalidOperationException("SignalR connection is not established.");
+        try
+        {
+            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+                throw new InvalidOperationException("SignalR connection is not established.");
 
-        await _hubConnection.InvokeAsync("TransitionGameState", playerId, gameId, gameEvent);
+            await _hubConnection.InvokeAsync("TransitionGameState", gameId, gameEvent);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error transitioning game state for game {gameId} with event {gameEvent}", gameId, gameEvent);
+            throw;
+        }
     }
 
     public async Task EndGameAsync(string gameId)
     {
-        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-            throw new InvalidOperationException("SignalR connection is not established.");
+        try
+        {
+            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+                throw new InvalidOperationException("SignalR connection is not established.");
 
-        await _hubConnection.InvokeAsync("EndGame", gameId);
+            await _hubConnection.InvokeAsync("EndGame", gameId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error ending game {gameId}", gameId);
+            throw;
+        }
     }
 
     public async Task LeaveGameAsync(string gameId, string playerId)
     {
-        if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-            throw new InvalidOperationException("SignalR connection is not established.");
+        try
+        {
+            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+                throw new InvalidOperationException("SignalR connection is not established.");
 
-        await _hubConnection.InvokeAsync("LeaveGame", gameId, playerId);
+            await _hubConnection.InvokeAsync("LeaveGame", gameId, playerId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error leaving game {gameId} for player {playerId}", gameId, playerId);
+            throw;
+        }
     }
 }

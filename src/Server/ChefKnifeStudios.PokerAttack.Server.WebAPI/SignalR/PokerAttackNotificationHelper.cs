@@ -8,6 +8,7 @@ public class PokerAttackNotificationHelper : IPokerAttackNotificationHelper
 {
     readonly IHubContext<SignalRNotificationHub, ISignalRNotificationClient> _hubContext;
     readonly IPlayerConnectionTracker _connectionTracker;
+    readonly ILogger<PokerAttackNotificationHelper> _logger;
 
     // Cache group names (lobbyId → group)
     readonly Dictionary<string, string> _lobbyGroups = new();
@@ -16,10 +17,12 @@ public class PokerAttackNotificationHelper : IPokerAttackNotificationHelper
 
     public PokerAttackNotificationHelper(
         IHubContext<SignalRNotificationHub, ISignalRNotificationClient> hubContext,
-        IPlayerConnectionTracker connectionTracker)
+        IPlayerConnectionTracker connectionTracker,
+        ILogger<PokerAttackNotificationHelper> logger)
     {
         _hubContext = hubContext;
         _connectionTracker = connectionTracker;
+        _logger = logger;
     }
 
     /// <summary>
@@ -31,7 +34,11 @@ public class PokerAttackNotificationHelper : IPokerAttackNotificationHelper
         {
             await _hubContext.Clients.User(playerId).ReceivePokerAttackNotification(notification, cancellationToken);
         }
-        catch { /* log or swallow */ }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error sending notification to player {playerId}", playerId);
+            throw;
+        }
     }
 
     /// <summary>
@@ -45,7 +52,11 @@ public class PokerAttackNotificationHelper : IPokerAttackNotificationHelper
             var group = _hubContext.Clients.Group(groupName);
             await group.ReceivePokerAttackNotification(notification, cancellationToken);
         }
-        catch { /* log or swallow */ }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error broadcasting notification to lobby {lobbyId}", lobbyId);
+            throw;
+        }
     }
 
     /// <summary>
@@ -59,7 +70,11 @@ public class PokerAttackNotificationHelper : IPokerAttackNotificationHelper
             var group = _hubContext.Clients.Group(groupName);
             await group.ReceivePokerAttackNotification(notification, cancellationToken);
         }
-        catch { /* log or swallow */ }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error broadcasting notification to game {gameId}", gameId);
+            throw;
+        }
     }
 
     /// <summary>
@@ -72,7 +87,11 @@ public class PokerAttackNotificationHelper : IPokerAttackNotificationHelper
             var connections = playerIds.ToList();
             await _hubContext.Clients.Users(connections).ReceivePokerAttackNotification(notification, cancellationToken);
         }
-        catch { /* log or swallow */ }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error sending notification to players in game {gameId}", gameId);
+            throw;
+        }
     }
 
     /// <summary>
@@ -84,7 +103,11 @@ public class PokerAttackNotificationHelper : IPokerAttackNotificationHelper
         {
             await _hubContext.Clients.All.ReceivePokerAttackNotification(notification, cancellationToken);
         }
-        catch { /* log or swallow */ }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error broadcasting notification to all clients");
+            throw;
+        }
     }
 
     /// <summary>
@@ -92,7 +115,7 @@ public class PokerAttackNotificationHelper : IPokerAttackNotificationHelper
     /// </summary>
     public string GetLobbyGroupName(string lobbyId)
     {
-        if (_gameGroups.TryGetValue(lobbyId, out var groupName))
+        if (_lobbyGroups.TryGetValue(lobbyId, out var groupName))
             return groupName;
 
         groupName = $"lobby_{lobbyId}";
@@ -128,7 +151,11 @@ public class PokerAttackNotificationHelper : IPokerAttackNotificationHelper
             foreach (var conn in conns)
                 await _hubContext.Groups.AddToGroupAsync(conn, groupName, cancellationToken);
         }
-        catch { /* log or swallow */ }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error adding user {userId} to lobby group {lobbyId}", userId, lobbyId);
+            throw;
+        }
     }
 
     public async Task LeaveLobbyGroupForUserAsync(string userId, string lobbyId, CancellationToken cancellationToken = default)
@@ -142,7 +169,11 @@ public class PokerAttackNotificationHelper : IPokerAttackNotificationHelper
             foreach (var conn in conns)
                 await _hubContext.Groups.RemoveFromGroupAsync(conn, groupName, cancellationToken);
         }
-        catch { /* log or swallow */ }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error removing user {userId} from lobby group {lobbyId}", userId, lobbyId);
+            throw;
+        }
     }
 
     public async Task JoinGameGroupForUserAsync(string userId, string gameId, CancellationToken cancellationToken = default)
@@ -156,7 +187,11 @@ public class PokerAttackNotificationHelper : IPokerAttackNotificationHelper
             foreach (var conn in conns)
                 await _hubContext.Groups.AddToGroupAsync(conn, groupName, cancellationToken);
         }
-        catch { /* log or swallow */ }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error adding user {userId} to game group {gameId}", userId, gameId);
+            throw;
+        }
     }
 
     public async Task LeaveGameGroupForUserAsync(string userId, string gameId, CancellationToken cancellationToken = default)
@@ -170,6 +205,10 @@ public class PokerAttackNotificationHelper : IPokerAttackNotificationHelper
             foreach (var conn in conns)
                 await _hubContext.Groups.RemoveFromGroupAsync(conn, groupName, cancellationToken);
         }
-        catch { /* log or swallow */ }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error removing user {userId} from game group {gameId}", userId, gameId);
+            throw;
+        }
     }
 }

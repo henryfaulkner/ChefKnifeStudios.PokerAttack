@@ -6,7 +6,7 @@ using ChefKnifeStudios.PokerAttack.Server.Data.Specifications;
 using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
-using ChefKnifeStudios.PokerAttack.Shared.Enums;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR.EventArgs;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
@@ -29,6 +29,7 @@ public class GameService(
     ILogger<GameService> logger,
     IKeyValueRepository<ActiveGame> activeGameRepository,
     IKeyValueRepository<GamePlayer> gamePlayerRepository,
+    IKeyValueRepository<Lobby> lobbyRepository,
     IRepository<Game> gameRepository,
     IRepository<Round> roundRepository,
     IPokerAttackNotificationHelper notificationHelper) : IGameService
@@ -200,23 +201,23 @@ public class GameService(
             await notificationHelper.LeaveGameGroupForUserAsync(player.Id, gameId, ct);
         }
 
-        // TODO need to resolve lobby shutdown
-        //await notificationHelper.BroadcastToAllAsync(
-        //    new PokerAttackNotification(
-        //        PokerAttackNotificationType.LobbyShutdown,
-        //        JsonSerializer.Serialize(
-        //            new LobbyEventArgs()
-        //            {
-        //                Lobby = new LobbyDTO()
-        //                {
-        //                    GameId = gameId,
-        //                    HostPlayer = lobby.HostPlayer.MapToDTO(),
-        //                }
-        //            }, JsonOptions.Get()
-        //        )
-        //    ),
-        //    ct
-        //);
+        // Reopen the lobby
+        var lobby = (await lobbyRepository.GetAllAsync(ct))
+            .FirstOrDefault(x => x.Value.GameId == gameId)
+            .Value
+            ?? throw new ApplicationException($"Lobby not found with Game Id: Game Id {gameId}");
+        lobby.GameId = null;
+        await lobbyRepository.UpdateAsync(lobby.Id, lobby, ct);
+
+        await notificationHelper.BroadcastToAllAsync(
+            new PokerAttackNotification(
+                PokerAttackNotificationType.LobbiesChanged, 
+                JsonSerializer.Serialize(
+                    new LobbyEventArgs { Lobby = lobby.MapToDTO() },
+                    JsonOptions.Get()
+                )
+            )
+        );
     }
 
     public async Task LeaveGameAsync(string gameId, string playerId, CancellationToken ct = default)

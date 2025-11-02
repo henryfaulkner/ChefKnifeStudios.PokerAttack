@@ -61,7 +61,7 @@ public partial class GameStateMachineViewModel : BaseViewModel, IGameStateMachin
         switch (args)
         {
             case GameTransitionEventArgs gameTransitionEventArgs:
-                await _signalRNotificationService.TransitionGameStateAsync(_applicationViewModel.Player.Id, gameTransitionEventArgs.Data.GameId, gameTransitionEventArgs.Data.GameEvent);
+                await _signalRNotificationService.TransitionGameStateAsync(gameTransitionEventArgs.Data.GameId, gameTransitionEventArgs.Data.GameEvent);
                 break;
         }
         await Task.CompletedTask;
