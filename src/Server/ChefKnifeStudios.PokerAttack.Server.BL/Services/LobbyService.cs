@@ -33,7 +33,6 @@ public class LobbyService(
     IRepository<Game> gameRepository,
     IKeyValueRepository<GameStates> gameStateRepository,
     IKeyValueRepository<ActiveGame> activeGameRepository,
-    IGameStateMachineService gameStateMachineService,
     IKeyValueRepository<GamePlayer> gamePlayerRepository) : ILobbyService
 {
     const int NumCardsInHand = 8;

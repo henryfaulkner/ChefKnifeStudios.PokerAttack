@@ -22,7 +22,6 @@ public interface IGameplayViewModel : IViewModel
     ObservableCollection<CardItem> CardsInHand { get; }
     int AvailablePlayHands { get; }
     int AvailableDiscards { get; }
-    bool ArePlayerPowersReadied { get; }
     PlayerPowerDTO? ActivePlayerPower { get; }
     int PowerCharges { get; }
 
@@ -61,9 +60,6 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 
     [ObservableProperty]
     int _availableDiscards = 5;
-
-    [ObservableProperty]
-    bool _arePlayerPowersReadied = false;
 
     [ObservableProperty]
     PlayerPowerDTO? _activePlayerPower;
@@ -107,17 +103,20 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         _timerToken.Cancel();
     }
 
-    public void Init(string gameId) => GameId = gameId;
+    public void Init(string gameId)
+    {
+        GameId = gameId;
+    }
 
     public async Task StartGameAsync(string playerId, CancellationToken cancellationToken = default)
     {
-        await _signalRNotificationService.StartGameAsync(GameId);
+        await _signalRNotificationService.StartGameAsync(GameId, playerId);
     }
 
     public async Task StartRoundAsync(string playerId, CancellationToken cancellationToken = default)
     {
         PowerCharges = _INIT_POWER_CHARGES;
-        await _signalRNotificationService.StartRoundAsync(GameId);
+        //await _signalRNotificationService.StartRoundAsync(GameId, playerId);
     }
 
     public async Task PlaySelectedCardsAsync(string playerId, CancellationToken cancellationToken = default)
@@ -250,18 +249,13 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                 }
             case PokerAttackNotificationType.RoundEnded:
                 {
-                    _eventNotificationService.PostEvent(
-                        this,
-                        new GameTransitionEventArgs
-                        {
-                            Data = new() { GameId = GameId, GameEvent = GameEvents.Next },
-                        }
-                    );
-                    break;
-                }
-            case PokerAttackNotificationType.PlayerPowersReadied:
-                {
-                    ArePlayerPowersReadied = true;
+                    //_eventNotificationService.PostEvent(
+                    //    this,
+                    //    new GameTransitionEventArgs
+                    //    {
+                    //        Data = new() { GameId = GameId, GameEvent = GameEvents.Next },
+                    //    }
+                    //);
                     break;
                 }
         }

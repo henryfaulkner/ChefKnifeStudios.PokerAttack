@@ -7,6 +7,8 @@ using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR.EventArgs;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
@@ -15,6 +17,7 @@ namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
 public interface IGameService
 {
     Task StartGameAsync(string gameId, CancellationToken ct = default);
+    Task StartRoundAsync(string gameId, CancellationToken ct = default);
     Task StartPlayerRunAsync(string playerId, int runTimeInSeconds, CancellationToken ct = default);
     Task PlayHandAsync(string playerId, List<CardDTO> hand, CancellationToken ct = default);
     Task DiscardAsync(string playerId, List<CardDTO> discardCards, CancellationToken ct = default);
@@ -29,16 +32,60 @@ public class GameService(
     ILogger<GameService> logger,
     IKeyValueRepository<ActiveGame> activeGameRepository,
     IKeyValueRepository<GamePlayer> gamePlayerRepository,
+    IKeyValueRepository<GameStates> gameStateRepository,
     IKeyValueRepository<Lobby> lobbyRepository,
     IRepository<Game> gameRepository,
     IRepository<Round> roundRepository,
-    IPokerAttackNotificationHelper notificationHelper) : IGameService
+    IPokerAttackNotificationHelper notificationHelper,
+    IServiceScopeFactory serviceScopeFactory,
+    IGameStateMachineService gameStateMachineService) : IGameService
 {
     const int NumCardsInHand = 8;
 
     public async Task StartGameAsync(string gameId, CancellationToken ct = default)
     {
-        
+        //await gameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
+    }
+
+    public async Task StartRoundAsync(string gameId, CancellationToken ct = default)
+    {
+        const int _RUN_TIME_IN_SECONDS = 10;
+
+        var game = await activeGameRepository.GetAsync(gameId)
+            ?? throw new KeyNotFoundException($"Game not found. Game Id {gameId}");
+
+        List<Task> taskList = [];
+        int i = 0;
+        foreach (var player in game.Players)
+        {
+            taskList.Add(StartRun(player.Id, _RUN_TIME_IN_SECONDS));
+        }
+        await Task.WhenAll(taskList);
+
+        _ = StartServerTimerToEndRound(gameId, _RUN_TIME_IN_SECONDS);
+    }
+
+    // Start a run (per-player deck)
+    async Task StartRun(string playerId, int runTimeInSeconds) =>
+        await StartPlayerRunAsync(playerId, runTimeInSeconds);
+
+    async Task StartServerTimerToEndRound(string gameId, int runTime)
+    {
+        await Task.Delay(runTime * 1000);
+
+        using var scope = serviceScopeFactory.CreateScope();
+        var scopedGameService = scope.ServiceProvider.GetRequiredService<IGameService>();
+        var scopedGameStateMachineService = scope.ServiceProvider.GetRequiredService<IGameStateMachineService>();
+
+        try
+        {
+            await scopedGameService.EndRoundAsync(gameId);
+            await scopedGameStateMachineService.TransitionAsync(gameId, GameEvents.Next);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred");
+        }
     }
 
     public async Task StartPlayerRunAsync(string playerId, int runTimeInSeconds, CancellationToken ct = default)
@@ -177,6 +224,21 @@ public class GameService(
             },
             ct
         );
+
+        await notificationHelper.BroadcastToGameAsync(
+            gameId,
+            new PokerAttackNotification(PokerAttackNotificationType.RoundEnded, string.Empty)
+        );
+
+        await gameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(5000);
+
+            using var scope = serviceScopeFactory.CreateScope();
+            var scopedGameStateMachineService = scope.ServiceProvider.GetRequiredService<IGameStateMachineService>();
+            await scopedGameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
+        });
     }
 
     public async Task<RoundDTO> GetLatestRoundFromGame(string gameId, CancellationToken ct = default)
@@ -195,6 +257,7 @@ public class GameService(
         
         foreach (var gamePlayer in activeGame.Players) await gamePlayerRepository.DeleteAsync(gamePlayer.Id, ct);
         await activeGameRepository.DeleteAsync(gameId, ct);
+        await gameStateRepository.DeleteAsync(gameId, ct);
 
         foreach (var player in activeGame.Players)
         {

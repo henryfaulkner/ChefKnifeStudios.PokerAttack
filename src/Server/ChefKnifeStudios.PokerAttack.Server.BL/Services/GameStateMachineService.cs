@@ -11,6 +11,18 @@ using System.Text.Json;
 
 namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
 
+public sealed class GameStateChangedEventArgs : EventArgs, IEventArgs
+{
+    public string GameId { get; }
+    public GameStates NewState { get; }
+
+    public GameStateChangedEventArgs(string gameId, GameStates newState)
+    {
+        GameId = gameId;
+        NewState = newState;
+    }
+}
+
 public interface IGameStateMachineService
 {
     Task<GameStates> GetGameStateAsync(string gameId, CancellationToken cancellationToken = default); 
@@ -22,7 +34,8 @@ public class GameStateMachineService(
     ILogger<GameStateMachineService> logger,
     IKeyValueRepository<GameStates> gameStateRepository,
     IRepository<Game> gameRepository,
-    IPokerAttackNotificationHelper notificationHelper) : IGameStateMachineService
+    IPokerAttackNotificationHelper notificationHelper,
+    IEventNotificationService eventNotificationService) : IGameStateMachineService
 {
     public async Task<GameStates> GetGameStateAsync(string gameId, CancellationToken cancellationToken = default)
     {
@@ -44,7 +57,16 @@ public class GameStateMachineService(
             return;
         }
         await gameStateRepository.UpdateAsync(gameId, transition.NextState, cancellationToken);
-        
+
+        try
+        {
+            eventNotificationService.PostEvent(this, new GameStateChangedEventArgs(gameId, transition.NextState));
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Subscriber threw in GameStateChanged handler.");
+        }
+
         await notificationHelper.BroadcastToGameAsync(gameId, new PokerAttackNotification
         (
             PokerAttackNotificationType.GameStateChanged,

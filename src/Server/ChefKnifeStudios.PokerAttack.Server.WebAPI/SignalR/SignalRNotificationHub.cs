@@ -21,7 +21,6 @@ public class SignalRNotificationHub(
     IGameService gameService,
     IKeyValueRepository<ActiveGame> activeGameRepository,
     IGameStateMachineService gameStateMachineService,
-    IServiceScopeFactory serviceScopeFactory,
     IPlayerPowerService playerPowerService,
     IPlayerConnectionTracker connectionTracker) : Hub<ISignalRNotificationClient>
 {
@@ -90,56 +89,20 @@ public class SignalRNotificationHub(
     // -------------------------
     // Game-specific methods
     // -------------------------
-    public async Task StartGame(string gameId)
+    public async Task StartGame(string gameId, string playerId)
     {
-        var game = await activeGameRepository.GetAsync(gameId);
-        await gameService.StartGameAsync(gameId);
-    }
-
-    public async Task StartRound(string gameId)
-    {
-        const int _RUN_TIME_IN_SECONDS = 10;
-
         var game = await activeGameRepository.GetAsync(gameId)
             ?? throw new KeyNotFoundException($"Game not found. Game Id {gameId}");
 
-        List<Task> taskList = [];
-        int i = 0;
-        foreach (var player in game.Players)
+        // Only one player should start the round
+        var firstPlayer = game.Players.FirstOrDefault();
+        if (firstPlayer is null || firstPlayer.Id != playerId)
         {
-            taskList.Add(StartRun(player.Id, _RUN_TIME_IN_SECONDS));
+            return;
         }
-        await Task.WhenAll(taskList);
 
-        _ = StartServerTimerToEndRound(gameId, _RUN_TIME_IN_SECONDS);
+        await gameService.StartGameAsync(gameId);
     }
-
-
-    async Task StartServerTimerToEndRound(string gameId, int runTime)
-    {
-        await Task.Delay(runTime * 1000);
-
-        using var scope = serviceScopeFactory.CreateScope();
-        var scopedGameService = scope.ServiceProvider.GetRequiredService<IGameService>();
-        var scopedNotificationHelper = scope.ServiceProvider.GetRequiredService<IPokerAttackNotificationHelper>();
-
-        try
-        {
-            await scopedGameService.EndRoundAsync(gameId);
-            await scopedNotificationHelper.BroadcastToGameAsync(
-                gameId,
-                new PokerAttackNotification(PokerAttackNotificationType.RoundEnded, string.Empty)
-            );
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "An error occurred");
-        }
-    }
-
-    // Start a run (per-player deck)
-    async Task StartRun(string playerId, int runTimeInSeconds) =>
-        await gameService.StartPlayerRunAsync(playerId, runTimeInSeconds);
 
     // Play a hand and report score
     public async Task PlayHand(string playerId, List<CardDTO> hand) =>

@@ -4,6 +4,7 @@ using ChefKnifeStudios.PokerAttack.Server.Infrastructure.PlayerPowers;
 using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
@@ -22,7 +23,8 @@ public class PlayerPowerService(
     IPlayerPowerRepository powerRepository,
     IKeyValueRepository<GamePlayer> gamePlayerRepository,
     IKeyValueRepository<ActiveGame> activeGameRepository,
-    IPokerAttackNotificationHelper notificationHelper) : IPlayerPowerService
+    IPokerAttackNotificationHelper notificationHelper,
+    IGameStateMachineService gameStateMachineService) : IPlayerPowerService
 {
     public IEnumerable<PlayerPowerDTO> GetSomePowers(int count)
     {
@@ -42,13 +44,7 @@ public class PlayerPowerService(
         var activeGame = await activeGameRepository.GetAsync(gameId, ct);
         if (activeGame is ActiveGame && await DoesEveryPlayersInGameHaveAPower(activeGame))
         {
-            await notificationHelper.BroadcastToGameAsync(
-                gameId,
-                new PokerAttackNotification(
-                    PokerAttackNotificationType.PlayerPowersReadied,
-                    string.Empty
-                ), ct
-            );
+            await gameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
         }
 
         return playerPower.MapToDTO();

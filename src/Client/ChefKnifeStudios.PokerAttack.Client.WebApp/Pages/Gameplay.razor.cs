@@ -23,12 +23,12 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
 
     readonly string[] _subscriptions =
     [
+        nameof(IGameplayViewModel.GameId),
         nameof(IGameplayViewModel.RunTimeInSeconds),
         nameof(IGameplayViewModel.Score),
         nameof(IGameplayViewModel.CardsInHand),
         nameof(IGameplayViewModel.AvailablePlayHands),
         nameof(IGameplayViewModel.AvailableDiscards),
-        nameof(IGameplayViewModel.ArePlayerPowersReadied),
         nameof(IGameplayViewModel.PowerCharges),
         nameof(IGameStateMachineViewModel.GameState),
     ];
@@ -100,7 +100,7 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
         {
             if (GameStateMachineViewModel.GameState == GameStates.InGame)
             {
-                Task.Run(async () => await GameplayViewModel.StartRoundAsync(ApplicationViewModel.Player.Id));
+                _ = GameplayViewModel.StartRoundAsync(ApplicationViewModel.Player.Id);
             }
         }
         Task.Run(async () => await InvokeAsync(StateHasChanged));
@@ -131,14 +131,14 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
         return Task.CompletedTask;
     }
 
-    void HandleNextPressed() =>
-        EventNotificationService.PostEvent(
-            this,
-            new GameTransitionEventArgs
-            {
-                Data = new () { GameId = GameId, GameEvent = GameEvents.Next, },
-            }
-        );
+    //void HandleNextPressed() =>
+    //    EventNotificationService.PostEvent(
+    //        this,
+    //        new GameTransitionEventArgs
+    //        {
+    //            Data = new () { GameId = GameId, GameEvent = GameEvents.Next, },
+    //        }
+    //    );
 
     static string FormatAsMinutesSeconds(int totalSeconds)
     {

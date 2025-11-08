@@ -68,26 +68,19 @@
                 break;
             case GameStates.Scoreboard:
             case GameStates.Elimination:
-                var nextBtnText = GameStateMachineViewModel.GameState switch
+                var viewText = GameStateMachineViewModel.GameState switch
                 {
-                    GameStates.Scoreboard => "ELIMINATE LOW SCORERS",
-                    GameStates.Elimination => "PLAY NEXT ROUND",
-                    _ => "NEXT"
+                    GameStates.Scoreboard => "Scoreboard",
+                    GameStates.Elimination => "ELIMINATE LOW SCORERS",
+                    _ => "?????"
                 };
 
+                <span>@viewText</span>
                 <ScoreboardList GameId="@GameId" />
-                <button @onclick="HandleNextPressed">@nextBtnText</button>
                 break;
             case GameStates.Upgrade:
                 <PlayerPowerList GameId="@GameId" />
-                @if (GameplayViewModel.ArePlayerPowersReadied)
-                {
-                    <button @onclick="HandleNextPressed">PLAY NEXT ROUND</button>
-                }
-                else
-                {
-                    <span>WAITING ON OTHER PLAYERS' SELECTION</span>
-                }
+                <span>WAITING ON OTHER PLAYERS' SELECTION</span>
                 break;
             case GameStates.GameStart:
                 {

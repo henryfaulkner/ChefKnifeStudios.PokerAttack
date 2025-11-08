@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ChefKnifeStudios.PokerAttack.Server.Core\ChefKnifeStudios.PokerAttack.Server.Core.csproj" />
     <ProjectReference Include="..\ChefKnifeStudios.PokerAttack.Server.Data\ChefKnifeStudios.PokerAttack.Server.Data.csproj" />
   </ItemGroup>
