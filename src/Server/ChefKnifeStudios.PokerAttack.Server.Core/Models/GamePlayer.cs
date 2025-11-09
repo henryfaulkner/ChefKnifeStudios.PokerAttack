@@ -9,6 +9,8 @@ public class GamePlayer
     public int Score { get; set; }
     public int PowerPoints { get; set; }
     public PlayerPower? PlayerPower { get; set; }
+    public bool IsEliminating { get; set; }
+    public bool IsEliminated { get; set; }
 
     public void UnflipAllCards()
     {

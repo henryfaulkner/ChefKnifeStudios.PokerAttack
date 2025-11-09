@@ -49,15 +49,6 @@ public partial class ScoreboardList : ComponentBase, IDisposable
     void ViewModel_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName is null || _subscriptions.Contains(e.PropertyName) is false) return;
-        if (sender is IGameStateMachineViewModel && e.PropertyName.Equals(nameof(IGameStateMachineViewModel.GameState)))
-        {
-            Task.Run(async () =>
-            {
-                await ScoreboardViewModel.StartEliminatingAsync();
-                //await Task.Delay(3000);
-                await ScoreboardViewModel.FinishEliminatingAsync();
-            });
-        }
         Task.Run(async () => await InvokeAsync(StateHasChanged));
     }
 

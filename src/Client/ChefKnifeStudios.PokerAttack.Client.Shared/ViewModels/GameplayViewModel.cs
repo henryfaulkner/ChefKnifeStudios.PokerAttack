@@ -9,6 +9,7 @@ using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.AspNetCore.Components;
 using System.Collections.ObjectModel;
 using System.Text.Json;
 
@@ -42,6 +43,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     readonly ISignalRNotificationService _signalRNotificationService;
     readonly IToastService _toastService;
     readonly IEventNotificationService _eventNotificationService;
+    readonly NavigationManager _navigationManager;
 
     [ObservableProperty]
     string _gameId = Guid.Empty.ToString();
@@ -82,11 +84,13 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     public GameplayViewModel(
         ISignalRNotificationService signalRNotificationService,
         IToastService toastService,
-        IEventNotificationService eventNotificationService)
+        IEventNotificationService eventNotificationService,
+        NavigationManager navigationManager)
     {
         _signalRNotificationService = signalRNotificationService;
         _toastService = toastService;
         _eventNotificationService = eventNotificationService;
+        _navigationManager = navigationManager;
 
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
         _eventNotificationService.EventReceived += HandleEventReceived;
@@ -113,10 +117,10 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         await _signalRNotificationService.StartGameAsync(GameId, playerId);
     }
 
-    public async Task StartRoundAsync(string playerId, CancellationToken cancellationToken = default)
+    public Task StartRoundAsync(string playerId, CancellationToken cancellationToken = default)
     {
         PowerCharges = _INIT_POWER_CHARGES;
-        //await _signalRNotificationService.StartRoundAsync(GameId, playerId);
+        return Task.CompletedTask;
     }
 
     public async Task PlaySelectedCardsAsync(string playerId, CancellationToken cancellationToken = default)
@@ -247,15 +251,14 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                     }
                     break;
                 }
-            case PokerAttackNotificationType.RoundEnded:
+            case PokerAttackNotificationType.GameWon:
                 {
-                    //_eventNotificationService.PostEvent(
-                    //    this,
-                    //    new GameTransitionEventArgs
-                    //    {
-                    //        Data = new() { GameId = GameId, GameEvent = GameEvents.Next },
-                    //    }
-                    //);
+                    _navigationManager.NavigateTo($"/game-over?result=winner&gameid={GameId}", replace: true);
+                    break;
+                }
+            case PokerAttackNotificationType.GameLost:
+                {
+                    _navigationManager.NavigateTo($"/game-over?result=loser&gameid={GameId}", replace: true);
                     break;
                 }
         }

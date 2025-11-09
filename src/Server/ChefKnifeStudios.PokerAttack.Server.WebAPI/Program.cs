@@ -50,8 +50,6 @@ builder.Services.AddScoped<IPlayerPowerService, PlayerPowerService>();
 
 // Register Eventing Service
 builder.Services.AddSingleton<IEventNotificationService, EventNotificationService>();
-
-// Ensure a singleton subscriber that can resolve scoped services when events arrive
 builder.Services.AddHostedService<GameEventSubscriber>();
 
 var app = builder.Build();

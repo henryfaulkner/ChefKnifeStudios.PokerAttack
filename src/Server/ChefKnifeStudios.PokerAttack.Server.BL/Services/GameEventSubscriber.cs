@@ -1,10 +1,12 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
+﻿using ChefKnifeStudios.PokerAttack.Server.Data.Models;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
 
+// Ensure a singleton subscriber that can resolve scoped services when events arrive
 public sealed class GameEventSubscriber : IHostedService
 {
     readonly IEventNotificationService _eventBus;
@@ -47,13 +49,22 @@ public sealed class GameEventSubscriber : IHostedService
 
             _logger.LogInformation("Dispatching GameStateChanged for GameId={GameId} NewState={NewState}", gs.GameId, gs.NewState);
 
-            if (gs.NewState == GameStates.InGame)
+            switch (gs.NewState)
             {
-                // call scoped logic
-                await gameService.StartRoundAsync(gs.GameId);
-            }
+                case GameStates.InGame:
+                    {
+                        await gameService.StartRoundAsync(gs.GameId);
+                        break;
+                    }
+                case GameStates.Elimination:
+                    {
+                        await gameService.StartEliminationAsync(gs.GameId);
+                        await Task.Delay(5000);
+                        await gameService.FinishEliminationAsync(gs.GameId);
+                        break;
+                    }
 
-            // Add more state reactions as required...
+            }
         }
         catch (Exception ex)
         {

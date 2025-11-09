@@ -131,15 +131,6 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
         return Task.CompletedTask;
     }
 
-    //void HandleNextPressed() =>
-    //    EventNotificationService.PostEvent(
-    //        this,
-    //        new GameTransitionEventArgs
-    //        {
-    //            Data = new () { GameId = GameId, GameEvent = GameEvents.Next, },
-    //        }
-    //    );
-
     static string FormatAsMinutesSeconds(int totalSeconds)
     {
         TimeSpan time = TimeSpan.FromSeconds(totalSeconds);
