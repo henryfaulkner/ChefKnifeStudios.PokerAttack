@@ -25,7 +25,7 @@ stages:
     # Build and Publish ChefKnifeStudios.PokerAttack.Server.WebApp(Blazor WASM app)
     - task: UseDotNet@2
       inputs:
-        version: '9.x'
+        version: '10.x'
 
     - task: NuGetAuthenticate@1
     
