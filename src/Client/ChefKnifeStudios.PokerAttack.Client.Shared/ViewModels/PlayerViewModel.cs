@@ -9,22 +9,11 @@ public interface IPlayerViewModel : IViewModel
     Task UpdatePlayerNameAsync(PlayerDTO player, string newName, CancellationToken cancellationToken = default);
 }
 
-public class PlayerViewModel(
-    ILobbyEndpointsService lobbyEndpointsService,
-    IToastService toastService) : BaseViewModel, IPlayerViewModel
+public class PlayerViewModel(ILobbyEndpointsService lobbyEndpointsService) : BaseViewModel, IPlayerViewModel
 {
     public async Task UpdatePlayerNameAsync(PlayerDTO player, string newName, CancellationToken cancellationToken = default)
     {
         player.Name = newName;
-
-        var res = await lobbyEndpointsService.UpdatePlayerAsync(player, cancellationToken);
-
-        if (!res.IsSuccess)
-        { 
-            toastService.ShowError("Name failed to update");
-            return;
-        }
-
-        toastService.ShowSuccess("Name updated");
+        _ = await lobbyEndpointsService.UpdatePlayerAsync(player, cancellationToken);
     }
 }

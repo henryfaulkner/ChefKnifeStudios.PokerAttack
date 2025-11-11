@@ -13,20 +13,6 @@ public partial class GameOver : ComponentBase
     [Inject] ISignalRNotificationService SignalRNotificationService { get; set; } = null!;
     [Inject] IApplicationViewModel ApplicationViewModel { get; set; } = null!;
 
-    protected override async Task OnInitializedAsync()
-    {
-        // TODO: move elimination and end game logic to server
-        switch (Result)
-        {
-            case "winner":
-                await SignalRNotificationService.EndGameAsync(GameId);
-                break;
-            case "loser":
-                await SignalRNotificationService.LeaveGameAsync(GameId, ApplicationViewModel.Player.Id);
-                break;
-        }
-    }
-
     void HandleReturnPressed()
     {
         NavigationManager.NavigateTo($"", replace: true);

@@ -50,7 +50,7 @@ builder.Services.AddScoped<IPlayerPowerService, PlayerPowerService>();
 
 // Register Eventing Service
 builder.Services.AddSingleton<IEventNotificationService, EventNotificationService>();
-builder.Services.AddHostedService<GameEventSubscriber>();
+builder.Services.AddHostedService<EventNotificationServiceSubscriber>();
 
 var app = builder.Build();
 

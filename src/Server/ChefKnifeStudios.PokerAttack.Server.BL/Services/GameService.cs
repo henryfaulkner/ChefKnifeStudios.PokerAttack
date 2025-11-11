@@ -8,7 +8,6 @@ using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR.EventArgs;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
@@ -76,7 +75,7 @@ public class GameService(
         var deck = new Deck();
         deck.RandomizeDeck();
 
-        ClearGamePlayerDataAsync(playerId, gamePlayer, ct);
+        await ClearGamePlayerDataAsync(playerId, gamePlayer, ct);
         await ReplenishHandAsync(playerId, ct);
 
         var resBody = new RunStartedDTO()
@@ -246,12 +245,14 @@ public class GameService(
     {
         try
         {
-            var lobby = await activeGameRepository.GetAsync(gameId, ct)
-                ?? throw new ApplicationException($"Active Game not found: Game Id {gameId}");
+            await notificationHelper.LeaveGameGroupForUserAsync(playerId, gameId, ct);
 
-            lobby.Players.RemoveWhere(x => x.Id == playerId);
+            var activeGame = await activeGameRepository.GetAsync(gameId, ct)
+                ?? throw new ApplicationException($"Active Game not found: Game Id {gameId}");
+            activeGame.Players.RemoveWhere(x => x.Id == playerId);
+            await activeGameRepository.UpdateAsync(gameId, activeGame, ct);
+
             await gamePlayerRepository.DeleteAsync(playerId, ct);
-            await activeGameRepository.UpdateAsync(gameId, lobby, ct);
         }
         catch (Exception ex)
         {
@@ -361,7 +362,9 @@ public class GameService(
         {
             var state = await gamePlayerRepository.GetAsync(player.Id, ct);
             if (state != null && !state.IsEliminated)
+            {
                 remaining.Add((player.Id, player.Name));
+            }
         }
 
         // Use a plain object for payload so we don't get anonymous-type re-assignment errors.
@@ -384,6 +387,7 @@ public class GameService(
             new PokerAttackNotification(PokerAttackNotificationType.GameLost, null),
             ct
         );
+        foreach (var loser in losers) await LeaveGameAsync(gameId, loser.PlayerId, ct);
 
         if (winner is { Id: string winnerId })
         {
@@ -400,6 +404,8 @@ public class GameService(
             new PokerAttackNotification(PokerAttackNotificationType.EliminationFinished, payload),
             ct
         );
+
+        await gameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
     }
 
     async Task ClearGamePlayerDataAsync(string playerId, GamePlayer gamePlayer, CancellationToken ct = default)
