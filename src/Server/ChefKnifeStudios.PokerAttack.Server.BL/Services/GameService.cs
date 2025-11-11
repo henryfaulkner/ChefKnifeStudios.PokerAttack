@@ -39,7 +39,6 @@ public class GameService(
     IRepository<Game> gameRepository,
     IRepository<Round> roundRepository,
     IPokerAttackNotificationHelper notificationHelper,
-    IServiceScopeFactory serviceScopeFactory,
     IGameStateMachineService gameStateMachineService) : IGameService
 {
     const int NumCardsInHand = 8;
