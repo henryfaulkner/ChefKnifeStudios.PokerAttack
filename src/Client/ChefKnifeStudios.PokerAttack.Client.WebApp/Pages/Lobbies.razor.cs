@@ -5,6 +5,8 @@ namespace ChefKnifeStudios.PokerAttack.Client.WebApp.Pages;
 
 public partial class Lobbies : ComponentBase
 {
+    [SupplyParameterFromQuery] public required string? GameResult { get; set; }
+
     [Inject] IApplicationViewModel ApplicationViewModel { get; set; } = null!;
     [Inject] ILobbyViewModel LobbyViewModel { get; set; } = null!;
 
@@ -13,8 +15,9 @@ public partial class Lobbies : ComponentBase
         _ = LobbyViewModel.CreateLobbyAsync(ApplicationViewModel.Player);
     }
 
-    void HandlePillPressed()
+    void HandleCloseModalPressed()
     {
-        Console.WriteLine("Pill was pressed");
+        GameResult = null;
+        StateHasChanged();
     }
 }

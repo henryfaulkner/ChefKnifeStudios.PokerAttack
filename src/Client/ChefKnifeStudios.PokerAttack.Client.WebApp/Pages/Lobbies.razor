@@ -16,11 +16,21 @@
             <LobbyList />
         </div>
 
-        <Pill
-            Text="Link"
-            Type="@PillTypes.Destructive"
-            OnClickCallback="HandlePillPressed"
-            Icon="add"
-        />
+        <MatDialog Class="game-result-modal" IsOpen="@(!string.IsNullOrWhiteSpace(GameResult))">
+            <MatDialogContent>
+                @switch (GameResult)
+                {
+                    case "winner":
+                        <p>You are a winner</p>
+                        break;
+                    case "loser":
+                        <p>You are a loser</p>
+                        break;
+                }
+            </MatDialogContent>
+            <MatDialogActions>
+                <MatButton OnClick="HandleCloseModalPressed">CLOSE</MatButton>
+            </MatDialogActions>
+        </MatDialog>
     </div>
 </div>
