@@ -15,7 +15,6 @@ public partial class EditablePlayerName : ComponentBase
 
     bool _isEditing = false;
     string _name = string.Empty;
-    MatTextField<string>? _textField = null;
 
     protected override void OnInitialized()
     {
@@ -26,7 +25,6 @@ public partial class EditablePlayerName : ComponentBase
     async Task HandleEditingStarted()
     {
         _isEditing = true;
-        await _textField!.Ref.FocusAsync();
     }
 
     async Task HandleEditingStopped()

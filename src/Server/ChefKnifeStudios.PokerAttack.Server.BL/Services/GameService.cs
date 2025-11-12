@@ -49,7 +49,7 @@ public class GameService(
 
     public async Task StartRoundAsync(string gameId, CancellationToken ct = default)
     {
-        const int _RUN_TIME_IN_SECONDS = 10;
+        const int _RUN_TIME_IN_SECONDS = 120;
 
         var game = await activeGameRepository.GetAsync(gameId)
             ?? throw new KeyNotFoundException($"Game not found. Game Id {gameId}");

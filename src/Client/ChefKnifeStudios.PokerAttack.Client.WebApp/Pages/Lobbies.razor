@@ -4,15 +4,19 @@
 
 <div class="main">
     <div class="container">
-        <div style="display: flex; column-gap: 1rem; padding: 1rem 2rem;">
-            <button @onclick="HandleCreateLobbyPressed" @onclick:stopPropagation="true">
-                CREATE LOBBY
-            </button>
-
-            <span>You are <EditablePlayerName Player="@ApplicationViewModel.Player" /></span>
-        </div>
-
         <div class="content">
+            <div class="lobby-actions">
+                <EditablePlayerName Player="@ApplicationViewModel.Player" />
+
+                <button 
+                    class="create-lobby-btn"
+                    @onclick="HandleCreateLobbyPressed"
+                    @onclick:stopPropagation="true"
+                >
+                    CREATE LOBBY
+                </button>
+            </div>
+
             <LobbyList />
         </div>
 

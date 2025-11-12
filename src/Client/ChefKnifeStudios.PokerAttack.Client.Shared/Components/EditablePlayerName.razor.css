@@ -1,11 +1,21 @@
 ﻿.editable-player-name {
     width: 100%;
     height: 100%;
-}
+    display: flex;
+    gap: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border: 2px solid black;
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
 
-.name-btn {
-    width: 100%;
-    height: 100%;
-    padding-right: 0.75rem;
-    text-align: right;
+    & span {
+        font-size: 1rem;
+    }
+
+    & input {
+        height: 20px;
+    }
 }

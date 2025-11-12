@@ -209,6 +209,11 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 
     public async Task ActivatePlayerPowerAsync(string playerId, CancellationToken cancellationToken = default)
     {
+        if (PowerCharges <= 0)
+        {
+            _toastService.ShowWarning("Not enough power charges");
+            return;
+        }
         await _signalRNotificationService.ActivatePlayerPowerAsync(GameId, playerId);
         PowerCharges--;
     }

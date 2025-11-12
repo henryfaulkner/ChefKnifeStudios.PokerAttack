@@ -1,19 +1,11 @@
 ﻿<div class="editable-player-name">
-    <div style="@(_isEditing ? "display: block;" : "display: none;")">
-        <MatTextField
-            @ref="_textField"
-            @bind-Value="@_name"
-            Label="Player Name"
-            Required="true"
-            OnFocusOut="HandleEditingStopped"
-        />
-    </div>
-
-    <button 
-        class="name-btn" 
-        style="@(_isEditing ? "display: none;" : "display: block;")"
-        @onclick="HandleEditingStarted"
+    <label for="playername">You are </label>
+    <input 
+        type="text" 
+        id="playername" 
+        name="playername"
+        @onfocusin="HandleEditingStarted"
+        @onfocusout="HandleEditingStopped"
+        @bind-value="@_name"
     >
-        @Player.Name
-    </button>
 </div>
