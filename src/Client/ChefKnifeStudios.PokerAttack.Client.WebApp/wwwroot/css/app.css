@@ -12,6 +12,7 @@ html, body {
     width: 100dvw;
     box-sizing: border-box;
     overflow-x: hidden;
+    background-color: #f8f1f6;
 }
 
 #blazor-error-ui {

@@ -31,7 +31,7 @@
     height: 50px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
     .sidebar,
     .gaming-container {
         grid-column-end: span 12 !important;
@@ -40,6 +40,7 @@
     .mat-layout-grid-inner {
         display: flex; /* override Material grid layout */
         flex-direction: column-reverse; /* reverse the order */
+        gap: 0;
     }
 
     .sidebar {
