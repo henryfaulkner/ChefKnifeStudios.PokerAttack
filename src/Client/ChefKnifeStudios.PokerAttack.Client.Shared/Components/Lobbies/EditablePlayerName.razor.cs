@@ -4,7 +4,7 @@ using MatBlazor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 
-namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components;
+namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.Lobbies;
 
 public partial class EditablePlayerName : ComponentBase
 {

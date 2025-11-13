@@ -12,58 +12,62 @@
         {
             case GameStates.InGame:
                 {
-                    <CardHand Cards="@GameplayViewModel.CardsInHand.ToList()" />
-                
-                    <div class="action-buttons">
-                        <div class="row">
-                            <div>
-                                <button @onclick="HandlePlayHandPressed" @onclick:stopPropagation="true">
-                                    PLAY HAND
-                                </button>
-                                <span>[Q]</span>
+                    <div class="mat-layout-grid" style="padding: 0;">
+                        <div class="mat-layout-grid-inner">
+                            <div 
+                                class="sidebar mat-layout-grid-cell mat-layout-grid-cell-span-3 bgclr-surface2"
+                            >
+                                <span>Score: @GameplayViewModel.Score</span>
+                                <span>@FormatAsMinutesSeconds(GameplayViewModel.RunTimeInSeconds)</span>
+                                <span>Hands Available: @GameplayViewModel.AvailablePlayHands</span>
+                                <span>Discards Available: @GameplayViewModel.AvailableDiscards</span>
+                                <span>Power: @(GameplayViewModel.ActivePlayerPower?.Name ?? "No Power???")</span>
+                                <span>Power Charges: @GameplayViewModel.PowerCharges/2</span>
                             </div>
-                            <div>
-                                <button @onclick="HandleDiscardPressed" @onclick:stopPropagation="true">
-                                    DISCARD
-                                </button>
-                                <span>[W]</span>
-                            </div>
-                            <div>
-                                <button @onclick="HandleActivatePowerPressed" @onclick:stopPropagation="true">
-                                    ACTIVATE POWER
-                                </button>
-                                <span>[E]</span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div>
-                                <button @onclick="HandleSortByRankPressed" @onclick:stopPropagation="true">
-                                    SORT BY RANK
-                                </button>
-                                <span>[A]</span>
-                            </div>
-                            <div>
-                                <button @onclick="HandleSortBySuitPressed" @onclick:stopPropagation="true">
-                                    SORT BY SUIT
-                                </button>
-                                <span>[S]</span>
-                            </div>
-                            <div>
-                                <button @onclick="HandleClearSelectionsPressed" @onclick:stopPropagation="true">
-                                    CLEAR SELECTIONS
-                                </button>
-                                <span>[D]</span>
+                            <div class="gaming-container mat-layout-grid-cell mat-layout-grid-cell-span-9">
+                                <CardHand Cards="@GameplayViewModel.CardsInHand.ToList()" />
+
+                                <div class="action-buttons">
+                                    <MatButton Id="playHandBtn"
+                                               Class="play-hand-btn action-btn"
+                                               OnClick="HandlePlayHandPressed"
+                                               Unelevated="true">
+                                        <span class="key-bind">[Q]&nbsp;</span>PLAY HAND
+                                    </MatButton>
+                                    <MatButton Id="discardBtn"
+                                               Class="discard-btn action-btn"
+                                               OnClick="HandleDiscardPressed"
+                                               Unelevated="true">
+                                        <span class="key-bind">[W]&nbsp;</span>DISCARD
+                                    </MatButton>
+                                    <MatButton Id="activatePowerBtn"
+                                               Class="activate-power-btn action-btn"
+                                               OnClick="HandleActivatePowerPressed"
+                                               Unelevated="true">
+                                        <span class="key-bind">[E]&nbsp;</span>ACTIVATE POWER
+                                    </MatButton>
+                                    <MatButton Id="sortByRankBtn"
+                                               Class="sort-by-rank-btn action-btn"
+                                               OnClick="HandleSortByRankPressed"
+                                               Unelevated="true">
+                                        <span class="key-bind">[A]&nbsp;</span>SORT BY RANK
+                                    </MatButton>
+                                    <MatButton Id="sortBySuitBtn"
+                                               Class="sort-by-suit-btn action-btn"
+                                               OnClick="HandleSortBySuitPressed"
+                                               Unelevated="true">
+                                        <span class="key-bind">[S]&nbsp;</span>SORT BY SUIT
+                                    </MatButton>
+                                    <MatButton Id="clearSelectionsBtn"
+                                               Class="clear-selections-btn action-btn"
+                                               OnClick="HandleClearSelectionsPressed"
+                                               Unelevated="true">
+                                        <span class="key-bind">[D]&nbsp;</span>CLEAR SELECTIONS
+                                    </MatButton>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    <h1>Score: @GameplayViewModel.Score</h1>
-                    <h2>@FormatAsMinutesSeconds(GameplayViewModel.RunTimeInSeconds)</h2>
-                    <h2>Hands Available: @GameplayViewModel.AvailablePlayHands</h2>
-                    <h2>Discards Available: @GameplayViewModel.AvailableDiscards</h2>
-
-                    <h2>Power: @(GameplayViewModel.ActivePlayerPower?.Name ?? "No Power???")</h2>
-                    <h2>Power Charges: @GameplayViewModel.PowerCharges/2</h2>
                 }
                 break;
             case GameStates.Scoreboard:

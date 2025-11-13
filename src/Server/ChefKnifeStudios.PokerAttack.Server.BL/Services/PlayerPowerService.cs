@@ -50,18 +50,18 @@ public class PlayerPowerService(
         return playerPower.MapToDTO();
     }
 
-    public async Task ActivateAsync(string gameId, string playerId, CancellationToken ct = default)
+    public async Task ActivateAsync(string gameId, string sourcePlayerId, CancellationToken ct = default)
     {
         var activeGame = await activeGameRepository.GetAsync(gameId)
             ?? throw new KeyNotFoundException("Lobby not found");
         var players = activeGame.Players.ToHashSet();
 
-        var sourcePlayer = players.FirstOrDefault(x => x.Id == playerId);
-        players.RemoveWhere(x => x.Id == playerId);
+        var sourcePlayer = players.FirstOrDefault(x => x.Id == sourcePlayerId);
+        players.RemoveWhere(x => x.Id == sourcePlayerId);
         var targetPlayerIfApplicable = players.Any() ? players.ToList()[Random.Shared.Next(0, players.Count())] : null;
         var targetGamePlayerIdIfApplicable = targetPlayerIfApplicable?.Id;
 
-        var sourceGamePlayer = await gamePlayerRepository.GetAsync(playerId)
+        var sourceGamePlayer = await gamePlayerRepository.GetAsync(sourcePlayerId)
             ?? throw new KeyNotFoundException("Source Game Player not found");
         var targetGamePlayer = targetGamePlayerIdIfApplicable is string ? await gamePlayerRepository.GetAsync(targetGamePlayerIdIfApplicable) : null;
 
@@ -144,12 +144,15 @@ public class PlayerPowerService(
 
         if (selfTargeted)
         {
-            await notificationHelper.SendToPlayerAsync(playerId, new PokerAttackNotification
+            // Deal affected cards to source player
+            await notificationHelper.SendToPlayerAsync(sourcePlayerId, new PokerAttackNotification
             (
                 PokerAttackNotificationType.CardsDealt,
                 JsonSerializer.Serialize(sourceGamePlayer.CardsInHand.Select(x => x.MapToDTO()), JsonOptions.Get())
             ));
-            await notificationHelper.SendToPlayerAsync(playerId, new PokerAttackNotification
+
+            // Message to source player
+            await notificationHelper.SendToPlayerAsync(sourcePlayerId, new PokerAttackNotification
             (
                 PokerAttackNotificationType.MessageSent,
                 JsonSerializer.Serialize(new MessageDTO { Title = $"{sourcePlayer?.Name} played power", Message = selfTargetMsg, Type = MessageDTO.MessageType.Success, })
@@ -157,10 +160,18 @@ public class PlayerPowerService(
         }
         if (targetTargeted && targetGamePlayerIdIfApplicable is string && targetGamePlayer is GamePlayer)
         {
+            // Deal affected cards to target player
             await notificationHelper.SendToPlayerAsync(targetGamePlayerIdIfApplicable, new PokerAttackNotification
             (
                 PokerAttackNotificationType.CardsDealt,
                 JsonSerializer.Serialize(targetGamePlayer.CardsInHand.Select(x => x.MapToDTO()), JsonOptions.Get())
+            ));
+
+            // Message to both players
+            await notificationHelper.SendToPlayerAsync(sourcePlayerId, new PokerAttackNotification
+            (
+                PokerAttackNotificationType.MessageSent,
+                JsonSerializer.Serialize(new MessageDTO { Title = $"{sourcePlayer?.Name} attacked {targetPlayerIfApplicable?.Name}", Message = targetTargetMsg, Type = MessageDTO.MessageType.Success, })
             ));
             await notificationHelper.SendToPlayerAsync(targetGamePlayerIdIfApplicable, new PokerAttackNotification
             (

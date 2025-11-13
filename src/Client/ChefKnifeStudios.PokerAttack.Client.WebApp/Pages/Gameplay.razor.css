@@ -1,13 +1,70 @@
-﻿.action-buttons {
-    margin: 1rem 0.5rem;
+﻿.sidebar {
+    height: 100dvh;
+    padding: 12px 18px;
 }
 
-.action-buttons > .row {
-    display: flex;
-    column-gap: 0.5rem;
-    padding: 1rem 0;
+.sidebar span {
+    height: fit-content;
+    display: block;
+    font-size: 2rem;
+    font-weight: bold;
+}
 
-    & span {
-        display: block;
+.action-buttons {
+    margin: 16px 8px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 8px;
+    row-gap: 16px;
+    padding: 16px 0;
+}
+
+.action-buttons span {
+    display: block;
+}
+
+.gaming-container {
+    margin: 24px;
+}
+
+.action-btn {
+    height: 50px;
+}
+
+@media (max-width: 768px) {
+    .sidebar,
+    .gaming-container {
+        grid-column-end: span 12 !important;
+    }
+
+    .mat-layout-grid-inner {
+        display: flex; /* override Material grid layout */
+        flex-direction: column-reverse; /* reverse the order */
+    }
+
+    .sidebar {
+        height: auto;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        column-gap: 8px;
+        row-gap: 4px;
+    }
+
+    .sidebar span {
+        height: fit-content;
+        display: inherit;
+        font-size: 1rem;
+    }
+
+    .gaming-container {
+        margin: 12px 24px 0;
+    }
+
+    .action-buttons { 
+        margin: 0;
+    }
+
+    .action-buttons span.key-bind {
+        display: none;
     }
 }

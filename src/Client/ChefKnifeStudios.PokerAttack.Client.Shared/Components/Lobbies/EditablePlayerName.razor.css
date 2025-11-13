@@ -6,7 +6,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    border: 2px solid black;
+    border: 2px solid var(--mdc-theme-primary, #6200ee);
     border-radius: 8px;
     align-items: center;
     justify-content: center;

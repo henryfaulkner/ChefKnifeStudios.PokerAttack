@@ -1,4 +1,4 @@
-﻿@using ChefKnifeStudios.PokerAttack.Client.Shared.Components
+﻿@using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Lobbies
 
 @page "/"
 
@@ -8,13 +8,14 @@
             <div class="lobby-actions">
                 <EditablePlayerName Player="@ApplicationViewModel.Player" />
 
-                <button 
-                    class="create-lobby-btn"
-                    @onclick="HandleCreateLobbyPressed"
-                    @onclick:stopPropagation="true"
+                <MatButton 
+                    Id="createLobbyBtn"
+                    Class="create-lobby-btn"
+                    OnClick="HandleCreateLobbyPressed"
+                    Unelevated="true"
                 >
                     CREATE LOBBY
-                </button>
+                </MatButton>
             </div>
 
             <LobbyList />

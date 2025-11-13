@@ -143,19 +143,19 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
                         switch (messageDTO)
                         {
                             case { Type: MessageDTO.MessageType.Success, Title: string }:
-                                _toastService.ShowSuccess(messageDTO.Title, messageDTO.Message);
+                                _toastService.ShowSuccess(messageDTO.Message, messageDTO.Title);
                                 break;
                             case { Type: MessageDTO.MessageType.Success, Title: not string }:
                                 _toastService.ShowSuccess(messageDTO.Message);
                                 break;
                             case { Type: MessageDTO.MessageType.Warning, Title: string }:
-                                _toastService.ShowWarning(messageDTO.Title, messageDTO.Message);
+                                _toastService.ShowWarning(messageDTO.Message, messageDTO.Title);
                                 break;
                             case { Type: MessageDTO.MessageType.Warning, Title: not string }:
                                 _toastService.ShowWarning(messageDTO.Message);
                                 break;
                             case { Type: MessageDTO.MessageType.Error, Title: string }:
-                                _toastService.ShowError(messageDTO.Title, messageDTO.Message);
+                                _toastService.ShowError(messageDTO.Message, messageDTO.Title);
                                 break;
                             case { Type: MessageDTO.MessageType.Error, Title: not string }:
                                 _toastService.ShowError(messageDTO.Message);

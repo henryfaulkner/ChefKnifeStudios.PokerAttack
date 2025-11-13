@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
-namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components;
+namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.Lobbies;
 
 public partial class LobbyList : ComponentBase, IDisposable
 {
