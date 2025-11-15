@@ -17,12 +17,12 @@
                             <div 
                                 class="sidebar mat-layout-grid-cell mat-layout-grid-cell-span-3 bgclr-surface2"
                             >
-                                <span>Score: @GameplayViewModel.Score</span>
-                                <span>@FormatAsMinutesSeconds(GameplayViewModel.RunTimeInSeconds)</span>
-                                <span>Hands Available: @GameplayViewModel.AvailablePlayHands</span>
-                                <span>Discards Available: @GameplayViewModel.AvailableDiscards</span>
-                                <span>Power: @(GameplayViewModel.ActivePlayerPower?.Name ?? "No Power???")</span>
-                                <span>Power Charges: @GameplayViewModel.PowerCharges/2</span>
+                                <span class="mat-h4">Score: @GameplayViewModel.Score</span>
+                                <span class="mat-h4">@FormatAsMinutesSeconds(GameplayViewModel.RunTimeInSeconds)</span>
+                                <span class="mat-h4">Hands Available: @GameplayViewModel.AvailablePlayHands</span>
+                                <span class="mat-h4">Discards Available: @GameplayViewModel.AvailableDiscards</span>
+                                <span class="mat-h4">Power: @(GameplayViewModel.ActivePlayerPower?.Name ?? "No Power???")</span>
+                                <span class="mat-h4">Power Charges: @GameplayViewModel.PowerCharges/2</span>
                             </div>
                             <div class="gaming-container mat-layout-grid-cell mat-layout-grid-cell-span-9">
                                 <CardHand Cards="@GameplayViewModel.CardsInHand.ToList()" />
@@ -32,7 +32,7 @@
                                                Class="play-hand-btn action-btn"
                                                OnClick="HandlePlayHandPressed"
                                                Unelevated="true">
-                                        <span class="key-bind">[Q]&nbsp;</span>PLAY HAND
+                                        <span class="key-bind mat-body1">[Q]&nbsp;</span>PLAY HAND
                                     </MatButton>
                                     <MatButton Id="discardBtn"
                                                Class="discard-btn action-btn"
@@ -68,27 +68,31 @@
                             </div>
                         </div>
                     </div>
+                    break;
                 }
-                break;
             case GameStates.Scoreboard:
             case GameStates.Elimination:
-                var viewText = GameStateMachineViewModel.GameState switch
                 {
-                    GameStates.Scoreboard => "Scoreboard",
-                    GameStates.Elimination => "Eliminate Low Scorers",
-                    _ => "?????"
-                };
+                    var viewText = GameStateMachineViewModel.GameState switch
+                    {
+                        GameStates.Scoreboard => "DISPLAYING SCORES",
+                        GameStates.Elimination => "ELIMINATING LOW SCORERS",
+                        _ => "?????"
+                    };
 
-                <span>@viewText</span>
-                <ScoreboardList GameId="@GameId" />
-                break;
+                    <span class="mat-body1">@viewText</span>
+                    <ScoreboardList GameId="@GameId" />
+                    break;
+                }
             case GameStates.Upgrade:
-                <PlayerPowerList GameId="@GameId" />
-                <span>WAITING ON OTHER PLAYERS' SELECTION</span>
-                break;
+                {
+                    <PlayerPowerList GameId="@GameId" />
+                    <span class="mat-body1 gameplay__upgrade-message">WAITING ON OTHER PLAYERS' SELECTION</span>
+                    break;
+                }
             case GameStates.GameStart:
                 {
-                    <span>GAME STARTING</span>
+                    <span class="mat-body1">GAME STARTING</span>
                     break;
                 }
         }

@@ -1,7 +1,7 @@
 ﻿<div class="scoreboard-list">
     @if (ScoreboardViewModel.IsLoading)
     {
-        <MatBody1>Loading...</MatBody1>
+        <span class="mat-body1">Loading...</span>
     }
     else
     {
@@ -11,9 +11,9 @@
             PageRecordCountLabel="Page Size"
         >
             <MatTableHeader>
-                <th class="col-header-id">Player Id</th>
-                <th class="col-header-name">Player Name</th>
-                <th class="col-header-actions">Score</th>
+                <th class="col-header-id mat-body1">Player Id</th>
+                <th class="col-header-name mat-body1">Player Name</th>
+                <th class="col-header-actions mat-body1">Score</th>
             </MatTableHeader>
             <MatTableRow>
                 @{
@@ -24,9 +24,9 @@
                         _ => string.Empty
                     };
                 }
-                <td class="col-row-id @rowClass">@context.ClientUserId</td>
-                <td class="col-row-name">@context.ClientUserDisplayName</td>
-                <td class="col-row-actions">@context.Score</td>
+                <td class="col-row-id mat-body1 @rowClass">@context.ClientUserId</td>
+                <td class="col-row-name mat-body1 @rowClass">@context.ClientUserDisplayName</td>
+                <td class="col-row-actions mat-body1 @rowClass">@context.Score</td>
             </MatTableRow>
         </MatTable>
     }

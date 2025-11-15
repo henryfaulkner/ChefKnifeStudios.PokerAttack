@@ -1,13 +1,14 @@
 ﻿.sidebar {
     height: 100dvh;
-    padding: 12px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
 }
 
 .sidebar span {
     height: fit-content;
     display: block;
-    font-size: 2rem;
-    font-weight: bold;
 }
 
 .action-buttons {
@@ -31,6 +32,11 @@
     height: 50px;
 }
 
+::deep .player-power-list,
+.gameplay__upgrade-message {
+    margin: 16px;
+}
+
 @media (max-width: 1200px) {
     .sidebar,
     .gaming-container {
@@ -49,6 +55,7 @@
         grid-template-columns: repeat(2, 1fr);
         column-gap: 8px;
         row-gap: 4px;
+        place-items: center;
     }
 
     .sidebar span {
@@ -61,7 +68,7 @@
         margin: 12px 24px 0;
     }
 
-    .action-buttons { 
+    .action-buttons {
         margin: 0;
     }
 
