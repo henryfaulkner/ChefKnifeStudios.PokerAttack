@@ -55,7 +55,7 @@ builder.Services.AddTransient<IToastService, ToastService>();
 builder.Services.AddMatBlazor();
 builder.Services.AddMatToaster(config =>
 {
-    config.Position = MatToastPosition.TopRight;
+    config.Position = MatToastPosition.BottomRight;
     config.PreventDuplicates = true;
     config.NewestOnTop = true;
     config.VisibleStateDuration = 3000;

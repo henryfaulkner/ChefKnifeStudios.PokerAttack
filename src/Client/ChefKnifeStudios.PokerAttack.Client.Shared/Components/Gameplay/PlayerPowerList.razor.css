@@ -20,3 +20,9 @@
 .player-power-list__card-cost {
     font-style: italic;
 }
+
+@media (max-width: 500px) {
+    .player-power-list {
+        flex-direction: column;
+    }
+}
