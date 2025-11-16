@@ -6,7 +6,7 @@
             int ii = i;
             <div 
                 class="card @(card.IsSelected ? "selected" : string.Empty)"
-                @onclick="() => card.IsSelected = !card.IsSelected"
+                @onclick="() => HandleCardPressed(card)"
             >
                 <img 
                     src="@CardImageService.GetCardImagePath(card.Suit, card.Rank, card.IsFaceDown)" 

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 
-namespace ChefKnifeStudios.PokerAttack.Client.Shared.Services;
+namespace ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
 
 public interface ILobbyJsInterop
 {

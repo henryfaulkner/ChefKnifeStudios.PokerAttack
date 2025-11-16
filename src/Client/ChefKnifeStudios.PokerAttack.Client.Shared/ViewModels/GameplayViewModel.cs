@@ -1,8 +1,10 @@
 ﻿using ChefKnifeStudios.PokerAttack.Client.Core.Extensions;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
+using ChefKnifeStudios.PokerAttack.Client.Shared.Constants;
 using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
+using ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
 using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
@@ -44,6 +46,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     readonly IToastService _toastService;
     readonly IEventNotificationService _eventNotificationService;
     readonly NavigationManager _navigationManager;
+    readonly IAudioJsInterop _audioJsInterop;
 
     [ObservableProperty]
     string _gameId = Guid.Empty.ToString();
@@ -85,12 +88,14 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         ISignalRNotificationService signalRNotificationService,
         IToastService toastService,
         IEventNotificationService eventNotificationService,
-        NavigationManager navigationManager)
+        NavigationManager navigationManager,
+        IAudioJsInterop audioJsInterop)
     {
         _signalRNotificationService = signalRNotificationService;
         _toastService = toastService;
         _eventNotificationService = eventNotificationService;
         _navigationManager = navigationManager;
+        _audioJsInterop = audioJsInterop;
 
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
         _eventNotificationService.EventReceived += HandleEventReceived;
@@ -168,8 +173,9 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 
     public void ToggleCardSelection(int index)
     {
-        if (index >= 0 && index < CardsInHand.Count)
-            CardsInHand[index].IsSelected = !CardsInHand[index].IsSelected;
+        if (index < 0 || index >= CardsInHand.Count) return;
+        CardsInHand[index].IsSelected = !CardsInHand[index].IsSelected;
+        _ = _audioJsInterop.PlayOneShotAsync(FilePaths.PlaceCardThree);
     }
 
     // --- Sort methods updated to track current mode ---
@@ -238,6 +244,21 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                     var args = JsonSerializer.Deserialize<IEnumerable<CardDTO>>(notification.Payload!, JsonOptions.Get());
                     if (args != null)
                     {
+                        var (newHand, newCardCount) = ProcessCardsDealt(args, CardsInHand);
+
+                        // Play audio for each newly dealt card
+                        if (newCardCount > 0)
+                        {
+                            Task.Run(async () =>
+                            {
+                                for (int i = 0; i < newCardCount; i++)
+                                {
+                                    await _audioJsInterop.PlayOneShotAsync(Constants.FilePaths.SlideCardOne);
+                                    await Task.Delay(150); // Stagger the sound effects
+                                }
+                            });
+                        }
+
                         CardsInHand = args.Select(x => new CardItem(x)).ToObservableCollection();
                         ApplySort();
                     }
@@ -309,6 +330,21 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         }, token);
 
         return cts;
+    }
+
+    static (List<CardItem> NewHand, int NewCardCount) ProcessCardsDealt(
+        IEnumerable<CardDTO> dealtCards,
+        IEnumerable<CardItem> currentHand)
+    {
+        var dealtCardsList = dealtCards.ToList();
+        var existingCards = currentHand.Select(c => (c.Rank, c.Suit)).ToHashSet();
+
+        var newCardCount = dealtCardsList.Count(card =>
+            !existingCards.Contains((card.Rank, card.Suit)));
+
+        var newHand = dealtCardsList.Select(x => new CardItem(x)).ToList();
+
+        return (newHand, newCardCount);
     }
 }
 

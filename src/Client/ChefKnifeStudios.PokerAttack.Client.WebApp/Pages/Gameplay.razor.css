@@ -56,10 +56,11 @@
         column-gap: 4px;
         row-gap: 4px;
         place-items: center;
+        padding: 0 4px;
     }
 
     .sidebar span {
-        height: fit-content;
+        height: 24px;
         display: inherit;
         font-size: 1rem;
     }

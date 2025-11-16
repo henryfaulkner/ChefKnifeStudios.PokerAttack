@@ -5,7 +5,7 @@ using Microsoft.JSInterop;
 using System.Numerics;
 using System.Text.Json.Serialization;
 
-namespace ChefKnifeStudios.PokerAttack.Client.Shared.Services;
+namespace ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
 
 public interface ICommonJsInterop
 {

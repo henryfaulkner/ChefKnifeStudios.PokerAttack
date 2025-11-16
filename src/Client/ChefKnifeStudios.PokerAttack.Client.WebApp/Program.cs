@@ -1,6 +1,7 @@
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
+using ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
 using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 using ChefKnifeStudios.PokerAttack.Client.WebApp;
 using MatBlazor;
@@ -39,10 +40,13 @@ builder.Services.AddSingleton<IHttpServiceFactory>(sp =>
     return new HttpServiceFactory(name => clientFactory.CreateClient(name));
 });
 
-builder.Services.AddSingleton<IInputService, InputService>();
-builder.Services.AddSingleton<IInputJsInterop, InputJsInterop>();
+// Register JS Interop Services
+builder.Services.AddSingleton<IAudioJsInterop, AudioJsInterop>();
 builder.Services.AddSingleton<ICommonJsInterop, CommonJsInterop>();
+builder.Services.AddSingleton<IInputJsInterop, InputJsInterop>();
 builder.Services.AddSingleton<ILobbyJsInterop, LobbyJsInterop>();
+
+builder.Services.AddSingleton<IInputService, InputService>();
 builder.Services.AddScoped<IEventNotificationService, EventNotificationService>();
 builder.Services.AddScoped<ISignalRNotificationService, SignalRNotificationService>();
 builder.Services.AddScoped<ICardImageService, CardImageService>();

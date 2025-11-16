@@ -6,15 +6,15 @@
 
         const string PathToAudio = $"{PathToRoot}audio/";
 
-        public const string PlaceCardOne = $"{PathToAudio}cardPlace1";
-        public const string PlaceCardTwo = $"{PathToAudio}cardPlace2";
-        public const string PlaceCardThree = $"{PathToAudio}cardPlace3";
-        public const string SlideCardOne = $"{PathToAudio}cardSlide1";
-        public const string SlideCardTwo = $"{PathToAudio}cardSlide2";
-        public const string SlideCardThree = $"{PathToAudio}cardSlide3";
-        public const string CollideChipsOne = $"{PathToAudio}chipsCollide1";
-        public const string CollideChipsTwo = $"{PathToAudio}chipsCollide2";
-        public const string CollideChipsThree = $"{PathToAudio}chipsCollide3";
+        public const string PlaceCardOne = $"{PathToAudio}cardPlace1.ogg";
+        public const string PlaceCardTwo = $"{PathToAudio}cardPlace2.ogg";
+        public const string PlaceCardThree = $"{PathToAudio}cardPlace3.ogg";
+        public const string SlideCardOne = $"{PathToAudio}cardSlide1.ogg";
+        public const string SlideCardTwo = $"{PathToAudio}cardSlide2.ogg";
+        public const string SlideCardThree = $"{PathToAudio}cardSlide3.ogg";
+        public const string CollideChipsOne = $"{PathToAudio}chipsCollide1.ogg";
+        public const string CollideChipsTwo = $"{PathToAudio}chipsCollide2.ogg";
+        public const string CollideChipsThree = $"{PathToAudio}chipsCollide3.ogg";
 
         const string PathToImages = $"{PathToRoot}images/";
 

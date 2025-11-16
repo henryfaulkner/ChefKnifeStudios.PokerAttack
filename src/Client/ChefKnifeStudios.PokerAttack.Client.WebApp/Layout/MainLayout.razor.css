@@ -11,3 +11,11 @@
 .page::-webkit-scrollbar {
     display: none; /* Older Safari and Chromium */
 }
+
+@media (max-width: 500px) {
+    .page {
+        overflow: auto;
+        -ms-overflow-style: auto; /* Internet Explorer 10+ */
+        scrollbar-width: auto; /* Firefox, Safari 18.2+, Chromium 121+ */
+    }
+}
