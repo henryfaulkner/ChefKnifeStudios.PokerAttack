@@ -77,7 +77,6 @@ public partial class PlayerPowerListViewModel(
         if (GameId is null) throw new ApplicationException("ScoreboardViewModel must Init before loading rounds.");
         try
         {
-            IsLoading = true;
             foreach (var pp in Items) pp.IsSelected = false;
             playerPower.IsSelected = true;
             if (playerPower is null)
@@ -112,10 +111,6 @@ public partial class PlayerPowerListViewModel(
         catch (Exception ex)
         {
             logger.LogError(ex, "An error occurred");
-        }
-        finally
-        {
-            IsLoading = false;
         }
     }
 }

@@ -55,7 +55,6 @@ public class GameService(
             ?? throw new KeyNotFoundException($"Game not found. Game Id {gameId}");
 
         List<Task> taskList = [];
-        int i = 0;
         foreach (var player in game.Players)
         {
             taskList.Add(StartRun(player.Id, _RUN_TIME_IN_SECONDS));

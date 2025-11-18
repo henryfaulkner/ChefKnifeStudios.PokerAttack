@@ -13,7 +13,6 @@ public partial class EditablePlayerName : ComponentBase
     [Inject] IPlayerViewModel PlayerViewModel { get; set; } = null!;
     [Inject] ILogger<EditablePlayerName> Logger { get; set; } = null!;
 
-    bool _isEditing = false;
     string _name = string.Empty;
 
     protected override void OnInitialized()
@@ -22,18 +21,11 @@ public partial class EditablePlayerName : ComponentBase
         _name = Player.Name;
     }
 
-    async Task HandleEditingStarted()
-    {
-        _isEditing = true;
-    }
+    async Task HandleEditingStarted() {}
 
     async Task HandleEditingStopped()
     {
-        if (_name == Player.Name)
-        {
-            _isEditing = false;
-            return;
-        }
+        if (_name == Player.Name) return;
 
         try
         {
@@ -42,10 +34,6 @@ public partial class EditablePlayerName : ComponentBase
         catch (Exception ex)
         {
             Logger.LogError(ex, "An error has occurred.");
-        }
-        finally
-        {
-            _isEditing = false;
         }
     }
 }

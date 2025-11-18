@@ -16,7 +16,6 @@ public interface ISignalRNotificationClient
 
 [AllowAnonymous]
 public class SignalRNotificationHub(
-    ILogger<SignalRNotificationHub> logger,
     IPokerAttackNotificationHelper notificationHelper,
     IGameService gameService,
     IKeyValueRepository<ActiveGame> activeGameRepository,
