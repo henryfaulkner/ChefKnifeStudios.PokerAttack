@@ -8,6 +8,7 @@ public class GamePlayer
     public List<Card> CardsInHand { get; set; } = [];
     public int Score { get; set; }
     public int PowerPoints { get; set; }
+    public int Wallet { get; set; } = 0;
     public PlayerPower? PlayerPower { get; set; }
     public bool IsEliminating { get; set; }
     public bool IsEliminated { get; set; }

@@ -81,6 +81,7 @@ builder.Services.AddTransient<ILobbyViewModel, LobbyViewModel>();
 builder.Services.AddTransient<IPlayerViewModel, PlayerViewModel>();
 builder.Services.AddTransient<IScoreboardViewModel, ScoreboardViewModel>();
 builder.Services.AddTransient<IPlayerPowerListViewModel, PlayerPowerListViewModel>();
+builder.Services.AddTransient<IShopViewModel, ShopViewModel>();
 #endregion
 
 await builder.Build().RunAsync();

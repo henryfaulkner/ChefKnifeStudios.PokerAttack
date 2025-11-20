@@ -45,12 +45,10 @@
                             PageRecordCountLabel="Page Size"
                         >
                             <MatTableHeader>
-                                <th class="col-header-id mat-body1">Player Id</th>
                                 <th class="col-header-name mat-body1">Player Name</th>
                                 <th class="col-header-actions mat-body1"></th>
                             </MatTableHeader>
                             <MatTableRow>
-                                <td class="col-row-id mat-body1">@context.Id</td>
                                 <td class="col-row-name mat-body1">@context.Name</td>
                                 <td class="col-row-actions">
                                     @if (@context.Id == ApplicationViewModel.Player.Id)

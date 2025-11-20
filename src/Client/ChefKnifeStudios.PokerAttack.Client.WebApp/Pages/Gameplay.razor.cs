@@ -21,6 +21,7 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
     [Inject] IInputJsInterop InputJsInterop { get; set; } = null!;
     [Inject] IToastService ToastService { get; set; } = null!;
     [Inject] IEventNotificationService EventNotificationService { get; set; } = null!;
+    [Inject] IPlayerViewModel PlayerViewModel { get; set; } = null!;
 
     readonly string[] _subscriptions =
     [
@@ -32,6 +33,8 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
         nameof(IGameplayViewModel.AvailableDiscards),
         nameof(IGameplayViewModel.PowerCharges),
         nameof(IGameStateMachineViewModel.GameState),
+        nameof(IPlayerViewModel.IsLoadingWallet),
+        nameof(IPlayerViewModel.Wallet),
     ];
 
     protected override void OnInitialized()

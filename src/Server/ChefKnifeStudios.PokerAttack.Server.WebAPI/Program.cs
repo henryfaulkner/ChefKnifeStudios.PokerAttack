@@ -42,11 +42,12 @@ builder.Services.AddSingleton<IKeyValueRepository<GameStates>, InMemoryKeyValueR
 builder.Services.AddScoped<ILobbyService, LobbyService>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IGameStateMachineService, GameStateMachineService>();
+builder.Services.AddScoped<IPlayerPowerService, PlayerPowerService>();
+builder.Services.AddScoped<IShopService, ShopService>();
 
-// Register Player Powers
+// Register Player Powers Singletons
 builder.Services.AddSingleton<IPlayerPowerRepository, PlayerPowerRepository>();
 builder.Services.AddSingleton<IPlayerPowerEffectRegistry, PlayerPowerEffectRegistry>();
-builder.Services.AddScoped<IPlayerPowerService, PlayerPowerService>();
 
 // Register Eventing Service
 builder.Services.AddSingleton<IEventNotificationService, EventNotificationService>();
