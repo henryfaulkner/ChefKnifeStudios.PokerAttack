@@ -26,6 +26,7 @@ public class PokerAttackApiEndpoints
         const string EndpointGroup = "/gameplay";
 
         public const string GetLatestRound = $"{EndpointGroup}/latest-round/{{gameId}}";
+        public const string GetPlayerWallet = $"{EndpointGroup}/player-wallet/{{gameId}}/{{playerId}}";
     }
 
     public class PlayerPower
@@ -34,5 +35,12 @@ public class PokerAttackApiEndpoints
 
         public const string GetSomePowers = $"{EndpointGroup}/{{countStr}}";
         public const string SelectPlayerPower = $"{EndpointGroup}/{{gameId}}/{{playerId}}/{{powerId}}";
+    }
+
+    public class Shop
+    {
+        const string EndpointGroup = "/shop";
+
+        public const string GetShopItems = $"{EndpointGroup}/shop-items/{{gameId}}/{{countStr}}";
     }
 }

@@ -6,5 +6,6 @@ public enum GameStates
     InGame,
     Scoreboard,
     Elimination,
-    Upgrade,
+    Freebie,
+    Shop,
 }

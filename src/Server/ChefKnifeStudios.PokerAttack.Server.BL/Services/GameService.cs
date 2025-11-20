@@ -21,12 +21,15 @@ public interface IGameService
     Task PlayHandAsync(string playerId, List<CardDTO> hand, CancellationToken ct = default);
     Task DiscardAsync(string playerId, List<CardDTO> discardCards, CancellationToken ct = default);
     Task<int> GetPlayerScoreAsync(string playerId, CancellationToken ct = default);
+    Task<int> GetPlayerWalletAsync(string playerId, CancellationToken ct = default);
     Task EndRoundAsync(string gameId, CancellationToken ct = default);
     Task<RoundDTO> GetLatestRoundFromGame(string gameId, CancellationToken ct = default);
     Task EndGameAsync(string gameId, CancellationToken ct = default);
     Task LeaveGameAsync(string gameId, string playerId, CancellationToken ct = default);
     Task StartEliminationAsync(string gameId, CancellationToken ct = default);
     Task FinishEliminationAsync(string gameId, CancellationToken ct = default);
+    Task StartShoppingAsync(string gameId, CancellationToken ct = default);
+    Task FinishShoppingAsync(string gameId, CancellationToken ct = default);
 }
 
 public class GameService(
@@ -49,7 +52,7 @@ public class GameService(
 
     public async Task StartRoundAsync(string gameId, CancellationToken ct = default)
     {
-        const int _RUN_TIME_IN_SECONDS = 120;
+        const int _RUN_TIME_IN_SECONDS = 10;
 
         var game = await activeGameRepository.GetAsync(gameId)
             ?? throw new KeyNotFoundException($"Game not found. Game Id {gameId}");
@@ -116,6 +119,7 @@ public class GameService(
 
         // Add score
         gamePlayer.Score += result.HandScore;
+        gamePlayer.Wallet += result.HandScore;
         await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
 
         await ReplenishHandAsync(playerId, ct);
@@ -155,6 +159,10 @@ public class GameService(
     public async Task<int> GetPlayerScoreAsync(string playerId, CancellationToken ct = default)
         => (await gamePlayerRepository.GetAsync(playerId, ct)
             ?? throw new KeyNotFoundException("Game Player not found")).Score;
+
+    public async Task<int> GetPlayerWalletAsync(string playerId, CancellationToken ct = default)
+        => (await gamePlayerRepository.GetAsync(playerId, ct)
+            ?? throw new KeyNotFoundException("Game Player not found")).Wallet;
 
     public async Task EndRoundAsync(string gameId, CancellationToken ct = default)
     {
@@ -404,6 +412,13 @@ public class GameService(
             ct
         );
 
+        await gameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
+    }
+
+    public async Task StartShoppingAsync(string gameId, CancellationToken ct = default) { }
+
+    public async Task FinishShoppingAsync(string gameId, CancellationToken ct = default)
+    {
         await gameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
     }
 

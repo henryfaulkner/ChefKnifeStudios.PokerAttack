@@ -152,7 +152,7 @@ public static class HandEvaluator
         var ordered = cards.Select(c => (int)c.Rank).OrderBy(n => n).ToList();
 
         // Handle Ace low straight (A,2,3,4,5)
-        bool aceLow = ordered.SequenceEqual(new List<int> { 2, 3, 4, 5, 14 });
+        bool aceLow = ordered.SequenceEqual(new List<int> { (int)Ranks.Ace, (int)Ranks.Two, (int)Ranks.Three, (int)Ranks.Four, (int)Ranks.Five, });
         if (aceLow)
         {
             highest = Ranks.Five;

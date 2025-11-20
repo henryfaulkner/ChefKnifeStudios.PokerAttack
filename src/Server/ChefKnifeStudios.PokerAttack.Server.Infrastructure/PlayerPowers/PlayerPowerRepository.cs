@@ -71,7 +71,7 @@ public class PlayerPowerRepository : IPlayerPowerRepository
           {
             "id": "flip_random",
             "name": "Flip Random",
-            "description": "Flips 2 of your cards randomly.",
+            "description": "Flips 2 of an opponant's cards at random.",
             "powerKind": "active",
             "pointCost": 0,
             "effects": [
@@ -87,7 +87,7 @@ public class PlayerPowerRepository : IPlayerPowerRepository
           {
             "id": "change_random_suit",
             "name": "Change Suit Random",
-            "description": "Changes the suit of 2 random cards.",
+            "description": "Changes the suit of 2 of an opponant's cards at random.",
             "powerKind": "active",
             "pointCost": 0,
             "effects": [
@@ -103,7 +103,7 @@ public class PlayerPowerRepository : IPlayerPowerRepository
           {
             "id": "change_random_rank",
             "name": "Change Rank Random",
-            "description": "Changes the rank of 2 random cards.",
+            "description": "Changes the rank of 2 of an opponant's cards at random.",
             "powerKind": "active",
             "pointCost": 0,
             "effects": [

@@ -85,7 +85,7 @@ public partial class ScoreboardViewModel : BaseViewModel, IScoreboardViewModel, 
     {
         if (GameId is null) throw new ApplicationException("ScoreboardViewModel must Init before loading rounds.");
         IsLoading = true;
-        var round = (await _gameplayEndpointsService.GetLatestRoundAsync(GameId)).Value;
+        var round = (await _gameplayEndpointsService.GetLatestRoundAsync(GameId, cancellationToken)).Value;
         Items = round?.Scores.Select(x => new ScoreboardListItem(x)).ToObservableCollection() ?? [];
         IsLoading = false;
     }

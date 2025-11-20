@@ -28,6 +28,20 @@ public static class GameplayEndpoints
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);
 
+        group.MapGet(Endpoints.GetPlayerWallet, async (
+            IGameService gameService,
+            string gameId,
+            string playerId,
+            CancellationToken cancellationToken = default) =>
+        {
+            var wallet = await gameService.GetPlayerScoreAsync(playerId, cancellationToken);
+            return Result.Success(wallet);
+        })
+        .WithName(nameof(Endpoints.GetPlayerWallet))
+        .Produces<int?>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status500InternalServerError);
+
         return builder;
     }
 }
