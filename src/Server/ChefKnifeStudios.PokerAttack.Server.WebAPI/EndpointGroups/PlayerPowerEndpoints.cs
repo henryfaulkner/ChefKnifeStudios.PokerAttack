@@ -16,16 +16,16 @@ public static class PlayerPowerEndpoints
             .WithName("Player Powers")
             .WithTags("Player Powers");
 
-        group.MapGet(Endpoints.GetSomePowers, (
+        group.MapGet(Endpoints.GetPlayerPowers, (
             IPlayerPowerService playerPowerService,
             string countStr) =>
         {
             bool canParse = int.TryParse(countStr, out int count);
             if (!canParse) return Result.Invalid();       
-            var result = playerPowerService.GetSomePowers(count);
+            var result = playerPowerService.GetPlayerPowers(count);
             return Result.Success(result);
         })
-        .WithName(nameof(Endpoints.GetSomePowers))
+        .WithName(nameof(Endpoints.GetPlayerPowers))
         .Produces<IEnumerable<PlayerPowerDTO>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);

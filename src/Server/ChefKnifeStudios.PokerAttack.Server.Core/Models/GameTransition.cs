@@ -15,10 +15,24 @@ public static class GameTransitions
             new GameTransition(GameStates.GameStart, GameEvents.Next, GameStates.Freebie),
             new GameTransition(GameStates.Freebie, GameEvents.Next, GameStates.InGame),
             new GameTransition(GameStates.InGame, GameEvents.Next, GameStates.Scoreboard),
-            new GameTransition(GameStates.Scoreboard, GameEvents.Next, GameStates.Shop),
-            new GameTransition(GameStates.Shop, GameEvents.Next, GameStates.InGame),
+            new GameTransition(GameStates.Scoreboard, GameEvents.Next, GameStates.InGame),
 
             new GameTransition(GameStates.Scoreboard, GameEvents.Eliminate, GameStates.Elimination),
+            new GameTransition(GameStates.Elimination, GameEvents.Next, GameStates.InGame),
             new GameTransition(GameStates.Elimination, GameEvents.Eliminate, GameStates.GameOver),
         };
+
+    //public static GameTransition[] Get() =>
+    //    new GameTransition[]
+    //    {
+    //        new GameTransition(GameStates.GameStart, GameEvents.Next, GameStates.Freebie),
+    //        new GameTransition(GameStates.Freebie, GameEvents.Next, GameStates.InGame),
+    //        new GameTransition(GameStates.InGame, GameEvents.Next, GameStates.Scoreboard),
+    //        new GameTransition(GameStates.Scoreboard, GameEvents.Next, GameStates.Shop),
+    //        new GameTransition(GameStates.Shop, GameEvents.Next, GameStates.InGame),
+
+    //        new GameTransition(GameStates.Scoreboard, GameEvents.Eliminate, GameStates.Elimination),
+    //        new GameTransition(GameStates.Elimination, GameEvents.Next, GameStates.InGame),
+    //        new GameTransition(GameStates.Elimination, GameEvents.Eliminate, GameStates.GameOver),
+    //    };
 }

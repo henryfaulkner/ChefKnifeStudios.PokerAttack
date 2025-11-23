@@ -10,7 +10,7 @@ namespace ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 
 public interface IPlayerPowerEndpointsService
 {
-    Task<Result<IEnumerable<PlayerPowerDTO>>> GetSomePowersAsync(CancellationToken cancellationToken = default);
+    Task<Result<IEnumerable<PlayerPowerDTO>>> GetPlayerPowersAsync(CancellationToken cancellationToken = default);
     Task<Result<PlayerPowerDTO>> SelectPlayerPowerAsync(string gameId, string playerId, string powerId, CancellationToken cancellationToken = default);
 }
 
@@ -27,15 +27,15 @@ public class PlayerPowerEndpointsService : IPlayerPowerEndpointsService
         _httpService = httpServiceFactory.Create(nameof(APIs.PokerAttackAPI));
     }
 
-    public async Task<Result<IEnumerable<PlayerPowerDTO>>> GetSomePowersAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<PlayerPowerDTO>>> GetPlayerPowersAsync(CancellationToken cancellationToken = default)
     {
         try
         {
             var res = await _httpService.GetAsync<IEnumerable<PlayerPowerDTO>>(
-                Endpoints.GetSomePowers.FormatRoute(3),
+                Endpoints.GetPlayerPowers.FormatRoute(3),
                 cancellationToken
             );
-            return res.LogErrors(_logger, $"PlayerPower GetSomePowersAsync call.");
+            return res.LogErrors(_logger, $"PlayerPower GetPlayerPowersAsync call.");
         }
         catch (Exception ex)
         {

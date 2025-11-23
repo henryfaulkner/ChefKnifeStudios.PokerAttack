@@ -44,8 +44,8 @@ public class GameService(
     IGameStateMachineService gameStateMachineService) : IGameService
 {
     const int _NUM_CARDS_IN_HAND = 8;
-    const int _RUN_TIME_IN_SECONDS = 10;
-    const int _NUM_ROUNDS_BEFORE_ELIMINATION = 3;
+    const int _RUN_TIME_IN_SECONDS = 90;
+    const int _NUM_ROUNDS_BEFORE_ELIMINATION = 1;
 
     public async Task StartGameAsync(string gameId, CancellationToken ct = default)
     {

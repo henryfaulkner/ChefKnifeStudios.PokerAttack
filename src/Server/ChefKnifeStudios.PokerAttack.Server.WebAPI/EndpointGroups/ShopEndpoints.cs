@@ -5,8 +5,6 @@ using Endpoints = ChefKnifeStudios.PokerAttack.Shared.PokerAttackApiEndpoints.Sh
 
 namespace ChefKnifeStudios.PokerAttack.Server.WebAPI.EndpointGroups;
 
-public class ShopItemDTO { }
-
 public static class ShopEndpoints
 {
     public static IEndpointRouteBuilder MapShopEndpoints(this IEndpointRouteBuilder builder)
@@ -19,7 +17,6 @@ public static class ShopEndpoints
         group.MapGet(Endpoints.GetShopItems, async (
             IGameService gameService,
             string gameId,
-            string count,
             CancellationToken cancellationToken = default) =>
         {
             

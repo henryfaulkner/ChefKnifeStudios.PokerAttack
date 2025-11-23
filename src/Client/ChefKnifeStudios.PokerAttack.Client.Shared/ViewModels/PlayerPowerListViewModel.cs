@@ -67,7 +67,7 @@ public partial class PlayerPowerListViewModel(
     public async Task LoadItemsAsync(CancellationToken cancellationToken = default)
     {
         IsLoading = true;
-        var playerPowers = (await playerPowerEndpointsService.GetSomePowersAsync()).Value;
+        var playerPowers = (await playerPowerEndpointsService.GetPlayerPowersAsync()).Value;
         Items = playerPowers?.Select(x => new PlayerPowerListItem(x)).ToObservableCollection() ?? [];
         IsLoading = false;
     }

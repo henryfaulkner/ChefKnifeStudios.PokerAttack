@@ -12,7 +12,7 @@ namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
 
 public interface IPlayerPowerService
 {
-    IEnumerable<PlayerPowerDTO> GetSomePowers(int count);
+    IEnumerable<PlayerPowerDTO> GetPlayerPowers(int count);
     Task<PlayerPowerDTO> SelectPlayerPowerAsync(string gameId, string playerId, string powerId, CancellationToken ct = default);
     Task ActivateAsync(string gameId, string playerId, CancellationToken ct = default);
 }
@@ -26,7 +26,7 @@ public class PlayerPowerService(
     IPokerAttackNotificationHelper notificationHelper,
     IGameStateMachineService gameStateMachineService) : IPlayerPowerService
 {
-    public IEnumerable<PlayerPowerDTO> GetSomePowers(int count)
+    public IEnumerable<PlayerPowerDTO> GetPlayerPowers(int count)
     {
         return powerRepository.GetRandomNumber(count).Select(x => x.MapToDTO());
     }
