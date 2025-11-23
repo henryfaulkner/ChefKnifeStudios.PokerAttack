@@ -43,7 +43,9 @@ public class GameService(
     IPokerAttackNotificationHelper notificationHelper,
     IGameStateMachineService gameStateMachineService) : IGameService
 {
-    const int NumCardsInHand = 8;
+    const int _NUM_CARDS_IN_HAND = 8;
+    const int _RUN_TIME_IN_SECONDS = 10;
+    const int _NUM_ROUNDS_BEFORE_ELIMINATION = 3;
 
     public async Task StartGameAsync(string gameId, CancellationToken ct = default)
     {
@@ -52,7 +54,6 @@ public class GameService(
 
     public async Task StartRoundAsync(string gameId, CancellationToken ct = default)
     {
-        const int _RUN_TIME_IN_SECONDS = 10;
 
         var game = await activeGameRepository.GetAsync(gameId)
             ?? throw new KeyNotFoundException($"Game not found. Game Id {gameId}");
@@ -203,7 +204,18 @@ public class GameService(
         // Transition to scoreboard, then to elimination
         await gameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
         await Task.Delay(5000);
-        await gameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
+
+        var gameRounds = await roundRepository.ListAsync(new GetRoundsByGameIdSpec(game.Id), ct);
+        int numRounds = gameRounds.Count;
+        switch (numRounds)
+        {
+            case < _NUM_ROUNDS_BEFORE_ELIMINATION:
+                await gameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
+                break;
+            case >= _NUM_ROUNDS_BEFORE_ELIMINATION:
+                await gameStateMachineService.TransitionAsync(gameId, GameEvents.Eliminate, ct);
+                break;
+        }
     }
 
     public async Task<RoundDTO> GetLatestRoundFromGame(string gameId, CancellationToken ct = default)
@@ -276,7 +288,7 @@ public class GameService(
         var gamePlayer = await gamePlayerRepository.GetAsync(playerId, ct)
             ?? throw new KeyNotFoundException("Game Player not found");
         var deck = gamePlayer.Deck;
-        int numCardsToAdd = NumCardsInHand - gamePlayer.CardsInHand.Count();
+        int numCardsToAdd = _NUM_CARDS_IN_HAND - gamePlayer.CardsInHand.Count();
         for (int i = 0; i < numCardsToAdd; i++)
             gamePlayer.CardsInHand.Add(deck.PullCard());
         await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);

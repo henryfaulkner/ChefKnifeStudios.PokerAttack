@@ -34,7 +34,7 @@ public static class GameplayEndpoints
             string playerId,
             CancellationToken cancellationToken = default) =>
         {
-            var wallet = await gameService.GetPlayerScoreAsync(playerId, cancellationToken);
+            var wallet = await gameService.GetPlayerWalletAsync(playerId, cancellationToken);
             return Result.Success(wallet);
         })
         .WithName(nameof(Endpoints.GetPlayerWallet))

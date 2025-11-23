@@ -1,6 +1,4 @@
-﻿using ChefKnifeStudios.PokerAttack.Client.Core.Services;
-using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
-using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
+﻿using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
 using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
@@ -19,8 +17,6 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
     [Inject] IGameStateMachineViewModel GameStateMachineViewModel { get; set; } = null!;
     [Inject] IInputService InputService { get; set; } = null!;
     [Inject] IInputJsInterop InputJsInterop { get; set; } = null!;
-    [Inject] IToastService ToastService { get; set; } = null!;
-    [Inject] IEventNotificationService EventNotificationService { get; set; } = null!;
     [Inject] IPlayerViewModel PlayerViewModel { get; set; } = null!;
 
     readonly string[] _subscriptions =
@@ -47,26 +43,28 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
         InputService.RegisterKeyAction("a", () => Task.Run(() => HandleSortByRankPressed()));
         InputService.RegisterKeyAction("s", () => Task.Run(() => HandleSortBySuitPressed()));
         InputService.RegisterKeyAction("d", () => Task.Run(() => HandleClearSelectionsPressed()));
-        InputService.RegisterKeyAction("1", () => ToggleCardSelectionAsync(0));
-        InputService.RegisterKeyAction("2", () => ToggleCardSelectionAsync(1));
-        InputService.RegisterKeyAction("3", () => ToggleCardSelectionAsync(2));
-        InputService.RegisterKeyAction("4", () => ToggleCardSelectionAsync(3));
-        InputService.RegisterKeyAction("5", () => ToggleCardSelectionAsync(4));
-        InputService.RegisterKeyAction("6", () => ToggleCardSelectionAsync(5));
-        InputService.RegisterKeyAction("7", () => ToggleCardSelectionAsync(6));
-        InputService.RegisterKeyAction("8", () => ToggleCardSelectionAsync(7));
+        InputService.RegisterKeyAction("1", () => Task.Run(() => ToggleCardSelection(0)));
+        InputService.RegisterKeyAction("2", () => Task.Run(() => ToggleCardSelection(1)));
+        InputService.RegisterKeyAction("3", () => Task.Run(() => ToggleCardSelection(2)));
+        InputService.RegisterKeyAction("4", () => Task.Run(() => ToggleCardSelection(3)));
+        InputService.RegisterKeyAction("5", () => Task.Run(() => ToggleCardSelection(4)));
+        InputService.RegisterKeyAction("6", () => Task.Run(() => ToggleCardSelection(5)));
+        InputService.RegisterKeyAction("7", () => Task.Run(() => ToggleCardSelection(6)));
+        InputService.RegisterKeyAction("8", () => Task.Run(() => ToggleCardSelection(7)));
     }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
+        PlayerViewModel.Init(GameId);
         GameplayViewModel.Init(GameId);
         await GameplayViewModel.StartGameAsync(ApplicationViewModel.Player.Id);
 
         GameplayViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
         GameplayViewModel.CardsInHand.CollectionChanged += CardsInHand_CollectionChanged;
         GameStateMachineViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
+        PlayerViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -90,6 +88,7 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
         GameplayViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
         GameplayViewModel.CardsInHand.CollectionChanged -= CardsInHand_CollectionChanged;
         GameStateMachineViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
+        PlayerViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
     }
 
     void CardsInHand_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -110,29 +109,47 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
         Task.Run(async () => await InvokeAsync(StateHasChanged));
     }
 
-    void HandlePlayHandPressed() => 
-        _ = GameplayViewModel.PlaySelectedCardsAsync(ApplicationViewModel.Player.Id);
-
-    void HandleDiscardPressed() =>
-        _ = GameplayViewModel.DiscardSelectedCardsAsync(ApplicationViewModel.Player.Id);
-
-    void HandleSortByRankPressed() =>
-        GameplayViewModel.SortByRank();
-
-    void HandleSortBySuitPressed() =>
-        GameplayViewModel.SortBySuit();
-
-    void HandleClearSelectionsPressed() =>
-        GameplayViewModel.ClearSelections();
-
-    void HandleActivatePowerPressed() =>
-        _ = GameplayViewModel.ActivatePlayerPowerAsync(ApplicationViewModel.Player.Id);
-
-    Task ToggleCardSelectionAsync(int index)
+    void HandlePlayHandPressed()
     {
+        if (GameStateMachineViewModel.GameState != GameStates.InGame) return;
+        _ = GameplayViewModel.PlaySelectedCardsAsync(ApplicationViewModel.Player.Id);
+    }
+
+    void HandleDiscardPressed()
+    {
+        if (GameStateMachineViewModel.GameState != GameStates.InGame) return;
+        _ = GameplayViewModel.DiscardSelectedCardsAsync(ApplicationViewModel.Player.Id);
+    }
+
+    void HandleSortByRankPressed()
+    {
+        if (GameStateMachineViewModel.GameState != GameStates.InGame) return;
+        GameplayViewModel.SortByRank();
+    }
+
+    void HandleSortBySuitPressed()
+    {
+        if (GameStateMachineViewModel.GameState != GameStates.InGame) return;
+        GameplayViewModel.SortBySuit();
+    }
+
+    void HandleClearSelectionsPressed()
+    {
+        if (GameStateMachineViewModel.GameState != GameStates.InGame) return;
+        GameplayViewModel.ClearSelections();
+    }
+
+    void HandleActivatePowerPressed()
+    {
+        if (GameStateMachineViewModel.GameState != GameStates.InGame) return;
+        _ = GameplayViewModel.ActivatePlayerPowerAsync(ApplicationViewModel.Player.Id);
+    }
+
+    void ToggleCardSelection(int index)
+    {
+        if (GameStateMachineViewModel.GameState != GameStates.InGame) return;
         GameplayViewModel.ToggleCardSelection(index);
         StateHasChanged();
-        return Task.CompletedTask;
     }
 
     static string FormatAsMinutesSeconds(int totalSeconds)

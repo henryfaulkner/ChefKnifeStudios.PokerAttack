@@ -67,7 +67,7 @@ public partial class PlayerViewModel : BaseViewModel, IPlayerViewModel
 
     public async Task LoadWalletAsync(CancellationToken cancellationToken = default)
     {
-        if (GameId is null) throw new ApplicationException("ScoreboardViewModel must Init before loading rounds.");
+        if (GameId is null) throw new ApplicationException("PlayerViewModel must Init before loading wallets.");
         IsLoadingWallet = true;
         Wallet = (await _gameplayEndpointsService.GetPlayerWalletAsync(
             GameId,

@@ -8,4 +8,5 @@ public enum GameStates
     Elimination,
     Freebie,
     Shop,
+    GameOver,
 }

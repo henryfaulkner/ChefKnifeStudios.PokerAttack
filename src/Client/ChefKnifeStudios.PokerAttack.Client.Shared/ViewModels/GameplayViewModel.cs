@@ -48,6 +48,10 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     readonly NavigationManager _navigationManager;
     readonly IAudioJsInterop _audioJsInterop;
 
+    const int _DEFAULT_NUM_PLAY_HANDS = 5;
+    const int _DEFAULT_NUM_DISCARDS = 5;
+    const int _DEFAULT_NUM_POWER_CHARGES = 2;
+
     [ObservableProperty]
     string _gameId = Guid.Empty.ToString();
 
@@ -61,17 +65,16 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     ObservableCollection<CardItem> _cardsInHand = [];
 
     [ObservableProperty]
-    int _availablePlayHands = 5;
+    int _availablePlayHands = _DEFAULT_NUM_PLAY_HANDS;
 
     [ObservableProperty]
-    int _availableDiscards = 5;
+    int _availableDiscards = _DEFAULT_NUM_DISCARDS;
 
     [ObservableProperty]
     PlayerPowerDTO? _activePlayerPower;
 
-    const int _INIT_POWER_CHARGES = 2;
     [ObservableProperty]
-    int _powerCharges;
+    int _powerCharges = _DEFAULT_NUM_POWER_CHARGES;
 
     CancellationTokenSource _timerToken;
 
@@ -124,7 +127,6 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 
     public Task StartRoundAsync(string playerId, CancellationToken cancellationToken = default)
     {
-        PowerCharges = _INIT_POWER_CHARGES;
         return Task.CompletedTask;
     }
 
@@ -236,6 +238,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                         RunTimeInSeconds = runStartedDTO.RunTimeInSeconds;
                         CardsInHand = runStartedDTO.Cards.Select(x => new CardItem(x)).ToObservableCollection();
                         ApplySort();
+                        ResetStats();
                     }
                     break;
                 }
@@ -345,6 +348,14 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         var newHand = dealtCardsList.Select(x => new CardItem(x)).ToList();
 
         return (newHand, newCardCount);
+    }
+
+    void ResetStats()
+    {
+        Score = 0;
+        AvailableDiscards = _DEFAULT_NUM_PLAY_HANDS;
+        AvailablePlayHands = _DEFAULT_NUM_DISCARDS;
+        PowerCharges = _DEFAULT_NUM_POWER_CHARGES;
     }
 }
 
