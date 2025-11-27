@@ -10,6 +10,8 @@ public partial class Lobbies : ComponentBase
     [Inject] IApplicationViewModel ApplicationViewModel { get; set; } = null!;
     [Inject] ILobbyViewModel LobbyViewModel { get; set; } = null!;
 
+    bool _showScoringGuide = false;
+
     void HandleCreateLobbyPressed()
     {
         _ = LobbyViewModel.CreateLobbyAsync(ApplicationViewModel.Player);
@@ -18,6 +20,18 @@ public partial class Lobbies : ComponentBase
     void HandleCloseModalPressed()
     {
         GameResult = null;
+        StateHasChanged();
+    }
+
+    void HandleShowScoringGuidePressed()
+    {
+        _showScoringGuide = true;
+        StateHasChanged();
+    }
+
+    void HandleCloseScoringGuidePressed()
+    {
+        _showScoringGuide = false; 
         StateHasChanged();
     }
 }

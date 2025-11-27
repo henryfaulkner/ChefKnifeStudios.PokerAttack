@@ -41,7 +41,8 @@ public class GameService(
     IRepository<Game> gameRepository,
     IRepository<Round> roundRepository,
     IPokerAttackNotificationHelper notificationHelper,
-    IGameStateMachineService gameStateMachineService) : IGameService
+    IGameStateMachineService gameStateMachineService,
+    IScoringRulesService scoringRulesService) : IGameService
 {
     const int _NUM_CARDS_IN_HAND = 8;
     const int _RUN_TIME_IN_SECONDS = 90;
@@ -116,7 +117,7 @@ public class GameService(
         }
 
         // Now evaluate this played hand
-        var result = HandEvaluator.EvaluateHand(hand);
+        var result = new HandEvaluator(scoringRulesService).EvaluateHand(hand);
 
         // Add score
         gamePlayer.Score += result.HandScore;

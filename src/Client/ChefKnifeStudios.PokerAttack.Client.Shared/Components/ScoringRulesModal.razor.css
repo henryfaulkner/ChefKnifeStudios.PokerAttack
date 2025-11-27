@@ -1,0 +1,65 @@
+.scoring-guide-modal {
+    max-width: 800px;
+}
+
+.formula {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 16px;
+    padding: 8px;
+    background-color: #EFF4FA;
+    border-radius: 8px;
+}
+
+.guide-section {
+    padding: 16px;
+    min-height: 400px;
+}
+
+.card-values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 16px;
+}
+
+.card-value-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #F8F1F6;
+}
+
+.contribution-rule {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background-color: #F8F1F6;
+}
+
+.loading-container,
+.error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 16px;
+    min-height: 400px;
+    gap: 16px;
+}
+
+.error-container {
+    color: #A01F0E;
+}
+
+@media (max-width: 1200px) {
+    .card-values-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 8px;
+    }
+}

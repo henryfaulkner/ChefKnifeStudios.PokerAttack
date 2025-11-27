@@ -43,4 +43,11 @@ public class PokerAttackApiEndpoints
 
         public const string GetShopItems = $"{EndpointGroup}/shop-items/{{gameId}}";
     }
+
+    public class ScoringRules
+    {
+        const string EndpointGroup = "/scoring-rules";
+
+        public const string GetScoringRules = $"{EndpointGroup}";
+    }
 }

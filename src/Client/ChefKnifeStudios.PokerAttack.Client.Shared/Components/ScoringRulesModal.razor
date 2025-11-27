@@ -1,0 +1,79 @@
+﻿@using ChefKnifeStudios.PokerAttack.Shared.DTOs
+@using ChefKnifeStudios.PokerAttack.Shared.Enums
+
+<MatDialog Class="scoring-guide-modal" IsOpen="@IsOpen">
+    <MatDialogTitle>
+        <h2 class="mat-h2">Scoring Guide</h2>
+    </MatDialogTitle>
+    <MatDialogContent>
+        @if (ScoringRulesViewModel.IsLoading)
+        {
+            <div class="loading-container">
+                <MatProgressCircle Indeterminate="true" />
+                <p class="mat-body1">Loading scoring rules...</p>
+            </div>
+        }
+        else if (ScoringRulesViewModel.ScoringRules is not null)
+        {
+            <MatTabGroup>
+                <MatTab Label="Hand Types">
+                    <div class="guide-section">
+                        <p class="mat-body1 formula">@ScoringRulesViewModel.ScoringRules.ScoringFormula</p>
+
+                        <MatTable Items="ScoringRulesViewModel.ScoringRules.HandTypeScores" PageSize="9" ShowPaging="false">
+                            <MatTableHeader>
+                                <th class="mat-body1">Hand</th>
+                                <th class="mat-body1">Base Chips</th>
+                                <th class="mat-body1">Multiplier</th>
+                                <th class="mat-body1">Description</th>
+                            </MatTableHeader>
+                            <MatTableRow>
+                                <td class="mat-body1">
+                                    <Pill Text="@context.HandTypeName" Type="PillTypes.Primary" />
+                                </td>
+                                <td class="mat-body1">@context.BaseChips</td>
+                                <td class="mat-body1">×@context.BaseMultiplier</td>
+                                <td class="mat-body2">@context.Description</td>
+                            </MatTableRow>
+                        </MatTable>
+                    </div>
+                </MatTab>
+
+                <MatTab Label="Card Values">
+                    <div class="guide-section">
+                        <div class="card-values-grid">
+                            @foreach (var card in ScoringRulesViewModel.ScoringRules.CardRankValues)
+                            {
+                                <div class="card-value-item">
+                                    <span class="mat-h3">@card.RankName</span>
+                                    <Pill Text="@card.PointValue.ToString()" Type="PillTypes.Secondary" />
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </MatTab>
+
+                <MatTab Label="Contribution Rules">
+                    <div class="guide-section">
+                        @foreach (var rule in ScoringRulesViewModel.ScoringRules.CardContributionRules)
+                        {
+                            <div class="contribution-rule">
+                                <Pill Text="@GetHandTypeName(rule.HandType)" Type="PillTypes.Primary" />
+                                <p class="mat-body2">@rule.ContributionRule</p>
+                            </div>
+                        }
+                    </div>
+                </MatTab>
+            </MatTabGroup>
+        }
+        else
+        {
+            <div class="error-container">
+                <p class="mat-body1">Unable to load scoring rules. Please try again.</p>
+            </div>
+        }
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="OnClose">CLOSE</MatButton>
+    </MatDialogActions>
+</MatDialog>

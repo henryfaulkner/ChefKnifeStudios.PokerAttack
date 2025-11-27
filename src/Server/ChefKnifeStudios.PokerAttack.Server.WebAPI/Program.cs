@@ -44,6 +44,7 @@ builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IGameStateMachineService, GameStateMachineService>();
 builder.Services.AddScoped<IPlayerPowerService, PlayerPowerService>();
 builder.Services.AddScoped<IShopService, ShopService>();
+builder.Services.AddSingleton<IScoringRulesService, ScoringRulesService>();
 
 // Register Player Powers Singletons
 builder.Services.AddSingleton<IPlayerPowerRepository, PlayerPowerRepository>();
@@ -89,7 +90,9 @@ app.MapHub<SignalRNotificationHub>("/cks-notification");
 app.MapTestEndpoints()
    .MapLobbyEndpoints()
    .MapGameplayEndpoints()
-   .MapPlayerPowerEndpoints();
+   .MapPlayerPowerEndpoints()
+   .MapShopEndpoints()
+   .MapScoringRulesEndpoints();
 
 app.MapDefaultEndpoints();
 

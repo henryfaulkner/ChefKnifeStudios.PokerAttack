@@ -4,9 +4,23 @@ using ChefKnifeStudios.PokerAttack.Shared.Enums;
 
 namespace ChefKnifeStudios.PokerAttack.Server.BL;
 
-public static class HandEvaluator
+public class HandEvaluator
 {
-    public static HandResult EvaluateHand(IEnumerable<Card> cards)
+    readonly Dictionary<Ranks, int> _cardRankValues;
+    readonly Dictionary<PokerHandType, (int chips, int mult)> _handTypeScores;
+
+    public HandEvaluator(IScoringRulesService scoringRulesService)
+    {
+        var rules = scoringRulesService.GetScoringRules();
+
+        _cardRankValues = rules.CardRankValues
+            .ToDictionary(crv => crv.Rank, crv => crv.PointValue);
+
+        _handTypeScores = rules.HandTypeScores
+            .ToDictionary(hts => hts.HandType, hts => (hts.BaseChips, hts.BaseMultiplier));
+    }
+
+    public HandResult EvaluateHand(IEnumerable<Card> cards)
     {
         var cardList = cards.ToList();
         if (cardList.Count < 1 || cardList.Count > 5)
@@ -21,23 +35,9 @@ public static class HandEvaluator
             .ThenByDescending(g => g.Key)
             .ToList();
 
-        // Map card ranks to their point values once
+        // Map card ranks to their point values once using the scoring rules
         int[] cardValues = cardList
-            .Select(c => c.Rank switch
-            {
-                Ranks.Ace => 11,
-                Ranks.King or Ranks.Queen or Ranks.Jack => 10,
-                Ranks.Ten => 10,
-                Ranks.Nine => 9,
-                Ranks.Eight => 8,
-                Ranks.Seven => 7,
-                Ranks.Six => 6,
-                Ranks.Five => 5,
-                Ranks.Four => 4,
-                Ranks.Three => 3,
-                Ranks.Two => 2,
-                _ => 0
-            })
+            .Select(c => _cardRankValues.TryGetValue(c.Rank, out var value) ? value : 0)
             .ToArray();
 
         PokerHandType type;
@@ -119,31 +119,24 @@ public static class HandEvaluator
 
         var (chips, mult) = GetBaseForHand(type);
 
-        return new HandResult 
-        { 
-            HandType = type, 
+        return new HandResult
+        {
+            HandType = type,
             CardValues = cardValues,
-            BaseChips = chips, 
+            BaseChips = chips,
             BaseMultiplier = mult,
             HandScore = (cardValueSum + chips) * mult,
         };
     }
 
-    static (int chips, int mult) GetBaseForHand(PokerHandType type)
+    (int chips, int mult) GetBaseForHand(PokerHandType type)
     {
-        return type switch
+        if (_handTypeScores.TryGetValue(type, out var score))
         {
-            PokerHandType.HighCard => (5, 1),
-            PokerHandType.Pair => (10, 2),
-            PokerHandType.TwoPair => (20, 2),
-            PokerHandType.ThreeOfAKind => (30, 3),
-            PokerHandType.Straight => (30, 4),
-            PokerHandType.Flush => (35, 4),
-            PokerHandType.FullHouse => (40, 4),
-            PokerHandType.FourOfAKind => (60, 7),
-            PokerHandType.StraightFlush => (100, 8),
-            _ => throw new InvalidOperationException("Unknown hand type")
-        };
+            return score;
+        }
+
+        throw new InvalidOperationException("Unknown hand type");
     }
 
     static bool IsStraight(List<Card> cards, out Ranks highest)
