@@ -250,7 +250,7 @@ public class LobbyService(
             }
         }
         if (!lobbyKvp.HasValue)
-            throw new KeyNotFoundException("Player not found in any lobby.");
+            return;
 
         var lobby = lobbyKvp.Value.Value;
         var lobbyId = lobbyKvp.Value.Key;

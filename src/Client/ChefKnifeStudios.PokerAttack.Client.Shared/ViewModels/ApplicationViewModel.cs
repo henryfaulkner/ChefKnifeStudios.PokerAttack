@@ -1,12 +1,11 @@
-﻿using ChefKnifeStudios.PokerAttack.Client.Core.Enums;
+﻿using Blazored.LocalStorage;
+using ChefKnifeStudios.PokerAttack.Client.Core.Enums;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
-using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
-using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
+using ChefKnifeStudios.PokerAttack.Client.Shared.Constants;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
 using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs;
-using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -32,6 +31,7 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
     readonly IConfiguration _configuration;
     readonly IWebAssemblyHostEnvironment _hostEnvironment;
     readonly IToastService _toastService;
+    readonly ISyncLocalStorageService _localStorageService;
 
     [ObservableProperty]
     PlayerDTO _player = new()
@@ -46,7 +46,8 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
         ILogger<ApplicationViewModel> logger,
         IConfiguration configuration,
         IWebAssemblyHostEnvironment hostEnvironment,
-        IToastService toastService)
+        IToastService toastService,
+        ISyncLocalStorageService localStorageService)
     {
         _signalRNotificationService = signalRNotificationService;
         _lobbyJsInterop = lobbyJsInterop;
@@ -54,9 +55,19 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
         _configuration = configuration;
         _hostEnvironment = hostEnvironment;
         _toastService = toastService;
+        _localStorageService = localStorageService;
 
-        var generator = new GamerTagGenerator();
-        Player.Name = generator.Generate();
+        string? storedName = _localStorageService.GetItem<string>(LocalStorageConstants.PlayerNameKey);
+        if (storedName is string name)
+        {
+            Player.Name = name;
+        }
+        else
+        {
+            var generator = new GamerTagGenerator();
+            Player.Name = generator.Generate();
+            _localStorageService.SetItem(LocalStorageConstants.PlayerNameKey, Player.Name);
+        }
 
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
     }

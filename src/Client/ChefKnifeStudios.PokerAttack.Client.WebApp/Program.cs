@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
@@ -72,6 +73,7 @@ builder.Services.AddMatToaster(config =>
     config.HideTransitionDuration = 300;
     config.RequireInteraction = false;
 });
+builder.Services.AddBlazoredLocalStorage();
 #endregion
 
 #region REGISTER VIEWMODELS

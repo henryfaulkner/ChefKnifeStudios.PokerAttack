@@ -36,4 +36,10 @@ public partial class EditablePlayerName : ComponentBase
             Logger.LogError(ex, "An error has occurred.");
         }
     }
+
+    async Task HandleRandomizeNamePressed()
+    {
+        _name = await PlayerViewModel.RandomizePlayerNameAsync(Player);
+        StateHasChanged();
+    }
 }
