@@ -46,9 +46,12 @@ builder.Services.AddScoped<IPlayerPowerService, PlayerPowerService>();
 builder.Services.AddScoped<IShopService, ShopService>();
 builder.Services.AddSingleton<IScoringRulesService, ScoringRulesService>();
 
-// Register Player Powers Singletons
+// Register Player Power Singletons
 builder.Services.AddSingleton<IPlayerPowerRepository, PlayerPowerRepository>();
 builder.Services.AddSingleton<IPlayerPowerEffectRegistry, PlayerPowerEffectRegistry>();
+
+// Register Item Singletons
+builder.Services.AddSingleton<IItemRepository, ItemRepository>();
 
 // Register Eventing Service
 builder.Services.AddSingleton<IEventNotificationService, EventNotificationService>();

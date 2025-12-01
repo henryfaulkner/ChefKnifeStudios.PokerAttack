@@ -39,7 +39,7 @@ public partial class ScoringRulesModal : ComponentBase, IDisposable
         ScoringRulesViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
     }
 
-    string GetHandTypeName(PokerHandType handType) => handType.GetDescription() ?? string.Empty;
+    string GetHandTypeName(Hands handType) => handType.GetDescription() ?? string.Empty;
 
     void ViewModel_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {

@@ -6,7 +6,6 @@ namespace ChefKnifeStudios.PokerAttack.Server.Core.Models;
 public class Deck : ICardPile
 {
     const int _NUM_SHIFTS = 10000;
-
     static readonly Random Rand = new Random();
 
     public Stack<Card> Cards { get; set; } = new Stack<Card>();

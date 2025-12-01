@@ -7,7 +7,7 @@ namespace ChefKnifeStudios.PokerAttack.Server.Infrastructure.PlayerPowers;
 public class PlayerPowerRepository : IPlayerPowerRepository
 {
     readonly Dictionary<string, PlayerPower> _powers = new();
-    readonly Random _rng = new Random();
+    static readonly Random _rng = new Random();
 
     public PlayerPowerRepository()
     {

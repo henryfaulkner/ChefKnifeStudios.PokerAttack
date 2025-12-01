@@ -2,7 +2,7 @@
 
 namespace ChefKnifeStudios.PokerAttack.Shared.Enums;
 
-public enum PokerHandType
+public enum Hands
 {
     [Description("High Card")]
     HighCard,

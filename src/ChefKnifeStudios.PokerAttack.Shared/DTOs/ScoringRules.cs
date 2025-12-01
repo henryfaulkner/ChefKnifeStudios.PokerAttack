@@ -12,7 +12,7 @@ public class ScoringRules
 
 public class HandTypeScore
 {
-    public PokerHandType HandType { get; set; }
+    public Hands HandType { get; set; }
     public string HandTypeName { get; set; } = string.Empty;
     public int BaseChips { get; set; }
     public int BaseMultiplier { get; set; }
@@ -28,6 +28,6 @@ public class CardRankValue
 
 public class HandTypeCardContribution
 {
-    public PokerHandType HandType { get; set; }
+    public Hands HandType { get; set; }
     public string ContributionRule { get; set; } = string.Empty;
 }

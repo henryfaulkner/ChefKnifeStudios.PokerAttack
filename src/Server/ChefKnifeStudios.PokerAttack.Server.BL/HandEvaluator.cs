@@ -7,7 +7,7 @@ namespace ChefKnifeStudios.PokerAttack.Server.BL;
 public class HandEvaluator
 {
     readonly Dictionary<Ranks, int> _cardRankValues;
-    readonly Dictionary<PokerHandType, (int chips, int mult)> _handTypeScores;
+    readonly Dictionary<Hands, (int chips, int mult)> _handTypeScores;
 
     public HandEvaluator(IScoringRulesService scoringRulesService)
     {
@@ -40,18 +40,18 @@ public class HandEvaluator
             .Select(c => _cardRankValues.TryGetValue(c.Rank, out var value) ? value : 0)
             .ToArray();
 
-        PokerHandType type;
+        Hands type;
         int cardValueSum;
 
         if (cardList.Count == 5 && isStraight && isFlush)
         {
-            type = PokerHandType.StraightFlush;
+            type = Hands.StraightFlush;
             // All five cards contribute
             cardValueSum = cardValues.Sum();
         }
         else if (groups[0].Count() == 4)
         {
-            type = PokerHandType.FourOfAKind;
+            type = Hands.FourOfAKind;
             // Sum only the four matching ranks
             var fourRank = groups[0].Key;
             cardValueSum = Enumerable.Range(0, cardList.Count)
@@ -60,7 +60,7 @@ public class HandEvaluator
         }
         else if (cardList.Count == 5 && groups[0].Count() == 3 && groups.Count > 1 && groups[1].Count() == 2)
         {
-            type = PokerHandType.FullHouse;
+            type = Hands.FullHouse;
             // Sum the three-of-a-kind and the pair ranks (all five cards contribute)
             var threeRank = groups[0].Key;
             var pairRank = groups[1].Key;
@@ -70,19 +70,19 @@ public class HandEvaluator
         }
         else if (cardList.Count == 5 && isFlush)
         {
-            type = PokerHandType.Flush;
+            type = Hands.Flush;
             // All five cards contribute
             cardValueSum = cardValues.Sum();
         }
         else if (cardList.Count == 5 && isStraight)
         {
-            type = PokerHandType.Straight;
+            type = Hands.Straight;
             // All five cards contribute
             cardValueSum = cardValues.Sum();
         }
         else if (groups[0].Count() == 3)
         {
-            type = PokerHandType.ThreeOfAKind;
+            type = Hands.ThreeOfAKind;
             // Sum only the three matching ranks
             var threeRank = groups[0].Key;
             cardValueSum = Enumerable.Range(0, cardList.Count)
@@ -91,7 +91,7 @@ public class HandEvaluator
         }
         else if (groups[0].Count() == 2 && groups.Count > 1 && groups[1].Count() == 2)
         {
-            type = PokerHandType.TwoPair;
+            type = Hands.TwoPair;
             // Sum the two pair ranks (four cards)
             var pair1 = groups[0].Key;
             var pair2 = groups[1].Key;
@@ -101,7 +101,7 @@ public class HandEvaluator
         }
         else if (groups[0].Count() == 2)
         {
-            type = PokerHandType.Pair;
+            type = Hands.Pair;
             // Sum only the pair cards
             var pairRank = groups[0].Key;
             cardValueSum = Enumerable.Range(0, cardList.Count)
@@ -110,7 +110,7 @@ public class HandEvaluator
         }
         else
         {
-            type = PokerHandType.HighCard;
+            type = Hands.HighCard;
             // Use only the highest card's value
             var highestRank = cardList.Max(c => c.Rank);
             var index = cardList.FindIndex(c => c.Rank == highestRank);
@@ -129,7 +129,7 @@ public class HandEvaluator
         };
     }
 
-    (int chips, int mult) GetBaseForHand(PokerHandType type)
+    (int chips, int mult) GetBaseForHand(Hands type)
     {
         if (_handTypeScores.TryGetValue(type, out var score))
         {
