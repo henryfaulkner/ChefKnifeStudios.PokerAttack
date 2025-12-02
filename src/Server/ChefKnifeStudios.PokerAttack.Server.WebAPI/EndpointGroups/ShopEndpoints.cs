@@ -1,6 +1,6 @@
-﻿using Ardalis.Result;
-using ChefKnifeStudios.PokerAttack.Server.BL.Services;
-
+﻿using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
+using ChefKnifeStudios.PokerAttack.Shared;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs;
 using Endpoints = ChefKnifeStudios.PokerAttack.Shared.PokerAttackApiEndpoints.Shop;
 
 namespace ChefKnifeStudios.PokerAttack.Server.WebAPI.EndpointGroups;
@@ -15,14 +15,13 @@ public static class ShopEndpoints
             .WithTags("Shop");
 
         group.MapGet(Endpoints.GetShopItems, async (
-            IGameService gameService,
-            string gameId,
+            IItemRepository itemRepository,
             CancellationToken cancellationToken = default) =>
         {
-            
+            return itemRepository.GetRandomNumber();
         })
         .WithName(nameof(Endpoints.GetShopItems))
-        .Produces<ShopItemDTO?>(StatusCodes.Status200OK)
+        .Produces<IEnumerable<ItemBase>?>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);
 

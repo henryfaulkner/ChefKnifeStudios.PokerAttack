@@ -1,7 +1,7 @@
-using System.Text.Json.Serialization;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
+using System.Text.Json.Serialization;
 
-namespace ChefKnifeStudios.PokerAttack.Server.Core.Models;
+namespace ChefKnifeStudios.PokerAttack.Shared;
 
 [JsonDerivedType(typeof(ItemBase), typeDiscriminator: "base")]
 [JsonDerivedType(typeof(ItemScoring), typeDiscriminator: "scoring")]
@@ -22,7 +22,7 @@ public class ItemBase
     public required int Price { get; init; }
 
     [JsonPropertyName("rarityTier")]
-    public required string RarityTier { get; init; }
+    public RarityTiers RarityTier { get; init; }
 
     // Populated by RarityTier as foreign key
     public ItemRarity? Rarity { get; set; }
@@ -91,14 +91,11 @@ public class IntValueDto<T>
 
 public class ItemRarity
 {
-	[JsonPropertyName("tier")]
-	public required string Tier { get; set; }
+	[JsonPropertyName("rarityTier")]
+	public RarityTiers RarityTier { get; set; }
 
 	[JsonPropertyName("chance")]
 	public int Chance { get; set; }
-
-	[JsonPropertyName("color")]
-	public required string Color { get; set; }
 }
 
 public static class ItemJsonConstants
@@ -112,7 +109,7 @@ public static class ItemJsonConstants
                 "name": "Score Pebble",
                 "description": "Adds a small base score bonus.",
                 "price": 10,
-                "rarityTier": "common",
+                "rarityTier": 1,
                 "baseScoreBuff": 5,
                 "baseMultiplierBuff": 0,
                 "handScoreBuff": [],
@@ -127,7 +124,7 @@ public static class ItemJsonConstants
                 "name": "Multiplier Spark",
                 "description": "Adds a small multiplier bonus.",
                 "price": 15,
-                "rarityTier": "common",
+                "rarityTier": 1,
                 "baseScoreBuff": 0,
                 "baseMultiplierBuff": 1,
                 "handScoreBuff": [],
@@ -142,7 +139,7 @@ public static class ItemJsonConstants
                 "name": "Flush Chip",
                 "description": "Adds score to Flush hands.",
                 "price": 20,
-                "rarityTier": "uncommon",
+                "rarityTier": 2,
                 "baseScoreBuff": 0,
                 "baseMultiplierBuff": 0,
                 "handScoreBuff": [
@@ -159,7 +156,7 @@ public static class ItemJsonConstants
                 "name": "Crown Gem",
                 "description": "Adds score to all Kings.",
                 "price": 25,
-                "rarityTier": "uncommon",
+                "rarityTier": 2,
                 "baseScoreBuff": 0,
                 "baseMultiplierBuff": 0,
                 "handScoreBuff": [],
@@ -176,7 +173,7 @@ public static class ItemJsonConstants
                 "name": "Heart Token",
                 "description": "Adds score when using hearts.",
                 "price": 30,
-                "rarityTier": "rare",
+                "rarityTier": 3,
                 "baseScoreBuff": 0,
                 "baseMultiplierBuff": 0,
                 "handScoreBuff": [],
@@ -193,7 +190,7 @@ public static class ItemJsonConstants
                 "name": "Straight Edge",
                 "description": "Adds multiplier to Straight hands.",
                 "price": 40,
-                "rarityTier": "rare",
+                "rarityTier": 3,
                 "baseScoreBuff": 0,
                 "baseMultiplierBuff": 0,
                 "handScoreBuff": [],
@@ -210,7 +207,7 @@ public static class ItemJsonConstants
                 "name": "Bonus Hand",
                 "description": "Gain one extra hand per round.",
                 "price": 15,
-                "rarityTier": "common",
+                "rarityTier": 1,
                 "handsAvailableBuff": 1,
                 "discardsAvailableBuff": 0
             },
@@ -221,7 +218,7 @@ public static class ItemJsonConstants
                 "name": "Discard Token",
                 "description": "Gain one extra discard per round.",
                 "price": 15,
-                "rarityTier": "common",
+                "rarityTier": 1,
                 "handsAvailableBuff": 0,
                 "discardsAvailableBuff": 1
             },
@@ -232,7 +229,7 @@ public static class ItemJsonConstants
                 "name": "Score 100",
                 "description": "Score at least 100 next round.",
                 "price": 10,
-                "rarityTier": "common",
+                "rarityTier": 1,
                 "challengeType": "Score",
                 "challengeValue": 100,
                 "rewardChips": 50
@@ -244,7 +241,7 @@ public static class ItemJsonConstants
                 "name": "Flush Attempt",
                 "description": "Make a Flush next round.",
                 "price": 20,
-                "rarityTier": "uncommon",
+                "rarityTier": 2,
                 "challengeType": "SpecificHand",
                 "challengeValue": "Flush",
                 "rewardChips": 120
@@ -256,7 +253,7 @@ public static class ItemJsonConstants
                 "name": "King's Wager",
                 "description": "Play a hand containing a King.",
                 "price": 15,
-                "rarityTier": "common",
+                "rarityTier": 1,
                 "challengeType": "SpecificRank",
                 "challengeValue": "King",
                 "rewardChips": 60
@@ -268,29 +265,24 @@ public static class ItemJsonConstants
         """
         [
             {
-                "tier": "common",
-                "chance": 60,
-                "color": "white"      
+                "rarityTier": 1,
+                "chance": 60
             },
             {
-                "tier": "uncommon",
-                "chance": 25,
-                "color": "green"      
+                "rarityTier": 2,
+                "chance": 25     
             },
             {
-                "tier": "rare",
-                "chance": 10,
-                "color": "blue"      
+                "rarityTier": 3,
+                "chance": 10    
             },
             {
-                "tier": "epic",
-                "chance": 4,
-                "color": "purple"      
+                "rarityTier": 4,
+                "chance": 4     
             },
             {
-                "tier": "legendary",
-                "chance": 1,
-                "color": "gold"      
+                "rarityTier": 5,
+                "chance": 1      
             }
         ]
         """;

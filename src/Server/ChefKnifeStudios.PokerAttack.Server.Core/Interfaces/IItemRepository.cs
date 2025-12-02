@@ -1,7 +1,4 @@
-﻿using ChefKnifeStudios.PokerAttack.Server.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ChefKnifeStudios.PokerAttack.Shared;
 
 namespace ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
 

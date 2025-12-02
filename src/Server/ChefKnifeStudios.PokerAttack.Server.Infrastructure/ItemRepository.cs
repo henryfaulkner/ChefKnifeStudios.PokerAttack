@@ -1,5 +1,6 @@
 ﻿using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using ChefKnifeStudios.PokerAttack.Shared;
 using System.Text.Json;
 
@@ -8,7 +9,7 @@ namespace ChefKnifeStudios.PokerAttack.Server.Infrastructure;
 public class ItemRepository : IItemRepository
 {
     readonly Dictionary<string, ItemBase> _items = new();
-    readonly Dictionary<string, ItemRarity> _rarities = new();
+    readonly Dictionary<RarityTiers, ItemRarity> _rarities = new();
     static readonly Random _rng = new Random();
 
     public ItemRepository()
@@ -18,7 +19,7 @@ public class ItemRepository : IItemRepository
 
         foreach (var rarity in rarities)
         {
-            _rarities[rarity.Tier] = rarity;
+            _rarities[rarity.RarityTier] = rarity;
         }
 
         foreach (var item in items)

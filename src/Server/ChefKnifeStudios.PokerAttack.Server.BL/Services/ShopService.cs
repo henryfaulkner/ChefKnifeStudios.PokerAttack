@@ -1,4 +1,6 @@
-﻿namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
+﻿using ChefKnifeStudios.PokerAttack.Shared.DTOs;
+
+namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
 
 public interface IShopService
 {
