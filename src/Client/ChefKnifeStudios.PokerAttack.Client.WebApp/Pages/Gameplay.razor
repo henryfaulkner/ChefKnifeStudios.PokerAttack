@@ -94,6 +94,7 @@
                 {
                     <span class="mat-body1">SHOP</span>
                     <span class="mat-body1">Wallet: @(PlayerViewModel.IsLoadingWallet ? "LOADING" : PlayerViewModel.Wallet.ToString("C2"))</span>
+                    <Shop GameId="@GameId" />
                     break;
                 }
             case GameStates.GameStart:

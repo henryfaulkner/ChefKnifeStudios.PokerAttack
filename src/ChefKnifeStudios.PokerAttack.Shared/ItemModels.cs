@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace ChefKnifeStudios.PokerAttack.Shared;
 
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(ItemBase), typeDiscriminator: "base")]
 [JsonDerivedType(typeof(ItemScoring), typeDiscriminator: "scoring")]
 [JsonDerivedType(typeof(ItemGameplay), typeDiscriminator: "gameplay")]
@@ -143,7 +144,7 @@ public static class ItemJsonConstants
                 "baseScoreBuff": 0,
                 "baseMultiplierBuff": 0,
                 "handScoreBuff": [
-                    { "key": "Flush", "value": 20 }
+                    { "key": "flush", "value": 20 }
                 ],
                 "rankScoreBuff": [],
                 "suitScoreBuff": [],
@@ -161,7 +162,7 @@ public static class ItemJsonConstants
                 "baseMultiplierBuff": 0,
                 "handScoreBuff": [],
                 "rankScoreBuff": [
-                    { "key": "King", "value": 5 }
+                    { "key": "king", "value": 5 }
                 ],
                 "suitScoreBuff": [],
                 "handMultiplierBuff": []
@@ -179,7 +180,7 @@ public static class ItemJsonConstants
                 "handScoreBuff": [],
                 "rankScoreBuff": [],
                 "suitScoreBuff": [
-                    { "key": "Hearts", "value": 4 }
+                    { "key": "heart", "value": 4 }
                 ],
                 "handMultiplierBuff": []
             },
@@ -197,7 +198,7 @@ public static class ItemJsonConstants
                 "rankScoreBuff": [],
                 "suitScoreBuff": [],
                 "handMultiplierBuff": [
-                    { "key": "Straight", "value": 1 }
+                    { "key": "straight", "value": 1 }
                 ]
             },
 
@@ -230,7 +231,7 @@ public static class ItemJsonConstants
                 "description": "Score at least 100 next round.",
                 "price": 10,
                 "rarityTier": 1,
-                "challengeType": "Score",
+                "challengeType": "score",
                 "challengeValue": 100,
                 "rewardChips": 50
             },
@@ -242,8 +243,8 @@ public static class ItemJsonConstants
                 "description": "Make a Flush next round.",
                 "price": 20,
                 "rarityTier": 2,
-                "challengeType": "SpecificHand",
-                "challengeValue": "Flush",
+                "challengeType": "specificHand",
+                "challengeValue": 0,
                 "rewardChips": 120
             },
 
@@ -254,8 +255,8 @@ public static class ItemJsonConstants
                 "description": "Play a hand containing a King.",
                 "price": 15,
                 "rarityTier": 1,
-                "challengeType": "SpecificRank",
-                "challengeValue": "King",
+                "challengeType": "specificRank",
+                "challengeValue": 0,
                 "rewardChips": 60
             }
         ]

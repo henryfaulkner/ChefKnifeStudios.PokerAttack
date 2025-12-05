@@ -6,6 +6,7 @@ using ChefKnifeStudios.PokerAttack.Server.Infrastructure;
 using ChefKnifeStudios.PokerAttack.Server.Infrastructure.PlayerPowers;
 using ChefKnifeStudios.PokerAttack.Server.WebAPI.EndpointGroups;
 using ChefKnifeStudios.PokerAttack.Server.WebAPI.SignalR;
+using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using Microsoft.AspNetCore.SignalR;
 using Scalar.AspNetCore;
@@ -25,6 +26,15 @@ builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 
 builder.Services.AddCors();
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    var jsonSerializationOptions = JsonOptions.Get();
+    options.SerializerOptions.PropertyNameCaseInsensitive = jsonSerializationOptions.PropertyNameCaseInsensitive;
+    options.SerializerOptions.DefaultIgnoreCondition = jsonSerializationOptions.DefaultIgnoreCondition;
+    options.SerializerOptions.TypeInfoResolver = jsonSerializationOptions.TypeInfoResolver;
+    foreach (var converter in jsonSerializationOptions.Converters) options.SerializerOptions.Converters.Add(converter);
+});
 
 // Register SignalR
 builder.Services.AddSignalR(); 

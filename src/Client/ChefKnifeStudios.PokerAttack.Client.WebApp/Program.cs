@@ -57,6 +57,7 @@ builder.Services.AddTransient<ILobbyEndpointsService, LobbyEndpointsService>();
 builder.Services.AddTransient<IGameplayEndpointsService, GameplayEndpointsService>();
 builder.Services.AddTransient<IPlayerPowerEndpointsService, PlayerPowerEndpointsService>();
 builder.Services.AddTransient<IScoringRulesEndpointsService, ScoringRulesEndpointsService>();
+builder.Services.AddTransient<IShopEndpointsService, ShopEndpointsService>();
 
 builder.Services.AddMatBlazor();
 builder.Services.AddMatToaster(config =>

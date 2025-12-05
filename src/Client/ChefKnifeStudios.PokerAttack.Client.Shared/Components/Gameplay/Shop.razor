@@ -1,3 +1,23 @@
 ﻿<div class="shop">
-
+    @if (ShopViewModel.IsLoading)
+    {
+        <div class="mat-body1">Loading...</div>
+    }
+    else
+    {
+        @foreach (var shopItem in ShopViewModel.Items)
+        {
+            <div class="shop__item-card">
+                <span class="shop__item-card-name mat-h6">@shopItem.Name</span>
+                <span class="shop__item-card-description mat-body1">@shopItem.Description</span>
+                <span class="shop__item-card-cost mat-body1">Price: @shopItem.Price</span>
+                <MatButton 
+                    OnClick="() => HandleItemPurchased(shopItem)"
+                    OnClickStopPropagation="true"
+                >
+                    Purchase Item
+                </MatButton>
+            </div>
+        }
+    }
 </div>
