@@ -1,11 +1,11 @@
 ﻿<div class="player-power-list">
-    @if (PlayerPowerListViewModel.IsLoading)
+    @if (GameDataStore.IsLoadingPlayerPowers)
     {
         <div class="mat-body1">Loading...</div>
     }
     else
     {
-        @foreach (var powerOption in PlayerPowerListViewModel.Items)
+        @foreach (var powerOption in GameDataStore.PlayerPowers)
         {
             <div class="player-power-list__card @(powerOption.IsSelected ? "selected" : string.Empty)">
                 <span class="player-power-list__card-name mat-h6">@powerOption.Name</span>
@@ -18,7 +18,7 @@
                 }
                 else
                 {
-                    <MatButton 
+                    <MatButton
                         OnClick="() => HandlePowerSelected(powerOption)"
                         OnClickStopPropagation="true"
                     >

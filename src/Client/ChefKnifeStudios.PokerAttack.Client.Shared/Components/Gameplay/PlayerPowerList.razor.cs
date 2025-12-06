@@ -1,4 +1,6 @@
-﻿using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
+﻿using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
+using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
+using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -9,36 +11,36 @@ public partial class PlayerPowerList : ComponentBase
 {
     [Parameter] public required string GameId { get; set; }
     [CascadingParameter] public IGameStateMachineViewModel GameStateMachineViewModel { get; set; } = null!;
-    [Inject] IPlayerPowerListViewModel PlayerPowerListViewModel { get; set; } = null!;
+    [Inject] IGameDataService GameDataService { get; set; } = null!;
+    [Inject] IGameDataStore GameDataStore { get; set; } = null!;
 
     readonly string[] _subscriptions =
     [
-        nameof(IPlayerPowerListViewModel.IsLoading),
-        nameof(IPlayerPowerListViewModel.Items),
+        nameof(IGameDataStore.IsLoadingPlayerPowers),
+        nameof(IGameDataStore.PlayerPowers),
         nameof(IGameStateMachineViewModel.GameState),
     ];
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        PlayerPowerListViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
-        PlayerPowerListViewModel.Items.CollectionChanged += HandleCollectionChanged;
-        foreach (var item in PlayerPowerListViewModel.Items)
+        GameDataStore.PropertyChanged += ViewModel_OnPropertyChanged;
+        GameDataStore.PlayerPowers.CollectionChanged += HandleCollectionChanged;
+        foreach (var item in GameDataStore.PlayerPowers)
         {
             if (item is INotifyPropertyChanged npc)
                 npc.PropertyChanged += HandleItemPropertyChanged;
         }
         GameStateMachineViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
 
-        PlayerPowerListViewModel.Init(GameId);
-        _ = PlayerPowerListViewModel.LoadItemsAsync();
+        _ = GameDataService.LoadPlayerPowersAsync();
     }
 
     public void Dispose()
     {
-        PlayerPowerListViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
-        PlayerPowerListViewModel.Items.CollectionChanged -= HandleCollectionChanged;
-        foreach (var item in PlayerPowerListViewModel.Items)
+        GameDataStore.PropertyChanged -= ViewModel_OnPropertyChanged;
+        GameDataStore.PlayerPowers.CollectionChanged -= HandleCollectionChanged;
+        foreach (var item in GameDataStore.PlayerPowers)
         {
             if (item is INotifyPropertyChanged npc)
                 npc.PropertyChanged -= HandleItemPropertyChanged;
@@ -83,5 +85,5 @@ public partial class PlayerPowerList : ComponentBase
     }
 
     void HandlePowerSelected(PlayerPowerListItem playerPower) =>
-        PlayerPowerListViewModel.SubmitSelectedItemAsync(playerPower);
+        GameDataService.SelectPlayerPowerAsync(playerPower);
 }

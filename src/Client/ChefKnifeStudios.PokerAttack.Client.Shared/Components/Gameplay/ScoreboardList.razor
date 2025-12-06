@@ -1,12 +1,12 @@
 ﻿<div class="scoreboard-list">
-    @if (ScoreboardViewModel.IsLoading)
+    @if (GameDataStore.IsLoadingScoreboard)
     {
         <span class="mat-body1">Loading...</span>
     }
     else
     {
         <MatTable
-            Items="ScoreboardViewModel.Items"
+            Items="GameDataStore.ScoreboardItems"
             PageLabel="Scores"
             PageRecordCountLabel="Page Size"
         >

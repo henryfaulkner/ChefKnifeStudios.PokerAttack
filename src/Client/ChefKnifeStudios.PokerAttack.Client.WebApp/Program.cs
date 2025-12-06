@@ -83,10 +83,9 @@ builder.Services.AddTransient<IGameplayViewModel, GameplayViewModel>();
 builder.Services.AddTransient<IGameStateMachineViewModel, GameStateMachineViewModel>();
 builder.Services.AddTransient<ILobbyViewModel, LobbyViewModel>();
 builder.Services.AddTransient<IPlayerViewModel, PlayerViewModel>();
-builder.Services.AddTransient<IScoreboardViewModel, ScoreboardViewModel>();
-builder.Services.AddTransient<IPlayerPowerListViewModel, PlayerPowerListViewModel>();
-builder.Services.AddTransient<IShopViewModel, ShopViewModel>();
 builder.Services.AddTransient<IScoringRulesViewModel, ScoringRulesViewModel>();
+builder.Services.AddSingleton<IGameDataStore, GameDataStore>();
+builder.Services.AddScoped<IGameDataService, GameDataService>();
 #endregion
 
 await builder.Build().RunAsync();

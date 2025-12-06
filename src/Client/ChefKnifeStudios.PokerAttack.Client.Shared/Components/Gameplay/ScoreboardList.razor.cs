@@ -1,4 +1,6 @@
-﻿using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
+﻿using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
+using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
+using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -9,36 +11,36 @@ public partial class ScoreboardList : ComponentBase, IDisposable
 {
     [Parameter] public required string GameId { get; set; } = null!;
     [CascadingParameter] public IGameStateMachineViewModel GameStateMachineViewModel { get; set; } = null!;
-    [Inject] IScoreboardViewModel ScoreboardViewModel { get; set; } = null!;
+    [Inject] IGameDataService GameDataService { get; set; } = null!;
+    [Inject] IGameDataStore GameDataStore { get; set; } = null!;
 
     readonly string[] _subscriptions =
     [
-        nameof(IScoreboardViewModel.IsLoading),
-        nameof(IScoreboardViewModel.Items),
+        nameof(IGameDataStore.IsLoadingScoreboard),
+        nameof(IGameDataStore.ScoreboardItems),
         nameof(IGameStateMachineViewModel.GameState),
     ];
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        ScoreboardViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
-        ScoreboardViewModel.Items.CollectionChanged += HandleCollectionChanged;
-        foreach (var item in ScoreboardViewModel.Items)
+        GameDataStore.PropertyChanged += ViewModel_OnPropertyChanged;
+        GameDataStore.ScoreboardItems.CollectionChanged += HandleCollectionChanged;
+        foreach (var item in GameDataStore.ScoreboardItems)
         {
             if (item is INotifyPropertyChanged npc)
                 npc.PropertyChanged += HandleItemPropertyChanged;
         }
         GameStateMachineViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
 
-        ScoreboardViewModel.Init(GameId);
-        _ = ScoreboardViewModel.LoadLatestRoundAsync();
+        _ = GameDataService.LoadScoreboardAsync();
     }
 
     public void Dispose()
     {
-        ScoreboardViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
-        ScoreboardViewModel.Items.CollectionChanged -= HandleCollectionChanged;
-        foreach (var item in ScoreboardViewModel.Items)
+        GameDataStore.PropertyChanged -= ViewModel_OnPropertyChanged;
+        GameDataStore.ScoreboardItems.CollectionChanged -= HandleCollectionChanged;
+        foreach (var item in GameDataStore.ScoreboardItems)
         {
             if (item is INotifyPropertyChanged npc)
                 npc.PropertyChanged -= HandleItemPropertyChanged;

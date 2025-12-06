@@ -1,4 +1,6 @@
-﻿using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
+﻿using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
+using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
+using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -9,35 +11,35 @@ public partial class Shop : ComponentBase
 {
     [Parameter] public required string GameId { get; set; }
     [CascadingParameter] public IGameStateMachineViewModel GameStateMachineViewModel { get; set; } = null!;
-    [Inject] IShopViewModel ShopViewModel { get; set; } = null!;
+    [Inject] IGameDataService GameDataService { get; set; } = null!;
+    [Inject] IGameDataStore GameDataStore { get; set; } = null!;
 
     readonly string[] _subscriptions =
     [
-        nameof(IShopViewModel.IsLoading),
-        nameof(IShopViewModel.Items),
+        nameof(IGameDataStore.IsLoadingShop),
+        nameof(IGameDataStore.ShopItems),
     ];
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        ShopViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
-        ShopViewModel.Items.CollectionChanged += HandleCollectionChanged;
-        foreach (var item in ShopViewModel.Items)
+        GameDataStore.PropertyChanged += ViewModel_OnPropertyChanged;
+        GameDataStore.ShopItems.CollectionChanged += HandleCollectionChanged;
+        foreach (var item in GameDataStore.ShopItems)
         {
             if (item is INotifyPropertyChanged npc)
                 npc.PropertyChanged += HandleItemPropertyChanged;
         }
         GameStateMachineViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
 
-        ShopViewModel.Init(GameId);
-        _ = ShopViewModel.LoadItemsAsync();
+        _ = GameDataService.LoadShopItemsAsync();
     }
 
     public void Dispose()
     {
-        ShopViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
-        ShopViewModel.Items.CollectionChanged -= HandleCollectionChanged;
-        foreach (var item in ShopViewModel.Items)
+        GameDataStore.PropertyChanged -= ViewModel_OnPropertyChanged;
+        GameDataStore.ShopItems.CollectionChanged -= HandleCollectionChanged;
+        foreach (var item in GameDataStore.ShopItems)
         {
             if (item is INotifyPropertyChanged npc)
                 npc.PropertyChanged -= HandleItemPropertyChanged;
@@ -82,5 +84,5 @@ public partial class Shop : ComponentBase
     }
 
     void HandleItemPurchased(ShopItem shopItem) =>
-        ShopViewModel.PurchaseItemAsync(shopItem);
+        GameDataService.PurchaseShopItemAsync(shopItem);
 }

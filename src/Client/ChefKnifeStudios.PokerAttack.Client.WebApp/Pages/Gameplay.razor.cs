@@ -1,4 +1,5 @@
-﻿using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
+﻿using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
+using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
 using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
@@ -18,10 +19,10 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
     [Inject] IInputService InputService { get; set; } = null!;
     [Inject] IInputJsInterop InputJsInterop { get; set; } = null!;
     [Inject] IPlayerViewModel PlayerViewModel { get; set; } = null!;
+    [Inject] IGameDataStore GameDataStore { get; set; } = null!;
 
     readonly string[] _subscriptions =
     [
-        nameof(IGameplayViewModel.GameId),
         nameof(IGameplayViewModel.RunTimeInSeconds),
         nameof(IGameplayViewModel.Score),
         nameof(IGameplayViewModel.CardsInHand),
@@ -29,8 +30,8 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
         nameof(IGameplayViewModel.AvailableDiscards),
         nameof(IGameplayViewModel.PowerCharges),
         nameof(IGameStateMachineViewModel.GameState),
-        nameof(IPlayerViewModel.IsLoadingWallet),
-        nameof(IPlayerViewModel.Wallet),
+        nameof(IGameDataStore.IsLoadingWallet),
+        nameof(IGameDataStore.Wallet),
     ];
 
     protected override void OnInitialized()
@@ -57,14 +58,16 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
     {
         await base.OnInitializedAsync();
 
-        PlayerViewModel.Init(GameId);
-        GameplayViewModel.Init(GameId);
+        // Reset and set GameId in GameDataStore
+        GameDataStore.Reset();
+        GameDataStore.GameId = GameId;
+
         await GameplayViewModel.StartGameAsync(ApplicationViewModel.Player.Id);
 
         GameplayViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
         GameplayViewModel.CardsInHand.CollectionChanged += CardsInHand_CollectionChanged;
         GameStateMachineViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
-        PlayerViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
+        GameDataStore.PropertyChanged += ViewModel_OnPropertyChanged;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -88,7 +91,7 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
         GameplayViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
         GameplayViewModel.CardsInHand.CollectionChanged -= CardsInHand_CollectionChanged;
         GameStateMachineViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
-        PlayerViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
+        GameDataStore.PropertyChanged -= ViewModel_OnPropertyChanged;
     }
 
     void CardsInHand_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

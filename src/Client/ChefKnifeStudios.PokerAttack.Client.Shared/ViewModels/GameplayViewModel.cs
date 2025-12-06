@@ -9,7 +9,6 @@ using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
-using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.AspNetCore.Components;
 using System.Collections.ObjectModel;
@@ -19,7 +18,6 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 
 public interface IGameplayViewModel : IViewModel
 {
-    string GameId { get; }
     int RunTimeInSeconds { get; }
     int Score { get; }
     ObservableCollection<CardItem> CardsInHand { get; }
@@ -28,7 +26,6 @@ public interface IGameplayViewModel : IViewModel
     PlayerPowerDTO? ActivePlayerPower { get; }
     int PowerCharges { get; }
 
-    void Init(string gameId);
     Task StartGameAsync(string playerId, CancellationToken cancellationToken = default);
     Task StartRoundAsync(string playerId, CancellationToken cancellationToken = default);
     Task PlaySelectedCardsAsync(string playerId, CancellationToken cancellationToken = default);
@@ -47,13 +44,11 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     readonly IEventNotificationService _eventNotificationService;
     readonly NavigationManager _navigationManager;
     readonly IAudioJsInterop _audioJsInterop;
+    readonly IGameDataStore _gameDataStore;
 
     const int _DEFAULT_NUM_PLAY_HANDS = 5;
     const int _DEFAULT_NUM_DISCARDS = 5;
     const int _DEFAULT_NUM_POWER_CHARGES = 2;
-
-    [ObservableProperty]
-    string _gameId = Guid.Empty.ToString();
 
     [ObservableProperty]
     int _runTimeInSeconds = 0;
@@ -92,13 +87,15 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         IToastService toastService,
         IEventNotificationService eventNotificationService,
         NavigationManager navigationManager,
-        IAudioJsInterop audioJsInterop)
+        IAudioJsInterop audioJsInterop,
+        IGameDataStore gameDataStore)
     {
         _signalRNotificationService = signalRNotificationService;
         _toastService = toastService;
         _eventNotificationService = eventNotificationService;
         _navigationManager = navigationManager;
         _audioJsInterop = audioJsInterop;
+        _gameDataStore = gameDataStore;
 
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
         _eventNotificationService.EventReceived += HandleEventReceived;
@@ -115,14 +112,10 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         _timerToken.Cancel();
     }
 
-    public void Init(string gameId)
-    {
-        GameId = gameId;
-    }
-
     public async Task StartGameAsync(string playerId, CancellationToken cancellationToken = default)
     {
-        await _signalRNotificationService.StartGameAsync(GameId, playerId);
+        if (_gameDataStore.GameId is null) throw new ApplicationException("GameDataStore.GameId must be set before starting the game.");
+        await _signalRNotificationService.StartGameAsync(_gameDataStore.GameId, playerId);
     }
 
     public Task StartRoundAsync(string playerId, CancellationToken cancellationToken = default)
@@ -222,7 +215,8 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
             _toastService.ShowWarning("Not enough power charges");
             return;
         }
-        await _signalRNotificationService.ActivatePlayerPowerAsync(GameId, playerId);
+        if (_gameDataStore.GameId is null) throw new ApplicationException("GameDataStore.GameId must be set before activating power.");
+        await _signalRNotificationService.ActivatePlayerPowerAsync(_gameDataStore.GameId, playerId);
         PowerCharges--;
     }
 
