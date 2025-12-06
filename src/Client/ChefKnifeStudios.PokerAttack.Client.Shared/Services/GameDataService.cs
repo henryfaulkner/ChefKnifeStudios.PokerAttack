@@ -106,7 +106,30 @@ public class GameDataService : IGameDataService
 
     public async Task PurchaseShopItemAsync(ShopItem item, CancellationToken cancellationToken = default)
     {
-        _toastService.ShowSuccess("Item is hypothetically purchased.");
+        if (_gameDataStore.GameId is null) throw new ApplicationException("GameDataStore.GameId must be set before purchasing items.");
+        if (_gameDataStore.Wallet < item.Price)
+        {
+            _toastService.ShowWarning("Not enough funds to purchase item");
+            return;
+        }
+
+        var result = await _shopEndpointsService.PurchaseShopItemAsync(
+            _gameDataStore.GameId,
+            _applicationViewModel.Player.Id,
+            item.ItemId,
+            cancellationToken
+        );
+
+        if (result.IsSuccess && result.Value is not null)
+        {
+            _gameDataStore.Wallet -= item.Price;
+            _gameDataStore.ShopItems.FirstOrDefault(x => x.ItemId == item.ItemId)!.WasPurchased = true;
+            _gameDataStore.PlayerItems.Add(item);
+        }
+        else
+        {
+            _toastService.ShowError("Failed to purchase item");
+        }
     }
 
     public async Task SelectPlayerPowerAsync(PlayerPowerListItem playerPower, CancellationToken cancellationToken = default)

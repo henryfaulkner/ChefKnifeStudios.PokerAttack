@@ -22,4 +22,5 @@ public partial class ShopItem : ObservableObject
     public required string Description { get; init; }
     public required int Price { get; init; }
     public RarityTiers? RarityTier { get; init; }
+    public bool WasPurchased { get; set; } = false;
 }

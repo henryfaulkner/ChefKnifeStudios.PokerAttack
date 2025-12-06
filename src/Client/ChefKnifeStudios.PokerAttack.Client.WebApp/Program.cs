@@ -84,7 +84,7 @@ builder.Services.AddTransient<IGameStateMachineViewModel, GameStateMachineViewMo
 builder.Services.AddTransient<ILobbyViewModel, LobbyViewModel>();
 builder.Services.AddTransient<IPlayerViewModel, PlayerViewModel>();
 builder.Services.AddTransient<IScoringRulesViewModel, ScoringRulesViewModel>();
-builder.Services.AddSingleton<IGameDataStore, GameDataStore>();
+builder.Services.AddScoped<IGameDataStore, GameDataStore>();
 builder.Services.AddScoped<IGameDataService, GameDataService>();
 #endregion
 

@@ -11,6 +11,7 @@ public interface IGameDataStore : INotifyPropertyChanged
     int Wallet { get; set; }
     bool IsLoadingWallet { get; set; }
     ObservableCollection<ShopItem> ShopItems { get; set; }
+    ObservableCollection<ShopItem> PlayerItems { get; set; }
     bool IsLoadingShop { get; set; }
     ObservableCollection<PlayerPowerListItem> PlayerPowers { get; set; }
     bool IsLoadingPlayerPowers { get; set; }
@@ -32,6 +33,9 @@ public partial class GameDataStore : ObservableObject, IGameDataStore
 
     [ObservableProperty]
     ObservableCollection<ShopItem> _shopItems = [];
+
+    [ObservableProperty]
+    ObservableCollection<ShopItem> _playerItems = [];
 
     [ObservableProperty]
     bool _isLoadingShop;

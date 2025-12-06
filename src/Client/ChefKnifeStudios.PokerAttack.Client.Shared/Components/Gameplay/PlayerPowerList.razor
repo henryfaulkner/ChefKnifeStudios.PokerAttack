@@ -14,7 +14,11 @@
 
                 @if (powerOption.IsSelected)
                 {
-                    <span class="mat-body1">SELECTED</span>
+                    <MatButton
+                        Disabled="true"
+                    >
+                        SELECTED
+                    </MatButton>
                 }
                 else
                 {
@@ -22,7 +26,7 @@
                         OnClick="() => HandlePowerSelected(powerOption)"
                         OnClickStopPropagation="true"
                     >
-                        Select Power
+                        PICK A POWER
                     </MatButton>
                 }
             </div>

@@ -42,6 +42,7 @@ public class PokerAttackApiEndpoints
         const string EndpointGroup = "/shop";
 
         public const string GetShopItems = $"{EndpointGroup}/shop-items";
+        public const string PurchaseShopItem = $"{EndpointGroup}/{{gameId}}/{{playerId}}/{{shopItemId}}";
     }
 
     public class ScoringRules

@@ -9,8 +9,6 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.Gameplay;
 
 public partial class ScoreboardList : ComponentBase, IDisposable
 {
-    [Parameter] public required string GameId { get; set; } = null!;
-    [CascadingParameter] public IGameStateMachineViewModel GameStateMachineViewModel { get; set; } = null!;
     [Inject] IGameDataService GameDataService { get; set; } = null!;
     [Inject] IGameDataStore GameDataStore { get; set; } = null!;
 
@@ -18,7 +16,6 @@ public partial class ScoreboardList : ComponentBase, IDisposable
     [
         nameof(IGameDataStore.IsLoadingScoreboard),
         nameof(IGameDataStore.ScoreboardItems),
-        nameof(IGameStateMachineViewModel.GameState),
     ];
 
     protected override void OnInitialized()
@@ -31,7 +28,6 @@ public partial class ScoreboardList : ComponentBase, IDisposable
             if (item is INotifyPropertyChanged npc)
                 npc.PropertyChanged += HandleItemPropertyChanged;
         }
-        GameStateMachineViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
 
         _ = GameDataService.LoadScoreboardAsync();
     }
@@ -45,7 +41,6 @@ public partial class ScoreboardList : ComponentBase, IDisposable
             if (item is INotifyPropertyChanged npc)
                 npc.PropertyChanged -= HandleItemPropertyChanged;
         }
-        GameStateMachineViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
     }
 
     void ViewModel_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

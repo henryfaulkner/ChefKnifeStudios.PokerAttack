@@ -1,4 +1,5 @@
-﻿using ChefKnifeStudios.PokerAttack.Shared.Enums;
+﻿using ChefKnifeStudios.PokerAttack.Shared;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
 
 namespace ChefKnifeStudios.PokerAttack.Server.Core.Models;
 
@@ -10,6 +11,7 @@ public class GamePlayer
     public int PowerPoints { get; set; }
     public int Wallet { get; set; } = 0;
     public PlayerPower? PlayerPower { get; set; }
+    public List<ItemBase> PurchasedItems { get; set; } = [];
     public bool IsEliminating { get; set; }
     public bool IsEliminated { get; set; }
 

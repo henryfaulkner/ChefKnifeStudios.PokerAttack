@@ -7,16 +7,28 @@
     {
         @foreach (var shopItem in GameDataStore.ShopItems)
         {
-            <div class="shop__item-card">
-                <span class="shop__item-card-name mat-h6">@shopItem.Name</span>
-                <span class="shop__item-card-description mat-body1">@shopItem.Description</span>
-                <span class="shop__item-card-cost mat-body1">Price: @shopItem.Price</span>
-                <MatButton
-                    OnClick="() => HandleItemPurchased(shopItem)"
-                    OnClickStopPropagation="true"
-                >
-                    Purchase Item
-                </MatButton>
+            <div class="shop__card">
+                <span class="shop__card-name mat-h6">@shopItem.Name</span>
+                <span class="shop__card-description mat-body1">@shopItem.Description</span>
+                <span class="shop__card-cost mat-body1">Price: @shopItem.Price</span>
+                
+                @if (shopItem.WasPurchased)
+                {
+                    <MatButton
+                        Disabled="true"
+                    >
+                        PURCHASED
+                    </MatButton>
+                }
+                else
+                {
+                    <MatButton
+                        OnClick="() => HandleItemPurchased(shopItem)"
+                        OnClickStopPropagation="true"
+                    >
+                        BUY
+                    </MatButton>
+                }
             </div>
         }
     }

@@ -9,8 +9,6 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.Gameplay;
 
 public partial class Shop : ComponentBase
 {
-    [Parameter] public required string GameId { get; set; }
-    [CascadingParameter] public IGameStateMachineViewModel GameStateMachineViewModel { get; set; } = null!;
     [Inject] IGameDataService GameDataService { get; set; } = null!;
     [Inject] IGameDataStore GameDataStore { get; set; } = null!;
 
@@ -30,7 +28,6 @@ public partial class Shop : ComponentBase
             if (item is INotifyPropertyChanged npc)
                 npc.PropertyChanged += HandleItemPropertyChanged;
         }
-        GameStateMachineViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
 
         _ = GameDataService.LoadShopItemsAsync();
     }
@@ -44,7 +41,6 @@ public partial class Shop : ComponentBase
             if (item is INotifyPropertyChanged npc)
                 npc.PropertyChanged -= HandleItemPropertyChanged;
         }
-        GameStateMachineViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
     }
 
     void ViewModel_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
