@@ -1,4 +1,7 @@
-﻿<div class="shop">
+﻿@using ChefKnifeStudios.PokerAttack.Client.Shared.Models
+@using ChefKnifeStudios.PokerAttack.Shared
+
+<div class="shop">
     @if (GameDataStore.IsLoadingShop)
     {
         <div class="mat-body1">Loading...</div>
@@ -8,6 +11,7 @@
         @foreach (var shopItem in GameDataStore.ShopItems)
         {
             <div class="shop__card">
+                @ItemCategoryPill(shopItem)
                 <span class="shop__card-name mat-h6">@shopItem.Name</span>
                 <span class="shop__card-description mat-body1">@shopItem.Description</span>
                 <span class="shop__card-cost mat-body1">Price: @shopItem.Price</span>
@@ -33,3 +37,16 @@
         }
     }
 </div>
+
+@{
+    RenderFragment ItemCategoryPill(ShopItem item)
+    {
+        return item.Root switch
+        {
+            ItemScoring => @<Pill Type="@PillTypes.Primary" Text="Scoring Item" />,
+            ItemGameplay => @<Pill Type="@PillTypes.Secondary" Text="Gameplay Item" />,
+            ItemWager => @<Pill Type="@PillTypes.Destructive" Text="Wager Item" />,
+            _ => @<></>
+        };
+    }
+}

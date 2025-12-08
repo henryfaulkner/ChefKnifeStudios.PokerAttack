@@ -15,12 +15,22 @@ public partial class ShopItem : ObservableObject
         Description = item.Description;
         Price = item.Price;
         RarityTier = item.Rarity?.RarityTier;
+        WasPurchased = false;
+        Root = item;
     }
 
-    public required string ItemId { get; init; }
-    public required string Name { get; init; }
-    public required string Description { get; init; }
-    public required int Price { get; init; }
-    public RarityTiers? RarityTier { get; init; }
-    public bool WasPurchased { get; set; } = false;
+    [ObservableProperty]
+    public required string _itemId = string.Empty;
+    [ObservableProperty]
+    public required string _name = string.Empty;
+    [ObservableProperty]
+    public required string _description = string.Empty;
+    [ObservableProperty]
+    public required int _price = 0;
+    [ObservableProperty]
+    public RarityTiers? _rarityTier = null;
+    [ObservableProperty]
+    public bool _wasPurchased = false;
+    [ObservableProperty]
+    public ItemBase? _root = null;
 }
