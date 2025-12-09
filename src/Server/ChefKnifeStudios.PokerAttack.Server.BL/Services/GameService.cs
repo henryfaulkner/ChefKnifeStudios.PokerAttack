@@ -47,7 +47,7 @@ public class GameService(
     IWagerService wagerService) : IGameService
 {
     const int _NUM_CARDS_IN_HAND = 8;
-    const int _NUM_ROUNDS_BEFORE_ELIMINATION = 1;
+    const int _NUM_ROUNDS_BEFORE_ELIMINATION = 3;
     const int _BASE_HANDS_AVAILABLE = 5;
     const int _BASE_DISCARDS_AVAILABLE = 5;
 
