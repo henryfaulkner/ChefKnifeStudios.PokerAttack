@@ -19,6 +19,7 @@ public enum PokerAttackNotificationType
     RunStarted,
     CardsDealt,
     HandPlayed,
+    WagerCompleted,
     RoundEnded,
     EliminationStarted,
     EliminationFinished,

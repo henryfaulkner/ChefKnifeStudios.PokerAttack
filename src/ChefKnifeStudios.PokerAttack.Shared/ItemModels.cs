@@ -69,6 +69,9 @@ public class ItemWager : ItemBase
 
     [JsonPropertyName("rewardChips")]
     public int RewardChips { get; init; }
+
+    [JsonPropertyName("isCompleted")]
+    public bool IsCompleted { get; set; }
 }
 
 public enum WagerChallengeType

@@ -55,6 +55,8 @@ builder.Services.AddScoped<IGameStateMachineService, GameStateMachineService>();
 builder.Services.AddScoped<IPlayerPowerService, PlayerPowerService>();
 builder.Services.AddScoped<IShopService, ShopService>();
 builder.Services.AddSingleton<IScoringRulesService, ScoringRulesService>();
+builder.Services.AddSingleton<IItemEffectsService, ItemEffectsService>();
+builder.Services.AddSingleton<IWagerService, WagerService>();
 
 // Register Player Power Singletons
 builder.Services.AddSingleton<IPlayerPowerRepository, PlayerPowerRepository>();

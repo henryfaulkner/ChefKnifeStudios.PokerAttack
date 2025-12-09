@@ -1,6 +1,5 @@
 ﻿using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
-using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -79,6 +78,9 @@ public partial class Shop : ComponentBase
         InvokeAsync(StateHasChanged);
     }
 
-    void HandleItemPurchased(ShopItem shopItem) =>
-        GameDataService.PurchaseShopItemAsync(shopItem);
+    async Task HandleItemPurchased(ShopItem shopItem)
+    {
+        await GameDataService.PurchaseShopItemAsync(shopItem);
+        await InvokeAsync(StateHasChanged);
+    }
 }

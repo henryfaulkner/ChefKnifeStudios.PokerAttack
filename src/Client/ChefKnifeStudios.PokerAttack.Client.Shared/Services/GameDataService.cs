@@ -123,7 +123,7 @@ public class GameDataService : IGameDataService
         if (result.IsSuccess && result.Value is not null)
         {
             _gameDataStore.Wallet -= item.Price;
-            _gameDataStore.ShopItems.FirstOrDefault(x => x.ItemId == item.ItemId)!.WasPurchased = true;
+            item.WasPurchased = true;
             _gameDataStore.PlayerItems.Add(item);
         }
         else

@@ -42,11 +42,15 @@ public class GameService(
     IRepository<Round> roundRepository,
     IPokerAttackNotificationHelper notificationHelper,
     IGameStateMachineService gameStateMachineService,
-    IScoringRulesService scoringRulesService) : IGameService
+    IScoringRulesService scoringRulesService,
+    IItemEffectsService itemEffectsService,
+    IWagerService wagerService) : IGameService
 {
     const int _NUM_CARDS_IN_HAND = 8;
     const int _RUN_TIME_IN_SECONDS = 10;
     const int _NUM_ROUNDS_BEFORE_ELIMINATION = 1;
+    const int _BASE_HANDS_AVAILABLE = 5;
+    const int _BASE_DISCARDS_AVAILABLE = 5;
 
     public async Task StartGameAsync(string gameId, CancellationToken ct = default)
     {
@@ -80,12 +84,26 @@ public class GameService(
         deck.RandomizeDeck();
 
         await ClearGamePlayerDataAsync(playerId, gamePlayer, ct);
+
+        // Initialize hands and discards with base values + item buffs
+        int handsBuff = itemEffectsService.GetHandsAvailableBuff(gamePlayer.ActiveItems);
+        int discardsBuff = itemEffectsService.GetDiscardsAvailableBuff(gamePlayer.ActiveItems);
+        gamePlayer.HandsRemaining = _BASE_HANDS_AVAILABLE + handsBuff;
+        gamePlayer.DiscardsRemaining = _BASE_DISCARDS_AVAILABLE + discardsBuff;
+        await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
+
         await ReplenishHandAsync(playerId, ct);
+
+        // Reload to get updated cards
+        gamePlayer = await gamePlayerRepository.GetAsync(playerId, ct)
+            ?? throw new KeyNotFoundException("Game Player not found");
 
         var resBody = new RunStartedDTO()
         {
             RunTimeInSeconds = runTimeInSeconds,
             Cards = gamePlayer.CardsInHand.Select(x => x.MapToDTO()),
+            HandsAvailable = gamePlayer.HandsRemaining,
+            DiscardsAvailable = gamePlayer.DiscardsRemaining,
         };
 
         await notificationHelper.SendToPlayerAsync(playerId, new PokerAttackNotification
@@ -102,6 +120,12 @@ public class GameService(
         var gamePlayer = await gamePlayerRepository.GetAsync(playerId, ct)
             ?? throw new KeyNotFoundException("Game Player not found");
 
+        // Check if player has hands remaining
+        if (gamePlayer.HandsRemaining <= 0)
+        {
+            throw new InvalidOperationException("No hands remaining");
+        }
+
         // ✅ Remove matching cards from gamePlayer.CardsInHand (handles duplicates)
         foreach (var card in hand)
         {
@@ -117,11 +141,36 @@ public class GameService(
         }
 
         // Now evaluate this played hand
-        var result = new HandEvaluator(scoringRulesService).EvaluateHand(hand);
+        var baseResult = new HandEvaluator(scoringRulesService).EvaluateHand(hand);
 
-        // Add score
+        // Apply item effects to the hand result
+        var result = itemEffectsService.ApplyItemEffects(baseResult, hand, gamePlayer.ActiveItems);
+
+        // Check wagers
+        var completedWagers = wagerService.CheckWagers(gamePlayer.ActiveWagers, result, hand);
+        int wagerChips = 0;
+        foreach (var wagerResult in completedWagers)
+        {
+            wagerChips += wagerResult.ChipsAwarded;
+            wagerResult.Wager.IsCompleted = true;
+
+            // Notify player of wager completion
+            await notificationHelper.SendToPlayerAsync(playerId, new PokerAttackNotification(
+                PokerAttackNotificationType.WagerCompleted,
+                JsonSerializer.Serialize(new WagerCompletedDTO
+                {
+                    WagerId = wagerResult.Wager.Id,
+                    WagerName = wagerResult.Wager.Name,
+                    WagerDescription = wagerResult.Wager.Description,
+                    ChipsAwarded = wagerResult.ChipsAwarded
+                }, JsonOptions.Get())
+            ));
+        }
+
+        // Add score, wager chips, and decrement hands remaining
         gamePlayer.Score += result.HandScore;
-        gamePlayer.Wallet += result.HandScore;
+        gamePlayer.Wallet += result.HandScore + wagerChips;
+        gamePlayer.HandsRemaining--;
         await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
 
         await ReplenishHandAsync(playerId, ct);
@@ -141,6 +190,12 @@ public class GameService(
         var gamePlayer = await gamePlayerRepository.GetAsync(playerId, ct)
             ?? throw new KeyNotFoundException("Game Player not found");
 
+        // Check if player has discards remaining
+        if (gamePlayer.DiscardsRemaining <= 0)
+        {
+            throw new InvalidOperationException("No discards remaining");
+        }
+
         // ✅ Remove matching cards from gamePlayer.CardsInHand (handles duplicates)
         foreach (var card in discardCards)
         {
@@ -154,6 +209,10 @@ public class GameService(
 
             gamePlayer.CardsInHand.Remove(match);
         }
+
+        // Decrement discards remaining
+        gamePlayer.DiscardsRemaining--;
+        await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
 
         await ReplenishHandAsync(playerId, ct);
     }

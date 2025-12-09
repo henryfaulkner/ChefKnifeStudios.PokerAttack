@@ -12,6 +12,10 @@ public class GamePlayer
     public int Wallet { get; set; } = 0;
     public PlayerPower? PlayerPower { get; set; }
     public List<ItemBase> PurchasedItems { get; set; } = [];
+    public IEnumerable<ItemBase> ActiveItems => PurchasedItems.Where(item => item is not ItemWager wager || !wager.IsCompleted);
+    public IEnumerable<ItemWager> ActiveWagers => PurchasedItems.OfType<ItemWager>().Where(w => !w.IsCompleted);
+    public int HandsRemaining { get; set; }
+    public int DiscardsRemaining { get; set; }
     public bool IsEliminating { get; set; }
     public bool IsEliminated { get; set; }
 

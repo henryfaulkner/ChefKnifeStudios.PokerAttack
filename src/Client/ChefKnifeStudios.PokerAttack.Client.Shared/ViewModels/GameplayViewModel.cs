@@ -233,6 +233,8 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                         CardsInHand = runStartedDTO.Cards.Select(x => new CardItem(x)).ToObservableCollection();
                         ApplySort();
                         ResetStats();
+                        AvailablePlayHands = runStartedDTO.HandsAvailable;
+                        AvailableDiscards = runStartedDTO.DiscardsAvailable;
                     }
                     break;
                 }
@@ -271,6 +273,18 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                             $"{handResult.HandType.GetDescription()} - {handResult.HandScore}"
                         );
                         Score = handResult.TotalPlayerScore;
+                    }
+                    break;
+                }
+            case PokerAttackNotificationType.WagerCompleted:
+                {
+                    var args = JsonSerializer.Deserialize<WagerCompletedDTO>(notification.Payload!, JsonOptions.Get());
+                    if (args is WagerCompletedDTO wagerCompleted)
+                    {
+                        _toastService.ShowSuccess(
+                            $"+{wagerCompleted.ChipsAwarded} chips!",
+                            $"Wager Completed: {wagerCompleted.WagerName}"
+                        );
                     }
                     break;
                 }
@@ -347,8 +361,8 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     void ResetStats()
     {
         Score = 0;
-        AvailableDiscards = _DEFAULT_NUM_PLAY_HANDS;
-        AvailablePlayHands = _DEFAULT_NUM_DISCARDS;
+        AvailablePlayHands = _DEFAULT_NUM_PLAY_HANDS;
+        AvailableDiscards = _DEFAULT_NUM_DISCARDS;
         PowerCharges = _DEFAULT_NUM_POWER_CHARGES;
     }
 }

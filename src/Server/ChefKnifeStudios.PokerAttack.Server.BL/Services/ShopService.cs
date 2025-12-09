@@ -41,7 +41,7 @@ public class ShopService : IShopService
         // Deduct the price from wallet
         gamePlayer.Wallet -= item.Price;
 
-        // Add the item to purchased items
+        // Add the item to purchased items (wagers will be accessible via ActiveWagers property)
         gamePlayer.PurchasedItems.Add(item);
 
         // Update the game player

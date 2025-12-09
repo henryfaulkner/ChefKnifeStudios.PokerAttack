@@ -15,13 +15,13 @@ public partial class PlayerPowerListItem : ObservableObject
     }
 
     [ObservableProperty]
-    public string _id = "";
+    string _id = "";
     [ObservableProperty]
-    public string _name = "";
+    string _name = "";
     [ObservableProperty]
-    public string _description = "";
+    string _description = "";
     [ObservableProperty]
-    public int _pointCost;
+    int _pointCost;
     [ObservableProperty]
-    public bool _isSelected = false;
+    bool _isSelected = false;
 }

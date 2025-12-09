@@ -79,6 +79,9 @@ public partial class PlayerPowerList : ComponentBase
         InvokeAsync(StateHasChanged);
     }
 
-    void HandlePowerSelected(PlayerPowerListItem playerPower) =>
-        GameDataService.SelectPlayerPowerAsync(playerPower);
+    async Task HandlePowerSelected(PlayerPowerListItem playerPower)
+    {
+        await GameDataService.SelectPlayerPowerAsync(playerPower);
+        await InvokeAsync(StateHasChanged);
+    }
 }
