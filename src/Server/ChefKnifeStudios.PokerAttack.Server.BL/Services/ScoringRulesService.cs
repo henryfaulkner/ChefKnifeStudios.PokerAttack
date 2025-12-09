@@ -23,15 +23,15 @@ public class ScoringRulesService : IScoringRulesService
         {
             HandTypeScores = new List<HandTypeScore>
             {
-                new() { HandType = Hands.StraightFlush, HandTypeName = "Straight Flush", BaseChips = 100, BaseMultiplier = 8, Description = "Five cards in sequence, all of the same suit" },
-                new() { HandType = Hands.FourOfAKind, HandTypeName = "Four of a Kind", BaseChips = 60, BaseMultiplier = 7, Description = "Four cards of the same rank" },
-                new() { HandType = Hands.FullHouse, HandTypeName = "Full House", BaseChips = 40, BaseMultiplier = 4, Description = "Three of a kind plus a pair" },
-                new() { HandType = Hands.Flush, HandTypeName = "Flush", BaseChips = 35, BaseMultiplier = 4, Description = "Five cards of the same suit" },
-                new() { HandType = Hands.Straight, HandTypeName = "Straight", BaseChips = 30, BaseMultiplier = 4, Description = "Five cards in sequence" },
-                new() { HandType = Hands.ThreeOfAKind, HandTypeName = "Three of a Kind", BaseChips = 30, BaseMultiplier = 3, Description = "Three cards of the same rank" },
-                new() { HandType = Hands.TwoPair, HandTypeName = "Two Pair", BaseChips = 20, BaseMultiplier = 2, Description = "Two different pairs" },
-                new() { HandType = Hands.Pair, HandTypeName = "Pair", BaseChips = 10, BaseMultiplier = 2, Description = "Two cards of the same rank" },
-                new() { HandType = Hands.HighCard, HandTypeName = "High Card", BaseChips = 5, BaseMultiplier = 1, Description = "No matching cards" }
+                new() { HandType = Hands.StraightFlush, HandTypeName = "Straight Flush", BaseChips = 0, BaseMultiplier = 25, Description = "Five cards in sequence, all of the same suit" },
+                new() { HandType = Hands.FourOfAKind, HandTypeName = "Four of a Kind", BaseChips = 0, BaseMultiplier = 18, Description = "Four cards of the same rank" },
+                new() { HandType = Hands.FullHouse, HandTypeName = "Full House", BaseChips = 0, BaseMultiplier = 12, Description = "Three of a kind plus a pair" },
+                new() { HandType = Hands.Flush, HandTypeName = "Flush", BaseChips = 0, BaseMultiplier = 10, Description = "Five cards of the same suit" },
+                new() { HandType = Hands.Straight, HandTypeName = "Straight", BaseChips = 0, BaseMultiplier = 9, Description = "Five cards in sequence" },
+                new() { HandType = Hands.ThreeOfAKind, HandTypeName = "Three of a Kind", BaseChips = 0, BaseMultiplier = 7, Description = "Three cards of the same rank" },
+                new() { HandType = Hands.TwoPair, HandTypeName = "Two Pair", BaseChips = 0, BaseMultiplier = 5, Description = "Two different pairs" },
+                new() { HandType = Hands.Pair, HandTypeName = "Pair", BaseChips = 0, BaseMultiplier = 3, Description = "Two cards of the same rank" },
+                new() { HandType = Hands.HighCard, HandTypeName = "High Card", BaseChips = 0, BaseMultiplier = 1, Description = "No matching cards" }
             },
             CardRankValues = new List<CardRankValue>
             {

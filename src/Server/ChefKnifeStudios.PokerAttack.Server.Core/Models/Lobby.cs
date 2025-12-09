@@ -6,4 +6,5 @@ public class Lobby
     public required Player HostPlayer { get; set; }
     public HashSet<Player> Players { get; set; } = new();
     public string? GameId { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

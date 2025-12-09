@@ -69,6 +69,9 @@ builder.Services.AddSingleton<IItemRepository, ItemRepository>();
 builder.Services.AddSingleton<IEventNotificationService, EventNotificationService>();
 builder.Services.AddHostedService<EventNotificationServiceSubscriber>();
 
+// Register Lobby Cleanup Service
+builder.Services.AddHostedService<LobbyCleanupService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -40,6 +40,9 @@ public class HandEvaluator
             .Select(c => _cardRankValues.TryGetValue(c.Rank, out var value) ? value : 0)
             .ToArray();
 
+        // Track which cards contribute to the score
+        bool[] contributingCards = new bool[cardList.Count];
+
         Hands type;
         int cardValueSum;
 
@@ -47,74 +50,115 @@ public class HandEvaluator
         {
             type = Hands.StraightFlush;
             // All five cards contribute
+            for (int i = 0; i < cardList.Count; i++) contributingCards[i] = true;
             cardValueSum = cardValues.Sum();
         }
         else if (groups[0].Count() == 4)
         {
             type = Hands.FourOfAKind;
-            // Sum only the four matching ranks
+            // Only the four matching ranks contribute
             var fourRank = groups[0].Key;
-            cardValueSum = Enumerable.Range(0, cardList.Count)
-                                     .Where(i => cardList[i].Rank == fourRank)
-                                     .Sum(i => cardValues[i]);
+            cardValueSum = 0;
+            for (int i = 0; i < cardList.Count; i++)
+            {
+                if (cardList[i].Rank == fourRank)
+                {
+                    contributingCards[i] = true;
+                    cardValueSum += cardValues[i];
+                }
+            }
         }
         else if (cardList.Count == 5 && groups[0].Count() == 3 && groups.Count > 1 && groups[1].Count() == 2)
         {
             type = Hands.FullHouse;
-            // Sum the three-of-a-kind and the pair ranks (all five cards contribute)
+            // All five cards contribute (three + pair)
             var threeRank = groups[0].Key;
             var pairRank = groups[1].Key;
-            cardValueSum = Enumerable.Range(0, cardList.Count)
-                                     .Where(i => cardList[i].Rank == threeRank || cardList[i].Rank == pairRank)
-                                     .Sum(i => cardValues[i]);
+            cardValueSum = 0;
+            for (int i = 0; i < cardList.Count; i++)
+            {
+                if (cardList[i].Rank == threeRank || cardList[i].Rank == pairRank)
+                {
+                    contributingCards[i] = true;
+                    cardValueSum += cardValues[i];
+                }
+            }
         }
         else if (cardList.Count == 5 && isFlush)
         {
             type = Hands.Flush;
             // All five cards contribute
+            for (int i = 0; i < cardList.Count; i++) contributingCards[i] = true;
             cardValueSum = cardValues.Sum();
         }
         else if (cardList.Count == 5 && isStraight)
         {
             type = Hands.Straight;
             // All five cards contribute
+            for (int i = 0; i < cardList.Count; i++) contributingCards[i] = true;
             cardValueSum = cardValues.Sum();
         }
         else if (groups[0].Count() == 3)
         {
             type = Hands.ThreeOfAKind;
-            // Sum only the three matching ranks
+            // Only the three matching ranks contribute
             var threeRank = groups[0].Key;
-            cardValueSum = Enumerable.Range(0, cardList.Count)
-                                     .Where(i => cardList[i].Rank == threeRank)
-                                     .Sum(i => cardValues[i]);
+            cardValueSum = 0;
+            for (int i = 0; i < cardList.Count; i++)
+            {
+                if (cardList[i].Rank == threeRank)
+                {
+                    contributingCards[i] = true;
+                    cardValueSum += cardValues[i];
+                }
+            }
         }
         else if (groups[0].Count() == 2 && groups.Count > 1 && groups[1].Count() == 2)
         {
             type = Hands.TwoPair;
-            // Sum the two pair ranks (four cards)
+            // Only the two pair ranks contribute (four cards)
             var pair1 = groups[0].Key;
             var pair2 = groups[1].Key;
-            cardValueSum = Enumerable.Range(0, cardList.Count)
-                                     .Where(i => cardList[i].Rank == pair1 || cardList[i].Rank == pair2)
-                                     .Sum(i => cardValues[i]);
+            cardValueSum = 0;
+            for (int i = 0; i < cardList.Count; i++)
+            {
+                if (cardList[i].Rank == pair1 || cardList[i].Rank == pair2)
+                {
+                    contributingCards[i] = true;
+                    cardValueSum += cardValues[i];
+                }
+            }
         }
         else if (groups[0].Count() == 2)
         {
             type = Hands.Pair;
-            // Sum only the pair cards
+            // Only the pair cards contribute
             var pairRank = groups[0].Key;
-            cardValueSum = Enumerable.Range(0, cardList.Count)
-                                     .Where(i => cardList[i].Rank == pairRank)
-                                     .Sum(i => cardValues[i]);
+            cardValueSum = 0;
+            for (int i = 0; i < cardList.Count; i++)
+            {
+                if (cardList[i].Rank == pairRank)
+                {
+                    contributingCards[i] = true;
+                    cardValueSum += cardValues[i];
+                }
+            }
         }
         else
         {
             type = Hands.HighCard;
-            // Use only the highest card's value
+            // Only the highest card contributes
             var highestRank = cardList.Max(c => c.Rank);
             var index = cardList.FindIndex(c => c.Rank == highestRank);
-            cardValueSum = index >= 0 ? cardValues[index] : 0;
+            if (index >= 0)
+            {
+                contributingCards[index] = true;
+                cardValueSum = cardValues[index];
+            }
+            else
+            {
+                cardValueSum = 0;
+            }
         }
 
         var (chips, mult) = GetBaseForHand(type);
@@ -123,6 +167,7 @@ public class HandEvaluator
         {
             HandType = type,
             CardValues = cardValues,
+            ContributingCards = contributingCards,
             BaseChips = chips,
             BaseMultiplier = mult,
             HandScore = (cardValueSum + chips) * mult,

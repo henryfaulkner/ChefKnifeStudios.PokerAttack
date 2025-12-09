@@ -6,6 +6,7 @@ public class HandResult
 {
     public Hands HandType { get; init; }
     public required int[] CardValues { get; init; }
+    public required bool[] ContributingCards { get; init; }
     public int BaseChips { get; init; }
     public int BaseMultiplier { get; init; }
     public int HandScore { get; init; }

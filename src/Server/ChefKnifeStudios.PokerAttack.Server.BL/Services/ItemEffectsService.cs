@@ -49,8 +49,13 @@ public class ItemEffectsService : IItemEffectsService
         }
 
         // Calculate card values with rank and suit buffs
+        // Only apply buffs to cards that contributed to the hand type
         for (int i = 0; i < cardList.Count; i++)
         {
+            // Skip cards that didn't contribute to the hand
+            if (!baseResult.ContributingCards[i])
+                continue;
+
             var card = cardList[i];
             int cardValue = baseResult.CardValues[i];
 
@@ -81,6 +86,7 @@ public class ItemEffectsService : IItemEffectsService
         {
             HandType = baseResult.HandType,
             CardValues = baseResult.CardValues,
+            ContributingCards = baseResult.ContributingCards,
             BaseChips = totalChips,
             BaseMultiplier = totalMultiplier,
             HandScore = finalScore
