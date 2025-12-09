@@ -230,7 +230,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                     var args = JsonSerializer.Deserialize<RunStartedDTO>(notification.Payload!, JsonOptions.Get());
                     if (args is RunStartedDTO runStartedDTO)
                     {
-                        RunTimeInSeconds = PokerAttack.Shared.Constants.RoundTimeMs;
+                        RunTimeInSeconds = PokerAttack.Shared.Constants.RoundTimeMs / 1000;
                         CardsInHand = runStartedDTO.Cards.Select(x => new CardItem(x)).ToObservableCollection();
                         ApplySort();
                         ResetStats();

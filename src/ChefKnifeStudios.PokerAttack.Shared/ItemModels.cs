@@ -229,38 +229,38 @@ public static class ItemJsonConstants
 
             {
                 "type": "wager",
-                "id": "wager_score_100",
-                "name": "Score 100",
-                "description": "Score at least 100 next round.",
+                "id": "wager_score_450",
+                "name": "Score 450",
+                "description": "Score at least 500 next round to win 450 chips.",
                 "price": 150,
                 "rarityTier": 1,
                 "challengeType": "score",
-                "challengeValue": 100,
-                "rewardChips": 450
+                "challengeValue": 500,
+                "rewardChips": 400
             },
 
             {
                 "type": "wager",
                 "id": "wager_flush",
                 "name": "Flush Attempt",
-                "description": "Make a Flush next round.",
+                "description": "Make a Flush next round to win 800 chips.",
                 "price": 450,
                 "rarityTier": 2,
                 "challengeType": "specificHand",
                 "challengeValue": 0,
-                "rewardChips": 1200
+                "rewardChips": 800
             },
 
             {
                 "type": "wager",
                 "id": "wager_play_king",
                 "name": "King's Wager",
-                "description": "Play a hand containing a King.",
+                "description": "Play a hand containing a King to win 500 chips.",
                 "price": 225,
                 "rarityTier": 1,
                 "challengeType": "specificRank",
                 "challengeValue": 0,
-                "rewardChips": 600
+                "rewardChips": 500
             }
         ]
         """;

@@ -69,7 +69,7 @@ public class GameService(
         }
         await Task.WhenAll(taskList);
 
-        await Task.Delay(1000 * Constants.RoundTimeMs);
+        await Task.Delay(Constants.RoundTimeMs);
 
         await EndRoundAsync(gameId, ct);
     }
