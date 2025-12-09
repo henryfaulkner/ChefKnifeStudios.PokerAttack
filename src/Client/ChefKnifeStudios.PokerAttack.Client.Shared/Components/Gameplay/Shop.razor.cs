@@ -1,5 +1,6 @@
 ﻿using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
+using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -10,16 +11,19 @@ public partial class Shop : ComponentBase
 {
     [Inject] IGameDataService GameDataService { get; set; } = null!;
     [Inject] IGameDataStore GameDataStore { get; set; } = null!;
+    [Inject] IShopViewModel ShopViewModel { get; set; } = null!;
 
     readonly string[] _subscriptions =
     [
         nameof(IGameDataStore.IsLoadingShop),
         nameof(IGameDataStore.ShopItems),
+        nameof(IShopViewModel.ShopTimeSeconds)
     ];
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        ShopViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
         GameDataStore.PropertyChanged += ViewModel_OnPropertyChanged;
         GameDataStore.ShopItems.CollectionChanged += HandleCollectionChanged;
         foreach (var item in GameDataStore.ShopItems)
@@ -33,6 +37,7 @@ public partial class Shop : ComponentBase
 
     public void Dispose()
     {
+        ShopViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
         GameDataStore.PropertyChanged -= ViewModel_OnPropertyChanged;
         GameDataStore.ShopItems.CollectionChanged -= HandleCollectionChanged;
         foreach (var item in GameDataStore.ShopItems)

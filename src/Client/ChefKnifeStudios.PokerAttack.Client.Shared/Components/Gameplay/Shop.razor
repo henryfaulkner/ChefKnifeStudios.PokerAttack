@@ -1,5 +1,6 @@
 ﻿@using ChefKnifeStudios.PokerAttack.Client.Shared.Models
 @using ChefKnifeStudios.PokerAttack.Shared
+@using ChefKnifeStudios.PokerAttack.Client.Core.Extensions
 
 <div class="shop">
     @if (GameDataStore.IsLoadingShop)
@@ -35,6 +36,7 @@
                 }
             </div>
         }
+        <span class="mat-h4">@ShopViewModel.ShopTimeSeconds.FormatAsMinutesSeconds()</span>
     }
 </div>
 

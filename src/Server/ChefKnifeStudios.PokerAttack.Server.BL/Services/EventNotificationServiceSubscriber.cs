@@ -61,14 +61,14 @@ public sealed class EventNotificationServiceSubscriber : IHostedService
                             case GameStates.Elimination:
                                 {
                                     await gameService.StartEliminationAsync(gs.GameId);
-                                    await Task.Delay(5000);
+                                    await Task.Delay(Shared.Constants.EliminationTimeMs);
                                     await gameService.FinishEliminationAsync(gs.GameId);
                                     break;
                                 }
                             case GameStates.Shop:
                                 {
                                     await gameService.StartShoppingAsync(gs.GameId);
-                                    await Task.Delay(60000);
+                                    await Task.Delay(Shared.Constants.ShopTimeMs);
                                     await gameService.FinishShoppingAsync(gs.GameId);
                                     break;
                                 }

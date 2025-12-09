@@ -100,7 +100,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
         _eventNotificationService.EventReceived += HandleEventReceived;
 
-        _timerToken = SetInterval(() =>
+        _timerToken = TimerHelper.SetInterval(() =>
         {
             if (RunTimeInSeconds > 0) RunTimeInSeconds--;
         }, 1000);
@@ -110,6 +110,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     {
         _signalRNotificationService.HandleNotificationReceived -= HandleSignalRNotificationReceived;
         _timerToken.Cancel();
+        _timerToken.Dispose();
     }
 
     public async Task StartGameAsync(string playerId, CancellationToken cancellationToken = default)
@@ -229,7 +230,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                     var args = JsonSerializer.Deserialize<RunStartedDTO>(notification.Payload!, JsonOptions.Get());
                     if (args is RunStartedDTO runStartedDTO)
                     {
-                        RunTimeInSeconds = runStartedDTO.RunTimeInSeconds;
+                        RunTimeInSeconds = PokerAttack.Shared.Constants.RoundTimeMs;
                         CardsInHand = runStartedDTO.Cards.Select(x => new CardItem(x)).ToObservableCollection();
                         ApplySort();
                         ResetStats();
@@ -317,30 +318,6 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                 }
         }
         return Task.CompletedTask;
-    }
-
-    static CancellationTokenSource SetInterval(Action action, int interval)
-    {
-        var cts = new CancellationTokenSource();
-        var token = cts.Token;
-
-        Task.Run(async () =>
-        {
-            while (!token.IsCancellationRequested)
-            {
-                try
-                {
-                    action();
-                    await Task.Delay(interval, token);
-                }
-                catch (TaskCanceledException)
-                {
-                    break;
-                }
-            }
-        }, token);
-
-        return cts;
     }
 
     static (List<CardItem> NewHand, int NewCardCount) ProcessCardsDealt(

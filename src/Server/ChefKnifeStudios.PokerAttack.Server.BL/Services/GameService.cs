@@ -47,7 +47,6 @@ public class GameService(
     IWagerService wagerService) : IGameService
 {
     const int _NUM_CARDS_IN_HAND = 8;
-    const int _RUN_TIME_IN_SECONDS = 10;
     const int _NUM_ROUNDS_BEFORE_ELIMINATION = 1;
     const int _BASE_HANDS_AVAILABLE = 5;
     const int _BASE_DISCARDS_AVAILABLE = 5;
@@ -66,11 +65,11 @@ public class GameService(
         List<Task> taskList = [];
         foreach (var player in game.Players)
         {
-            taskList.Add(StartRun(player.Id, _RUN_TIME_IN_SECONDS));
+            taskList.Add(StartRun(player.Id, Constants.RoundTimeMs));
         }
         await Task.WhenAll(taskList);
 
-        await Task.Delay(1000 * _RUN_TIME_IN_SECONDS);
+        await Task.Delay(1000 * Constants.RoundTimeMs);
 
         await EndRoundAsync(gameId, ct);
     }
@@ -100,7 +99,6 @@ public class GameService(
 
         var resBody = new RunStartedDTO()
         {
-            RunTimeInSeconds = runTimeInSeconds,
             Cards = gamePlayer.CardsInHand.Select(x => x.MapToDTO()),
             HandsAvailable = gamePlayer.HandsRemaining,
             DiscardsAvailable = gamePlayer.DiscardsRemaining,

@@ -3,6 +3,7 @@
 @using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs
 @using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels
 @using ChefKnifeStudios.PokerAttack.Shared.Enums
+@using ChefKnifeStudios.PokerAttack.Client.Core.Extensions
 
 @page "/gameplay"
 
@@ -18,7 +19,7 @@
                                 class="sidebar mat-layout-grid-cell mat-layout-grid-cell-span-3 bgclr-surface2"
                             >
                                 <span class="mat-h4">Score: @GameplayViewModel.Score</span>
-                                <span class="mat-h4">@FormatAsMinutesSeconds(GameplayViewModel.RunTimeInSeconds)</span>
+                                <span class="mat-h4">@GameplayViewModel.RunTimeInSeconds.FormatAsMinutesSeconds()</span>
                                 <span class="mat-h4">Hands Available: @GameplayViewModel.AvailablePlayHands</span>
                                 <span class="mat-h4">Discards Available: @GameplayViewModel.AvailableDiscards</span>
                                 <span class="mat-h4">Power: @(GameplayViewModel.ActivePlayerPower?.Name ?? "No Power???")</span>
