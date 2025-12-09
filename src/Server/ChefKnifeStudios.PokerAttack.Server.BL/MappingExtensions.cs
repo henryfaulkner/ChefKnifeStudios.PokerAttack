@@ -90,6 +90,7 @@ public static class MappingExtensions
             BaseChips = dto.BaseChips,
             BaseMultiplier = dto.BaseMultiplier,
             HandScore = dto.HandScore,
+            ContributingCards = [],
         };
     }
 
