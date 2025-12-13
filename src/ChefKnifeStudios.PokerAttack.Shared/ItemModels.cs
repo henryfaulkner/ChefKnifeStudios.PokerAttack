@@ -112,7 +112,7 @@ public static class ItemJsonConstants
                 "id": "buff_base_score_small",
                 "name": "Score Pebble",
                 "description": "Adds a small base score bonus.",
-                "price": 150,
+                "price": 300,
                 "rarityTier": 1,
                 "baseScoreBuff": 5,
                 "baseMultiplierBuff": 0,
@@ -127,7 +127,7 @@ public static class ItemJsonConstants
                 "id": "buff_multiplier_small",
                 "name": "Multiplier Spark",
                 "description": "Adds a small multiplier bonus.",
-                "price": 225,
+                "price": 900,
                 "rarityTier": 1,
                 "baseScoreBuff": 0,
                 "baseMultiplierBuff": 1,
@@ -142,7 +142,7 @@ public static class ItemJsonConstants
                 "id": "buff_flush_score",
                 "name": "Flush Chip",
                 "description": "Adds score to Flush hands.",
-                "price": 450,
+                "price": 900,
                 "rarityTier": 2,
                 "baseScoreBuff": 0,
                 "baseMultiplierBuff": 0,
@@ -159,7 +159,7 @@ public static class ItemJsonConstants
                 "id": "buff_rank_kings",
                 "name": "Crown Gem",
                 "description": "Adds score to all Kings.",
-                "price": 525,
+                "price": 1050,
                 "rarityTier": 2,
                 "baseScoreBuff": 0,
                 "baseMultiplierBuff": 0,
@@ -176,7 +176,7 @@ public static class ItemJsonConstants
                 "id": "buff_suit_hearts",
                 "name": "Heart Token",
                 "description": "Adds score when using hearts.",
-                "price": 750,
+                "price": 1500,
                 "rarityTier": 3,
                 "baseScoreBuff": 0,
                 "baseMultiplierBuff": 0,
@@ -193,7 +193,7 @@ public static class ItemJsonConstants
                 "id": "buff_multiplier_straight",
                 "name": "Straight Edge",
                 "description": "Adds multiplier to Straight hands.",
-                "price": 900,
+                "price": 1800,
                 "rarityTier": 3,
                 "baseScoreBuff": 0,
                 "baseMultiplierBuff": 0,
@@ -201,7 +201,7 @@ public static class ItemJsonConstants
                 "rankScoreBuff": [],
                 "suitScoreBuff": [],
                 "handMultiplierBuff": [
-                    { "key": "straight", "value": 1 }
+                    { "key": "straight", "value": 3 }
                 ]
             },
 
@@ -210,7 +210,7 @@ public static class ItemJsonConstants
                 "id": "buff_extra_hand",
                 "name": "Bonus Hand",
                 "description": "Gain one extra hand per round.",
-                "price": 600,
+                "price": 1200,
                 "rarityTier": 2,
                 "handsAvailableBuff": 1,
                 "discardsAvailableBuff": 0
@@ -221,7 +221,7 @@ public static class ItemJsonConstants
                 "id": "buff_extra_discard",
                 "name": "Discard Token",
                 "description": "Gain one extra discard per round.",
-                "price": 400,
+                "price": 800,
                 "rarityTier": 2,
                 "handsAvailableBuff": 0,
                 "discardsAvailableBuff": 1
@@ -229,14 +229,14 @@ public static class ItemJsonConstants
 
             {
                 "type": "wager",
-                "id": "wager_score_450",
+                "id": "wager_score_1000",
                 "name": "Score 450",
-                "description": "Score at least 500 next round to win 450 chips.",
-                "price": 150,
+                "description": "Score at least 1000 next round to win 450 chips.",
+                "price": 300,
                 "rarityTier": 1,
                 "challengeType": "score",
-                "challengeValue": 500,
-                "rewardChips": 400
+                "challengeValue": 1000,
+                "rewardChips": 800
             },
 
             {
@@ -256,7 +256,7 @@ public static class ItemJsonConstants
                 "id": "wager_play_king",
                 "name": "King's Wager",
                 "description": "Play a hand containing a King to win 500 chips.",
-                "price": 225,
+                "price": 250,
                 "rarityTier": 1,
                 "challengeType": "specificRank",
                 "challengeValue": 0,

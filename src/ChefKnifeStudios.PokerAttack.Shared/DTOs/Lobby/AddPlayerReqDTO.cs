@@ -1,3 +1,3 @@
 ﻿namespace ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
 
-public record AddPlayerReqDTO(string GameId, PlayerDTO Player);
+public record AddPlayerReqDTO(string LobbyId, PlayerDTO Player);

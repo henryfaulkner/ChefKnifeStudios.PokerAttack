@@ -43,10 +43,7 @@ builder.Services.AddSingleton<IPokerAttackNotificationHelper, PokerAttackNotific
 builder.Services.AddSingleton<IPlayerConnectionTracker, PlayerConnectionTracker>();
 
 // Register Key-Value Stores
-builder.Services.AddSingleton<IKeyValueRepository<Lobby>, InMemoryKeyValueRepository<Lobby>>();
-builder.Services.AddSingleton<IKeyValueRepository<ActiveGame>, InMemoryKeyValueRepository<ActiveGame>>();
-builder.Services.AddSingleton<IKeyValueRepository<GamePlayer>, InMemoryKeyValueRepository<GamePlayer>>();
-builder.Services.AddSingleton<IKeyValueRepository<GameStates>, InMemoryKeyValueRepository<GameStates>>();
+builder.Services.AddSingleton(typeof(IKeyValueRepository<>), typeof(InMemoryKeyValueRepository<>));
 
 // Register Domain Services
 builder.Services.AddScoped<ILobbyService, LobbyService>();

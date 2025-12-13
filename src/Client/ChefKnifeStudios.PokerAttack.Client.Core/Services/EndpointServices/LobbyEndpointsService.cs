@@ -2,6 +2,7 @@
 using ChefKnifeStudios.PokerAttack.Client.Core.Enums;
 using ChefKnifeStudios.PokerAttack.Client.Core.Extensions;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using Microsoft.Extensions.Logging;
 
 using Endpoints = ChefKnifeStudios.PokerAttack.Shared.PokerAttackApiEndpoints.Lobby;
@@ -11,13 +12,13 @@ namespace ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 public interface ILobbyEndpointsService
 {
     Task<Result<IEnumerable<LobbyDTO>?>> GetLobbiesAsync(CancellationToken cancellationToken = default);
-    Task<Result<LobbyDTO?>> GetLobbyAsync(string gameId, CancellationToken cancellationToken = default);
+    Task<Result<LobbyDTO?>> GetLobbyAsync(string lobbyId, CancellationToken cancellationToken = default);
     Task<Result<LobbyDTO?>> CreateLobbyAsync(CreateLobbyReqDTO reqBody, CancellationToken cancellationToken = default);
     Task<Result<Discard>> AddPlayerAsync(AddPlayerReqDTO reqBody, CancellationToken cancellationToken = default);
     Task<Result<Discard>> RemovePlayerAsync(RemovePlayerReqDTO reqBody, CancellationToken cancellationToken = default);
-    Task<Result<Discard>> ShutdownLobbyAsync(string gameId, CancellationToken cancellationToken = default);
+    Task<Result<Discard>> ShutdownLobbyAsync(string lobbyId, CancellationToken cancellationToken = default);
     Task<Result<Discard>> UpdatePlayerAsync(PlayerDTO player, CancellationToken cancellationToken = default);
-    Task<Result<Discard>> StartGameAsync(string gameId, CancellationToken cancellationToken = default);
+    Task<Result<Discard>> StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default);
 }
 
 public class LobbyEndpointsService : ILobbyEndpointsService
@@ -50,12 +51,12 @@ public class LobbyEndpointsService : ILobbyEndpointsService
         }
     }
 
-    public async Task<Result<LobbyDTO?>> GetLobbyAsync(string gameId, CancellationToken cancellationToken = default)
+    public async Task<Result<LobbyDTO?>> GetLobbyAsync(string lobbyId, CancellationToken cancellationToken = default)
     {
         try
         {
             var res = await _httpService.GetAsync<LobbyDTO?> (
-                Endpoints.GetLobby.FormatRoute(gameId),
+                Endpoints.GetLobby.FormatRoute(lobbyId),
                 cancellationToken
             );
             return res.LogErrors(_logger, "Lobby GetLobbyAsync call");
@@ -121,12 +122,12 @@ public class LobbyEndpointsService : ILobbyEndpointsService
         }
     }
 
-    public async Task<Result<Discard>> ShutdownLobbyAsync(string gameId, CancellationToken cancellationToken = default)
+    public async Task<Result<Discard>> ShutdownLobbyAsync(string lobbyId, CancellationToken cancellationToken = default)
     {
         try
         {
             var res = await _httpService.DeleteAsync<Discard> (
-                Endpoints.ShutdownLobby.FormatRoute(gameId),
+                Endpoints.ShutdownLobby.FormatRoute(lobbyId),
                 cancellationToken
             );
             return res.LogErrors(_logger, "Lobby ShutdownLobbyAsync call");
@@ -156,12 +157,13 @@ public class LobbyEndpointsService : ILobbyEndpointsService
         }
     }
 
-    public async Task<Result<Discard>> StartGameAsync(string gameId, CancellationToken cancellationToken = default)
+    public async Task<Result<Discard>> StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default)
     {
         try
         {
-            var res = await _httpService.GetAsync<Discard>(
-                Endpoints.StartGame.FormatRoute(gameId),
+            var res = await _httpService.PostAsync<StartGameDTO, Discard>(
+                Endpoints.StartGame,
+                new StartGameDTO(lobbyId, gameMode),
                 cancellationToken
             );
             return res.LogErrors(_logger, "Lobby StartGameAsync call");

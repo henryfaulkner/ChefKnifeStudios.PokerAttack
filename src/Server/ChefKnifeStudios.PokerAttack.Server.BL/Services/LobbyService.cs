@@ -24,7 +24,7 @@ public interface ILobbyService
     Task<IEnumerable<PlayerDTO>> ShutDownLobbyAsync(string lobbyId, CancellationToken cancellationToken = default);
     Task<IEnumerable<PlayerDTO>> GetPlayersAsync(string lobbyId, CancellationToken cancellationToken = default);
     Task UpdatePlayerAsync(PlayerDTO player, CancellationToken cancellationToken = default);
-    Task StartGameAsync(string lobbyId, CancellationToken cancellationToken = default);
+    Task StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default);
 }
 
 public class LobbyService(
@@ -32,6 +32,7 @@ public class LobbyService(
     IPokerAttackNotificationHelper notificationHelper,
     IRepository<Game> gameRepository,
     IKeyValueRepository<GameStates> gameStateRepository,
+    IKeyValueRepository<GameModes> gameModeRepository,
     IKeyValueRepository<ActiveGame> activeGameRepository,
     IKeyValueRepository<GamePlayer> gamePlayerRepository) : ILobbyService
 {
@@ -291,7 +292,7 @@ public class LobbyService(
         );
     }
 
-    public async Task StartGameAsync(string lobbyId, CancellationToken cancellationToken = default)
+    public async Task StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default)
     {
         var lobbyDTO = await GetLobbyAsync(lobbyId, cancellationToken);
         if (lobbyDTO is null) return;
@@ -316,6 +317,7 @@ public class LobbyService(
         };
         await activeGameRepository.AddAsync(activeGameId, activeGame, cancellationToken);
         await gameStateRepository.AddAsync(activeGameId, GameStates.Freebie, cancellationToken);
+        await gameModeRepository.AddAsync(activeGameId, gameMode, cancellationToken);
 
         await notificationHelper.BroadcastToAllAsync(
             new PokerAttackNotification(

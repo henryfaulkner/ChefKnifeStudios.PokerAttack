@@ -7,6 +7,7 @@ using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR.EventArgs;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.AspNetCore.Components;
 using System.Collections.ObjectModel;
@@ -45,7 +46,7 @@ public interface ILobbyViewModel : IViewModel
     Task JoinLobbyAsync(string lobbyId, PlayerDTO player, CancellationToken cancellationToken = default);
     Task LeaveLobbyAsync(string lobbyId, PlayerDTO player, CancellationToken cancellationToken = default);
     Task ShutdownLobbyAsync(string lobbyId, CancellationToken cancellationToken = default);
-    Task StartGameAsync(string lobbyId, CancellationToken cancellationToken = default);
+    Task StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default);
 }
 
 public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposable
@@ -115,8 +116,8 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
         if (!res.IsSuccess) _toastService.ShowError("Lobby could not be shutdown");
     }
 
-    public async Task StartGameAsync(string lobbyId, CancellationToken cancellationToken = default) =>
-        await _lobbyEndpointsService.StartGameAsync(lobbyId, cancellationToken);
+    public async Task StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default) =>
+        await _lobbyEndpointsService.StartGameAsync(lobbyId, gameMode, cancellationToken);
 
     Task HandleSignalRNotificationReceived(PokerAttackNotification notification)
     {

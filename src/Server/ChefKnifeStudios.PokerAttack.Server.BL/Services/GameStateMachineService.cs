@@ -1,8 +1,5 @@
 ﻿using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
-using ChefKnifeStudios.PokerAttack.Server.Data.Models;
-using ChefKnifeStudios.PokerAttack.Server.Data.Repos;
-using ChefKnifeStudios.PokerAttack.Server.Data.Specifications;
 using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
@@ -25,32 +22,25 @@ public sealed class GameStateChangedEventArgs : EventArgs, IEventArgs
 
 public interface IGameStateMachineService
 {
-    Task<GameStates> GetGameStateAsync(string gameId, CancellationToken cancellationToken = default); 
     Task TransitionAsync(string gameId, GameEvents gameEvent, CancellationToken cancellationToken = default);
-    Task TransitionAsync(string hostPlayerClientId, string gameId, GameEvents gameEvent, CancellationToken cancellationToken = default);
 }
 
 public class GameStateMachineService(
     ILogger<GameStateMachineService> logger,
     IKeyValueRepository<GameStates> gameStateRepository,
-    IRepository<Game> gameRepository,
+    IKeyValueRepository<GameModes> gameModeRepository,
     IPokerAttackNotificationHelper notificationHelper,
     IEventNotificationService eventNotificationService) : IGameStateMachineService
 {
-    public async Task<GameStates> GetGameStateAsync(string gameId, CancellationToken cancellationToken = default)
-    {
-        var result = await gameStateRepository.GetAsync(gameId, cancellationToken) is GameStates gameState
-            ? gameState
-            : throw new ApplicationException($"Game State not found. GameId {gameId}");
-        return result;
-    }
-
     public async Task TransitionAsync(string gameId, GameEvents gameEvent, CancellationToken cancellationToken = default)
     {
-        var currGameState = await gameStateRepository.GetAsync(gameId, cancellationToken) is GameStates gameState
-            ? gameState
+        var gameState = await gameStateRepository.GetAsync(gameId, cancellationToken) is GameStates gs
+            ? gs
             : throw new ApplicationException($"Game State not found. GameId {gameId}");
-        var transition = GameTransitions.Get(currGameState, gameEvent);
+        var gameMode = await gameModeRepository.GetAsync(gameId, cancellationToken) is GameModes gm
+            ? gm
+            : throw new ApplicationException($"Game Mode not found. GameId {gameId}");
+        var transition = GameTransitions.Get(gameState, gameEvent, gameMode);
         if (transition is not GameTransition)
         {
             logger.LogWarning("GameTransition does not exist. GameState: {0}. GameEvent: {1}.", gameId, gameEvent);
@@ -72,13 +62,5 @@ public class GameStateMachineService(
             PokerAttackNotificationType.GameStateChanged,
             JsonSerializer.Serialize(transition.NextState, JsonOptions.Get())
         ));
-    }
-
-    public async Task TransitionAsync(string hostPlayerClientId, string gameClientId, GameEvents gameEvent, CancellationToken cancellationToken = default)
-    {
-        var game = await gameRepository.FirstOrDefaultAsync(new GetGameByClientIdSpec(gameClientId), cancellationToken)
-            ?? throw new ApplicationException($"Game State not found. GameId {gameClientId}");
-        if (game.HostPlayerClientId != hostPlayerClientId) return;
-        await TransitionAsync(gameClientId, gameEvent, cancellationToken);
     }
 }

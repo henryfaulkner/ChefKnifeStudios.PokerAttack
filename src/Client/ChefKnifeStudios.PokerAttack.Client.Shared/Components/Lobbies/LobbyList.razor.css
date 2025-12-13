@@ -1,1 +1,4 @@
-﻿
+﻿::deep .lobby-list_start-game-btns {
+    display: flex;
+    gap: 24px;
+}

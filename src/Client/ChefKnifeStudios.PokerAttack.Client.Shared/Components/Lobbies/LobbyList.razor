@@ -24,17 +24,25 @@
                                     OnClick="() => HandleJoinLobbyPressed(lobby.Id)" 
                                     OnClickStopPropagation="true"
                                 >
-                                    Join Lobby
+                                    JOIN LOBBY
                                 </MatButton>
                             } 
                             else if (lobby.HostPlayer.Id.Equals(ApplicationViewModel.Player.Id, StringComparison.InvariantCultureIgnoreCase))
                             {
-                                <MatButton 
-                                    OnClick="() => HandleStartGamePressed(lobby.Id)" 
-                                    OnClickStopPropagation="true"
-                                >
-                                    Start Game
-                                </MatButton>
+                                <div class="lobby-list_start-game-btns">
+                                    <MatButton 
+                                        OnClick="() => HandleStartQuickGamePressed(lobby.Id)" 
+                                        OnClickStopPropagation="true"
+                                    >
+                                        PLAY QUICK GAME
+                                    </MatButton>
+                                    <MatButton 
+                                        OnClick="() => HandleStartFullGamePressed(lobby.Id)" 
+                                        OnClickStopPropagation="true"
+                                    >
+                                        PLAY FULL GAME
+                                    </MatButton>
+                                </div>
                             }
                         </MatExpansionPanelSubHeader>
                     </MatExpansionPanelSummary>

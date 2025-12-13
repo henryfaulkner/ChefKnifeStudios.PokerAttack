@@ -1,4 +1,5 @@
 ﻿using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -78,8 +79,11 @@ public partial class LobbyList : ComponentBase, IDisposable
     void HandleLeaveLobbyPressed(string lobbyId) =>
         _ = LobbyViewModel.LeaveLobbyAsync(lobbyId, ApplicationViewModel.Player);
 
-    void HandleStartGamePressed(string lobbyId) =>
-        _ = LobbyViewModel.StartGameAsync(lobbyId);
+    void HandleStartQuickGamePressed(string lobbyId) =>
+        _ = LobbyViewModel.StartGameAsync(lobbyId, GameModes.Quick);
+
+    void HandleStartFullGamePressed(string lobbyId) =>
+        _ = LobbyViewModel.StartGameAsync(lobbyId, GameModes.Full);
 
     void HandleItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {

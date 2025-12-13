@@ -28,11 +28,11 @@ public static class LobbyEndpoints
         .Produces(StatusCodes.Status500InternalServerError);
 
         group.MapGet(Endpoints.GetLobby, async (
-            string gameId,
+            string lobbyId,
             ILobbyService lobbyService,
             CancellationToken cancellationToken = default) =>
         {
-            var lobby = await lobbyService.GetLobbyAsync(gameId, cancellationToken);
+            var lobby = await lobbyService.GetLobbyAsync(lobbyId, cancellationToken);
             return Result.Success(lobby);
         })
         .WithName(nameof(Endpoints.GetLobby))
@@ -59,7 +59,7 @@ public static class LobbyEndpoints
             ILobbyService lobbyService,
             CancellationToken cancellationToken = default) =>
         {
-            await lobbyService.JoinLobbyAsync(reqBody.GameId, reqBody.Player, cancellationToken);
+            await lobbyService.JoinLobbyAsync(reqBody.LobbyId, reqBody.Player, cancellationToken);
             return Result.Success();
         })
         .WithName(nameof(Endpoints.AddPlayer))
@@ -73,13 +73,13 @@ public static class LobbyEndpoints
             ILobbyService lobbyService,
             CancellationToken cancellationToken = default) =>
         {
-            if (string.IsNullOrWhiteSpace(reqBody.GameId))
+            if (string.IsNullOrWhiteSpace(reqBody.LobbyId))
             {
                 await lobbyService.LeaveLobbyAsync(reqBody.Player, cancellationToken);
             }
             else
             {
-                await lobbyService.LeaveLobbyAsync(reqBody.GameId, reqBody.Player, cancellationToken);
+                await lobbyService.LeaveLobbyAsync(reqBody.LobbyId, reqBody.Player, cancellationToken);
             }
             return Result.Success();
         })
@@ -104,11 +104,11 @@ public static class LobbyEndpoints
         .Produces(StatusCodes.Status500InternalServerError);
 
         group.MapDelete(Endpoints.ShutdownLobby, async (
-            string gameId,
+            string lobbyId,
             ILobbyService lobbyService,
             CancellationToken cancellationToken = default) =>
         {
-            await lobbyService.ShutDownLobbyAsync(gameId, cancellationToken);
+            await lobbyService.ShutDownLobbyAsync(lobbyId, cancellationToken);
             return Result.Success();
         })
         .WithName(nameof(Endpoints.ShutdownLobby))
@@ -116,12 +116,12 @@ public static class LobbyEndpoints
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);
 
-        group.MapGet(Endpoints.StartGame, async (
-            string gameId,
+        group.MapPost(Endpoints.StartGame, async (
+            StartGameDTO dto,
             ILobbyService lobbyService,
             CancellationToken cancellationToken = default) =>
         {
-            await lobbyService.StartGameAsync(gameId, cancellationToken);
+            await lobbyService.StartGameAsync(dto.LobbyId, dto.GameMode, cancellationToken);
             return Result.Success();
         })
         .WithName(nameof(Endpoints.StartGame))
