@@ -1,4 +1,5 @@
 ﻿using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
+using ChefKnifeStudios.PokerAttack.Shared;
 using Microsoft.AspNetCore.Components;
 
 namespace ChefKnifeStudios.PokerAttack.Client.WebApp.Pages;
@@ -9,6 +10,7 @@ public partial class Lobbies : ComponentBase
 
     [Inject] IApplicationViewModel ApplicationViewModel { get; set; } = null!;
     [Inject] ILobbyViewModel LobbyViewModel { get; set; } = null!;
+    [Inject] IFeatureFlagService FeatureFlagService { get; set; } = null!;
 
     bool _showScoringGuide = false;
 

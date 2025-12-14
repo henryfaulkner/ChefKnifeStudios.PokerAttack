@@ -5,6 +5,7 @@ using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
 using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 using ChefKnifeStudios.PokerAttack.Client.WebApp;
+using ChefKnifeStudios.PokerAttack.Shared;
 using MatBlazor;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -40,6 +41,8 @@ builder.Services.AddSingleton<IHttpServiceFactory>(sp =>
     var clientFactory = sp.GetRequiredService<IHttpClientFactory>();
     return new HttpServiceFactory(name => clientFactory.CreateClient(name));
 });
+
+builder.Services.AddSingleton<IFeatureFlagService, FeatureFlagService>();
 
 // Register JS Interop Services
 builder.Services.AddSingleton<IAudioJsInterop, AudioJsInterop>();

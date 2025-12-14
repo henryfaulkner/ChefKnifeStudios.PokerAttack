@@ -36,6 +36,8 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     foreach (var converter in jsonSerializationOptions.Converters) options.SerializerOptions.Converters.Add(converter);
 });
 
+builder.Services.AddSingleton<IFeatureFlagService, FeatureFlagService>();
+
 // Register SignalR
 builder.Services.AddSignalR(); 
 builder.Services.AddSingleton<IUserIdProvider, PlayerIdProvider>();

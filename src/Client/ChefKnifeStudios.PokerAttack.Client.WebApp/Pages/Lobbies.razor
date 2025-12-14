@@ -1,6 +1,7 @@
 ﻿@using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Gameplay
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Lobbies
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components
+@using ChefKnifeStudios.PokerAttack.Shared.Enums
 
 @page "/"
 
@@ -19,9 +20,12 @@
                     CREATE LOBBY
                 </MatButton>
 
-                <MatButton OnClick="HandleShowScoringGuidePressed" Icon="help">
-                    HOW TO SCORE
-                </MatButton>
+                @if (FeatureFlagService.IsEnabled(FeatureFlags.EnableHowToPlay))
+                {
+                    <MatButton OnClick="HandleShowScoringGuidePressed" Icon="help">
+                        HOW TO SCORE
+                    </MatButton>
+                }
             </div>
 
             <LobbyList />
