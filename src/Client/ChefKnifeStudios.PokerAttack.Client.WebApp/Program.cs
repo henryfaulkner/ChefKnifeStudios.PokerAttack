@@ -1,4 +1,5 @@
 using Blazored.LocalStorage;
+using ChefKnifeStudios.PokerAttack.Client.Core;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
@@ -15,22 +16,21 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 #region REGISTER SERVICES
+// Bind and register AppSettings
+var appSettings = new AppSettings();
+builder.Configuration.GetSection("AppSettings").Bind(appSettings);
+builder.Services.AddSingleton(appSettings);
+
 // Setup HttpClients
-var apis = builder.Configuration.GetSection("AppSettings:ExternalApis").GetChildren();
-foreach (var item in apis)
+foreach (var api in appSettings.ExternalApis.Where(a => a.AddHttpClient))
 {
-    if (!item.GetValue<bool>("AddHttpClient")) continue;
-
-    var apiName = item.GetValue<string>("Name", string.Empty);
-    var baseUri = item.GetValue("BaseUri", string.Empty);
-
-    if (string.IsNullOrWhiteSpace(apiName) || string.IsNullOrWhiteSpace(baseUri))
+    if (string.IsNullOrWhiteSpace(api.Name) || string.IsNullOrWhiteSpace(api.BaseUri))
         continue;
 
-    if (!Uri.TryCreate(baseUri, UriKind.Absolute, out var parsedUri))
+    if (!Uri.TryCreate(api.BaseUri, UriKind.Absolute, out var parsedUri))
         continue;
 
-    builder.Services.AddHttpClient(apiName, c =>
+    builder.Services.AddHttpClient(api.Name, c =>
     {
         c.BaseAddress = parsedUri;
     });
@@ -42,7 +42,8 @@ builder.Services.AddSingleton<IHttpServiceFactory>(sp =>
     return new HttpServiceFactory(name => clientFactory.CreateClient(name));
 });
 
-builder.Services.AddSingleton<IFeatureFlagService, FeatureFlagService>();
+builder.Services.AddSingleton<IFeatureFlagService>(sp =>
+    new FeatureFlagService(appSettings.FeatureFlags));
 
 // Register JS Interop Services
 builder.Services.AddSingleton<IAudioJsInterop, AudioJsInterop>();

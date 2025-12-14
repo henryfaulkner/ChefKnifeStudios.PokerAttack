@@ -1,5 +1,4 @@
 ﻿using ChefKnifeStudios.PokerAttack.Shared.Enums;
-using Microsoft.Extensions.Configuration;
 
 namespace ChefKnifeStudios.PokerAttack.Shared;
 
@@ -12,21 +11,13 @@ public class FeatureFlagService : IFeatureFlagService
 {
     private readonly Dictionary<FeatureFlags, bool> _featureFlags;
 
-    public FeatureFlagService(IConfiguration configuration)
+    public FeatureFlagService(Dictionary<FeatureFlags, bool> featureFlags)
     {
-        var featureFlagOptions = new FeatureFlagOptions();
-        configuration.Bind(featureFlagOptions);
-
-        _featureFlags = featureFlagOptions.FeatureFlags ?? new Dictionary<FeatureFlags, bool>();
+        _featureFlags = featureFlags;
     }
 
     public bool IsEnabled(FeatureFlags flag)
     {
         return _featureFlags.ContainsKey(flag) && _featureFlags[flag];
-    }
-
-    public class FeatureFlagOptions
-    {
-        public Dictionary<FeatureFlags, bool>? FeatureFlags { get; set; }
     }
 }
