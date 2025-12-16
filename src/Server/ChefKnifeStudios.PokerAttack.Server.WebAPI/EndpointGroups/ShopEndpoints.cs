@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result;
 using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
+using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs;
 using Endpoints = ChefKnifeStudios.PokerAttack.Shared.PokerAttackApiEndpoints.Shop;
@@ -18,13 +19,30 @@ public static class ShopEndpoints
 
         group.MapGet(Endpoints.GetShopItems, async (
             IItemRepository itemRepository,
+            IKeyValueRepository<ActiveGame> activeGameRepository,
+            string gameId,
             CancellationToken cancellationToken = default) =>
         {
             var items = itemRepository.GetRandomNumber();
-            return Result.Success(items);
+
+            // Get the active game to calculate round-based pricing
+            var activeGame = await activeGameRepository.GetAsync(gameId, cancellationToken);
+            if (activeGame == null)
+            {
+                return Result.NotFound($"Active game not found with ID: {gameId}");
+            }
+
+            // Calculate adjusted price for each item: 15% increase per round
+            var shopItems = items.Select(item => new ShopItemDTO
+            {
+                Item = item,
+                AdjustedPrice = (int)(item.Price * (1 + 0.15 * activeGame.RoundNumber))
+            });
+
+            return Result.Success(shopItems);
         })
         .WithName(nameof(Endpoints.GetShopItems))
-        .Produces<IEnumerable<ItemBase>>(StatusCodes.Status200OK)
+        .Produces<IEnumerable<ShopItemDTO>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);
 
@@ -35,11 +53,11 @@ public static class ShopEndpoints
             string shopItemId,
             CancellationToken cancellationToken = default) =>
         {
-            var item = await shopService.PurchaseItemAsync(gameId, playerId, shopItemId, cancellationToken);
-            return Result.Success(item);
+            var shopItem = await shopService.PurchaseItemAsync(gameId, playerId, shopItemId, cancellationToken);
+            return Result.Success(shopItem);
         })
         .WithName(nameof(Endpoints.PurchaseShopItem))
-        .Produces<ItemBase>(StatusCodes.Status200OK)
+        .Produces<ShopItemDTO>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);
 

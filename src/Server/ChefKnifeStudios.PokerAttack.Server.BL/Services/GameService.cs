@@ -51,16 +51,14 @@ public class GameService(
     const int _BASE_HANDS_AVAILABLE = 5;
     const int _BASE_DISCARDS_AVAILABLE = 5;
 
-    public async Task StartGameAsync(string gameId, CancellationToken ct = default)
-    {
-        //await gameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
-    }
+    public async Task StartGameAsync(string gameId, CancellationToken ct = default) {}
 
     public async Task StartRoundAsync(string gameId, CancellationToken ct = default)
     {
-
-        var game = await activeGameRepository.GetAsync(gameId)
+        var game = await activeGameRepository.GetAsync(gameId, ct)
             ?? throw new KeyNotFoundException($"Game not found. Game Id {gameId}");
+        game.RoundNumber += 1;
+        await activeGameRepository.UpdateAsync(gameId, game, ct);
 
         List<Task> taskList = [];
         foreach (var player in game.Players)
@@ -124,7 +122,7 @@ public class GameService(
             throw new InvalidOperationException("No hands remaining");
         }
 
-        // ✅ Remove matching cards from gamePlayer.CardsInHand (handles duplicates)
+        // Remove matching cards from gamePlayer.CardsInHand (handles duplicates)
         foreach (var card in hand)
         {
             var match = gamePlayer.CardsInHand

@@ -1,4 +1,5 @@
 using ChefKnifeStudios.PokerAttack.Shared;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -6,15 +7,15 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.Models;
 
 public partial class ShopItem : ObservableObject
 {
-    public ShopItem(ItemBase item)
+    public ShopItem(ShopItemDTO shopItemDto)
     {
-        ItemId = item.Id;
-        Name = item.Name;
-        Description = item.Description;
-        Price = item.Price;
-        RarityTier = item.Rarity?.RarityTier;
+        ItemId = shopItemDto.Item.Id;
+        Name = shopItemDto.Item.Name;
+        Description = shopItemDto.Item.Description;
+        Price = shopItemDto.AdjustedPrice;
+        RarityTier = shopItemDto.Item.Rarity?.RarityTier;
         WasPurchased = false;
-        Root = item;
+        Root = shopItemDto.Item;
     }
 
     [ObservableProperty]

@@ -314,6 +314,7 @@ public class LobbyService(
         {
             Id = activeGameId,
             Players = lobbyDTO.Players.Select(x => x.MapToModel()).ToHashSet(),
+            RoundNumber = 0,
         };
         await activeGameRepository.AddAsync(activeGameId, activeGame, cancellationToken);
         await gameStateRepository.AddAsync(activeGameId, GameStates.Freebie, cancellationToken);

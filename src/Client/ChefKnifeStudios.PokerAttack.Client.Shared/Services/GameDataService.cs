@@ -79,9 +79,12 @@ public class GameDataService : IGameDataService
 
     public async Task LoadShopItemsAsync(CancellationToken cancellationToken = default)
     {
+        if (_gameDataStore.GameId is null) throw new ApplicationException("GameDataStore.GameId must be set before loading shop items.");
         _gameDataStore.IsLoadingShop = true;
-        _gameDataStore.ShopItems = (await _shopEndpointsService.GetShopItemsAsync(cancellationToken))
-            .Value?
+        _gameDataStore.ShopItems = (await _shopEndpointsService.GetShopItemsAsync(
+            _gameDataStore.GameId,
+            cancellationToken
+        )).Value?
             .Select(x => new ShopItem(x))
             .ToObservableCollection() ?? [];
         _gameDataStore.IsLoadingShop = false;
