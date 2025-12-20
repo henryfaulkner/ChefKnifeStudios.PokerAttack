@@ -2,6 +2,7 @@
 using ChefKnifeStudios.PokerAttack.Client.Core.Enums;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Constants;
+using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
 using ChefKnifeStudios.PokerAttack.Shared;
@@ -20,6 +21,7 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 public interface IApplicationViewModel : IViewModel
 {
     PlayerDTO Player { get; }
+    Settings Settings { get; }
     Task InitAsync();
 }
 
@@ -39,6 +41,9 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
         Id = Guid.NewGuid().ToString(),
         Name = string.Empty,
     };
+
+    [ObservableProperty]
+    Settings settings = new();
 
     public ApplicationViewModel(
         ISignalRNotificationService signalRNotificationService,

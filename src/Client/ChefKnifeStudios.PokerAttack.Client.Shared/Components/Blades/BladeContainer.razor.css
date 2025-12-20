@@ -8,6 +8,7 @@
     z-index: 2;
     transform: translateX(100%); /* Start off-screen */
     transition: transform 0.3s ease-in-out;
+
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
     -ms-overflow-style: none; /* Internet Explorer 10+ */
@@ -19,7 +20,7 @@
 }
 
 .blade-container.open {
-    transform: translateX(0);
+    transform: translateX(0); 
     box-shadow: -2px 0px 8px rgba(0, 0, 0, 0.2);
 }
 

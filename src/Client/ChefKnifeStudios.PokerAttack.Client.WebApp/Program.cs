@@ -50,6 +50,7 @@ builder.Services.AddSingleton<IAudioJsInterop, AudioJsInterop>();
 builder.Services.AddSingleton<ICommonJsInterop, CommonJsInterop>();
 builder.Services.AddSingleton<IInputJsInterop, InputJsInterop>();
 builder.Services.AddSingleton<ILobbyJsInterop, LobbyJsInterop>();
+builder.Services.AddSingleton<IRecorderInterop, RecorderInterop>();
 
 builder.Services.AddTransient<IToastService, ToastService>();
 builder.Services.AddSingleton<IInputService, InputService>();
@@ -62,6 +63,7 @@ builder.Services.AddTransient<IGameplayEndpointsService, GameplayEndpointsServic
 builder.Services.AddTransient<IPlayerPowerEndpointsService, PlayerPowerEndpointsService>();
 builder.Services.AddTransient<IScoringRulesEndpointsService, ScoringRulesEndpointsService>();
 builder.Services.AddTransient<IShopEndpointsService, ShopEndpointsService>();
+builder.Services.AddTransient<IUploadEndpointsService, UploadEndpointsService>();
 
 builder.Services.AddMatBlazor();
 builder.Services.AddMatToaster(config =>

@@ -7,6 +7,7 @@ public class BladeEventArgs : IEventArgs
     public enum Types
     {
         Close,
+        Settings,
     }
 
     public required Types Type { get; init; }

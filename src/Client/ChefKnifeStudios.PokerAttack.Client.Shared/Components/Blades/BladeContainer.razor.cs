@@ -3,7 +3,7 @@ using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
 using Microsoft.AspNetCore.Components;
 
-namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components;
+namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.Blades;
 
 public partial class BladeContainer : ComponentBase, IDisposable
 {
@@ -11,13 +11,12 @@ public partial class BladeContainer : ComponentBase, IDisposable
     [Parameter] public bool KeepOpen { get; set; }
 
     [Inject] IEventNotificationService EventNotificationService { get; set; } = null!;
-    [Inject] ICommonJsInterop CommonJsInterop { get; set; } = null!;
+    [Inject] ICommonJsInterop CommonJsInteropService { get; set; } = null!;
 
     bool _isOpen = false;
-    string _uid = Guid.NewGuid().ToString();
-    string _elementId => $"blade-{_uid.ToString()}";
+    string _elementId => $"blade-{new Guid().ToString()}";
     DateTime _lastOpenedUtc;
-    const int MinOpenDurationMs = 300;
+    const int MinOpenDurationMs = 300; 
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -27,14 +26,14 @@ public partial class BladeContainer : ComponentBase, IDisposable
 
     public void Dispose()
     {
-        CommonJsInterop.RemoveOutsideClickListener(_uid);
+        CommonJsInteropService.RemoveOutsideClickListener(_elementId);
     }
 
     public void Open()
     {
         _lastOpenedUtc = DateTime.UtcNow;
         _isOpen = true;
-        CommonJsInterop.AddOutsideClickListener(_uid, HandleClosePressed);
+        CommonJsInteropService.AddOutsideClickListener(_elementId, HandleClosePressed);
         StateHasChanged();
     }
 
@@ -46,7 +45,7 @@ public partial class BladeContainer : ComponentBase, IDisposable
             return;
 
         _isOpen = false;
-        CommonJsInterop.RemoveOutsideClickListener(_uid);
+        CommonJsInteropService.RemoveOutsideClickListener(_elementId);
         StateHasChanged();
     }
 
@@ -55,7 +54,7 @@ public partial class BladeContainer : ComponentBase, IDisposable
         EventNotificationService.PostEvent(
             this,
             new BladeEventArgs()
-            {
+            { 
                 Type = BladeEventArgs.Types.Close,
             }
         );

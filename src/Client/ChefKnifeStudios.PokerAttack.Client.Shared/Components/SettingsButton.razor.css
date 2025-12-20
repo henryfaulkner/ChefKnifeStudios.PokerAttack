@@ -1,0 +1,9 @@
+::deep .app-fab--absolute {
+    position: fixed;
+    right: 1rem;
+    z-index: 1;
+}
+
+::deep .cog {
+    top: 1rem;
+}

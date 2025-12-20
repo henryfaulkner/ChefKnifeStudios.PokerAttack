@@ -62,6 +62,14 @@ builder.Services.AddSingleton<IPlayerPowerEffectRegistry, PlayerPowerEffectRegis
 // Register Item Singletons
 builder.Services.AddSingleton<IItemRepository, ItemRepository>();
 
+// Register Blob Storage Service
+string azureStorageConnectionString = builder.Configuration.GetConnectionString("AzureStorage")!;
+builder.Services.AddSingleton<IStorageService>(sp =>
+    new BlobStorageService(
+        azureStorageConnectionString,
+        sp.GetRequiredService<ILogger<BlobStorageService>>()
+    ));
+
 // Register Eventing Service
 builder.Services.AddSingleton<IEventNotificationService, EventNotificationService>();
 builder.Services.AddHostedService<EventNotificationServiceSubscriber>();
@@ -107,7 +115,8 @@ app.MapTestEndpoints()
    .MapGameplayEndpoints()
    .MapPlayerPowerEndpoints()
    .MapShopEndpoints()
-   .MapScoringRulesEndpoints();
+   .MapScoringRulesEndpoints()
+   .MapUploadEndpoints();
 
 app.MapDefaultEndpoints();
 

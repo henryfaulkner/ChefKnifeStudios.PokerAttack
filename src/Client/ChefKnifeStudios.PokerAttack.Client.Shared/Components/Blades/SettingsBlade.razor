@@ -1,0 +1,20 @@
+﻿<div class="settings-blade">
+    <BladeContainer @ref="_bladeContainer">
+        <ContentFragment>
+            <MatH4 class="clr-on-1t-container">
+                Settings
+            </MatH4>
+
+            <div class="blade-content">
+                <MatCheckbox
+                    TValue="bool"
+                    ValueChanged="HandleDevModePressed"
+                >
+                    <span class="is-recurring-label">
+                        Developer Mode
+                    </span>
+                </MatCheckbox>
+            </div>
+        </ContentFragment>
+    </BladeContainer>
+</div>

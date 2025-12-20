@@ -51,4 +51,11 @@ public class PokerAttackApiEndpoints
 
         public const string GetScoringRules = $"{EndpointGroup}";
     }
+
+    public class Upload
+    {
+        const string EndpointGroup = "/upload";
+
+        public const string PublishRecording = $"{EndpointGroup}/recording";
+    }
 }
