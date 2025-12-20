@@ -10,6 +10,7 @@ using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using Microsoft.AspNetCore.SignalR;
 using Scalar.AspNetCore;
+using Sentry;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,15 @@ builder.Services.RegisterDataServices(connectionString);
 
 // Add services to the container.
 builder.Services.AddProblemDetails();
+
+builder.WebHost.UseSentry(o =>
+{
+    // A DSN is required. You can set here in code, in the SENTRY_DSN environment variable or in your appsettings.json
+    // See https://docs.sentry.io/product/sentry-basics/dsn-explainer/
+    o.Dsn = "https://38cd349f3585a7c167c3171f176e7d08@o4510567305379840.ingest.us.sentry.io/4510567365148672";
+    o.ProfilesSampleRate = 0.1;
+    o.TracesSampleRate = 1.0;
+});
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

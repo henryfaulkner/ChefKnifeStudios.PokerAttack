@@ -10,6 +10,7 @@ using ChefKnifeStudios.PokerAttack.Shared;
 using MatBlazor;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Sentry;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -94,5 +95,15 @@ builder.Services.AddTransient<IShopViewModel, ShopViewModel>();
 builder.Services.AddScoped<IGameDataStore, GameDataStore>();
 builder.Services.AddScoped<IGameDataService, GameDataService>();
 #endregion
+
+builder.UseSentry(options =>
+{
+    options.Dsn = "https://38cd349f3585a7c167c3171f176e7d08@o4510567305379840.ingest.us.sentry.io/4510567365148672";
+    // Set TracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+    // We recommend adjusting this value in production.
+    options.TracesSampleRate = 1.0;
+    // Enable automatic capture of HTTP client errors
+    options.CaptureFailedRequests = true;
+});
 
 await builder.Build().RunAsync();
