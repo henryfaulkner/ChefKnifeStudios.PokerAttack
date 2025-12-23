@@ -74,12 +74,45 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
             _localStorageService.SetItem(LocalStorageConstants.PlayerNameKey, Player.Name);
         }
 
+        Settings? storedSettings = _localStorageService.GetItem<Settings>(LocalStorageConstants.SettingsKey);
+        if (storedSettings is Settings settings)
+        {
+            Settings = settings;
+        }
+        else
+        {
+            _localStorageService.SetItem(LocalStorageConstants.SettingsKey, Settings);
+        }
+
+        Settings.PropertyChanged += HandleSettingsPropertyChanged;
+
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
+    }
+
+    partial void OnSettingsChanged(Settings? oldValue, Settings newValue)
+    {
+        if (oldValue is not null)
+        {
+            oldValue.PropertyChanged -= HandleSettingsPropertyChanged;
+        }
+
+        if (newValue is not null)
+        {
+            newValue.PropertyChanged += HandleSettingsPropertyChanged;
+        }
+
+        _localStorageService.SetItem(LocalStorageConstants.SettingsKey, newValue);
+    }
+
+    void HandleSettingsPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        _localStorageService.SetItem(LocalStorageConstants.SettingsKey, Settings);
     }
 
     public void Dispose()
     {
         _signalRNotificationService.HandleNotificationReceived -= HandleSignalRNotificationReceived;
+        Settings.PropertyChanged -= HandleSettingsPropertyChanged;
     }
 
     public async Task InitAsync()

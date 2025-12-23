@@ -1,4 +1,5 @@
-﻿@using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Gameplay
+﻿@using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Blades
+@using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Gameplay
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Lobbies
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components
 @using ChefKnifeStudios.PokerAttack.Shared.Enums
@@ -52,5 +53,8 @@
             IsOpen="@_showScoringGuide" 
             OnClose="HandleCloseScoringGuidePressed"
         />
+
+        <SettingsButton />
+        <SettingsBlade />
     </div>
 </div>

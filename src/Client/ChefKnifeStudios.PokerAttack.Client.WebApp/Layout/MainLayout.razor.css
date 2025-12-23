@@ -19,3 +19,11 @@
         scrollbar-width: auto; /* Firefox, Safari 18.2+, Chromium 121+ */
     }
 }
+
+::deep .mdc-checkbox__native-control ~ .mdc-checkbox__background {
+    border-color: var(--mdc-theme-primary, #6200ee) !important;
+}
+
+::deep .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background {
+    background-color: var(--mdc-theme-primary, #6200ee);
+}

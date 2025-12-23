@@ -1,19 +1,33 @@
-﻿<div class="settings-blade">
+@using System.Reflection
+@using System.ComponentModel
+
+<div class="settings-blade">
     <BladeContainer @ref="_bladeContainer">
         <ContentFragment>
-            <MatH4 class="clr-on-1t-container">
+            <MatH4 class="clr-on-1t-container" Style="margin: 0 0 16px;">
                 Settings
             </MatH4>
 
             <div class="blade-content">
-                <MatCheckbox
-                    TValue="bool"
-                    ValueChanged="HandleDevModePressed"
-                >
-                    <span class="is-recurring-label">
-                        Developer Mode
-                    </span>
-                </MatCheckbox>
+                <div class="settings-list">
+                    @{
+                        var type = ApplicationViewModel.Settings.GetType();
+                        var properties = type.GetProperties();
+                    }
+                    @foreach (var property in properties)
+                    {
+                        var description = property.GetCustomAttribute<DescriptionAttribute>()?.Description ?? property.Name;
+                        <MatCheckbox
+                            TValue="bool"
+                            Value="@(property.GetValue(ApplicationViewModel.Settings) as bool? ?? false)"
+                            ValueChanged="(e) => HandleSettingPressed(property.Name, e)"
+                        >
+                            <span class="setting-label mat-body1">
+                                @description
+                            </span>
+                        </MatCheckbox>
+                    }
+                </div>
             </div>
         </ContentFragment>
     </BladeContainer>

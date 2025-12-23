@@ -3,9 +3,6 @@ using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
 using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.Blades;
 
@@ -16,9 +13,6 @@ public partial class SettingsBlade : ComponentBase, IDisposable
     [Inject] IApplicationViewModel ApplicationViewModel { get; set; } = null!;
 
     BladeContainer? _bladeContainer;
-
-    bool _isLoading = false;
-    bool _devMode = false;
 
     protected override void OnInitialized()
     {
@@ -49,8 +43,16 @@ public partial class SettingsBlade : ComponentBase, IDisposable
         await Task.CompletedTask;
     }
 
-    void HandleDevModePressed(bool val)
+    void HandleSettingPressed(string propertyName, bool val)
     {
-
+        var type = ApplicationViewModel.Settings.GetType();
+        var properties = type.GetProperties();
+        foreach (var property in properties)
+        {
+            if (property.Name == propertyName)
+            {
+                property.SetValue(ApplicationViewModel.Settings, val);
+            }
+        }
     }
 }
