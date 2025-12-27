@@ -15,7 +15,7 @@ public partial class ShopItem : ObservableObject
         Price = shopItemDto.AdjustedPrice;
         RarityTier = shopItemDto.Item.Rarity?.RarityTier;
         WasPurchased = false;
-        Root = shopItemDto.Item;
+        Root = shopItemDto;
     }
 
     [ObservableProperty]
@@ -37,5 +37,5 @@ public partial class ShopItem : ObservableObject
     bool _wasPurchased = false;
 
     [ObservableProperty]
-    ItemBase? _root = null;
+    ShopItemDTO? _root = null;
 }

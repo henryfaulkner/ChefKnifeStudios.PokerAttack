@@ -16,6 +16,9 @@ public interface ISignalRNotificationService
 {
     event PokerAttackNotificationHandler? HandleNotificationReceived;
 
+    HubConnection? HubConnection { get; }
+    bool IsConnected { get; }
+
     Task InitAsync(string playerId);
     Task JoinLobbyGroupAsync(string lobbyId);
     Task LeaveLobbyGroupAsync(string lobbyId);
@@ -42,6 +45,9 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
     private readonly ILogger<SignalRNotificationService> _logger;
 
     public event PokerAttackNotificationHandler? HandleNotificationReceived;
+
+    public HubConnection? HubConnection => _hubConnection;
+    public bool IsConnected => _hubConnection?.State == HubConnectionState.Connected;
 
     public SignalRNotificationService(
         IConfiguration configuration,

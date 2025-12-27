@@ -7,6 +7,8 @@ using ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
 using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 using ChefKnifeStudios.PokerAttack.Client.WebApp;
 using ChefKnifeStudios.PokerAttack.Shared;
+using ChefKnifeStudios.PokerAttack.Shared.Agents;
+using ChefKnifeStudios.PokerAttack.Shared.Models;
 using MatBlazor;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -21,6 +23,11 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 var appSettings = new AppSettings();
 builder.Configuration.GetSection("AppSettings").Bind(appSettings);
 builder.Services.AddSingleton(appSettings);
+
+// Bind and register AgentSettings
+var agentSettings = new AgentSettings();
+builder.Configuration.GetSection("AgentSettings").Bind(agentSettings);
+builder.Services.AddSingleton(agentSettings);
 
 // Setup HttpClients
 foreach (var api in appSettings.ExternalApis.Where(a => a.AddHttpClient))
@@ -66,6 +73,11 @@ builder.Services.AddTransient<IScoringRulesEndpointsService, ScoringRulesEndpoin
 builder.Services.AddTransient<IShopEndpointsService, ShopEndpointsService>();
 builder.Services.AddTransient<IUploadEndpointsService, UploadEndpointsService>();
 
+// Register AI Agent Services
+builder.Services.AddSingleton<IAgentBrain, RandomActionBrain>();
+builder.Services.AddScoped<IAutoPilotService, AutoPilotService>();
+builder.Services.AddScoped<ILobbyAutomationService, LobbyAutomationService>();
+
 builder.Services.AddMatBlazor();
 builder.Services.AddMatToaster(config =>
 {
@@ -104,6 +116,25 @@ builder.UseSentry(options =>
     options.TracesSampleRate = 1.0;
     // Enable automatic capture of HTTP client errors
     options.CaptureFailedRequests = true;
+
+    // Tag events from AI agents
+    options.SetBeforeSend(evt =>
+    {
+        try
+        {
+            var serviceProvider = builder.Services.BuildServiceProvider();
+            var settings = serviceProvider.GetService<AgentSettings>();
+            if (settings?.Enabled == true)
+            {
+                evt.SetTag("user_type", "agent");
+            }
+        }
+        catch
+        {
+            // Ignore errors in tagging
+        }
+        return evt;
+    });
 });
 
 await builder.Build().RunAsync();

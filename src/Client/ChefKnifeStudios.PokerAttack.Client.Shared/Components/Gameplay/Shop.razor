@@ -43,7 +43,7 @@
 @{
     RenderFragment ItemCategoryPill(ShopItem item)
     {
-        return item.Root switch
+        return item.Root?.Item switch
         {
             ItemScoring => @<Pill Type="@PillTypes.Primary" Text="Scoring Item" />,
             ItemGameplay => @<Pill Type="@PillTypes.Secondary" Text="Gameplay Item" />,
