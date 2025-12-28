@@ -1,3 +1,4 @@
+using ChefKnifeStudios.PokerAttack.Server.BL;
 using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
@@ -84,8 +85,8 @@ builder.Services.AddSingleton<IStorageService>(sp =>
 builder.Services.AddSingleton<IEventNotificationService, EventNotificationService>();
 builder.Services.AddHostedService<EventNotificationServiceSubscriber>();
 
-// Register Lobby Cleanup Service
-builder.Services.AddHostedService<LobbyCleanupService>();
+// Register Cleanup Background Service
+builder.Services.AddHostedService<CleanupBackgroundService>();
 
 var app = builder.Build();
 
