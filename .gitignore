@@ -404,4 +404,3 @@ src/**/appsettings.*.json
 tests/test-results/
 tests/playwright-report/
 tests/playwright/.cache/
-tests/package-lock.json
