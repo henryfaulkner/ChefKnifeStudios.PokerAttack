@@ -86,3 +86,57 @@ stages:
               containerAppName: poker-attack-api
               resourceGroup: 'poker-attack-rg'
               containerAppEnvironment: 'poker-attack-api-env'
+
+- stage: E2ETestProduction
+  displayName: E2E Tests - Production
+  dependsOn: DeployProd
+  jobs:
+  - job: RunE2ETests
+    displayName: Run Playwright E2E Tests
+    pool:
+      vmImage: 'ubuntu-latest'
+    variables:
+    - group: 'Prod-PokerAttack'
+    steps:
+    - checkout: self
+
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '20.x'
+      displayName: 'Install Node.js 20'
+
+    - script: |
+        cd tests
+        npm ci
+      displayName: 'Install npm dependencies'
+
+    - script: |
+        cd tests
+        npx playwright install chromium --with-deps
+      displayName: 'Install Playwright browsers'
+
+    - script: |
+        cd tests
+        npm test
+      displayName: 'Run E2E Tests Against Production'
+      continueOnError: true  # Don't fail deployment if tests fail
+      env:
+        CLIENT_URL: $(TestClientUrl)
+        API_URL_CLEANUP: $(TestApiUrl)
+        CI: true
+
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
+      condition: always()
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: 'tests/test-results/junit.xml'
+        testRunTitle: 'E2E Tests - Production Deploy $(Build.BuildNumber)'
+        failTaskOnFailedTests: false  # Just log, don't fail
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Test Reports'
+      condition: always()
+      inputs:
+        targetPath: 'tests/playwright-report'
+        artifact: 'e2e-test-report-$(Build.BuildNumber)'

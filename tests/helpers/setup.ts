@@ -87,12 +87,25 @@ export async function wait(ms: number) {
 /**
  * Cleanup helper - clears all repository data on the server
  * Call this before tests to ensure a clean state
+ *
+ * @param clientUrl - The client URL (where the browser navigates)
+ * @param apiUrl - Optional API URL (for production). If not provided, derives from clientUrl
  */
-export async function cleanupServerData(baseUrl: string) {
+export async function cleanupServerData(clientUrl: string, apiUrl?: string) {
   console.log('Calling server cleanup endpoint to clear all data...');
 
-  const apiUrl = baseUrl.replace('7150', '7333'); // Convert client URL to server URL
-  const cleanupUrl = `${apiUrl}/test/cleanup`;
+  // Determine cleanup URL
+  let cleanupUrl: string;
+  if (apiUrl) {
+    // Production: Use provided API URL
+    cleanupUrl = `${apiUrl}/test/cleanup`;
+  } else {
+    // Local dev: Derive from client URL (port 7150 → 7333)
+    const derivedApiUrl = clientUrl.replace('7150', '7333');
+    cleanupUrl = `${derivedApiUrl}/test/cleanup`;
+  }
+
+  console.log(`Cleanup endpoint: ${cleanupUrl}`);
 
   try {
     // Temporarily disable SSL verification for self-signed certificates

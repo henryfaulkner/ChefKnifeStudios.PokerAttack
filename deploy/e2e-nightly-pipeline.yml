@@ -1,0 +1,81 @@
+name: E2E-Nightly-$(Date:yyyyMMdd).$(Rev:r)
+
+# No triggers - schedule only
+trigger: none
+pr: none
+
+# Schedule: 2:00 AM daily
+schedules:
+- cron: '0 2 * * *'
+  displayName: 'Nightly E2E Test Run'
+  branches:
+    include:
+    - main
+  always: true  # Run even if no code changes
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+- group: 'Prod-PokerAttack'
+- name: 'test-environment'
+  value: 'nightly'
+
+stages:
+- stage: E2ETestProduction
+  displayName: Nightly E2E Tests - Production
+  jobs:
+  - job: RunE2ETests
+    displayName: Run Full E2E Test Suite
+    timeoutInMinutes: 30
+    steps:
+    - checkout: self
+
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '20.x'
+      displayName: 'Install Node.js 20'
+
+    - script: |
+        cd tests
+        npm ci
+      displayName: 'Install npm dependencies'
+
+    - script: |
+        cd tests
+        npx playwright install chromium --with-deps
+      displayName: 'Install Playwright browsers'
+
+    - script: |
+        cd tests
+        npm test
+      displayName: 'Run Nightly E2E Tests'
+      continueOnError: true  # Don't fail build, just log
+      env:
+        CLIENT_URL: $(TestClientUrl)
+        API_URL_CLEANUP: $(TestApiUrl)
+        CI: true
+        TEST_ENVIRONMENT: nightly
+
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
+      condition: always()
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: 'tests/test-results/junit.xml'
+        testRunTitle: 'Nightly E2E Tests - $(Build.BuildNumber)'
+        failTaskOnFailedTests: false  # Don't fail pipeline
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Test Reports'
+      condition: always()
+      inputs:
+        targetPath: 'tests/playwright-report'
+        artifact: 'nightly-e2e-report-$(Build.BuildNumber)'
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Screenshots and Videos'
+      condition: always()
+      inputs:
+        targetPath: 'tests/test-results'
+        artifact: 'test-artifacts-$(Build.BuildNumber)'

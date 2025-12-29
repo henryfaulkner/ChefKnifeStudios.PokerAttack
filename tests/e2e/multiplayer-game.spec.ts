@@ -11,13 +11,25 @@ import * as actions from '../helpers/actions';
 
 test.describe('4-Player Multiplayer Game - 3 Consecutive Games', () => {
   test('should complete 3 full games with 4 players', async ({ browser }) => {
-    const baseUrl = process.env.API_URL || 'https://localhost:7150';
+    // Get URLs from environment variables
+    // CLIENT_URL: Where the browser navigates (frontend)
+    // API_URL_CLEANUP: Where the cleanup endpoint is (backend API)
+    // For backward compatibility, fall back to API_URL for local dev
+    const clientUrl = process.env.CLIENT_URL || process.env.API_URL || 'https://localhost:7150';
+    const apiUrl = process.env.API_URL_CLEANUP; // Optional - for production
+
+    console.log(`Client URL (browser navigation): ${clientUrl}`);
+    if (apiUrl) {
+      console.log(`API URL (cleanup endpoint): ${apiUrl}`);
+    } else {
+      console.log('API URL: Deriving from client URL (local dev mode)');
+    }
 
     // ============================================================================
     // ARRANGE - Setup Phase (handled for you)
     // ============================================================================
     console.log('\n=== SETUP: Cleaning up server data ===');
-    await cleanupServerData(baseUrl);
+    await cleanupServerData(clientUrl, apiUrl);
 
     console.log('\n=== SETUP: Creating 4 player contexts ===');
 
@@ -34,7 +46,7 @@ test.describe('4-Player Multiplayer Game - 3 Consecutive Games', () => {
     // Navigate all players to the home page
     console.log('\n=== SETUP: Navigating players to home page ===');
     await Promise.all(
-      players.map(player => navigateToHome(player, baseUrl))
+      players.map(player => navigateToHome(player, clientUrl))
     );
     console.log('✓ All players navigated to home page');
 
