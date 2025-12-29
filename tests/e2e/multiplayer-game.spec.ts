@@ -118,6 +118,12 @@ test.describe('4-Player Multiplayer Game - 3 Consecutive Games', () => {
           if (!gameComplete) {
             // Handle elimination or shop phase
             await handleEliminationOrShop(players, roundNumber);
+
+            // Check again after elimination phase - game might have ended during elimination
+            gameComplete = await checkGameComplete(players);
+            if (gameComplete) {
+              console.log('  ✓ Game completed during elimination phase');
+            }
           }
 
           roundNumber++;
@@ -196,6 +202,14 @@ async function hostStartGame(host: PlayerContext, lobbyId: string): Promise<void
  * Host starts a new game (for games 2 and 3)
  */
 async function hostStartNewGame(host: PlayerContext, lobbyId: string): Promise<void> {
+  // Ensure any result modals are closed before starting new game
+  const hasModal = await actions.isGameComplete(host);
+  if (hasModal) {
+    console.log(`  [${host.playerName}] Closing lingering result modal before starting new game...`);
+    await actions.closeGameResultModal(host);
+    await wait(1000); // Wait for modal to fully close
+  }
+
   await actions.hostStartNewGame(host, lobbyId);
 }
 
@@ -424,6 +438,10 @@ async function assertGameComplete(players: PlayerContext[], gameNumber: number):
   }
 
   console.log('  ✓ All players back on lobby page');
+
+  // Wait for lobby to update (GameId cleared) before starting next game
+  console.log('  Waiting for lobby state to update...');
+  await wait(3000);
 }
 
 /**

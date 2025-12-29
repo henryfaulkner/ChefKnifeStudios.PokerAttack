@@ -7,7 +7,7 @@ export default defineConfig({
   testDir: './e2e',
 
   /* Timeout for each test */
-  timeout: 180000, // 3 minutes per test (multiplayer games take time)
+  timeout: 540000, // 9 minutes per test (multiplayer games take time)
 
   /* Run tests in files in parallel */
   fullyParallel: false, // We want sequential execution for multiplayer coordination
