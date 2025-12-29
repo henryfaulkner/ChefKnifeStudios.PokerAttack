@@ -34,7 +34,7 @@ public class CleanupBackgroundService : BackgroundService
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred during lobby cleanup");
+                _logger.LogError(ex, "Error occurred during cleanup");
             }
 
             // Wait for next cleanup cycle

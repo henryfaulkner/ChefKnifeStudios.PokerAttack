@@ -6,7 +6,7 @@ namespace ChefKnifeStudios.PokerAttack.Shared;
 
 public static class Constants
 {
-    public const int RoundTimeMs = 90000;
-    public const int ShopTimeMs = 20000;
+    public const int RoundTimeMs = 30000;
+    public const int ShopTimeMs = 5000;
     public const int EliminationTimeMs = 5000;
 }

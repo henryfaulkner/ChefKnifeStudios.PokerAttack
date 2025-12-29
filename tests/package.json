@@ -1,0 +1,23 @@
+{
+  "name": "poker-attack-e2e-tests",
+  "version": "1.0.0",
+  "description": "End-to-end tests for Poker Attack multiplayer game",
+  "scripts": {
+    "test": "playwright test",
+    "test:e2e": "playwright test tests/e2e/multiplayer-game.spec.ts",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "show-report": "playwright show-report"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "@types/node": "^22.19.3"
+  },
+  "dependencies": {
+    "@microsoft/signalr": "^8.0.7"
+  }
+}

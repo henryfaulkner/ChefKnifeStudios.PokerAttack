@@ -1,7 +1,9 @@
 ﻿using Ardalis.Result;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
+using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Tests;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 using Endpoints = ChefKnifeStudios.PokerAttack.Shared.PokerAttackApiEndpoints.Test;
@@ -48,6 +50,74 @@ public static class TestEndpoints
         .WithName(nameof(Endpoints.SignalR))
         .Produces<IEnumerable<string>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status500InternalServerError);
+
+        group.MapPost(Endpoints.Cleanup, async (
+            [FromServices] IKeyValueRepository<Lobby> lobbyRepository,
+            [FromServices] IKeyValueRepository<ActiveGame> activeGameRepository,
+            [FromServices] IKeyValueRepository<GamePlayer> gamePlayerRepository,
+            [FromServices] IKeyValueRepository<GameStates> gameStateRepository,
+            [FromServices] IKeyValueRepository<GameModes> gameModeRepository,
+            [FromServices] ILoggerFactory loggerFactory,
+            HttpContext context,
+            CancellationToken cancellationToken = default) =>
+        {
+            var logger = loggerFactory.CreateLogger(nameof(TestEndpoints));
+            try
+            {
+                logger.LogInformation("Test cleanup endpoint called - clearing all repository data");
+
+                // Get all data from each repository
+                var lobbies = await lobbyRepository.GetAllAsync(cancellationToken);
+                var activeGames = await activeGameRepository.GetAllAsync(cancellationToken);
+                var gamePlayers = await gamePlayerRepository.GetAllAsync(cancellationToken);
+                var gameStates = await gameStateRepository.GetAllAsync(cancellationToken);
+                var gameModes = await gameModeRepository.GetAllAsync(cancellationToken);
+
+                // Delete all lobbies
+                foreach (var (lobbyId, _) in lobbies)
+                {
+                    await lobbyRepository.DeleteAsync(lobbyId, cancellationToken);
+                }
+
+                // Delete all active games
+                foreach (var (gameId, _) in activeGames)
+                {
+                    await activeGameRepository.DeleteAsync(gameId, cancellationToken);
+                }
+
+                // Delete all game players
+                foreach (var (playerId, _) in gamePlayers)
+                {
+                    await gamePlayerRepository.DeleteAsync(playerId, cancellationToken);
+                }
+
+                // Delete all game states
+                foreach (var (gameId, _) in gameStates)
+                {
+                    await gameStateRepository.DeleteAsync(gameId, cancellationToken);
+                }
+
+                // Delete all game modes
+                foreach (var (gameId, _) in gameModes)
+                {
+                    await gameModeRepository.DeleteAsync(gameId, cancellationToken);
+                }
+
+                logger.LogInformation(
+                    "Test cleanup complete - Deleted: {LobbyCount} lobbies, {GameCount} games, {PlayerCount} players, {StateCount} states, {ModeCount} modes",
+                    lobbies.Count, activeGames.Count, gamePlayers.Count, gameStates.Count, gameModes.Count);
+
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Exception in Test.Cleanup endpoint. TraceIdentifier: {TraceId}", context.TraceIdentifier);
+                return Result.CriticalError("An unexpected error occurred during cleanup.");
+            }
+        })
+        .WithName(nameof(Endpoints.Cleanup))
+        .Produces(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status500InternalServerError);
 
         return builder;

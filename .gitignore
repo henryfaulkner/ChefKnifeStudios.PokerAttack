@@ -399,3 +399,9 @@ FodyWeavers.xsd
 
 assets/
 src/**/appsettings.*.json
+
+# Playwright E2E Tests
+tests/test-results/
+tests/playwright-report/
+tests/playwright/.cache/
+tests/package-lock.json

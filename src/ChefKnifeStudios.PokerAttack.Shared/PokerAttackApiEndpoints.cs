@@ -5,6 +5,7 @@ public class PokerAttackApiEndpoints
     public class Test
     {
         public const string SignalR = "/test/signal-r";
+        public const string Cleanup = "/test/cleanup";
     }
 
     public class Lobby
