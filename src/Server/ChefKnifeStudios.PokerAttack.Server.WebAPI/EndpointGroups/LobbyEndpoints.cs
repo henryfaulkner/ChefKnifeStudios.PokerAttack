@@ -121,11 +121,11 @@ public static class LobbyEndpoints
             ILobbyService lobbyService,
             CancellationToken cancellationToken = default) =>
         {
-            await lobbyService.StartGameAsync(dto.LobbyId, dto.GameMode, cancellationToken);
-            return Result.Success();
+            var gameId = await lobbyService.StartGameAsync(dto.LobbyId, dto.GameMode, cancellationToken);
+            return Result.Success(gameId);
         })
         .WithName(nameof(Endpoints.StartGame))
-        .Produces(StatusCodes.Status200OK)
+        .Produces<string>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);
 

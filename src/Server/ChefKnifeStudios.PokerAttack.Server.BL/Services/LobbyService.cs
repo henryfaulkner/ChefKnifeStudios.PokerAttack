@@ -24,7 +24,7 @@ public interface ILobbyService
     Task<IEnumerable<PlayerDTO>> ShutDownLobbyAsync(string lobbyId, CancellationToken cancellationToken = default);
     Task<IEnumerable<PlayerDTO>> GetPlayersAsync(string lobbyId, CancellationToken cancellationToken = default);
     Task UpdatePlayerAsync(PlayerDTO player, CancellationToken cancellationToken = default);
-    Task StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default);
+    Task<string> StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default);
 }
 
 public class LobbyService(
@@ -292,10 +292,10 @@ public class LobbyService(
         );
     }
 
-    public async Task StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default)
+    public async Task<string> StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default)
     {
-        var lobbyDTO = await GetLobbyAsync(lobbyId, cancellationToken);
-        if (lobbyDTO is null) return;
+        var lobbyDTO = await GetLobbyAsync(lobbyId, cancellationToken)
+            ?? throw new KeyNotFoundException($"Lobby not found: {lobbyId}");
 
         string activeGameId = Guid.NewGuid().ToString();
         lobbyDTO.GameId = activeGameId;
@@ -367,6 +367,8 @@ public class LobbyService(
             await gamePlayerRepository.AddAsync(player.Id, gamePlayer, cancellationToken);
             await notificationHelper.JoinGameGroupForUserAsync(player.Id, activeGameId, cancellationToken);
         }
+
+        return activeGameId;
     }
 
     static string GenerateLobbyId()

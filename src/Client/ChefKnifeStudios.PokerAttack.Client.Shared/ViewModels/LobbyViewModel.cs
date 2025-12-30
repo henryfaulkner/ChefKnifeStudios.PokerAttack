@@ -116,8 +116,20 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
         if (!res.IsSuccess) _toastService.ShowError("Lobby could not be shutdown");
     }
 
-    public async Task StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default) =>
-        await _lobbyEndpointsService.StartGameAsync(lobbyId, gameMode, cancellationToken);
+    public async Task StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default)
+    {
+        var result = await _lobbyEndpointsService.StartGameAsync(lobbyId, gameMode, cancellationToken);
+
+        // Navigate immediately on success (fixes race condition where host misses SignalR notification)
+        if (result.IsSuccess && !string.IsNullOrEmpty(result.Value))
+        {
+            _navigationManager.NavigateTo($"/gameplay?gameid={result.Value}", replace: true);
+        }
+        else if (!result.IsSuccess)
+        {
+            _toastService.ShowError("Failed to start game");
+        }
+    }
 
     Task HandleSignalRNotificationReceived(PokerAttackNotification notification)
     {

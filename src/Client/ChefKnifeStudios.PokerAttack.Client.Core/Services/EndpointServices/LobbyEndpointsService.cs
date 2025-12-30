@@ -18,7 +18,7 @@ public interface ILobbyEndpointsService
     Task<Result<Discard>> RemovePlayerAsync(RemovePlayerReqDTO reqBody, CancellationToken cancellationToken = default);
     Task<Result<Discard>> ShutdownLobbyAsync(string lobbyId, CancellationToken cancellationToken = default);
     Task<Result<Discard>> UpdatePlayerAsync(PlayerDTO player, CancellationToken cancellationToken = default);
-    Task<Result<Discard>> StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default);
+    Task<Result<string?>> StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default);
 }
 
 public class LobbyEndpointsService : ILobbyEndpointsService
@@ -157,11 +157,11 @@ public class LobbyEndpointsService : ILobbyEndpointsService
         }
     }
 
-    public async Task<Result<Discard>> StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default)
+    public async Task<Result<string?>> StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default)
     {
         try
         {
-            var res = await _httpService.PostAsync<StartGameDTO, Discard>(
+            var res = await _httpService.PostAsync<StartGameDTO, string?>(
                 Endpoints.StartGame,
                 new StartGameDTO(lobbyId, gameMode),
                 cancellationToken
