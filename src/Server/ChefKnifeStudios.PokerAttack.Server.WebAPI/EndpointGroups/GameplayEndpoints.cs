@@ -42,6 +42,19 @@ public static class GameplayEndpoints
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);
 
+        group.MapGet(Endpoints.GetPlayerState, async (
+            IGameService gameService,
+            string playerId,
+            CancellationToken cancellationToken = default) =>
+        {
+            var playerState = await gameService.GetPlayerStateAsync(playerId, cancellationToken);
+            return Result.Success(playerState);
+        })
+        .WithName(nameof(Endpoints.GetPlayerState))
+        .Produces<PlayerStateDTO?>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status500InternalServerError);
+
         return builder;
     }
 }

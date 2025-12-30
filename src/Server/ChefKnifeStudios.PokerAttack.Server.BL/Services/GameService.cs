@@ -22,6 +22,7 @@ public interface IGameService
     Task DiscardAsync(string playerId, List<CardDTO> discardCards, CancellationToken ct = default);
     Task<int> GetPlayerScoreAsync(string playerId, CancellationToken ct = default);
     Task<int> GetPlayerWalletAsync(string playerId, CancellationToken ct = default);
+    Task<PlayerStateDTO?> GetPlayerStateAsync(string playerId, CancellationToken ct = default);
     Task EndRoundAsync(string gameId, CancellationToken ct = default);
     Task<RoundDTO> GetLatestRoundFromGame(string gameId, CancellationToken ct = default);
     Task EndGameAsync(string gameId, CancellationToken ct = default);
@@ -220,6 +221,24 @@ public class GameService(
     public async Task<int> GetPlayerWalletAsync(string playerId, CancellationToken ct = default)
         => (await gamePlayerRepository.GetAsync(playerId, ct)
             ?? throw new KeyNotFoundException("Game Player not found")).Wallet;
+
+    public async Task<PlayerStateDTO?> GetPlayerStateAsync(string playerId, CancellationToken ct = default)
+    {
+        var gamePlayer = await gamePlayerRepository.GetAsync(playerId, ct);
+        if (gamePlayer == null)
+            return null;
+
+        return new PlayerStateDTO
+        {
+            CardsInHand = gamePlayer.CardsInHand.Select(c => c.MapToDTO()),
+            Score = gamePlayer.Score,
+            HandsRemaining = gamePlayer.HandsRemaining,
+            DiscardsRemaining = gamePlayer.DiscardsRemaining,
+            PowerCharges = gamePlayer.PowerPoints,
+            Wallet = gamePlayer.Wallet,
+            ActivePlayerPower = gamePlayer.PlayerPower?.MapToDTO()
+        };
+    }
 
     public async Task EndRoundAsync(string gameId, CancellationToken ct = default)
     {

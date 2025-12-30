@@ -1,5 +1,6 @@
 ﻿using ChefKnifeStudios.PokerAttack.Client.Core.Extensions;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
+using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Constants;
 using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
@@ -45,6 +46,8 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     readonly NavigationManager _navigationManager;
     readonly IAudioJsInterop _audioJsInterop;
     readonly IGameDataStore _gameDataStore;
+    readonly IGameplayEndpointsService _gameplayEndpointsService;
+    readonly IApplicationViewModel _applicationViewModel;
 
     const int _DEFAULT_NUM_PLAY_HANDS = 5;
     const int _DEFAULT_NUM_DISCARDS = 5;
@@ -88,7 +91,9 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         IEventNotificationService eventNotificationService,
         NavigationManager navigationManager,
         IAudioJsInterop audioJsInterop,
-        IGameDataStore gameDataStore)
+        IGameDataStore gameDataStore,
+        IGameplayEndpointsService gameplayEndpointsService,
+        IApplicationViewModel applicationViewModel)
     {
         _signalRNotificationService = signalRNotificationService;
         _toastService = toastService;
@@ -96,6 +101,8 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         _navigationManager = navigationManager;
         _audioJsInterop = audioJsInterop;
         _gameDataStore = gameDataStore;
+        _gameplayEndpointsService = gameplayEndpointsService;
+        _applicationViewModel = applicationViewModel;
 
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
         _eventNotificationService.EventReceived += HandleEventReceived;
@@ -109,6 +116,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     public void Dispose()
     {
         _signalRNotificationService.HandleNotificationReceived -= HandleSignalRNotificationReceived;
+        _eventNotificationService.EventReceived -= HandleEventReceived;
         _timerToken.Cancel();
         _timerToken.Dispose();
     }
@@ -316,8 +324,48 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                     }
                     break;
                 }
+            case GameStateResyncEventArgs:
+                {
+                    _ = ResyncPlayerStateAsync();
+                    break;
+                }
         }
         return Task.CompletedTask;
+    }
+
+    private async Task ResyncPlayerStateAsync()
+    {
+        try
+        {
+            var playerId = _applicationViewModel.Player?.Id;
+            if (playerId == null)
+                return;
+
+            var result = await _gameplayEndpointsService.GetPlayerStateAsync(playerId);
+            if (result.IsSuccess && result.Value != null)
+            {
+                var state = result.Value;
+
+                // Update cards in hand
+                CardsInHand = state.CardsInHand.Select(x => new CardItem(x)).ToObservableCollection();
+                ApplySort();
+
+                // Update game stats
+                Score = state.Score;
+                AvailablePlayHands = state.HandsRemaining;
+                AvailableDiscards = state.DiscardsRemaining;
+                PowerCharges = state.PowerCharges;
+
+                if (state.ActivePlayerPower != null)
+                {
+                    ActivePlayerPower = state.ActivePlayerPower;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _toastService.ShowError("Failed to resync game state");
+        }
     }
 
     static (List<CardItem> NewHand, int NewCardCount) ProcessCardsDealt(
