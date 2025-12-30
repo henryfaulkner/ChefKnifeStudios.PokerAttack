@@ -10,6 +10,7 @@ using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR.EventArgs;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
@@ -47,6 +48,8 @@ public interface ILobbyViewModel : IViewModel
     Task LeaveLobbyAsync(string lobbyId, PlayerDTO player, CancellationToken cancellationToken = default);
     Task ShutdownLobbyAsync(string lobbyId, CancellationToken cancellationToken = default);
     Task StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default);
+    Task StartLobbyPollingAsync(CancellationToken cancellationToken = default);
+    void StopLobbyPolling();
 }
 
 public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposable
@@ -55,6 +58,10 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
     readonly ISignalRNotificationService _signalRNotificationService;
     readonly NavigationManager _navigationManager;
     readonly IToastService _toastService;
+    readonly ILogger<LobbyViewModel> _logger;
+
+    private Timer? _lobbyPollTimer;
+    private const int POLL_INTERVAL_MS = 2000; // Poll every 2 seconds
 
     [ObservableProperty]
     ObservableCollection<LobbyListItem> _lobbies = [];
@@ -66,18 +73,21 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
         ILobbyEndpointsService lobbyEndpointsService,
         ISignalRNotificationService signalRNotificationService,
         NavigationManager navigationManager,
-        IToastService toastService)
+        IToastService toastService,
+        ILogger<LobbyViewModel> logger)
     {
         _lobbyEndpointsService = lobbyEndpointsService;
         _signalRNotificationService = signalRNotificationService;
         _navigationManager = navigationManager;
         _toastService = toastService;
+        _logger = logger;
 
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
     }
 
     public void Dispose()
     {
+        StopLobbyPolling();
         _signalRNotificationService.HandleNotificationReceived -= HandleSignalRNotificationReceived;
     }
 
@@ -128,6 +138,41 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
         else if (!result.IsSuccess)
         {
             _toastService.ShowError("Failed to start game");
+        }
+    }
+
+    public Task StartLobbyPollingAsync(CancellationToken cancellationToken = default)
+    {
+        _lobbyPollTimer?.Dispose();
+        _lobbyPollTimer = new Timer(async _ =>
+        {
+            try
+            {
+                await RefreshLobbiesFromServerAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error polling lobby data");
+            }
+        }, null, 0, POLL_INTERVAL_MS);
+
+        return Task.CompletedTask;
+    }
+
+    public void StopLobbyPolling()
+    {
+        _lobbyPollTimer?.Dispose();
+        _lobbyPollTimer = null;
+    }
+
+    private async Task RefreshLobbiesFromServerAsync(CancellationToken cancellationToken = default)
+    {
+        var result = await _lobbyEndpointsService.GetLobbiesAsync(cancellationToken);
+        
+        if (result.IsSuccess && result.Value != null)
+        {
+            // Update Lobbies collection with fresh data from server
+            Lobbies = result.Value.Select(x => new LobbyListItem(x)).ToObservableCollection();
         }
     }
 

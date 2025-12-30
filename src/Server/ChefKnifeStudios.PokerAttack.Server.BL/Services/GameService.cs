@@ -38,7 +38,7 @@ public class GameService(
     ILogger<GameService> logger,
     IKeyValueRepository<ActiveGame> activeGameRepository,
     IKeyValueRepository<GamePlayer> gamePlayerRepository,
-    IKeyValueRepository<GameStates> gameStateRepository,
+    IKeyValueRepository<GameStates?> gameStateRepository,
     IKeyValueRepository<Lobby> lobbyRepository,
     IRepository<Game> gameRepository,
     IRepository<Round> roundRepository,
@@ -46,7 +46,8 @@ public class GameService(
     IGameStateMachineService gameStateMachineService,
     IScoringRulesService scoringRulesService,
     IItemEffectsService itemEffectsService,
-    IWagerService wagerService) : IGameService
+    IWagerService wagerService,
+    IPlayerDisconnectionTracker disconnectionTracker) : IGameService
 {
     const int _NUM_CARDS_IN_HAND = 8;
     const int _NUM_ROUNDS_BEFORE_ELIMINATION = 3;
@@ -307,7 +308,13 @@ public class GameService(
     {
         var activeGame = await activeGameRepository.GetAsync(gameId, ct)
             ?? throw new ApplicationException($"Active Game not found: Game Id {gameId}");
-        
+
+        // Cancel all disconnection timers for players in this game
+        foreach (var player in activeGame.Players)
+        {
+            disconnectionTracker.CancelDisconnectionTimer(player.Id);
+        }
+
         foreach (var gamePlayer in activeGame.Players) await gamePlayerRepository.DeleteAsync(gamePlayer.Id, ct);
         await activeGameRepository.DeleteAsync(gameId, ct);
         await gameStateRepository.DeleteAsync(gameId, ct);
@@ -518,6 +525,13 @@ public class GameService(
             if (activeGame == null)
             {
                 logger.LogWarning("Cannot eliminate disconnected player {playerId}: Game {gameId} not found", playerId, gameId);
+                return;
+            }
+
+            var gameState = await gameStateRepository.GetAsync(gameId, ct);
+            if (gameState == null)
+            {
+                logger.LogInformation("Cannot eliminate disconnected player {playerId}: Game {gameId} state cleanup already happened", playerId, gameId);
                 return;
             }
 

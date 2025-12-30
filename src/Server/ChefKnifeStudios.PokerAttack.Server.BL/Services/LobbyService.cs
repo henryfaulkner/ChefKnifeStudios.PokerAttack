@@ -297,6 +297,21 @@ public class LobbyService(
         var lobbyDTO = await GetLobbyAsync(lobbyId, cancellationToken)
             ?? throw new KeyNotFoundException($"Lobby not found: {lobbyId}");
 
+        // Validate lobby state - ensure no active game is already in progress
+        if (!string.IsNullOrEmpty(lobbyDTO.GameId))
+        {
+            // Check if the game is still active
+            var existingGame = await activeGameRepository.GetAsync(lobbyDTO.GameId, cancellationToken);
+            if (existingGame != null)
+            {
+                throw new InvalidOperationException($"Lobby already has an active game: {lobbyDTO.GameId}");
+            }
+
+            // Game was cleaned up but lobby wasn't updated - fix the state
+            lobbyDTO.GameId = null;
+            await lobbyRepository.UpdateAsync(lobbyId, lobbyDTO.MapToModel(), cancellationToken);
+        }
+
         string activeGameId = Guid.NewGuid().ToString();
         lobbyDTO.GameId = activeGameId;
         await lobbyRepository.UpdateAsync(lobbyId, lobbyDTO.MapToModel(), cancellationToken);
