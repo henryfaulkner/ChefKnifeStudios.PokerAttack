@@ -28,7 +28,6 @@ public class PokerAttackApiEndpoints
 
         public const string GetLatestRound = $"{EndpointGroup}/latest-round/{{gameId}}";
         public const string GetPlayerWallet = $"{EndpointGroup}/player-wallet/{{gameId}}/{{playerId}}";
-        public const string GetPlayerState = $"{EndpointGroup}/player-state/{{playerId}}";
     }
 
     public class PlayerPower
