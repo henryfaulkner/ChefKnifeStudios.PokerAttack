@@ -22,7 +22,6 @@ public interface IGameDataService : IDisposable
     Task LoadScoreboardAsync(CancellationToken cancellationToken = default);
     Task PurchaseShopItemAsync(ShopItem item, CancellationToken cancellationToken = default);
     Task SelectPlayerPowerAsync(PlayerPowerListItem playerPower, CancellationToken cancellationToken = default);
-    Task ResyncGameStateAsync(CancellationToken cancellationToken = default);
 }
 
 public class GameDataService : IGameDataService
@@ -59,19 +58,11 @@ public class GameDataService : IGameDataService
         _gameDataStore = gameDataStore;
 
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
-        _signalRNotificationService.OnReconnectionSuccess += OnReconnectionSuccess;
     }
 
     public void Dispose()
     {
         _signalRNotificationService.HandleNotificationReceived -= HandleSignalRNotificationReceived;
-        _signalRNotificationService.OnReconnectionSuccess -= OnReconnectionSuccess;
-    }
-
-    private async Task OnReconnectionSuccess()
-    {
-        _logger.LogInformation("SignalR reconnected, resyncing game state");
-        await ResyncGameStateAsync();
     }
 
     public async Task LoadWalletAsync(CancellationToken cancellationToken = default)
@@ -183,33 +174,6 @@ public class GameDataService : IGameDataService
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred");
-        }
-    }
-
-    public async Task ResyncGameStateAsync(CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            _logger.LogInformation("Resyncing game state after reconnection");
-
-            // Resync wallet and scoreboard
-            if (_gameDataStore.GameId != null)
-            {
-                await LoadWalletAsync(cancellationToken);
-                await LoadScoreboardAsync(cancellationToken);
-            }
-
-            // Trigger player state resync event
-            _eventNotificationService.PostEvent(
-                this,
-                new GameStateResyncEventArgs()
-            );
-
-            _logger.LogInformation("Game state resync completed");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error resyncing game state");
         }
     }
 
