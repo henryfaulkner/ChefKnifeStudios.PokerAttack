@@ -24,7 +24,7 @@ public interface ILobbyService
     Task<IEnumerable<PlayerDTO>> ShutDownLobbyAsync(string lobbyId, CancellationToken cancellationToken = default);
     Task<IEnumerable<PlayerDTO>> GetPlayersAsync(string lobbyId, CancellationToken cancellationToken = default);
     Task UpdatePlayerAsync(PlayerDTO player, CancellationToken cancellationToken = default);
-    Task StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default);
+    Task<string> StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default);
 }
 
 public class LobbyService(
@@ -292,10 +292,25 @@ public class LobbyService(
         );
     }
 
-    public async Task StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default)
+    public async Task<string> StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default)
     {
-        var lobbyDTO = await GetLobbyAsync(lobbyId, cancellationToken);
-        if (lobbyDTO is null) return;
+        var lobbyDTO = await GetLobbyAsync(lobbyId, cancellationToken)
+            ?? throw new KeyNotFoundException($"Lobby not found: {lobbyId}");
+
+        // Validate lobby state - ensure no active game is already in progress
+        if (!string.IsNullOrEmpty(lobbyDTO.GameId))
+        {
+            // Check if the game is still active
+            var existingGame = await activeGameRepository.GetAsync(lobbyDTO.GameId, cancellationToken);
+            if (existingGame != null)
+            {
+                throw new InvalidOperationException($"Lobby already has an active game: {lobbyDTO.GameId}");
+            }
+
+            // Game was cleaned up but lobby wasn't updated - fix the state
+            lobbyDTO.GameId = null;
+            await lobbyRepository.UpdateAsync(lobbyId, lobbyDTO.MapToModel(), cancellationToken);
+        }
 
         string activeGameId = Guid.NewGuid().ToString();
         lobbyDTO.GameId = activeGameId;
@@ -367,6 +382,8 @@ public class LobbyService(
             await gamePlayerRepository.AddAsync(player.Id, gamePlayer, cancellationToken);
             await notificationHelper.JoinGameGroupForUserAsync(player.Id, activeGameId, cancellationToken);
         }
+
+        return activeGameId;
     }
 
     static string GenerateLobbyId()

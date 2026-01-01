@@ -1,17 +1,24 @@
 name: E2E-Nightly-$(Date:yyyyMMdd).$(Rev:r)
 
 # No triggers - schedule only
-trigger: none
-pr: none
+# trigger: none
+# pr: none
 
 # Schedule: 2:00 AM daily
-schedules:
-- cron: '0 2 * * *'
-  displayName: 'Nightly E2E Test Run'
+# schedules:
+# - cron: '0 2 * * *'
+#   displayName: 'Nightly E2E Test Run'
+#   branches:
+#     include:
+#     - main
+#     - e2e
+#   always: true  # Run even if no code changes
+
+trigger:
   branches:
     include:
     - main
-  always: true  # Run even if no code changes
+    - e2e
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -38,7 +45,7 @@ stages:
 
     - script: |
         cd tests
-        npm ci
+        npm i
       displayName: 'Install npm dependencies'
 
     - script: |

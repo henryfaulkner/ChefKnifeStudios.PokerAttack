@@ -10,7 +10,7 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  azure-subscription-service-connection: PokerAttackSC
+  azure-subscription-service-connection: PokerAttackSC_2026
   container-registry: chefknife.azurecr.io
   container-tag: $(Build.BuildNumber)
   container-registry-service-connection: AzureContainerRegistrySC
