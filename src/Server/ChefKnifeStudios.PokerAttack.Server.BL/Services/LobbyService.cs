@@ -7,6 +7,7 @@ using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR.EventArgs;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
+using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -34,7 +35,8 @@ public class LobbyService(
     IKeyValueRepository<GameStates> gameStateRepository,
     IKeyValueRepository<GameModes> gameModeRepository,
     IKeyValueRepository<ActiveGame> activeGameRepository,
-    IKeyValueRepository<GamePlayer> gamePlayerRepository) : ILobbyService
+    IKeyValueRepository<GamePlayer> gamePlayerRepository,
+    ILogger<LobbyService> logger) : ILobbyService
 {
     const int NumCardsInHand = 8;
 

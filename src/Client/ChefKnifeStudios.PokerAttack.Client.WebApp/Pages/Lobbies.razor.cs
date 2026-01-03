@@ -11,6 +11,7 @@ public partial class Lobbies : ComponentBase, IDisposable
     [Inject] IApplicationViewModel ApplicationViewModel { get; set; } = null!;
     [Inject] ILobbyViewModel LobbyViewModel { get; set; } = null!;
     [Inject] IFeatureFlagService FeatureFlagService { get; set; } = null!;
+    [Inject] ILogger<Lobbies> Logger { get; set; } = null!;
 
     bool _showScoringGuide = false;
 

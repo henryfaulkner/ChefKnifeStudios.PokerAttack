@@ -1,17 +1,14 @@
 using ChefKnifeStudios.PokerAttack.Server.BL;
 using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
-using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Server.Data;
 using ChefKnifeStudios.PokerAttack.Server.Infrastructure;
 using ChefKnifeStudios.PokerAttack.Server.Infrastructure.PlayerPowers;
 using ChefKnifeStudios.PokerAttack.Server.WebAPI.EndpointGroups;
 using ChefKnifeStudios.PokerAttack.Server.WebAPI.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared;
-using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using Microsoft.AspNetCore.SignalR;
 using Scalar.AspNetCore;
-using Sentry;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,14 +21,23 @@ builder.Services.RegisterDataServices(connectionString);
 // Add services to the container.
 builder.Services.AddProblemDetails();
 
-builder.WebHost.UseSentry(o =>
-{
-    // A DSN is required. You can set here in code, in the SENTRY_DSN environment variable or in your appsettings.json
-    // See https://docs.sentry.io/product/sentry-basics/dsn-explainer/
-    o.Dsn = "https://38cd349f3585a7c167c3171f176e7d08@o4510567305379840.ingest.us.sentry.io/4510567365148672";
-    o.ProfilesSampleRate = 0.1;
-    o.TracesSampleRate = 1.0;
-});
+builder.WebHost
+    .UseSentry(o =>
+    {
+        // A DSN is required. You can set here in code, in the SENTRY_DSN environment variable or in your appsettings.json
+        // See https://docs.sentry.io/product/sentry-basics/dsn-explainer/
+        var sentryConfig = builder.Configuration.GetSection("Sentry");
+        o.Dsn = sentryConfig.GetValue<string>("Dsn");
+        o.ProfilesSampleRate = 0.1;
+        o.TracesSampleRate = 1.0;
+        o.EnableLogs = true;
+    })
+    .ConfigureLogging((c, l) =>
+    {
+        l.AddConfiguration(builder.Configuration);
+        // Adding Sentry integration to Microsoft.Extensions.Logging
+        l.AddSentry();
+    });
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
