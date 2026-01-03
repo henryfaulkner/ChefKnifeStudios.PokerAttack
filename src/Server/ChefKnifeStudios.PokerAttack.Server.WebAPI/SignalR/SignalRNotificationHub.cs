@@ -1,5 +1,4 @@
-﻿using ChefKnifeStudios.PokerAttack.Server.BL;
-using ChefKnifeStudios.PokerAttack.Server.BL.Services;
+﻿using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
@@ -22,19 +21,14 @@ public class SignalRNotificationHub(
     IKeyValueRepository<ActiveGame> activeGameRepository,
     IGameStateMachineService gameStateMachineService,
     IPlayerPowerService playerPowerService,
-    IPlayerConnectionTracker connectionTracker,
-    IPlayerDisconnectionTracker disconnectionTracker) : Hub<ISignalRNotificationClient>
+    IPlayerConnectionTracker connectionTracker) : Hub<ISignalRNotificationClient>
 {
     public override async Task OnConnectedAsync()
     {
         var userId = Context.UserIdentifier;
         var connectionId = Context.ConnectionId;
         if (!string.IsNullOrEmpty(userId))
-        {
             connectionTracker.Add(userId, connectionId);
-            // Cancel any pending disconnection timer if player reconnects
-            disconnectionTracker.CancelDisconnectionTimer(userId);
-        }
 
         await base.OnConnectedAsync();
     }
@@ -44,47 +38,9 @@ public class SignalRNotificationHub(
         var userId = Context.UserIdentifier;
         var connectionId = Context.ConnectionId;
         if (!string.IsNullOrEmpty(userId))
-        {
             connectionTracker.Remove(userId, connectionId);
 
-            // Check if player has any remaining connections
-            var remainingConnections = connectionTracker.GetConnections(userId);
-            if (!remainingConnections.Any())
-            {
-                // Player is fully disconnected, find their active game and start elimination timer
-                var gameId = await FindPlayerGameAsync(userId);
-                if (!string.IsNullOrEmpty(gameId))
-                {
-                    disconnectionTracker.TrackDisconnection(userId, gameId);
-                }
-            }
-        }
-
         await base.OnDisconnectedAsync(exception);
-    }
-
-    private async Task<string?> FindPlayerGameAsync(string playerId)
-    {
-        try
-        {
-            // Search through all active games to find which one the player is in
-            var allGamesResult = await activeGameRepository.GetAllAsync();
-            if (allGamesResult.IsSuccess && allGamesResult.Value is not null)
-            {
-                foreach (var game in allGamesResult.Value)
-                {
-                    if (game.Value.Players.Any(p => p.Id == playerId))
-                    {
-                        return game.Key; // Return gameId
-                    }
-                }
-            }
-        }
-        catch (Exception)
-        {
-            // Log error but don't throw
-        }
-        return null;
     }
 
     // Server-wide notifications

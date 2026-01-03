@@ -16,22 +16,22 @@ namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
 
 public interface IGameService
 {
-    Task<Result> StartGameAsync(string gameId, CancellationToken ct = default);
-    Task<Result> StartRoundAsync(string gameId, CancellationToken ct = default);
-    Task<Result> StartPlayerRunAsync(string playerId, int runTimeInSeconds, CancellationToken ct = default);
-    Task<Result> PlayHandAsync(string playerId, List<CardDTO> hand, CancellationToken ct = default);
-    Task<Result> DiscardAsync(string playerId, List<CardDTO> discardCards, CancellationToken ct = default);
-    Task<Result<int>> GetPlayerScoreAsync(string playerId, CancellationToken ct = default);
-    Task<Result<int>> GetPlayerWalletAsync(string playerId, CancellationToken ct = default);
-    Task<Result> EndRoundAsync(string gameId, CancellationToken ct = default);
-    Task<Result<RoundDTO>> GetLatestRoundFromGame(string gameId, CancellationToken ct = default);
-    Task<Result> EndGameAsync(string gameId, CancellationToken ct = default);
-    Task<Result> LeaveGameAsync(string gameId, string playerId, CancellationToken ct = default);
-    Task<Result> StartEliminationAsync(string gameId, CancellationToken ct = default);
-    Task<Result> FinishEliminationAsync(string gameId, CancellationToken ct = default);
-    Task<Result> StartShoppingAsync(string gameId, CancellationToken ct = default);
-    Task<Result> FinishShoppingAsync(string gameId, CancellationToken ct = default);
-    Task<Result> EliminateDisconnectedPlayerAsync(string playerId, string gameId, CancellationToken ct = default);
+    Task StartGameAsync(string gameId, CancellationToken ct = default);
+    Task StartRoundAsync(string gameId, CancellationToken ct = default);
+    Task StartPlayerRunAsync(string playerId, int runTimeInSeconds, CancellationToken ct = default);
+    Task PlayHandAsync(string playerId, List<CardDTO> hand, CancellationToken ct = default);
+    Task DiscardAsync(string playerId, List<CardDTO> discardCards, CancellationToken ct = default);
+    Task<int> GetPlayerScoreAsync(string playerId, CancellationToken ct = default);
+    Task<int> GetPlayerWalletAsync(string playerId, CancellationToken ct = default);
+    Task<PlayerStateDTO?> GetPlayerStateAsync(string playerId, CancellationToken ct = default);
+    Task EndRoundAsync(string gameId, CancellationToken ct = default);
+    Task<RoundDTO> GetLatestRoundFromGame(string gameId, CancellationToken ct = default);
+    Task EndGameAsync(string gameId, CancellationToken ct = default);
+    Task LeaveGameAsync(string gameId, string playerId, CancellationToken ct = default);
+    Task StartEliminationAsync(string gameId, CancellationToken ct = default);
+    Task FinishEliminationAsync(string gameId, CancellationToken ct = default);
+    Task StartShoppingAsync(string gameId, CancellationToken ct = default);
+    Task FinishShoppingAsync(string gameId, CancellationToken ct = default);
 }
 
 public class GameService(
@@ -678,100 +678,7 @@ public class GameService(
         return Result.Success();
     }
 
-    public async Task<Result> EliminateDisconnectedPlayerAsync(string playerId, string gameId, CancellationToken ct = default)
-    {
-        try
-        {
-            var activeGameResult = await activeGameRepository.GetAsync(gameId, ct);
-            if (!activeGameResult.IsSuccess || activeGameResult.Value is null)
-            {
-                logger.LogWarning("Cannot eliminate disconnected player {playerId}: Game {gameId} not found", playerId, gameId);
-                return Result.Success();
-            }
-
-            var activeGame = activeGameResult.Value;
-
-            var gameStateResult = await gameStateRepository.GetAsync(gameId, ct);
-            if (!gameStateResult.IsSuccess || gameStateResult.Value is null)
-            {
-                logger.LogInformation("Cannot eliminate disconnected player {playerId}: Game {gameId} state cleanup already happened", playerId, gameId);
-                return Result.Success();
-            }
-
-            var gamePlayerResult = await gamePlayerRepository.GetAsync(playerId, ct);
-            if (!gamePlayerResult.IsSuccess || gamePlayerResult.Value is null)
-            {
-                logger.LogWarning("Cannot eliminate disconnected player {playerId}: Player not found in game", playerId);
-                return Result.Success();
-            }
-
-            var gamePlayer = gamePlayerResult.Value;
-
-            // Check if player is already eliminated
-            if (gamePlayer.IsEliminated)
-            {
-                logger.LogInformation("Player {playerId} is already eliminated", playerId);
-                return Result.Success();
-            }
-
-            // Find player info
-            var player = activeGame.Players.FirstOrDefault(p => p.Id == playerId);
-            if (player == null)
-            {
-                logger.LogWarning("Player {playerId} not found in active game {gameId}", playerId, gameId);
-                return Result.Success();
-            }
-
-            // Mark player as eliminated
-            gamePlayer.IsEliminated = true;
-            var updateResult = await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
-            if (!updateResult.IsSuccess)
-                logger.LogWarning("Failed to update player {playerId} elimination status", playerId);
-
-            logger.LogInformation("Player {playerId} ({playerName}) eliminated from game {gameId} due to disconnection timeout",
-                playerId, player.Name, gameId);
-
-            // Notify all players in the game
-            var notification = new PokerAttackNotification(
-                PokerAttackNotificationType.PlayerDisconnected,
-                JsonSerializer.Serialize(new
-                {
-                    PlayerId = playerId,
-                    PlayerName = player.Name,
-                    Reason = "Connection timeout - player eliminated"
-                }, JsonOptions.Get())
-            );
-
-            await notificationHelper.BroadcastToGameAsync(gameId, notification, ct);
-
-            // Check if game should end (only one player remaining)
-            int remainingPlayers = 0;
-            foreach (var p in activeGame.Players)
-            {
-                var pStateResult = await gamePlayerRepository.GetAsync(p.Id, ct);
-                if (pStateResult.IsSuccess && pStateResult.Value is not null && !pStateResult.Value.IsEliminated)
-                    remainingPlayers++;
-            }
-
-            if (remainingPlayers <= 1)
-            {
-                logger.LogInformation("Only {count} player(s) remaining in game {gameId} after disconnection elimination. Ending game.",
-                    remainingPlayers, gameId);
-                var endResult = await EndGameAsync(gameId, ct);
-                if (!endResult.IsSuccess)
-                    logger.LogWarning("Failed to end game {gameId} after disconnection elimination", gameId);
-            }
-
-            return Result.Success();
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error eliminating disconnected player {playerId} from game {gameId}", playerId, gameId);
-            return Result.Success(); // Don't propagate errors - this is a background operation
-        }
-    }
-
-    async Task<Result> ClearGamePlayerDataAsync(string playerId, GamePlayer gamePlayer, CancellationToken ct = default)
+    async Task ClearGamePlayerDataAsync(string playerId, GamePlayer gamePlayer, CancellationToken ct = default)
     {
         var deck = new Deck();
         deck.RandomizeDeck();
