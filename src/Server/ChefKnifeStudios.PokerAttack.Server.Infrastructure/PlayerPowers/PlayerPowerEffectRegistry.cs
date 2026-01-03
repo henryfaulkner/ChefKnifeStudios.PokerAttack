@@ -1,4 +1,5 @@
-﻿using ChefKnifeStudios.PokerAttack.Server.Core.Models;
+﻿using Ardalis.Result;
+using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 
 namespace ChefKnifeStudios.PokerAttack.Server.Infrastructure.PlayerPowers;
 
@@ -15,11 +16,11 @@ public class PlayerPowerEffectRegistry : IPlayerPowerEffectRegistry
         Register("changeSelectedCardsToSuit", new ChangeSelectedCardsToSuitEffect());
     }
 
-    public IPlayerPowerEffect Get(string effectType)
+    public Result<IPlayerPowerEffect> Get(string effectType)
     {
         if (!_effects.TryGetValue(effectType, out var effect))
-            throw new KeyNotFoundException($"Effect type '{effectType}' not registered.");
-        return effect;
+            return Result.NotFound($"Effect type '{effectType}' not registered.");
+        return Result.Success(effect);
     }
 
     public void Register(string effectType, IPlayerPowerEffect effect)

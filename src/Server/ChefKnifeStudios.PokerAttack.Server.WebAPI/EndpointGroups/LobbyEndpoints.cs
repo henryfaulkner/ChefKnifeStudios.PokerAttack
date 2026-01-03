@@ -19,8 +19,7 @@ public static class LobbyEndpoints
             ILobbyService lobbyService,
             CancellationToken cancellationToken = default) =>
         {
-            var lobbies = await lobbyService.GetLobbiesAsync(cancellationToken);
-            return Result.Success(lobbies);
+            return await lobbyService.GetLobbiesAsync(cancellationToken);
         })
         .WithName(nameof(Endpoints.GetLobbies))
         .Produces<IEnumerable<LobbyDTO>?>(StatusCodes.Status200OK)
@@ -32,8 +31,7 @@ public static class LobbyEndpoints
             ILobbyService lobbyService,
             CancellationToken cancellationToken = default) =>
         {
-            var lobby = await lobbyService.GetLobbyAsync(lobbyId, cancellationToken);
-            return Result.Success(lobby);
+            return await lobbyService.GetLobbyAsync(lobbyId, cancellationToken);
         })
         .WithName(nameof(Endpoints.GetLobby))
         .Produces<LobbyDTO?>(StatusCodes.Status200OK)
@@ -43,10 +41,9 @@ public static class LobbyEndpoints
         group.MapPost(Endpoints.CreateLobby, async (
             CreateLobbyReqDTO reqBody,
             ILobbyService lobbyService,
-            CancellationToken cancellationToken = default) => 
+            CancellationToken cancellationToken = default) =>
         {
-            var result = await lobbyService.CreateLobbyAsync(reqBody.HostPlayer, cancellationToken);
-            return Result.Success(result);
+            return await lobbyService.CreateLobbyAsync(reqBody.HostPlayer, cancellationToken);
         })
         .WithName(nameof(Endpoints.CreateLobby))
         .Accepts<CreateLobbyReqDTO>("application/json")
@@ -59,8 +56,7 @@ public static class LobbyEndpoints
             ILobbyService lobbyService,
             CancellationToken cancellationToken = default) =>
         {
-            await lobbyService.JoinLobbyAsync(reqBody.LobbyId, reqBody.Player, cancellationToken);
-            return Result.Success();
+            return await lobbyService.JoinLobbyAsync(reqBody.LobbyId, reqBody.Player, cancellationToken);
         })
         .WithName(nameof(Endpoints.AddPlayer))
         .Accepts<AddPlayerReqDTO>("application/json")
@@ -75,13 +71,12 @@ public static class LobbyEndpoints
         {
             if (string.IsNullOrWhiteSpace(reqBody.LobbyId))
             {
-                await lobbyService.LeaveLobbyAsync(reqBody.Player, cancellationToken);
+                return await lobbyService.LeaveLobbyAsync(reqBody.Player, cancellationToken);
             }
             else
             {
-                await lobbyService.LeaveLobbyAsync(reqBody.LobbyId, reqBody.Player, cancellationToken);
+                return await lobbyService.LeaveLobbyAsync(reqBody.LobbyId, reqBody.Player, cancellationToken);
             }
-            return Result.Success();
         })
         .WithName(nameof(Endpoints.RemovePlayer))
         .Accepts<RemovePlayerReqDTO>("application/json")
@@ -94,8 +89,7 @@ public static class LobbyEndpoints
             ILobbyService lobbyService,
             CancellationToken cancellationToken = default) =>
         {
-            await lobbyService.UpdatePlayerAsync(player, cancellationToken);
-            return Result.Success();
+            return await lobbyService.UpdatePlayerAsync(player, cancellationToken);
         })
         .WithName(nameof(Endpoints.UpdatePlayer))
         .Accepts<PlayerDTO>("application/json")
@@ -108,8 +102,7 @@ public static class LobbyEndpoints
             ILobbyService lobbyService,
             CancellationToken cancellationToken = default) =>
         {
-            await lobbyService.ShutDownLobbyAsync(lobbyId, cancellationToken);
-            return Result.Success();
+            return await lobbyService.ShutDownLobbyAsync(lobbyId, cancellationToken);
         })
         .WithName(nameof(Endpoints.ShutdownLobby))
         .Produces(StatusCodes.Status200OK)
@@ -121,8 +114,7 @@ public static class LobbyEndpoints
             ILobbyService lobbyService,
             CancellationToken cancellationToken = default) =>
         {
-            var gameId = await lobbyService.StartGameAsync(dto.LobbyId, dto.GameMode, cancellationToken);
-            return Result.Success(gameId);
+            return await lobbyService.StartGameAsync(dto.LobbyId, dto.GameMode, cancellationToken);
         })
         .WithName(nameof(Endpoints.StartGame))
         .Produces<string>(StatusCodes.Status200OK)
