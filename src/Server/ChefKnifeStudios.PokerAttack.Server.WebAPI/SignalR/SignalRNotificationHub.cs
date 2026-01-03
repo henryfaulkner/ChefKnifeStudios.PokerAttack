@@ -2,10 +2,13 @@
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace ChefKnifeStudios.PokerAttack.Server.WebAPI.SignalR;
 
@@ -21,7 +24,11 @@ public class SignalRNotificationHub(
     IKeyValueRepository<ActiveGame> activeGameRepository,
     IGameStateMachineService gameStateMachineService,
     IPlayerPowerService playerPowerService,
-    IPlayerConnectionTracker connectionTracker) : Hub<ISignalRNotificationClient>
+    IPlayerConnectionTracker connectionTracker,
+    ILobbyService lobbyService,
+    IKeyValueRepository<Lobby> lobbyRepository,
+    IServiceProvider serviceProvider,
+    ILogger<SignalRNotificationHub> logger) : Hub<ISignalRNotificationClient>
 {
     public override async Task OnConnectedAsync()
     {
@@ -37,8 +44,49 @@ public class SignalRNotificationHub(
     {
         var userId = Context.UserIdentifier;
         var connectionId = Context.ConnectionId;
+
         if (!string.IsNullOrEmpty(userId))
+        {
             connectionTracker.Remove(userId, connectionId);
+
+            // Check if player has any remaining connections (multi-tab support)
+            var remainingConnections = connectionTracker.GetConnections(userId);
+            if (!remainingConnections.Any())
+            {
+                // Player fully disconnected - clean up from both lobby and game
+                logger.LogInformation(
+                    "Player fully disconnected (all connections closed): UserId={UserId}",
+                    userId);
+
+                // Check lobby first
+                var (lobbyId, player) = await FindPlayerLobbyAsync(userId);
+                if (!string.IsNullOrEmpty(lobbyId) && player != null)
+                {
+                    await HandleLobbyDisconnect(userId, lobbyId, player);
+                }
+
+                // Check game
+                var gameId = await FindPlayerGameAsync(userId);
+                if (!string.IsNullOrEmpty(gameId))
+                {
+                    await HandleGameDisconnect(userId, gameId);
+                }
+
+                // If not in lobby or game, just log
+                if (string.IsNullOrEmpty(lobbyId) && string.IsNullOrEmpty(gameId))
+                {
+                    logger.LogInformation(
+                        "Player disconnected but not in any lobby or game: UserId={UserId}",
+                        userId);
+                }
+            }
+            else
+            {
+                logger.LogDebug(
+                    "Player connection closed but {count} connections remain: UserId={UserId}",
+                    remainingConnections.Count, userId);
+            }
+        }
 
         await base.OnDisconnectedAsync(exception);
     }
@@ -128,4 +176,103 @@ public class SignalRNotificationHub(
 
     public async Task ActivatePlayerPower(string gameId, string playerId) =>
         await playerPowerService.ActivateAsync(gameId, playerId);
+
+    // -------------------------
+    // Disconnect handling helpers
+    // -------------------------
+    private async Task<(string? lobbyId, PlayerDTO? player)> FindPlayerLobbyAsync(string playerId)
+    {
+        try
+        {
+            var allLobbiesResult = await lobbyRepository.GetAllAsync();
+            if (!allLobbiesResult.IsSuccess || allLobbiesResult.Value is null)
+                return (null, null);
+
+            foreach (var (lobbyId, lobby) in allLobbiesResult.Value)
+            {
+                // Check if player is in this lobby
+                var player = lobby.Players.FirstOrDefault(p => p.Id == playerId);
+                if (player != null)
+                    return (lobbyId, new PlayerDTO { Id = player.Id, Name = player.Name });
+
+                // Check if player is the host
+                if (lobby.HostPlayer?.Id == playerId)
+                    return (lobbyId, new PlayerDTO { Id = lobby.HostPlayer.Id, Name = lobby.HostPlayer.Name });
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error finding lobby for player {playerId}", playerId);
+        }
+
+        return (null, null);
+    }
+
+    private async Task<string?> FindPlayerGameAsync(string playerId)
+    {
+        try
+        {
+            var allGamesResult = await activeGameRepository.GetAllAsync();
+            if (!allGamesResult.IsSuccess || allGamesResult.Value is null)
+                return null;
+
+            foreach (var (gameId, game) in allGamesResult.Value)
+            {
+                if (game.Players.Any(p => p.Id == playerId))
+                    return gameId;
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error finding game for player {playerId}", playerId);
+        }
+
+        return null;
+    }
+
+    private async Task HandleLobbyDisconnect(string playerId, string lobbyId, PlayerDTO player)
+    {
+        try
+        {
+            logger.LogWarning(
+                "Player disconnected from lobby. Removing immediately: PlayerId={PlayerId}, PlayerName={PlayerName}, LobbyId={LobbyId}",
+                playerId, player.Name, lobbyId);
+
+            // Use scoped service to avoid lifetime issues
+            using var scope = serviceProvider.CreateScope();
+            var scopedLobbyService = scope.ServiceProvider.GetRequiredService<ILobbyService>();
+
+            // Remove player from lobby
+            await scopedLobbyService.LeaveLobbyAsync(lobbyId, player);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex,
+                "Error removing disconnected player from lobby: PlayerId={PlayerId}, LobbyId={LobbyId}",
+                playerId, lobbyId);
+        }
+    }
+
+    private async Task HandleGameDisconnect(string playerId, string gameId)
+    {
+        try
+        {
+            logger.LogWarning(
+                "Player disconnected from game. Removing immediately: PlayerId={PlayerId}, GameId={GameId}",
+                playerId, gameId);
+
+            // Use scoped service to avoid lifetime issues
+            using var scope = serviceProvider.CreateScope();
+            var scopedGameService = scope.ServiceProvider.GetRequiredService<IGameService>();
+
+            // Remove player from game immediately
+            await scopedGameService.LeaveGameAsync(gameId, playerId);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex,
+                "Error removing disconnected player from game: PlayerId={PlayerId}, GameId={GameId}",
+                playerId, gameId);
+        }
+    }
 }

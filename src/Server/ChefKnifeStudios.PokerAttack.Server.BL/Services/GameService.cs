@@ -16,22 +16,21 @@ namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
 
 public interface IGameService
 {
-    Task StartGameAsync(string gameId, CancellationToken ct = default);
-    Task StartRoundAsync(string gameId, CancellationToken ct = default);
-    Task StartPlayerRunAsync(string playerId, int runTimeInSeconds, CancellationToken ct = default);
-    Task PlayHandAsync(string playerId, List<CardDTO> hand, CancellationToken ct = default);
-    Task DiscardAsync(string playerId, List<CardDTO> discardCards, CancellationToken ct = default);
-    Task<int> GetPlayerScoreAsync(string playerId, CancellationToken ct = default);
-    Task<int> GetPlayerWalletAsync(string playerId, CancellationToken ct = default);
-    Task<PlayerStateDTO?> GetPlayerStateAsync(string playerId, CancellationToken ct = default);
-    Task EndRoundAsync(string gameId, CancellationToken ct = default);
-    Task<RoundDTO> GetLatestRoundFromGame(string gameId, CancellationToken ct = default);
-    Task EndGameAsync(string gameId, CancellationToken ct = default);
-    Task LeaveGameAsync(string gameId, string playerId, CancellationToken ct = default);
-    Task StartEliminationAsync(string gameId, CancellationToken ct = default);
-    Task FinishEliminationAsync(string gameId, CancellationToken ct = default);
-    Task StartShoppingAsync(string gameId, CancellationToken ct = default);
-    Task FinishShoppingAsync(string gameId, CancellationToken ct = default);
+    Task<Result> StartGameAsync(string gameId, CancellationToken ct = default);
+    Task<Result> StartRoundAsync(string gameId, CancellationToken ct = default);
+    Task<Result> StartPlayerRunAsync(string playerId, int runTimeInSeconds, CancellationToken ct = default);
+    Task<Result> PlayHandAsync(string playerId, List<CardDTO> hand, CancellationToken ct = default);
+    Task<Result> DiscardAsync(string playerId, List<CardDTO> discardCards, CancellationToken ct = default);
+    Task<Result<int>> GetPlayerScoreAsync(string playerId, CancellationToken ct = default);
+    Task<Result<int>> GetPlayerWalletAsync(string playerId, CancellationToken ct = default);
+    Task<Result> EndRoundAsync(string gameId, CancellationToken ct = default);
+    Task<Result<RoundDTO>> GetLatestRoundFromGame(string gameId, CancellationToken ct = default);
+    Task<Result> EndGameAsync(string gameId, CancellationToken ct = default);
+    Task<Result> LeaveGameAsync(string gameId, string playerId, CancellationToken ct = default);
+    Task<Result> StartEliminationAsync(string gameId, CancellationToken ct = default);
+    Task<Result> FinishEliminationAsync(string gameId, CancellationToken ct = default);
+    Task<Result> StartShoppingAsync(string gameId, CancellationToken ct = default);
+    Task<Result> FinishShoppingAsync(string gameId, CancellationToken ct = default);
 }
 
 public class GameService(
@@ -46,8 +45,7 @@ public class GameService(
     IGameStateMachineService gameStateMachineService,
     IScoringRulesService scoringRulesService,
     IItemEffectsService itemEffectsService,
-    IWagerService wagerService,
-    IPlayerDisconnectionTracker disconnectionTracker) : IGameService
+    IWagerService wagerService) : IGameService
 {
     const int _NUM_CARDS_IN_HAND = 8;
     const int _NUM_ROUNDS_BEFORE_ELIMINATION = 3;
@@ -387,12 +385,6 @@ public class GameService(
 
         var activeGame = activeGameResult.Value;
 
-        // Cancel all disconnection timers for players in this game
-        foreach (var player in activeGame.Players)
-        {
-            disconnectionTracker.CancelDisconnectionTimer(player.Id);
-        }
-
         foreach (var gamePlayer in activeGame.Players)
         {
             var deleteResult = await gamePlayerRepository.DeleteAsync(gamePlayer.Id, ct);
@@ -678,7 +670,7 @@ public class GameService(
         return Result.Success();
     }
 
-    async Task ClearGamePlayerDataAsync(string playerId, GamePlayer gamePlayer, CancellationToken ct = default)
+    async Task<Result> ClearGamePlayerDataAsync(string playerId, GamePlayer gamePlayer, CancellationToken ct = default)
     {
         var deck = new Deck();
         deck.RandomizeDeck();
