@@ -1,4 +1,5 @@
-﻿using ChefKnifeStudios.PokerAttack.Server.BL.Services;
+﻿using Ardalis.Result;
+using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
 
@@ -20,11 +21,11 @@ public class HandEvaluator
             .ToDictionary(hts => hts.HandType, hts => (hts.BaseChips, hts.BaseMultiplier));
     }
 
-    public HandResult EvaluateHand(IEnumerable<Card> cards)
+    public Result<HandResult> EvaluateHand(IEnumerable<Card> cards)
     {
         var cardList = cards.ToList();
         if (cardList.Count < 1 || cardList.Count > 5)
-            throw new ArgumentException("Must evaluate between 1 and 5 cards for base scoring.");
+            return Result.Invalid(new ValidationError("Must evaluate between 1 and 5 cards for base scoring."));
 
         bool isFlush = cardList.Count == 5 && cardList.All(c => c.Suit == cardList[0].Suit);
         bool isStraight = cardList.Count == 5 && IsStraight(cardList, out Ranks highestInStraight);
@@ -163,7 +164,7 @@ public class HandEvaluator
 
         var (chips, mult) = GetBaseForHand(type);
 
-        return new HandResult
+        return Result.Success(new HandResult
         {
             HandType = type,
             CardValues = cardValues,
@@ -171,7 +172,7 @@ public class HandEvaluator
             BaseChips = chips,
             BaseMultiplier = mult,
             HandScore = (cardValueSum + chips) * mult,
-        };
+        });
     }
 
     (int chips, int mult) GetBaseForHand(Hands type)
@@ -181,7 +182,9 @@ public class HandEvaluator
             return score;
         }
 
-        throw new InvalidOperationException("Unknown hand type");
+        // This should never happen if hand evaluation logic is correct
+        // Return default values rather than throwing
+        return (0, 0);
     }
 
     static bool IsStraight(List<Card> cards, out Ranks highest)

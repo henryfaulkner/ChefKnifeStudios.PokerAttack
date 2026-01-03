@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Ardalis.Result" Version="10.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\ChefKnifeStudios.PokerAttack.Shared\ChefKnifeStudios.PokerAttack.Shared.csproj" />
   </ItemGroup>
 

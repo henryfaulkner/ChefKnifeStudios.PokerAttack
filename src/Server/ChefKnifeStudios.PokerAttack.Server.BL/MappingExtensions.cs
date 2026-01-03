@@ -1,4 +1,5 @@
-﻿using ChefKnifeStudios.PokerAttack.Server.Core.Models;
+﻿using Ardalis.Result;
+using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Server.Data.Models;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
@@ -94,10 +95,10 @@ public static class MappingExtensions
         };
     }
 
-    public static RoundDTO MapToDTO(this Round model)
+    public static Result<RoundDTO> MapToDTO(this Round? model)
     {
         if (model == null)
-            throw new ArgumentNullException(nameof(model));
+            return Result.Invalid(new ValidationError("Round model cannot be null."));
 
         var dto = new RoundDTO
         {
@@ -111,7 +112,7 @@ public static class MappingExtensions
                 .ToList() ?? new List<RoundDTO.RoundScoreDTO>()
         };
 
-        return dto;
+        return Result.Success(dto);
     }
 
     public static PlayerPowerDTO MapToDTO(this PlayerPower model)

@@ -23,17 +23,18 @@ public static class ShopEndpoints
             string gameId,
             CancellationToken cancellationToken = default) =>
         {
-            var items = itemRepository.GetRandomNumber();
+            var itemsResult = itemRepository.GetRandomNumber();
+            if (!itemsResult.IsSuccess)
+                return Result.Error("Failed to retrieve shop items.");
 
-            // Get the active game to calculate round-based pricing
-            var activeGame = await activeGameRepository.GetAsync(gameId, cancellationToken);
-            if (activeGame == null)
-            {
+            var activeGameResult = await activeGameRepository.GetAsync(gameId, cancellationToken);
+            if (!activeGameResult.IsSuccess || activeGameResult.Value is null)
                 return Result.NotFound($"Active game not found with ID: {gameId}");
-            }
+
+            var activeGame = activeGameResult.Value;
 
             // Calculate adjusted price for each item: 15% increase per round
-            var shopItems = items.Select(item => new ShopItemDTO
+            var shopItems = itemsResult.Value.Select(item => new ShopItemDTO
             {
                 Item = item,
                 AdjustedPrice = (int)(item.Price * (1 + 0.15 * activeGame.RoundNumber))
@@ -53,8 +54,7 @@ public static class ShopEndpoints
             string shopItemId,
             CancellationToken cancellationToken = default) =>
         {
-            var shopItem = await shopService.PurchaseItemAsync(gameId, playerId, shopItemId, cancellationToken);
-            return Result.Success(shopItem);
+            return await shopService.PurchaseItemAsync(gameId, playerId, shopItemId, cancellationToken);
         })
         .WithName(nameof(Endpoints.PurchaseShopItem))
         .Produces<ShopItemDTO>(StatusCodes.Status200OK)

@@ -68,12 +68,15 @@ public class SignalRNotificationHub(
         try
         {
             // Search through all active games to find which one the player is in
-            var allGames = await activeGameRepository.GetAllAsync();
-            foreach (var game in allGames)
+            var allGamesResult = await activeGameRepository.GetAllAsync();
+            if (allGamesResult.IsSuccess && allGamesResult.Value is not null)
             {
-                if (game.Value.Players.Any(p => p.Id == playerId))
+                foreach (var game in allGamesResult.Value)
                 {
-                    return game.Key; // Return gameId
+                    if (game.Value.Players.Any(p => p.Id == playerId))
+                    {
+                        return game.Key; // Return gameId
+                    }
                 }
             }
         }
@@ -131,8 +134,11 @@ public class SignalRNotificationHub(
     // -------------------------
     public async Task StartGame(string gameId, string playerId)
     {
-        var game = await activeGameRepository.GetAsync(gameId)
-            ?? throw new KeyNotFoundException($"Game not found. Game Id {gameId}");
+        var gameResult = await activeGameRepository.GetAsync(gameId);
+        if (!gameResult.IsSuccess || gameResult.Value is null)
+            throw new KeyNotFoundException($"Game not found. Game Id {gameId}");
+
+        var game = gameResult.Value;
 
         // Only one player should start the round
         var firstPlayer = game.Players.FirstOrDefault();

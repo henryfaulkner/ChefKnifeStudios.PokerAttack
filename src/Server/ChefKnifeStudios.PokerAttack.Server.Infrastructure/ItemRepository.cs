@@ -1,4 +1,5 @@
-﻿using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
+using Ardalis.Result;
+using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using ChefKnifeStudios.PokerAttack.Shared;
@@ -32,23 +33,26 @@ public class ItemRepository : IItemRepository
         }
     }
 
-    public ItemBase? Get(string id)
+    public Result<ItemBase> Get(string id)
     {
-        _items.TryGetValue(id, out var item);
-        return item;
+        if (!_items.TryGetValue(id, out var item))
+            return Result.NotFound($"Item not found with ID: {id}");
+
+        return Result.Success(item);
     }
 
-    public IEnumerable<ItemBase> GetAll() => _items.Values;
+    public Result<IEnumerable<ItemBase>> GetAll() => Result.Success<IEnumerable<ItemBase>>(_items.Values);
 
-    public IEnumerable<ItemBase> GetRandomNumber(int count = 3)
+    public Result<IEnumerable<ItemBase>> GetRandomNumber(int count = 3)
     {
         List<ItemBase> allItems = _items.Select(x => x.Value).ToList();
-        if (!allItems.Any()) return Array.Empty<ItemBase>();
+        if (!allItems.Any())
+            return Result.Success<IEnumerable<ItemBase>>(Array.Empty<ItemBase>());
 
         // If count is greater than or equal to available items, shuffle and return all
         if (count >= allItems.Count)
         {
-            return allItems.OrderBy(x => _rng.Next()).ToList();
+            return Result.Success<IEnumerable<ItemBase>>(allItems.OrderBy(x => _rng.Next()).ToList());
         }
 
         var selected = new List<ItemBase>();
@@ -65,7 +69,7 @@ public class ItemRepository : IItemRepository
             }
         }
 
-        return selected;
+        return Result.Success<IEnumerable<ItemBase>>(selected);
     }
 
     ItemBase SelectItemByRarity(List<ItemBase> availableItems)

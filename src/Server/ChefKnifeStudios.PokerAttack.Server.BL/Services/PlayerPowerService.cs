@@ -1,4 +1,5 @@
-﻿using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
+﻿using Ardalis.Result;
+using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Server.Infrastructure.PlayerPowers;
 using ChefKnifeStudios.PokerAttack.Shared;
@@ -12,9 +13,9 @@ namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
 
 public interface IPlayerPowerService
 {
-    IEnumerable<PlayerPowerDTO> GetPlayerPowers(int count);
-    Task<PlayerPowerDTO> SelectPlayerPowerAsync(string gameId, string playerId, string powerId, CancellationToken ct = default);
-    Task ActivateAsync(string gameId, string playerId, CancellationToken ct = default);
+    Result<IEnumerable<PlayerPowerDTO>> GetPlayerPowers(int count);
+    Task<Result<PlayerPowerDTO>> SelectPlayerPowerAsync(string gameId, string playerId, string powerId, CancellationToken ct = default);
+    Task<Result> ActivateAsync(string gameId, string playerId, CancellationToken ct = default);
 }
 
 public class PlayerPowerService(
@@ -26,34 +27,59 @@ public class PlayerPowerService(
     IPokerAttackNotificationHelper notificationHelper,
     IGameStateMachineService gameStateMachineService) : IPlayerPowerService
 {
-    public IEnumerable<PlayerPowerDTO> GetPlayerPowers(int count)
+    public Result<IEnumerable<PlayerPowerDTO>> GetPlayerPowers(int count)
     {
-        return powerRepository.GetRandomNumber(count).Select(x => x.MapToDTO());
+        var result = powerRepository.GetRandomNumber(count);
+        if (!result.IsSuccess)
+            return Result.Error("Failed to retrieve player powers.");
+
+        return Result.Success(result.Value.Select(x => x.MapToDTO()));
     }
 
-    public async Task<PlayerPowerDTO> SelectPlayerPowerAsync(string gameId, string playerId, string powerId, CancellationToken ct = default)
+    public async Task<Result<PlayerPowerDTO>> SelectPlayerPowerAsync(string gameId, string playerId, string powerId, CancellationToken ct = default)
     {
-        var gamePlayer = await gamePlayerRepository.GetAsync(playerId, ct)
-            ?? throw new KeyNotFoundException("Game Player not found");
+        var gamePlayerResult = await gamePlayerRepository.GetAsync(playerId, ct);
+        if (!gamePlayerResult.IsSuccess || gamePlayerResult.Value is null)
+            return Result.NotFound("Game Player not found");
 
-        var playerPower = powerRepository.Get(powerId)
-            ?? throw new KeyNotFoundException("Player Power not found");
+        var gamePlayer = gamePlayerResult.Value;
+
+        var playerPowerResult = powerRepository.Get(powerId);
+        if (!playerPowerResult.IsSuccess || playerPowerResult.Value is null)
+            return Result.NotFound("Player Power not found");
+
+        var playerPower = playerPowerResult.Value;
         gamePlayer.PlayerPower = playerPower;
-        await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
 
-        var activeGame = await activeGameRepository.GetAsync(gameId, ct);
-        if (activeGame is ActiveGame && await DoesEveryPlayersInGameHaveAPower(activeGame))
+        var updateResult = await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
+        if (!updateResult.IsSuccess)
+            return Result.Error("Failed to update game player.");
+
+        var activeGameResult = await activeGameRepository.GetAsync(gameId, ct);
+        if (activeGameResult.IsSuccess && activeGameResult.Value is ActiveGame activeGame)
         {
-            await gameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
+            var allHavePowerResult = await DoesEveryPlayersInGameHaveAPower(activeGame, ct);
+            if (!allHavePowerResult.IsSuccess)
+                return Result.Error("Failed to check player powers.");
+
+            if (allHavePowerResult.Value)
+            {
+                var transitionResult = await gameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
+                if (!transitionResult.IsSuccess)
+                    return Result.Error("Failed to transition game state.");
+            }
         }
 
-        return playerPower.MapToDTO();
+        return Result.Success(playerPower.MapToDTO());
     }
 
-    public async Task ActivateAsync(string gameId, string sourcePlayerId, CancellationToken ct = default)
+    public async Task<Result> ActivateAsync(string gameId, string sourcePlayerId, CancellationToken ct = default)
     {
-        var activeGame = await activeGameRepository.GetAsync(gameId)
-            ?? throw new KeyNotFoundException("Lobby not found");
+        var activeGameResult = await activeGameRepository.GetAsync(gameId, ct);
+        if (!activeGameResult.IsSuccess || activeGameResult.Value is null)
+            return Result.NotFound("Lobby not found");
+
+        var activeGame = activeGameResult.Value;
         var players = activeGame.Players.ToHashSet();
 
         var sourcePlayer = players.FirstOrDefault(x => x.Id == sourcePlayerId);
@@ -61,24 +87,33 @@ public class PlayerPowerService(
         var targetPlayerIfApplicable = players.Any() ? players.ToList()[Random.Shared.Next(0, players.Count())] : null;
         var targetGamePlayerIdIfApplicable = targetPlayerIfApplicable?.Id;
 
-        var sourceGamePlayer = await gamePlayerRepository.GetAsync(sourcePlayerId)
-            ?? throw new KeyNotFoundException("Source Game Player not found");
-        var targetGamePlayer = targetGamePlayerIdIfApplicable is string ? await gamePlayerRepository.GetAsync(targetGamePlayerIdIfApplicable) : null;
+        var sourceGamePlayerResult = await gamePlayerRepository.GetAsync(sourcePlayerId, ct);
+        if (!sourceGamePlayerResult.IsSuccess || sourceGamePlayerResult.Value is null)
+            return Result.NotFound("Source Game Player not found");
 
+        var sourceGamePlayer = sourceGamePlayerResult.Value;
+
+        GamePlayer? targetGamePlayer = null;
+        if (targetGamePlayerIdIfApplicable is string)
+        {
+            var targetResult = await gamePlayerRepository.GetAsync(targetGamePlayerIdIfApplicable, ct);
+            if (targetResult.IsSuccess && targetResult.Value is not null)
+                targetGamePlayer = targetResult.Value;
+        }
 
         var power = sourceGamePlayer.PlayerPower;
 
         if (power == null)
         {
             logger.LogWarning("Player tried to activate a power but has none equipped.");
-            return;
+            return Result.Success();
         }
 
         // Prevent manual activation of passive powers
         if (power.PowerKind == PowerKind.Passive)
         {
             logger.LogWarning("Passive power '{PowerName}' cannot be activated manually.", power.Name);
-            return;
+            return Result.Success();
         }
 
         // Check power points/energy
@@ -86,7 +121,7 @@ public class PlayerPowerService(
         {
             logger.LogDebug("Player does not have enough PP to activate {PowerName}.",
                 power.Name);
-            return;
+            return Result.Success();
         }
 
         // Deduct power points
@@ -117,7 +152,7 @@ public class PlayerPowerService(
 
                 case PowerTarget.Opponent:
                     if (targetGamePlayer == null)
-                        throw new InvalidOperationException($"Power {power.Name} requires a target player.");
+                        return Result.Invalid(new ValidationError($"Power {power.Name} requires a target player."));
                     targetTargeted = true;
                     targetTargetMsg += $"{effectInstance.PowerMessage}. ";
                     actualTarget = targetGamePlayer;
@@ -131,9 +166,17 @@ public class PlayerPowerService(
                     break;
             }
 
+            var effectResult = effectRegistry.Get(effectInstance.Type);
+            if (!effectResult.IsSuccess || effectResult.Value is null)
+            {
+                logger.LogError("Failed to get effect {EffectType} for power {PowerName}.",
+                    effectInstance?.Type, power.Name);
+                continue;
+            }
+
             try
             {
-                effectRegistry.Get(effectInstance.Type).Apply(sourceGamePlayer, actualTarget, effectInstance.Parameters);
+                effectResult.Value.Apply(sourceGamePlayer, actualTarget, effectInstance.Parameters);
             }
             catch (Exception ex)
             {
@@ -179,17 +222,22 @@ public class PlayerPowerService(
                 JsonSerializer.Serialize(new MessageDTO { Title = $"{sourcePlayer?.Name} attacked {targetPlayerIfApplicable?.Name}", Message = targetTargetMsg, Type = MessageDTO.MessageType.Success, })
             ));
         }
+
+        return Result.Success();
     }
 
-    async Task<bool> DoesEveryPlayersInGameHaveAPower(ActiveGame activeGame, CancellationToken ct = default)
+    async Task<Result<bool>> DoesEveryPlayersInGameHaveAPower(ActiveGame activeGame, CancellationToken ct = default)
     {
         bool result = true;
         foreach (var player in activeGame.Players)
         {
-            var gamePlayer = await gamePlayerRepository.GetAsync(player.Id, ct)
-                ?? throw new KeyNotFoundException("Game Player not found");
-            if (gamePlayer.PlayerPower is not PlayerPower) result = false;
+            var gamePlayerResult = await gamePlayerRepository.GetAsync(player.Id, ct);
+            if (!gamePlayerResult.IsSuccess || gamePlayerResult.Value is null)
+                return Result.NotFound("Game Player not found");
+
+            if (gamePlayerResult.Value.PlayerPower is not PlayerPower)
+                result = false;
         }
-        return result;
+        return Result.Success(result);
     }
 }
