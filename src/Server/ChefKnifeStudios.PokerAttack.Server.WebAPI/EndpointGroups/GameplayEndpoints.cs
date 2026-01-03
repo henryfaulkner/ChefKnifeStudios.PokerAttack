@@ -20,8 +20,7 @@ public static class GameplayEndpoints
             string gameId,
             CancellationToken cancellationToken = default) =>
         {
-            var round = await gameService.GetLatestRoundFromGame(gameId, cancellationToken);
-            return Result.Success(round);
+            return await gameService.GetLatestRoundFromGame(gameId, cancellationToken);
         })
         .WithName(nameof(Endpoints.GetLatestRound))
         .Produces<RoundDTO?>(StatusCodes.Status200OK)
@@ -34,8 +33,7 @@ public static class GameplayEndpoints
             string playerId,
             CancellationToken cancellationToken = default) =>
         {
-            var wallet = await gameService.GetPlayerWalletAsync(playerId, cancellationToken);
-            return Result.Success(wallet);
+            return await gameService.GetPlayerWalletAsync(playerId, cancellationToken);
         })
         .WithName(nameof(Endpoints.GetPlayerWallet))
         .Produces<int?>(StatusCodes.Status200OK)

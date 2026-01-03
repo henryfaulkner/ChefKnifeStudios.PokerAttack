@@ -21,9 +21,8 @@ public static class PlayerPowerEndpoints
             string countStr) =>
         {
             bool canParse = int.TryParse(countStr, out int count);
-            if (!canParse) return Result.Invalid();       
-            var result = playerPowerService.GetPlayerPowers(count);
-            return Result.Success(result);
+            if (!canParse) return Result.Invalid();
+            return playerPowerService.GetPlayerPowers(count);
         })
         .WithName(nameof(Endpoints.GetPlayerPowers))
         .Produces<IEnumerable<PlayerPowerDTO>>(StatusCodes.Status200OK)
@@ -37,8 +36,7 @@ public static class PlayerPowerEndpoints
             string powerId,
             CancellationToken cancellationToken = default) =>
         {
-            var playerPower = await playerPowerService.SelectPlayerPowerAsync(gameId, playerId, powerId, cancellationToken);
-            return Result.Success(playerPower);
+            return await playerPowerService.SelectPlayerPowerAsync(gameId, playerId, powerId, cancellationToken);
         })
         .WithName(nameof(Endpoints.SelectPlayerPower))
         .Produces<PlayerPowerDTO>(StatusCodes.Status200OK)

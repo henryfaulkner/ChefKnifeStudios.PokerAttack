@@ -1,4 +1,5 @@
-﻿using ChefKnifeStudios.PokerAttack.Server.Core.Models;
+﻿using Ardalis.Result;
+using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Shared;
 using System.Text.Json;
 
@@ -20,20 +21,23 @@ public class PlayerPowerRepository : IPlayerPowerRepository
     }
 
     // Get a single power by ID
-    public PlayerPower? Get(string id)
+    public Result<PlayerPower> Get(string id)
     {
-        _powers.TryGetValue(id, out var power);
-        return power;
+        if (!_powers.TryGetValue(id, out var power))
+            return Result.NotFound($"Player power not found with ID: {id}");
+
+        return Result.Success(power);
     }
 
     // Get all powers
-    public IEnumerable<PlayerPower> GetAll() => _powers.Values;
+    public Result<IEnumerable<PlayerPower>> GetAll() => Result.Success<IEnumerable<PlayerPower>>(_powers.Values);
 
-    public IEnumerable<PlayerPower> GetRandomNumber(int count = 3)
+    public Result<IEnumerable<PlayerPower>> GetRandomNumber(int count = 3)
     {
         List<PlayerPower> allPowers = _powers.Select(x => x.Value).ToList();
 
-        if (!allPowers.Any()) return Array.Empty<PlayerPower>();
+        if (!allPowers.Any())
+            return Result.Success<IEnumerable<PlayerPower>>(Array.Empty<PlayerPower>());
 
         // Randomly pick powers without replacement
         var selected = new List<PlayerPower>();
@@ -46,7 +50,7 @@ public class PlayerPowerRepository : IPlayerPowerRepository
             available.RemoveAt(index);
         }
 
-        return selected;
+        return Result.Success<IEnumerable<PlayerPower>>(selected);
     }
 
     const string _json =

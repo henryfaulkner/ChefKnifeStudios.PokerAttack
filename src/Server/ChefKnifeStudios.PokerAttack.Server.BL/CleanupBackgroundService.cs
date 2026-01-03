@@ -53,7 +53,14 @@ public class CleanupBackgroundService : BackgroundService
         var gameStateRepository = scope.ServiceProvider.GetRequiredService<IKeyValueRepository<GameStates>>();
         var gameModeRepository = scope.ServiceProvider.GetRequiredService<IKeyValueRepository<GameModes>>();
 
-        var allLobbies = await lobbyRepository.GetAllAsync(cancellationToken);
+        var allLobbiesResult = await lobbyRepository.GetAllAsync(cancellationToken);
+        if (!allLobbiesResult.IsSuccess || allLobbiesResult.Value is null)
+        {
+            _logger.LogWarning("Failed to retrieve lobbies for cleanup");
+            return;
+        }
+
+        var allLobbies = allLobbiesResult.Value;
         var now = DateTime.UtcNow;
         var staleLobbies = allLobbies
             .Where(kvp => (now - kvp.Value.CreatedAt) > _lobbyMaxAge)
@@ -112,10 +119,11 @@ public class CleanupBackgroundService : BackgroundService
         try
         {
             // Get the active game to find all associated players
-            var activeGame = await activeGameRepository.GetAsync(gameId, cancellationToken);
+            var activeGameResult = await activeGameRepository.GetAsync(gameId, cancellationToken);
 
-            if (activeGame != null)
+            if (activeGameResult.IsSuccess && activeGameResult.Value is not null)
             {
+                var activeGame = activeGameResult.Value;
                 // Delete all GamePlayer entries for this game
                 foreach (var player in activeGame.Players)
                 {

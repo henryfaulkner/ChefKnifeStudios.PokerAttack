@@ -25,7 +25,7 @@ public class HandEvaluator
     {
         var cardList = cards.ToList();
         if (cardList.Count < 1 || cardList.Count > 5)
-            return Result.Invalid("Must evaluate between 1 and 5 cards for base scoring.");
+            return Result.Invalid(new ValidationError("Must evaluate between 1 and 5 cards for base scoring."));
 
         bool isFlush = cardList.Count == 5 && cardList.All(c => c.Suit == cardList[0].Suit);
         bool isStraight = cardList.Count == 5 && IsStraight(cardList, out Ranks highestInStraight);

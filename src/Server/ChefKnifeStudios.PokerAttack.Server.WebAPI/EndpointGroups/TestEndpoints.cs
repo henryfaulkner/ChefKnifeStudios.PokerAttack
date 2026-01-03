@@ -68,11 +68,31 @@ public static class TestEndpoints
                 logger.LogInformation("Test cleanup endpoint called - clearing all repository data");
 
                 // Get all data from each repository
-                var lobbies = await lobbyRepository.GetAllAsync(cancellationToken);
-                var activeGames = await activeGameRepository.GetAllAsync(cancellationToken);
-                var gamePlayers = await gamePlayerRepository.GetAllAsync(cancellationToken);
-                var gameStates = await gameStateRepository.GetAllAsync(cancellationToken);
-                var gameModes = await gameModeRepository.GetAllAsync(cancellationToken);
+                var lobbiesResult = await lobbyRepository.GetAllAsync(cancellationToken);
+                if (!lobbiesResult.IsSuccess || lobbiesResult.Value is null)
+                    return Result.Error("Failed to retrieve lobbies for cleanup.");
+
+                var activeGamesResult = await activeGameRepository.GetAllAsync(cancellationToken);
+                if (!activeGamesResult.IsSuccess || activeGamesResult.Value is null)
+                    return Result.Error("Failed to retrieve active games for cleanup.");
+
+                var gamePlayersResult = await gamePlayerRepository.GetAllAsync(cancellationToken);
+                if (!gamePlayersResult.IsSuccess || gamePlayersResult.Value is null)
+                    return Result.Error("Failed to retrieve game players for cleanup.");
+
+                var gameStatesResult = await gameStateRepository.GetAllAsync(cancellationToken);
+                if (!gameStatesResult.IsSuccess || gameStatesResult.Value is null)
+                    return Result.Error("Failed to retrieve game states for cleanup.");
+
+                var gameModesResult = await gameModeRepository.GetAllAsync(cancellationToken);
+                if (!gameModesResult.IsSuccess || gameModesResult.Value is null)
+                    return Result.Error("Failed to retrieve game modes for cleanup.");
+
+                var lobbies = lobbiesResult.Value;
+                var activeGames = activeGamesResult.Value;
+                var gamePlayers = gamePlayersResult.Value;
+                var gameStates = gameStatesResult.Value;
+                var gameModes = gameModesResult.Value;
 
                 // Delete all lobbies
                 foreach (var (lobbyId, _) in lobbies)

@@ -183,7 +183,7 @@ public class LobbyService(
             // Host leaving shuts down lobby
             var shutdownResult = await ShutDownLobbyAsync(lobbyKvp.Value.Key, cancellationToken);
             if (!shutdownResult.IsSuccess)
-                return shutdownResult;
+                return Result.Error("Failed to shut down lobby.");
             return Result.Success();
         }
         else
@@ -229,7 +229,7 @@ public class LobbyService(
             // Host leaving shuts down lobby
             var shutdownResult = await ShutDownLobbyAsync(lobbyId, cancellationToken);
             if (!shutdownResult.IsSuccess)
-                return shutdownResult;
+                return Result.Error("Failed to shut down lobby.");
 
             await notificationHelper.BroadcastToAllAsync(
                 new PokerAttackNotification(
