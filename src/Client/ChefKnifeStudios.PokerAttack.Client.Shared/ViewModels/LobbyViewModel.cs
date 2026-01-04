@@ -94,11 +94,7 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
     public async Task LoadLobbiesAsync(CancellationToken cancellationToken = default)
     {
         IsLoadingLobbies = true;
-
-        var res = await _lobbyEndpointsService.GetLobbiesAsync(cancellationToken);
-        if (res.IsSuccess && res.Value is IEnumerable<LobbyDTO>) 
-            Lobbies = res.Value.Select(x => new LobbyListItem(x)).ToObservableCollection();
-
+        await RefreshLobbiesFromServerAsync(cancellationToken);
         IsLoadingLobbies = false;
     }
 
@@ -133,7 +129,7 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
         // Navigate immediately on success (fixes race condition where host misses SignalR notification)
         if (result.IsSuccess && !string.IsNullOrEmpty(result.Value))
         {
-            _navigationManager.NavigateTo($"/gameplay?gameid={result.Value}", replace: true);
+            _navigationManager.NavigateToGameplay(result.Value);
         }
         else if (!result.IsSuccess)
         {
@@ -165,14 +161,18 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
         _lobbyPollTimer = null;
     }
 
-    private async Task RefreshLobbiesFromServerAsync(CancellationToken cancellationToken = default)
+    async Task RefreshLobbiesFromServerAsync(CancellationToken cancellationToken = default)
     {
-        var result = await _lobbyEndpointsService.GetLobbiesAsync(cancellationToken);
-        
-        if (result.IsSuccess && result.Value != null)
+        var res = await _lobbyEndpointsService.GetLobbiesAsync(cancellationToken);
+        if (res.IsSuccess && res.Value is IEnumerable<LobbyDTO>)
         {
-            // Update Lobbies collection with fresh data from server
-            Lobbies = result.Value.Select(x => new LobbyListItem(x)).ToObservableCollection();
+            var newLobbies = res.Value.Select(x => new LobbyListItem(x)).ToList();
+
+            Lobbies.Clear();
+            foreach (var lobby in newLobbies)
+            {
+                Lobbies.Add(lobby);
+            }
         }
     }
 
@@ -220,7 +220,7 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
                     var args = JsonSerializer.Deserialize<GameStartedEventArgs>(notification.Payload!, JsonOptions.Get());
                     if (args is { GameId: string gameId })
                     {
-                        _navigationManager.NavigateTo($"/gameplay?gameid={gameId}", replace: true);
+                        _navigationManager.NavigateToGameplay(gameId);
                     }
                     break;
                 }

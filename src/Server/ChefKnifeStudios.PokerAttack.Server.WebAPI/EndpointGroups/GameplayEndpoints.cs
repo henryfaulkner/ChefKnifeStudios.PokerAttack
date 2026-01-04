@@ -40,6 +40,19 @@ public static class GameplayEndpoints
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);
 
+        group.MapGet(Endpoints.LeaveGame, async (
+            IGameService gameService,
+            string gameId,
+            string playerId,
+            CancellationToken cancellationToken = default) =>
+        {
+            return await gameService.LeaveGameAsync(gameId, playerId, cancellationToken);
+        })
+        .WithName(nameof(Endpoints.LeaveGame))
+        .Produces<int?>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status500InternalServerError);
+
         return builder;
     }
 }

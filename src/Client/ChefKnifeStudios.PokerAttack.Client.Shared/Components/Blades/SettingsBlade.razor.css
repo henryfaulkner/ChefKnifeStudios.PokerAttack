@@ -1,7 +1,19 @@
+.blade-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
 .settings-list {
     display: flex;
     flex-direction: column;
     gap: 8px;
     justify-content: center;
     align-items: flex-start;
+}
+
+::deep .leave-game-btn {
+    max-width: 450px;
+    height: 50px;
 }

@@ -12,6 +12,7 @@ public interface IGameplayEndpointsService
 {
     Task<Result<RoundDTO?>> GetLatestRoundAsync(string gameId, CancellationToken cancellationToken = default);
     Task<Result<int?>> GetPlayerWalletAsync(string gameId, string playerId, CancellationToken cancellationToken = default);
+    Task<Result<Discard>> LeaveGameAsync(string gameId, string playerId, CancellationToken cancellationToken = default);
 }
 
 public class GameplayEndpointsService : IGameplayEndpointsService
@@ -52,7 +53,24 @@ public class GameplayEndpointsService : IGameplayEndpointsService
                 Endpoints.GetPlayerWallet.FormatRoute(gameId).FormatRoute(playerId),
                 cancellationToken
             );
-            return res.LogErrors(_logger, $"Gameplay GetLatestRound call. Lobby Id {gameId}");
+            return res.LogErrors(_logger, $"Gameplay GetLatestRound call. Game Id {gameId}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occured.");
+            return Result.Error();
+        }
+    }
+
+    public async Task<Result<Discard>> LeaveGameAsync(string gameId, string playerId, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var res = await _httpService.GetAsync<Discard>(
+                Endpoints.LeaveGame.FormatRoute(gameId).FormatRoute(playerId),
+                cancellationToken
+            );
+            return res.LogErrors(_logger, $"Gameplay LeaveGame call. Game Id {gameId}");
         }
         catch (Exception ex)
         {

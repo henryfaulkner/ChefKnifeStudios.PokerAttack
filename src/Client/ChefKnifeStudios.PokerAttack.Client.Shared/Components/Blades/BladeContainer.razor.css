@@ -2,13 +2,13 @@
     position: absolute;
     top: 0;
     right: 0;
+    max-width: 500px;
     width: 80vw;
     height: 100dvh;
     background-color: var(--clr-surface2, #f2ecee);
     z-index: 2;
     transform: translateX(100%); /* Start off-screen */
     transition: transform 0.3s ease-in-out;
-
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
     -ms-overflow-style: none; /* Internet Explorer 10+ */

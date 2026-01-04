@@ -1,8 +1,15 @@
-﻿@inherits LayoutComponentBase
+﻿@using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Blades
+@using ChefKnifeStudios.PokerAttack.Client.Shared.Components
+
+@inherits LayoutComponentBase
 
 <div class="page bgclr-surface1">
     <MatThemeProvider Theme="@_theme">
         @Body
+
+        <SettingsButton />
+        <SettingsBlade />
+
         <MatToastContainer />
     </MatThemeProvider>
 </div>
