@@ -1,4 +1,6 @@
-﻿<div class="player-power-list">
+@using ChefKnifeStudios.PokerAttack.Client.Core.Extensions
+
+<div class="player-power-list">
     @if (GameDataStore.IsLoadingPlayerPowers)
     {
         <div class="mat-body1">Loading...</div>
@@ -31,5 +33,6 @@
                 }
             </div>
         }
+        <span class="mat-h4">@PlayerPowerSelectionViewModel.SelectionTimeSeconds.FormatAsMinutesSeconds()</span>
     }
 </div>

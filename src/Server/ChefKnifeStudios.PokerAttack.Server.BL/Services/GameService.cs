@@ -31,13 +31,15 @@ public interface IGameService
     Task<Result> FinishEliminationAsync(string gameId, CancellationToken ct = default);
     Task<Result> StartShoppingAsync(string gameId, CancellationToken ct = default);
     Task<Result> FinishShoppingAsync(string gameId, CancellationToken ct = default);
+    Task<Result> StartPlayerPowerSelectionAsync(string gameId, CancellationToken ct = default);
+    Task<Result> FinishPlayerPowerSelectionAsync(string gameId, CancellationToken ct = default);
 }
 
 public class GameService(
     ILogger<GameService> logger,
     IKeyValueRepository<ActiveGame> activeGameRepository,
     IKeyValueRepository<GamePlayer> gamePlayerRepository,
-    IKeyValueRepository<GameStates?> gameStateRepository,
+    IKeyValueRepository<GameStates> gameStateRepository,
     IKeyValueRepository<Lobby> lobbyRepository,
     IRepository<Game> gameRepository,
     IRepository<Round> roundRepository,
@@ -45,7 +47,8 @@ public class GameService(
     IGameStateMachineService gameStateMachineService,
     IScoringRulesService scoringRulesService,
     IItemEffectsService itemEffectsService,
-    IWagerService wagerService) : IGameService
+    IWagerService wagerService,
+    IPlayerPowerService playerPowerService) : IGameService
 {
     const int _NUM_CARDS_IN_HAND = 8;
     const int _NUM_ROUNDS_BEFORE_ELIMINATION = 3;
@@ -606,13 +609,18 @@ public class GameService(
         // Use a plain object for payload so we don't get anonymous-type re-assignment errors.
         EliminationFinishedArgs eventArgs;
         (string Id, string Name)? winner = null;
+        bool gameIsOver = remaining.Count <= 1;
+
         if (remaining.Count == 1)
         {
             winner = remaining[0];
             eventArgs = new EliminationFinishedArgs(losers, new EliminatingPlayerDTO(winner.Value.Id, winner.Value.Name));
-            var endResult = await EndGameAsync(gameId, ct);
-            if (!endResult.IsSuccess)
-                return endResult;
+        }
+        else if (remaining.Count == 0)
+        {
+            // All players eliminated (e.g., all disconnected)
+            eventArgs = new EliminationFinishedArgs(losers, null);
+            logger.LogInformation("Game over with no remaining players: GameId={GameId}", gameId);
         }
         else
         {
@@ -649,7 +657,10 @@ public class GameService(
             ct
         );
 
-        var transitionResult = await gameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
+        // Transition to GameOver if game is finished, otherwise continue to next phase
+        // Note: EventNotificationServiceSubscriber will handle GameOver state and call EndGameAsync
+        var gameEvent = gameIsOver ? GameEvents.EndGame : GameEvents.Next;
+        var transitionResult = await gameStateMachineService.TransitionAsync(gameId, gameEvent, ct);
         if (!transitionResult.IsSuccess)
             return transitionResult;
 
@@ -663,6 +674,50 @@ public class GameService(
 
     public async Task<Result> FinishShoppingAsync(string gameId, CancellationToken ct = default)
     {
+        var transitionResult = await gameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
+        if (!transitionResult.IsSuccess)
+            return transitionResult;
+
+        return Result.Success();
+    }
+
+    public async Task<Result> StartPlayerPowerSelectionAsync(string gameId, CancellationToken ct = default)
+    {
+        var gameStateResult = await gameStateRepository.GetAsync(gameId, ct);
+        logger.LogInformation("StartPlayerPowerSelectionAsync - GameId: {GameId}, Current State: {State}",
+            gameId, gameStateResult.Value);
+        return Result.Success();
+    }
+
+    public async Task<Result> FinishPlayerPowerSelectionAsync(string gameId, CancellationToken ct = default)
+    {
+        // Check if game is still in Freebie state - if not, all players already selected and triggered transition
+        var gameStateResult = await gameStateRepository.GetAsync(gameId, ct);
+        if (!gameStateResult.IsSuccess || gameStateResult.Value != GameStates.Freebie)
+        {
+            logger.LogInformation("Skipping player power auto-selection - game {GameId} is no longer in Freebie state (current: {State})",
+                gameId, gameStateResult.Value);
+            return Result.Success();
+        }
+
+        var activeGameResult = await activeGameRepository.GetAsync(gameId, ct);
+        if (!activeGameResult.IsSuccess || activeGameResult.Value is null)
+            return Result.NotFound($"Game not found. Game Id {gameId}");
+
+        var activeGame = activeGameResult.Value;
+
+        // Auto-select powers for players who haven't selected
+        foreach (var player in activeGame.Players)
+        {
+            var autoSelectResult = await playerPowerService.AutoSelectPlayerPowerAsync(player.Id, ct);
+            if (!autoSelectResult.IsSuccess)
+            {
+                logger.LogWarning("Failed to auto-select power for player {PlayerId}: {Error}",
+                    player.Id, autoSelectResult.Errors.FirstOrDefault());
+            }
+        }
+
+        // Transition to next state
         var transitionResult = await gameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
         if (!transitionResult.IsSuccess)
             return transitionResult;

@@ -4,4 +4,5 @@ public enum GameEvents
 {
     Next,
     Eliminate,
+    EndGame,
 }

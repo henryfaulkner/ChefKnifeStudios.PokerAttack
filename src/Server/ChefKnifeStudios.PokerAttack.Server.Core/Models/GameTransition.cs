@@ -12,7 +12,7 @@ public static class GameTransitions
     static GameTransition[] Get(GameModes gameMode) =>
         gameMode switch
         {
-            GameModes.Quick => 
+            GameModes.Quick =>
                 new GameTransition[]
                 {
                     new GameTransition(GameStates.GameStart, GameEvents.Next, GameStates.Freebie),
@@ -21,6 +21,7 @@ public static class GameTransitions
                     new GameTransition(GameStates.Scoreboard, GameEvents.Next, GameStates.Elimination),
                     new GameTransition(GameStates.Scoreboard, GameEvents.Eliminate, GameStates.Elimination),
                     new GameTransition(GameStates.Elimination, GameEvents.Next, GameStates.InGame),
+                    new GameTransition(GameStates.Elimination, GameEvents.EndGame, GameStates.GameOver),
                 },
             GameModes.Full =>
                 new GameTransition[]
@@ -32,6 +33,8 @@ public static class GameTransitions
                     new GameTransition(GameStates.Scoreboard, GameEvents.Eliminate, GameStates.Elimination),
                     new GameTransition(GameStates.Shop, GameEvents.Next, GameStates.InGame),
                     new GameTransition(GameStates.Elimination, GameEvents.Next, GameStates.Shop),
+                    new GameTransition(GameStates.Elimination, GameEvents.EndGame, GameStates.GameOver),
                 },
+            _ => throw new ApplicationException("GameModes value not supported."),
         };
 }

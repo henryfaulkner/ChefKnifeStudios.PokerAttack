@@ -72,6 +72,21 @@ public sealed class EventNotificationServiceSubscriber : IHostedService
                                     await gameService.FinishShoppingAsync(gs.GameId);
                                     break;
                                 }
+                            case GameStates.Freebie:
+                                {
+                                    _logger.LogInformation("Freebie timer starting for GameId={GameId}", gs.GameId);
+                                    await gameService.StartPlayerPowerSelectionAsync(gs.GameId);
+                                    await Task.Delay(Shared.Constants.PlayerPowerSelectionTimeMs);
+                                    _logger.LogInformation("Freebie timer expired for GameId={GameId}, calling FinishPlayerPowerSelectionAsync", gs.GameId);
+                                    await gameService.FinishPlayerPowerSelectionAsync(gs.GameId);
+                                    break;
+                                }
+                            case GameStates.GameOver:
+                                {
+                                    _logger.LogInformation("Game over - cleaning up GameId={GameId}", gs.GameId);
+                                    await gameService.EndGameAsync(gs.GameId);
+                                    break;
+                                }
 
                         }
                         break;
