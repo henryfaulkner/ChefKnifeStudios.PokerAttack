@@ -48,8 +48,6 @@ public interface ILobbyViewModel : IViewModel
     Task LeaveLobbyAsync(string lobbyId, PlayerDTO player, CancellationToken cancellationToken = default);
     Task ShutdownLobbyAsync(string lobbyId, CancellationToken cancellationToken = default);
     Task StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default);
-    Task StartLobbyPollingAsync(CancellationToken cancellationToken = default);
-    void StopLobbyPolling();
 }
 
 public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposable
@@ -60,7 +58,7 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
     readonly IToastService _toastService;
     readonly ILogger<LobbyViewModel> _logger;
 
-    private Timer? _lobbyPollTimer;
+    private CancellationTokenSource? _pollCancellation;
     private const int POLL_INTERVAL_MS = 2000; // Poll every 2 seconds
 
     [ObservableProperty]
@@ -87,7 +85,6 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
 
     public void Dispose()
     {
-        StopLobbyPolling();
         _signalRNotificationService.HandleNotificationReceived -= HandleSignalRNotificationReceived;
     }
 
@@ -135,30 +132,6 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
         {
             _toastService.ShowError("Failed to start game");
         }
-    }
-
-    public Task StartLobbyPollingAsync(CancellationToken cancellationToken = default)
-    {
-        _lobbyPollTimer?.Dispose();
-        _lobbyPollTimer = new Timer(async _ =>
-        {
-            try
-            {
-                await RefreshLobbiesFromServerAsync(cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error polling lobby data");
-            }
-        }, null, 0, POLL_INTERVAL_MS);
-
-        return Task.CompletedTask;
-    }
-
-    public void StopLobbyPolling()
-    {
-        _lobbyPollTimer?.Dispose();
-        _lobbyPollTimer = null;
     }
 
     async Task RefreshLobbiesFromServerAsync(CancellationToken cancellationToken = default)
