@@ -15,6 +15,7 @@ public interface IPlayerPowerService
 {
     Result<IEnumerable<PlayerPowerDTO>> GetPlayerPowers(int count);
     Task<Result<PlayerPowerDTO>> SelectPlayerPowerAsync(string gameId, string playerId, string powerId, CancellationToken ct = default);
+    Task<Result> AutoSelectPlayerPowerAsync(string playerId, CancellationToken ct = default);
     Task<Result> ActivateAsync(string gameId, string playerId, CancellationToken ct = default);
 }
 
@@ -71,6 +72,43 @@ public class PlayerPowerService(
         }
 
         return Result.Success(playerPower.MapToDTO());
+    }
+
+    public async Task<Result> AutoSelectPlayerPowerAsync(string playerId, CancellationToken ct = default)
+    {
+        var gamePlayerResult = await gamePlayerRepository.GetAsync(playerId, ct);
+        if (!gamePlayerResult.IsSuccess || gamePlayerResult.Value is null)
+            return Result.NotFound("Game Player not found");
+
+        var gamePlayer = gamePlayerResult.Value;
+
+        // If player already has a power, return success (already selected)
+        if (gamePlayer.PlayerPower is not null)
+            return Result.Success();
+
+        // Get 1 random power
+        var powerResult = GetPlayerPowers(1);
+        if (!powerResult.IsSuccess || !powerResult.Value.Any())
+            return Result.Error("Failed to retrieve random player power for auto-selection");
+
+        var randomPowerDTO = powerResult.Value.First();
+        var playerPowerResult = powerRepository.Get(randomPowerDTO.Id);
+        if (!playerPowerResult.IsSuccess || playerPowerResult.Value is null)
+            return Result.NotFound("Player Power not found");
+
+        var playerPower = playerPowerResult.Value;
+
+        // Assign power to player
+        gamePlayer.PlayerPower = playerPower;
+
+        var updateResult = await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
+        if (!updateResult.IsSuccess)
+            return Result.Error("Failed to update game player with auto-selected power");
+
+        logger.LogInformation("Auto-selected power {PowerName} for player {PlayerId}",
+            playerPower.Name, playerId);
+
+        return Result.Success();
     }
 
     public async Task<Result> ActivateAsync(string gameId, string sourcePlayerId, CancellationToken ct = default)

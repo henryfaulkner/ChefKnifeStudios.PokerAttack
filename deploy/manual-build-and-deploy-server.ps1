@@ -92,32 +92,32 @@ Write-Host "`nContainers built and pushed successfully!" -ForegroundColor Green
 # ============================================
 
 # Step 5a: Run DB migrations
-Write-Host "`n[5/5] Running database migrations and deploying..." -ForegroundColor Green
+# Write-Host "`n[5/5] Running database migrations and deploying..." -ForegroundColor Green
 
-Write-Host "`nPlease enter your database connection string:" -ForegroundColor Yellow
-Write-Host "(Format: Server=...;Database=...;User Id=...;Password=...)" -ForegroundColor Gray
-$DB_CONNECTION_STRING = Read-Host -Prompt "Connection String" -AsSecureString
-$DB_CONNECTION_STRING_PLAIN = [Runtime.InteropServices.Marshal]::PtrToStringAuto(
-    [Runtime.InteropServices.Marshal]::SecureStringToBSTR($DB_CONNECTION_STRING)
-)
+# Write-Host "`nPlease enter your database connection string:" -ForegroundColor Yellow
+# Write-Host "(Format: Server=...;Database=...;User Id=...;Password=...)" -ForegroundColor Gray
+# $DB_CONNECTION_STRING = Read-Host -Prompt "Connection String" -AsSecureString
+# $DB_CONNECTION_STRING_PLAIN = [Runtime.InteropServices.Marshal]::PtrToStringAuto(
+#     [Runtime.InteropServices.Marshal]::SecureStringToBSTR($DB_CONNECTION_STRING)
+# )
 
-Write-Host "`nPulling migration container..." -ForegroundColor Yellow
-docker pull $MIGRATION_CONTAINER
+# Write-Host "`nPulling migration container..." -ForegroundColor Yellow
+# docker pull $MIGRATION_CONTAINER
 
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "ERROR: Failed to pull migration container" -ForegroundColor Red
-    exit 1
-}
+# if ($LASTEXITCODE -ne 0) {
+#     Write-Host "ERROR: Failed to pull migration container" -ForegroundColor Red
+#     exit 1
+# }
 
-Write-Host "Running migrations..." -ForegroundColor Yellow
-docker run --rm -e CONNECTIONSTRINGS__POKERATTACKDB="$DB_CONNECTION_STRING_PLAIN" $MIGRATION_CONTAINER
+# Write-Host "Running migrations..." -ForegroundColor Yellow
+# docker run --rm -e CONNECTIONSTRINGS__POKERATTACKDB="$DB_CONNECTION_STRING_PLAIN" $MIGRATION_CONTAINER
 
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "ERROR: Database migration failed" -ForegroundColor Red
-    exit 1
-}
+# if ($LASTEXITCODE -ne 0) {
+#     Write-Host "ERROR: Database migration failed" -ForegroundColor Red
+#     exit 1
+# }
 
-Write-Host "Migrations completed successfully" -ForegroundColor Green
+# Write-Host "Migrations completed successfully" -ForegroundColor Green
 
 # Step 5b: Deploy API Container App
 Write-Host "`nDeploying API Container App to Azure..." -ForegroundColor Yellow

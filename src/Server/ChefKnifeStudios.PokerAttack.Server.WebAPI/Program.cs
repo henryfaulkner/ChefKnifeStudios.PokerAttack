@@ -71,7 +71,6 @@ builder.Services.AddScoped<IShopService, ShopService>();
 builder.Services.AddSingleton<IScoringRulesService, ScoringRulesService>();
 builder.Services.AddSingleton<IItemEffectsService, ItemEffectsService>();
 builder.Services.AddSingleton<IWagerService, WagerService>();
-builder.Services.AddSingleton<IPlayerDisconnectionTracker, PlayerDisconnectionTracker>();
 
 // Register Player Power Singletons
 builder.Services.AddSingleton<IPlayerPowerRepository, PlayerPowerRepository>();

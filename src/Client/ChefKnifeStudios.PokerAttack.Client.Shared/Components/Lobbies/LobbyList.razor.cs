@@ -27,7 +27,9 @@ public partial class LobbyList : ComponentBase, IDisposable
         foreach (var item in LobbyViewModel.Lobbies)
         {
             if (item is INotifyPropertyChanged npc)
+            {
                 npc.PropertyChanged += HandleItemPropertyChanged;
+            }
         }
     }
 
@@ -38,7 +40,9 @@ public partial class LobbyList : ComponentBase, IDisposable
         foreach (var item in LobbyViewModel.Lobbies)
         {
             if (item is INotifyPropertyChanged npc)
+            {
                 npc.PropertyChanged -= HandleItemPropertyChanged;
+            }
         }
     }
 
@@ -50,7 +54,9 @@ public partial class LobbyList : ComponentBase, IDisposable
             foreach (var item in e.NewItems)
             {
                 if (item is INotifyPropertyChanged npc)
+                {
                     npc.PropertyChanged += HandleItemPropertyChanged;
+                }
             }
         }
 
@@ -60,7 +66,9 @@ public partial class LobbyList : ComponentBase, IDisposable
             foreach (var item in e.OldItems)
             {
                 if (item is INotifyPropertyChanged npc)
+                {
                     npc.PropertyChanged -= HandleItemPropertyChanged;
+                }
             }
         }
 

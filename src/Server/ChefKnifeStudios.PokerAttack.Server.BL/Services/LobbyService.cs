@@ -37,6 +37,7 @@ public class LobbyService(
     IKeyValueRepository<GameModes> gameModeRepository,
     IKeyValueRepository<ActiveGame> activeGameRepository,
     IKeyValueRepository<GamePlayer> gamePlayerRepository,
+    IGameStateMachineService gameStateMachineService,
     ILogger<LobbyService> logger) : ILobbyService
 {
     const int NumCardsInHand = 8;
@@ -426,7 +427,7 @@ public class LobbyService(
         if (!addActiveGameResult.IsSuccess)
             return Result.Error("Failed to create active game.");
 
-        var addStateResult = await gameStateRepository.AddAsync(activeGameId, GameStates.Freebie, cancellationToken);
+        var addStateResult = await gameStateRepository.AddAsync(activeGameId, GameStates.GameStart, cancellationToken);
         if (!addStateResult.IsSuccess)
             return Result.Error("Failed to set game state.");
 
@@ -437,6 +438,11 @@ public class LobbyService(
         logger.LogInformation(
             "Game started: LobbyId={LobbyId}, GameId={GameId}, GameMode={GameMode}, PlayerCount={PlayerCount}",
             lobbyId, activeGameId, gameMode, lobbyDTO.Players.Count);
+
+        // Transition from GameStart to Freebie to trigger the player power selection phase
+        var transitionResult = await gameStateMachineService.TransitionAsync(activeGameId, GameEvents.Next, cancellationToken);
+        if (!transitionResult.IsSuccess)
+            return Result.Error("Failed to transition to Freebie state.");
 
         await notificationHelper.BroadcastToAllAsync(
             new PokerAttackNotification(

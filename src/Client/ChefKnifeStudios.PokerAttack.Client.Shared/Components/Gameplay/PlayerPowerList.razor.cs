@@ -11,17 +11,20 @@ public partial class PlayerPowerList : ComponentBase
 {
     [Inject] IGameDataService GameDataService { get; set; } = null!;
     [Inject] IGameDataStore GameDataStore { get; set; } = null!;
+    [Inject] IPlayerPowerSelectionViewModel PlayerPowerSelectionViewModel { get; set; } = null!;
 
     readonly string[] _subscriptions =
     [
         nameof(IGameDataStore.IsLoadingPlayerPowers),
         nameof(IGameDataStore.PlayerPowers),
+        nameof(IPlayerPowerSelectionViewModel.SelectionTimeSeconds),
     ];
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
         GameDataStore.PropertyChanged += ViewModel_OnPropertyChanged;
+        PlayerPowerSelectionViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
         GameDataStore.PlayerPowers.CollectionChanged += HandleCollectionChanged;
         foreach (var item in GameDataStore.PlayerPowers)
         {
@@ -35,6 +38,7 @@ public partial class PlayerPowerList : ComponentBase
     public void Dispose()
     {
         GameDataStore.PropertyChanged -= ViewModel_OnPropertyChanged;
+        PlayerPowerSelectionViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
         GameDataStore.PlayerPowers.CollectionChanged -= HandleCollectionChanged;
         foreach (var item in GameDataStore.PlayerPowers)
         {

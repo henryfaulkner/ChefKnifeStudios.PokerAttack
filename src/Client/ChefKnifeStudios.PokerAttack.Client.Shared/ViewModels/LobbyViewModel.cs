@@ -48,8 +48,6 @@ public interface ILobbyViewModel : IViewModel
     Task LeaveLobbyAsync(string lobbyId, PlayerDTO player, CancellationToken cancellationToken = default);
     Task ShutdownLobbyAsync(string lobbyId, CancellationToken cancellationToken = default);
     Task StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default);
-    Task StartLobbyPollingAsync(CancellationToken cancellationToken = default);
-    void StopLobbyPolling();
 }
 
 public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposable
@@ -60,7 +58,7 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
     readonly IToastService _toastService;
     readonly ILogger<LobbyViewModel> _logger;
 
-    private Timer? _lobbyPollTimer;
+    private CancellationTokenSource? _pollCancellation;
     private const int POLL_INTERVAL_MS = 2000; // Poll every 2 seconds
 
     [ObservableProperty]
@@ -87,18 +85,13 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
 
     public void Dispose()
     {
-        StopLobbyPolling();
         _signalRNotificationService.HandleNotificationReceived -= HandleSignalRNotificationReceived;
     }
 
     public async Task LoadLobbiesAsync(CancellationToken cancellationToken = default)
     {
         IsLoadingLobbies = true;
-
-        var res = await _lobbyEndpointsService.GetLobbiesAsync(cancellationToken);
-        if (res.IsSuccess && res.Value is IEnumerable<LobbyDTO>) 
-            Lobbies = res.Value.Select(x => new LobbyListItem(x)).ToObservableCollection();
-
+        await RefreshLobbiesFromServerAsync(cancellationToken);
         IsLoadingLobbies = false;
     }
 
@@ -133,7 +126,7 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
         // Navigate immediately on success (fixes race condition where host misses SignalR notification)
         if (result.IsSuccess && !string.IsNullOrEmpty(result.Value))
         {
-            _navigationManager.NavigateTo($"/gameplay?gameid={result.Value}", replace: true);
+            _navigationManager.NavigateToGameplay(result.Value);
         }
         else if (!result.IsSuccess)
         {
@@ -141,38 +134,18 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
         }
     }
 
-    public Task StartLobbyPollingAsync(CancellationToken cancellationToken = default)
+    async Task RefreshLobbiesFromServerAsync(CancellationToken cancellationToken = default)
     {
-        _lobbyPollTimer?.Dispose();
-        _lobbyPollTimer = new Timer(async _ =>
+        var res = await _lobbyEndpointsService.GetLobbiesAsync(cancellationToken);
+        if (res.IsSuccess && res.Value is IEnumerable<LobbyDTO>)
         {
-            try
+            var newLobbies = res.Value.Select(x => new LobbyListItem(x)).ToList();
+
+            Lobbies.Clear();
+            foreach (var lobby in newLobbies)
             {
-                await RefreshLobbiesFromServerAsync(cancellationToken);
+                Lobbies.Add(lobby);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error polling lobby data");
-            }
-        }, null, 0, POLL_INTERVAL_MS);
-
-        return Task.CompletedTask;
-    }
-
-    public void StopLobbyPolling()
-    {
-        _lobbyPollTimer?.Dispose();
-        _lobbyPollTimer = null;
-    }
-
-    private async Task RefreshLobbiesFromServerAsync(CancellationToken cancellationToken = default)
-    {
-        var result = await _lobbyEndpointsService.GetLobbiesAsync(cancellationToken);
-        
-        if (result.IsSuccess && result.Value != null)
-        {
-            // Update Lobbies collection with fresh data from server
-            Lobbies = result.Value.Select(x => new LobbyListItem(x)).ToObservableCollection();
         }
     }
 
@@ -220,7 +193,7 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
                     var args = JsonSerializer.Deserialize<GameStartedEventArgs>(notification.Payload!, JsonOptions.Get());
                     if (args is { GameId: string gameId })
                     {
-                        _navigationManager.NavigateTo($"/gameplay?gameid={gameId}", replace: true);
+                        _navigationManager.NavigateToGameplay(gameId);
                     }
                     break;
                 }

@@ -28,6 +28,18 @@
                         </MatCheckbox>
                     }
                 </div>
+
+                @if (NavigationManager.IsOnGameplay())
+                {
+                    <MatButton 
+                        Id="leaveGameBtn"
+                        Class="leave-game-btn"
+                        OnClick="HandleLeaveGamePressed"
+                        Unelevated="true"
+                    >
+                        LEAVE GAME
+                    </MatButton>
+                }
             </div>
         </ContentFragment>
     </BladeContainer>

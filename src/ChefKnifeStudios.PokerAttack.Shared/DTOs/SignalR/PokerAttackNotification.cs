@@ -23,7 +23,6 @@ public enum PokerAttackNotificationType
     RoundEnded,
     EliminationStarted,
     EliminationFinished,
-    PlayerDisconnected,
     GameLost,
     GameWon,
 

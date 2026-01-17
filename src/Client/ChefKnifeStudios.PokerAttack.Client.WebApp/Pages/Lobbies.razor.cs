@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace ChefKnifeStudios.PokerAttack.Client.WebApp.Pages;
 
-public partial class Lobbies : ComponentBase, IDisposable
+public partial class Lobbies : ComponentBase
 {
     [SupplyParameterFromQuery] public required string? GameResult { get; set; }
 
@@ -18,12 +18,6 @@ public partial class Lobbies : ComponentBase, IDisposable
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await LobbyViewModel.StartLobbyPollingAsync();
-    }
-
-    public void Dispose()
-    {
-        LobbyViewModel.StopLobbyPolling();
     }
 
     void HandleCreateLobbyPressed()

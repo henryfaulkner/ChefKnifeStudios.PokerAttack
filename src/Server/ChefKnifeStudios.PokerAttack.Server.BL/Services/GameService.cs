@@ -31,14 +31,15 @@ public interface IGameService
     Task<Result> FinishEliminationAsync(string gameId, CancellationToken ct = default);
     Task<Result> StartShoppingAsync(string gameId, CancellationToken ct = default);
     Task<Result> FinishShoppingAsync(string gameId, CancellationToken ct = default);
-    Task<Result> EliminateDisconnectedPlayerAsync(string playerId, string gameId, CancellationToken ct = default);
+    Task<Result> StartPlayerPowerSelectionAsync(string gameId, CancellationToken ct = default);
+    Task<Result> FinishPlayerPowerSelectionAsync(string gameId, CancellationToken ct = default);
 }
 
 public class GameService(
     ILogger<GameService> logger,
     IKeyValueRepository<ActiveGame> activeGameRepository,
     IKeyValueRepository<GamePlayer> gamePlayerRepository,
-    IKeyValueRepository<GameStates?> gameStateRepository,
+    IKeyValueRepository<GameStates> gameStateRepository,
     IKeyValueRepository<Lobby> lobbyRepository,
     IRepository<Game> gameRepository,
     IRepository<Round> roundRepository,
@@ -47,7 +48,7 @@ public class GameService(
     IScoringRulesService scoringRulesService,
     IItemEffectsService itemEffectsService,
     IWagerService wagerService,
-    IPlayerDisconnectionTracker disconnectionTracker) : IGameService
+    IPlayerPowerService playerPowerService) : IGameService
 {
     const int _NUM_CARDS_IN_HAND = 8;
     const int _NUM_ROUNDS_BEFORE_ELIMINATION = 3;
@@ -387,12 +388,6 @@ public class GameService(
 
         var activeGame = activeGameResult.Value;
 
-        // Cancel all disconnection timers for players in this game
-        foreach (var player in activeGame.Players)
-        {
-            disconnectionTracker.CancelDisconnectionTimer(player.Id);
-        }
-
         foreach (var gamePlayer in activeGame.Players)
         {
             var deleteResult = await gamePlayerRepository.DeleteAsync(gamePlayer.Id, ct);
@@ -614,13 +609,18 @@ public class GameService(
         // Use a plain object for payload so we don't get anonymous-type re-assignment errors.
         EliminationFinishedArgs eventArgs;
         (string Id, string Name)? winner = null;
+        bool gameIsOver = remaining.Count <= 1;
+
         if (remaining.Count == 1)
         {
             winner = remaining[0];
             eventArgs = new EliminationFinishedArgs(losers, new EliminatingPlayerDTO(winner.Value.Id, winner.Value.Name));
-            var endResult = await EndGameAsync(gameId, ct);
-            if (!endResult.IsSuccess)
-                return endResult;
+        }
+        else if (remaining.Count == 0)
+        {
+            // All players eliminated (e.g., all disconnected)
+            eventArgs = new EliminationFinishedArgs(losers, null);
+            logger.LogInformation("Game over with no remaining players: GameId={GameId}", gameId);
         }
         else
         {
@@ -657,7 +657,10 @@ public class GameService(
             ct
         );
 
-        var transitionResult = await gameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
+        // Transition to GameOver if game is finished, otherwise continue to next phase
+        // Note: EventNotificationServiceSubscriber will handle GameOver state and call EndGameAsync
+        var gameEvent = gameIsOver ? GameEvents.EndGame : GameEvents.Next;
+        var transitionResult = await gameStateMachineService.TransitionAsync(gameId, gameEvent, ct);
         if (!transitionResult.IsSuccess)
             return transitionResult;
 
@@ -678,97 +681,48 @@ public class GameService(
         return Result.Success();
     }
 
-    public async Task<Result> EliminateDisconnectedPlayerAsync(string playerId, string gameId, CancellationToken ct = default)
+    public async Task<Result> StartPlayerPowerSelectionAsync(string gameId, CancellationToken ct = default)
     {
-        try
+        var gameStateResult = await gameStateRepository.GetAsync(gameId, ct);
+        logger.LogInformation("StartPlayerPowerSelectionAsync - GameId: {GameId}, Current State: {State}",
+            gameId, gameStateResult.Value);
+        return Result.Success();
+    }
+
+    public async Task<Result> FinishPlayerPowerSelectionAsync(string gameId, CancellationToken ct = default)
+    {
+        // Check if game is still in Freebie state - if not, all players already selected and triggered transition
+        var gameStateResult = await gameStateRepository.GetAsync(gameId, ct);
+        if (!gameStateResult.IsSuccess || gameStateResult.Value != GameStates.Freebie)
         {
-            var activeGameResult = await activeGameRepository.GetAsync(gameId, ct);
-            if (!activeGameResult.IsSuccess || activeGameResult.Value is null)
-            {
-                logger.LogWarning("Cannot eliminate disconnected player {playerId}: Game {gameId} not found", playerId, gameId);
-                return Result.Success();
-            }
-
-            var activeGame = activeGameResult.Value;
-
-            var gameStateResult = await gameStateRepository.GetAsync(gameId, ct);
-            if (!gameStateResult.IsSuccess || gameStateResult.Value is null)
-            {
-                logger.LogInformation("Cannot eliminate disconnected player {playerId}: Game {gameId} state cleanup already happened", playerId, gameId);
-                return Result.Success();
-            }
-
-            var gamePlayerResult = await gamePlayerRepository.GetAsync(playerId, ct);
-            if (!gamePlayerResult.IsSuccess || gamePlayerResult.Value is null)
-            {
-                logger.LogWarning("Cannot eliminate disconnected player {playerId}: Player not found in game", playerId);
-                return Result.Success();
-            }
-
-            var gamePlayer = gamePlayerResult.Value;
-
-            // Check if player is already eliminated
-            if (gamePlayer.IsEliminated)
-            {
-                logger.LogInformation("Player {playerId} is already eliminated", playerId);
-                return Result.Success();
-            }
-
-            // Find player info
-            var player = activeGame.Players.FirstOrDefault(p => p.Id == playerId);
-            if (player == null)
-            {
-                logger.LogWarning("Player {playerId} not found in active game {gameId}", playerId, gameId);
-                return Result.Success();
-            }
-
-            // Mark player as eliminated
-            gamePlayer.IsEliminated = true;
-            var updateResult = await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
-            if (!updateResult.IsSuccess)
-                logger.LogWarning("Failed to update player {playerId} elimination status", playerId);
-
-            logger.LogInformation("Player {playerId} ({playerName}) eliminated from game {gameId} due to disconnection timeout",
-                playerId, player.Name, gameId);
-
-            // Notify all players in the game
-            var notification = new PokerAttackNotification(
-                PokerAttackNotificationType.PlayerDisconnected,
-                JsonSerializer.Serialize(new
-                {
-                    PlayerId = playerId,
-                    PlayerName = player.Name,
-                    Reason = "Connection timeout - player eliminated"
-                }, JsonOptions.Get())
-            );
-
-            await notificationHelper.BroadcastToGameAsync(gameId, notification, ct);
-
-            // Check if game should end (only one player remaining)
-            int remainingPlayers = 0;
-            foreach (var p in activeGame.Players)
-            {
-                var pStateResult = await gamePlayerRepository.GetAsync(p.Id, ct);
-                if (pStateResult.IsSuccess && pStateResult.Value is not null && !pStateResult.Value.IsEliminated)
-                    remainingPlayers++;
-            }
-
-            if (remainingPlayers <= 1)
-            {
-                logger.LogInformation("Only {count} player(s) remaining in game {gameId} after disconnection elimination. Ending game.",
-                    remainingPlayers, gameId);
-                var endResult = await EndGameAsync(gameId, ct);
-                if (!endResult.IsSuccess)
-                    logger.LogWarning("Failed to end game {gameId} after disconnection elimination", gameId);
-            }
-
+            logger.LogInformation("Skipping player power auto-selection - game {GameId} is no longer in Freebie state (current: {State})",
+                gameId, gameStateResult.Value);
             return Result.Success();
         }
-        catch (Exception ex)
+
+        var activeGameResult = await activeGameRepository.GetAsync(gameId, ct);
+        if (!activeGameResult.IsSuccess || activeGameResult.Value is null)
+            return Result.NotFound($"Game not found. Game Id {gameId}");
+
+        var activeGame = activeGameResult.Value;
+
+        // Auto-select powers for players who haven't selected
+        foreach (var player in activeGame.Players)
         {
-            logger.LogError(ex, "Error eliminating disconnected player {playerId} from game {gameId}", playerId, gameId);
-            return Result.Success(); // Don't propagate errors - this is a background operation
+            var autoSelectResult = await playerPowerService.AutoSelectPlayerPowerAsync(player.Id, ct);
+            if (!autoSelectResult.IsSuccess)
+            {
+                logger.LogWarning("Failed to auto-select power for player {PlayerId}: {Error}",
+                    player.Id, autoSelectResult.Errors.FirstOrDefault());
+            }
         }
+
+        // Transition to next state
+        var transitionResult = await gameStateMachineService.TransitionAsync(gameId, GameEvents.Next, ct);
+        if (!transitionResult.IsSuccess)
+            return transitionResult;
+
+        return Result.Success();
     }
 
     async Task<Result> ClearGamePlayerDataAsync(string playerId, GamePlayer gamePlayer, CancellationToken ct = default)

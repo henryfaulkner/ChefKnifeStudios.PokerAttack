@@ -145,20 +145,33 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
         }
     }
 
+    private Task<bool> EnsureConnectedAsync(string operationName)
+    {
+        if (_hubConnection != null && _hubConnection.State == HubConnectionState.Connected)
+            return Task.FromResult(true);
+
+        _logger.LogWarning(
+            "SignalR operation '{operation}' attempted but connection not established. State: {state}. Automatic reconnect will handle this.",
+            operationName,
+            _hubConnection?.State.ToString() ?? "null");
+
+        return Task.FromResult(false);
+    }
+
     #region Lobby Notifications
     public async Task JoinLobbyGroupAsync(string lobbyId)
     {
         try
         {
-            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-                throw new InvalidOperationException("SignalR connection is not established.");
+            if (!await EnsureConnectedAsync(nameof(JoinLobbyGroupAsync)))
+                return; // Log and return gracefully - let automatic reconnect handle it
 
-            await _hubConnection.InvokeAsync("JoinLobbyGroupAsync", lobbyId);
+            await _hubConnection!.InvokeAsync("JoinLobbyGroupAsync", lobbyId);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error joining lobby group {lobbyId}", lobbyId);
-            throw;
+            // Don't rethrow - log and continue
         }
     }
 
@@ -166,15 +179,14 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
     {
         try
         {
-            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-                throw new InvalidOperationException("SignalR connection is not established.");
+            if (!await EnsureConnectedAsync(nameof(LeaveLobbyGroupAsync)))
+                return;
 
-            await _hubConnection.InvokeAsync("LeaveLobbyGroupAsync", lobbyId);
+            await _hubConnection!.InvokeAsync("LeaveLobbyGroupAsync", lobbyId);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error leaving lobby group {lobbyId}", lobbyId);
-            throw;
         }
     }
     #endregion
@@ -184,15 +196,15 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
     {
         try
         {
-            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-                throw new InvalidOperationException("SignalR connection is not established.");
+            if (!await EnsureConnectedAsync(nameof(JoinGameGroupAsync)))
+                return; // Log and return gracefully - let automatic reconnect handle it
 
-            await _hubConnection.InvokeAsync("JoinGameGroupAsync", gameId);
+            await _hubConnection!.InvokeAsync("JoinGameGroupAsync", gameId);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error joining game group {gameId}", gameId);
-            throw;
+            // Don't rethrow - log and continue
         }
     }
 
@@ -200,15 +212,14 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
     {
         try
         {
-            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-                throw new InvalidOperationException("SignalR connection is not established.");
+            if (!await EnsureConnectedAsync(nameof(LeaveGameGroupAsync)))
+                return;
 
-            await _hubConnection.InvokeAsync("LeaveGameGroupAsync", gameId);
+            await _hubConnection!.InvokeAsync("LeaveGameGroupAsync", gameId);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error leaving game group {gameId}", gameId);
-            throw;
         }
     }
 
@@ -216,15 +227,14 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
     {
         try
         {
-            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-                throw new InvalidOperationException("SignalR connection is not established.");
+            if (!await EnsureConnectedAsync(nameof(StartGameAsync)))
+                return;
 
-            await _hubConnection.InvokeAsync("StartGame", gameId, playerId);
+            await _hubConnection!.InvokeAsync("StartGame", gameId, playerId);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error starting game {gameId}", gameId);
-            throw;
         }
     }
 
@@ -232,15 +242,14 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
     {
         try
         {
-            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-                throw new InvalidOperationException("SignalR connection is not established.");
+            if (!await EnsureConnectedAsync(nameof(StartRoundAsync)))
+                return;
 
-            await _hubConnection.InvokeAsync("StartRound", gameId, playerId);
+            await _hubConnection!.InvokeAsync("StartRound", gameId, playerId);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error starting round for game {gameId}", gameId);
-            throw;
         }
     }
 
@@ -248,15 +257,14 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
     {
         try
         {
-            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-                throw new InvalidOperationException("SignalR connection is not established.");
+            if (!await EnsureConnectedAsync(nameof(PlayHandAsync)))
+                return;
 
-            await _hubConnection.InvokeAsync("PlayHand", playerId, hand);
+            await _hubConnection!.InvokeAsync("PlayHand", playerId, hand);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error playing hand for player {playerId}", playerId);
-            throw;
         }
     }
 
@@ -264,15 +272,14 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
     {
         try
         {
-            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-                throw new InvalidOperationException("SignalR connection is not established.");
+            if (!await EnsureConnectedAsync(nameof(DiscardAsync)))
+                return;
 
-            await _hubConnection.InvokeAsync("Discard", playerId, discardCards);
+            await _hubConnection!.InvokeAsync("Discard", playerId, discardCards);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error discarding cards for player {playerId}", playerId);
-            throw;
         }
     }
 
@@ -280,15 +287,14 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
     {
         try
         {
-            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-                throw new InvalidOperationException("SignalR connection is not established.");
+            if (!await EnsureConnectedAsync(nameof(ActivatePlayerPowerAsync)))
+                return;
 
-            await _hubConnection.InvokeAsync("ActivatePlayerPower", gameId, playerId);
+            await _hubConnection!.InvokeAsync("ActivatePlayerPower", gameId, playerId);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error activating player power for player {playerId} in game {gameId}", playerId, gameId);
-            throw;
         }
     }
     #endregion
@@ -297,15 +303,14 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
     {
         try
         {
-            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-                throw new InvalidOperationException("SignalR connection is not established.");
+            if (!await EnsureConnectedAsync(nameof(TransitionGameStateAsync)))
+                return;
 
-            await _hubConnection.InvokeAsync("TransitionGameState", gameId, gameEvent);
+            await _hubConnection!.InvokeAsync("TransitionGameState", gameId, gameEvent);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error transitioning game state for game {gameId} with event {gameEvent}", gameId, gameEvent);
-            throw;
         }
     }
 
@@ -313,15 +318,14 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
     {
         try
         {
-            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-                throw new InvalidOperationException("SignalR connection is not established.");
+            if (!await EnsureConnectedAsync(nameof(EndGameAsync)))
+                return;
 
-            await _hubConnection.InvokeAsync("EndGame", gameId);
+            await _hubConnection!.InvokeAsync("EndGame", gameId);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error ending game {gameId}", gameId);
-            throw;
         }
     }
 
@@ -329,15 +333,14 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
     {
         try
         {
-            if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
-                throw new InvalidOperationException("SignalR connection is not established.");
+            if (!await EnsureConnectedAsync(nameof(LeaveGameAsync)))
+                return;
 
-            await _hubConnection.InvokeAsync("LeaveGame", gameId, playerId);
+            await _hubConnection!.InvokeAsync("LeaveGame", gameId, playerId);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error leaving game {gameId} for player {playerId}", gameId, playerId);
-            throw;
         }
     }
 }

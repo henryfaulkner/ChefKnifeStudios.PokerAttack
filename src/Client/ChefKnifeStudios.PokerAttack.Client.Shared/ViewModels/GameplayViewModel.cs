@@ -200,13 +200,17 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 
         CardsInHand.Clear();
         foreach (var card in sorted)
+        {
             CardsInHand.Add(card);
+        }
     }
 
     public void ClearSelections()
     {
         foreach (var card in CardsInHand)
+        {
             card.IsSelected = false;
+        }
     }
 
     public async Task ActivatePlayerPowerAsync(string playerId, CancellationToken cancellationToken = default)
@@ -231,7 +235,8 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                     if (args is RunStartedDTO runStartedDTO)
                     {
                         RunTimeInSeconds = PokerAttack.Shared.Constants.RoundTimeMs / 1000;
-                        CardsInHand = runStartedDTO.Cards.Select(x => new CardItem(x)).ToObservableCollection();
+
+                        RefreshCardsInHand(runStartedDTO.Cards);
                         ApplySort();
                         ResetStats();
                         AvailablePlayHands = runStartedDTO.HandsAvailable;
@@ -244,7 +249,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                     var args = JsonSerializer.Deserialize<IEnumerable<CardDTO>>(notification.Payload!, JsonOptions.Get());
                     if (args != null)
                     {
-                        var (newHand, newCardCount) = ProcessCardsDealt(args, CardsInHand);
+                        var newCardCount = CountNewCards(args, CardsInHand);
 
                         // Play audio for each newly dealt card
                         if (newCardCount > 0)
@@ -259,7 +264,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                             });
                         }
 
-                        CardsInHand = args.Select(x => new CardItem(x)).ToObservableCollection();
+                        RefreshCardsInHand(args);
                         ApplySort();
                     }
                     break;
@@ -291,12 +296,12 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                 }
             case PokerAttackNotificationType.GameWon:
                 {
-                    _navigationManager.NavigateTo($"?gameresult=winner", replace: true);
+                    _navigationManager.NavigateToLobbyWithGameResult("winner");
                     break;
                 }
             case PokerAttackNotificationType.GameLost:
                 {
-                    _navigationManager.NavigateTo($"?gameresult=loser", replace: true);
+                    _navigationManager.NavigateToLobbyWithGameResult("loser");
                     break;
                 }
         }
@@ -320,7 +325,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         return Task.CompletedTask;
     }
 
-    static (List<CardItem> NewHand, int NewCardCount) ProcessCardsDealt(
+    static int CountNewCards(
         IEnumerable<CardDTO> dealtCards,
         IEnumerable<CardItem> currentHand)
     {
@@ -330,9 +335,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         var newCardCount = dealtCardsList.Count(card =>
             !existingCards.Contains((card.Rank, card.Suit)));
 
-        var newHand = dealtCardsList.Select(x => new CardItem(x)).ToList();
-
-        return (newHand, newCardCount);
+        return newCardCount;
     }
 
     void ResetStats()
@@ -341,6 +344,17 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         AvailablePlayHands = _DEFAULT_NUM_PLAY_HANDS;
         AvailableDiscards = _DEFAULT_NUM_DISCARDS;
         PowerCharges = _DEFAULT_NUM_POWER_CHARGES;
+    }
+
+    void RefreshCardsInHand(IEnumerable<CardDTO> cards)
+    {
+        var cardItems = cards.Select(x => new CardItem(x));
+
+        CardsInHand.Clear();
+        foreach (var cardItem in cardItems)
+        {
+            CardsInHand.Add(cardItem);
+        }    
     }
 }
 
