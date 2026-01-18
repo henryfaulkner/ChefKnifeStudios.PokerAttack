@@ -44,6 +44,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     readonly NavigationManager _navigationManager;
     readonly IAudioService _audioService;
     readonly IGameDataStore _gameDataStore;
+    readonly IApplicationViewModel _applicationViewModel;
 
     const int _DEFAULT_NUM_PLAY_HANDS = 5;
     const int _DEFAULT_NUM_DISCARDS = 5;
@@ -87,7 +88,8 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         IEventNotificationService eventNotificationService,
         NavigationManager navigationManager,
         IAudioService audioService,
-        IGameDataStore gameDataStore)
+        IGameDataStore gameDataStore,
+        IApplicationViewModel applicationViewModel)
     {
         _signalRNotificationService = signalRNotificationService;
         _toastService = toastService;
@@ -95,6 +97,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         _navigationManager = navigationManager;
         _audioService = audioService;
         _gameDataStore = gameDataStore;
+        _applicationViewModel = applicationViewModel;
 
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
         _eventNotificationService.EventReceived += HandleEventReceived;
@@ -215,7 +218,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                     var args = JsonSerializer.Deserialize<RunStartedDTO>(notification.Payload!, JsonOptions.Get());
                     if (args is RunStartedDTO runStartedDTO)
                     {
-                        RunTimeInSeconds = PokerAttack.Shared.Constants.RoundTimeMs / 1000;
+                        RunTimeInSeconds = _applicationViewModel.GameSettings.RoundTimeMs / 1000;
 
                         RefreshCardsInHand(runStartedDTO.Cards);
                         ApplySort();

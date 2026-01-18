@@ -45,6 +45,7 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
     readonly IToastService _toastService;
     readonly NavigationManager _navigationManager;
     readonly IAudioService _audioService;
+    readonly IApplicationViewModel _applicationViewModel;
 
     const int _BASE_THRESHOLD = 500;
     const int _THRESHOLD_INCREMENT = 250;
@@ -103,12 +104,14 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
         ISoloGameplayEndpointsService endpointsService,
         IToastService toastService,
         NavigationManager navigationManager,
-        IAudioService audioService)
+        IAudioService audioService,
+        IApplicationViewModel applicationViewModel)
     {
         _endpointsService = endpointsService;
         _toastService = toastService;
         _navigationManager = navigationManager;
         _audioService = audioService;
+        _applicationViewModel = applicationViewModel;
     }
 
     public void Dispose()
@@ -142,7 +145,7 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
             RefreshCardsInHand(response.Cards);
 
             // Initialize timer
-            RunTimeInSeconds = ChefKnifeStudios.PokerAttack.Shared.Constants.RoundTimeMs / 1000;
+            RunTimeInSeconds = _applicationViewModel.GameSettings.RoundTimeMs / 1000;
             StartTimer();
         }
         else
@@ -295,7 +298,7 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
                 RoundNumber++;
                 Score = 0;
                 Threshold = CalculateThreshold(RoundNumber);
-                RunTimeInSeconds = ChefKnifeStudios.PokerAttack.Shared.Constants.RoundTimeMs / 1000;
+                RunTimeInSeconds = _applicationViewModel.GameSettings.RoundTimeMs / 1000;
             }
         }
         else

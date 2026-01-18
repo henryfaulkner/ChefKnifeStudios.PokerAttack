@@ -1,6 +1,7 @@
 using ChefKnifeStudios.PokerAttack.Server.BL;
 using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
+using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Server.Data;
 using ChefKnifeStudios.PokerAttack.Server.Infrastructure;
 using ChefKnifeStudios.PokerAttack.Server.Infrastructure.PlayerPowers;
@@ -17,6 +18,9 @@ builder.AddServiceDefaults();
 
 string connectionString = builder.Configuration.GetConnectionString("PokerAttackDB")!;
 builder.Services.RegisterDataServices(connectionString);
+
+// Register GameSettings from configuration
+builder.Services.Configure<GameSettings>(builder.Configuration.GetSection("GameSettings"));
 
 // Add services to the container.
 builder.Services.AddProblemDetails();
@@ -135,7 +139,8 @@ app.MapTestEndpoints()
    .MapShopEndpoints()
    .MapScoringRulesEndpoints()
    .MapUploadEndpoints()
-   .MapSoloGameplayEndpoints();
+   .MapSoloGameplayEndpoints()
+   .MapSettingsEndpoints();
 
 app.MapDefaultEndpoints();
 

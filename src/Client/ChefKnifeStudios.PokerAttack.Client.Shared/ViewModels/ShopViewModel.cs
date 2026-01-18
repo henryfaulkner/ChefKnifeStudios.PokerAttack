@@ -1,23 +1,26 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using ChefKnifeStudios.PokerAttack.Shared;
-using System.Diagnostics.SymbolStore;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 
 public interface IShopViewModel : IViewModel
 {
-    int ShopTimeSeconds { get; } 
+    int ShopTimeSeconds { get; }
 }
 
 public partial class ShopViewModel : BaseViewModel, IShopViewModel, IDisposable
 {
+    readonly IApplicationViewModel _applicationViewModel;
+
     [ObservableProperty]
-    int _shopTimeSeconds = PokerAttack.Shared.Constants.ShopTimeMs / 1000;
+    int _shopTimeSeconds;
 
     CancellationTokenSource _timerToken;
-    public ShopViewModel()
+
+    public ShopViewModel(IApplicationViewModel applicationViewModel)
     {
-        ShopTimeSeconds = PokerAttack.Shared.Constants.ShopTimeMs / 1000;
+        _applicationViewModel = applicationViewModel;
+        ShopTimeSeconds = _applicationViewModel.GameSettings.ShopTimeMs / 1000;
         _timerToken = TimerHelper.SetInterval(() =>
         {
             if (ShopTimeSeconds > 0) ShopTimeSeconds--;

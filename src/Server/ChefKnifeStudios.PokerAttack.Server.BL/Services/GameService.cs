@@ -10,6 +10,7 @@ using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR.EventArgs;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Text.Json;
 
 namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
@@ -48,8 +49,11 @@ public class GameService(
     IScoringRulesService scoringRulesService,
     IItemEffectsService itemEffectsService,
     IWagerService wagerService,
-    IPlayerPowerService playerPowerService) : IGameService
+    IPlayerPowerService playerPowerService,
+    IOptions<GameSettings> gameSettings) : IGameService
 {
+    readonly GameSettings _gameSettings = gameSettings.Value;
+
     const int _NUM_CARDS_IN_HAND = 8;
     const int _NUM_ROUNDS_BEFORE_ELIMINATION = 3;
     const int _BASE_HANDS_AVAILABLE = 5;
@@ -80,11 +84,11 @@ public class GameService(
         List<Task> taskList = [];
         foreach (var player in game.Players)
         {
-            taskList.Add(StartRun(player.Id, Constants.RoundTimeMs));
+            taskList.Add(StartRun(player.Id, _gameSettings.RoundTimeMs));
         }
         await Task.WhenAll(taskList);
 
-        await Task.Delay(Constants.RoundTimeMs);
+        await Task.Delay(_gameSettings.RoundTimeMs);
 
         var endResult = await EndRoundAsync(gameId, ct);
         if (!endResult.IsSuccess)

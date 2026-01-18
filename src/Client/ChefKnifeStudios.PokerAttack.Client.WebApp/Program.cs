@@ -70,6 +70,7 @@ builder.Services.AddTransient<IScoringRulesEndpointsService, ScoringRulesEndpoin
 builder.Services.AddTransient<IShopEndpointsService, ShopEndpointsService>();
 builder.Services.AddTransient<IUploadEndpointsService, UploadEndpointsService>();
 builder.Services.AddTransient<ISoloGameplayEndpointsService, SoloGameplayEndpointsService>();
+builder.Services.AddTransient<ISettingsEndpointsService, SettingsEndpointsService>();
 
 builder.Services.AddMatBlazor();
 builder.Services.AddMatToaster(config =>

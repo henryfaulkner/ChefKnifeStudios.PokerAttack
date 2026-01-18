@@ -1,6 +1,7 @@
 using Blazored.LocalStorage;
 using ChefKnifeStudios.PokerAttack.Client.Core.Enums;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
+using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Constants;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
@@ -20,6 +21,7 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 public interface IApplicationViewModel : IViewModel
 {
     PlayerDTO Player { get; }
+    GameSettingsDTO GameSettings { get; }
     Task InitAsync();
 }
 
@@ -32,6 +34,7 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
     readonly IWebAssemblyHostEnvironment _hostEnvironment;
     readonly IToastService _toastService;
     readonly ISyncLocalStorageService _localStorageService;
+    readonly ISettingsEndpointsService _settingsEndpointsService;
 
     [ObservableProperty]
     PlayerDTO _player = new()
@@ -40,6 +43,14 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
         Name = string.Empty,
     };
 
+    [ObservableProperty]
+    GameSettingsDTO _gameSettings = new(
+        RoundTimeMs: 30000,
+        ShopTimeMs: 5000,
+        EliminationTimeMs: 5000,
+        PlayerPowerSelectionTimeMs: 15000
+    );
+
     public ApplicationViewModel(
         ISignalRNotificationService signalRNotificationService,
         ILobbyJsInterop lobbyJsInterop,
@@ -47,7 +58,8 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
         IConfiguration configuration,
         IWebAssemblyHostEnvironment hostEnvironment,
         IToastService toastService,
-        ISyncLocalStorageService localStorageService)
+        ISyncLocalStorageService localStorageService,
+        ISettingsEndpointsService settingsEndpointsService)
     {
         _signalRNotificationService = signalRNotificationService;
         _lobbyJsInterop = lobbyJsInterop;
@@ -56,6 +68,7 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
         _hostEnvironment = hostEnvironment;
         _toastService = toastService;
         _localStorageService = localStorageService;
+        _settingsEndpointsService = settingsEndpointsService;
 
         string? storedName = _localStorageService.GetItem<string>(LocalStorageConstants.PlayerNameKey);
         if (storedName is string name)
@@ -78,9 +91,20 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
     }
 
     public async Task InitAsync()
-    { 
+    {
         try
         {
+            // Load game settings from server
+            var settingsResult = await _settingsEndpointsService.GetGameSettingsAsync();
+            if (settingsResult.IsSuccess)
+            {
+                GameSettings = settingsResult.Value;
+            }
+            else
+            {
+                _logger.LogWarning("Failed to load game settings from server, using defaults.");
+            }
+
             await _signalRNotificationService.InitAsync(Player.Id);
 
             _signalRNotificationService.HandleNotificationReceived += async (notification) =>

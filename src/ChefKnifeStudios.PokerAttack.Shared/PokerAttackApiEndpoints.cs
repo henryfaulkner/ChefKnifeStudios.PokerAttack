@@ -72,4 +72,11 @@ public class PokerAttackApiEndpoints
         public const string PurchaseShopItem = $"{EndpointGroup}/purchase/{{gameId}}/{{shopItemId}}";
         public const string AdvancePhase = $"{EndpointGroup}/advance-phase/{{gameId}}";
     }
+
+    public class Settings
+    {
+        const string EndpointGroup = "/settings";
+
+        public const string GetGameSettings = $"{EndpointGroup}/game";
+    }
 }

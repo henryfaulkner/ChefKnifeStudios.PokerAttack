@@ -10,14 +10,17 @@ public interface IPlayerPowerSelectionViewModel : IViewModel
 
 public partial class PlayerPowerSelectionViewModel : BaseViewModel, IPlayerPowerSelectionViewModel, IDisposable
 {
+    readonly IApplicationViewModel _applicationViewModel;
+
     [ObservableProperty]
-    int _selectionTimeSeconds = PokerAttack.Shared.Constants.PlayerPowerSelectionTimeMs / 1000;
+    int _selectionTimeSeconds;
 
     CancellationTokenSource _timerToken;
 
-    public PlayerPowerSelectionViewModel()
+    public PlayerPowerSelectionViewModel(IApplicationViewModel applicationViewModel)
     {
-        SelectionTimeSeconds = PokerAttack.Shared.Constants.PlayerPowerSelectionTimeMs / 1000;
+        _applicationViewModel = applicationViewModel;
+        SelectionTimeSeconds = _applicationViewModel.GameSettings.PlayerPowerSelectionTimeMs / 1000;
         _timerToken = TimerHelper.SetInterval(() =>
         {
             if (SelectionTimeSeconds > 0) SelectionTimeSeconds--;
