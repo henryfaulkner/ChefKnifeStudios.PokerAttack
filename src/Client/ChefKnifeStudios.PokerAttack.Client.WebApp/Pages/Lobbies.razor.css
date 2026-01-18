@@ -15,14 +15,16 @@
 
 .lobby-actions {
     display: flex;
-    margin: 32px 8px;
+    gap: 16px;
+    margin: 32px 24px;
     align-items: center;
     justify-content: left;
     height: 48px;
     width: fit-content;
 }
 
-.create-lobby-btn {
+.create-lobby-btn,
+.play-solo-btn {
     padding: 4px 8px;
     height: 100%;
 }

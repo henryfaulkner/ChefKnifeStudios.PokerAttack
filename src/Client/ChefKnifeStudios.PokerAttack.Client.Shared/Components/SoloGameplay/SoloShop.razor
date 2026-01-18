@@ -1,0 +1,39 @@
+@using ChefKnifeStudios.PokerAttack.Client.Shared.Components
+@using ChefKnifeStudios.PokerAttack.Client.Shared.Models
+@using ChefKnifeStudios.PokerAttack.Shared
+
+<div class="solo-shop">
+    @foreach (var shopItem in SoloGameplayViewModel.ShopItems)
+    {
+        <div class="solo-shop__card">
+            @ItemCategoryPill(shopItem)
+            <span class="solo-shop__card-name mat-h6">@shopItem.Name</span>
+            <span class="solo-shop__card-description mat-body1">@shopItem.Description</span>
+            <span class="solo-shop__card-cost mat-body1">Price: @shopItem.Price</span>
+
+            @if (shopItem.WasPurchased)
+            {
+                <MatButton Disabled="true">PURCHASED</MatButton>
+            }
+            else
+            {
+                <MatButton OnClick="() => HandleItemPurchased(shopItem)" OnClickStopPropagation="true">
+                    BUY
+                </MatButton>
+            }
+        </div>
+    }
+</div>
+
+@{
+    RenderFragment ItemCategoryPill(ShopItem item)
+    {
+        return item.Root switch
+        {
+            ItemScoring => @<Pill Type="@PillTypes.Primary" Text="Scoring Item" />,
+            ItemGameplay => @<Pill Type="@PillTypes.Secondary" Text="Gameplay Item" />,
+            ItemWager => @<Pill Type="@PillTypes.Destructive" Text="Wager Item" />,
+            _ => @<></>
+        };
+    }
+}

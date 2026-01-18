@@ -1,10 +1,8 @@
-using ChefKnifeStudios.PokerAttack.Client.Core.Extensions;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Constants;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Shared;
-using ChefKnifeStudios.PokerAttack.Shared.DTOs;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SoloGameplay;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
@@ -23,6 +21,7 @@ public interface ISoloGameplayViewModel : IViewModel
     int Score { get; }
     int Wallet { get; }
     int Threshold { get; }
+    int RunTimeInSeconds { get; }
     ObservableCollection<CardItem> CardsInHand { get; }
     int AvailablePlayHands { get; }
     int AvailableDiscards { get; }
@@ -86,6 +85,11 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
     [ObservableProperty]
     bool _isLoading = false;
 
+    [ObservableProperty]
+    int _runTimeInSeconds = 0;
+
+    CancellationTokenSource? _timerToken;
+
     enum SortMode
     {
         None,
@@ -109,7 +113,8 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
 
     public void Dispose()
     {
-        // Nothing to dispose currently
+        _timerToken?.Cancel();
+        _timerToken?.Dispose();
     }
 
     public async Task StartGameAsync(string playerName, CancellationToken cancellationToken = default)
@@ -135,6 +140,10 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
             Phase = SoloGamePhase.InGame;
 
             RefreshCardsInHand(response.Cards);
+
+            // Initialize timer
+            RunTimeInSeconds = ChefKnifeStudios.PokerAttack.Shared.Constants.RoundTimeMs / 1000;
+            StartTimer();
         }
         else
         {
@@ -286,6 +295,7 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
                 RoundNumber++;
                 Score = 0;
                 Threshold = CalculateThreshold(RoundNumber);
+                RunTimeInSeconds = ChefKnifeStudios.PokerAttack.Shared.Constants.RoundTimeMs / 1000;
             }
         }
         else
@@ -391,4 +401,22 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
     }
 
     static int CalculateThreshold(int roundNumber) => _BASE_THRESHOLD + (_THRESHOLD_INCREMENT * (roundNumber - 1));
+
+    void StartTimer()
+    {
+        _timerToken = TimerHelper.SetInterval(() =>
+        {
+            if (Phase != SoloGamePhase.InGame) return;
+
+            if (RunTimeInSeconds > 0)
+            {
+                RunTimeInSeconds--;
+            }
+            else
+            {
+                // Auto-end round when timer expires
+                _ = AdvancePhaseAsync();
+            }
+        }, 1000);
+    }
 }

@@ -81,8 +81,8 @@ export async function hostStartGame(host: PlayerContext, lobbyId: string): Promi
   const startButton = host.page.locator('button:has-text("PLAY QUICK GAME")');
   await startButton.click();
 
-  // Wait for navigation to /gameplay (use domcontentloaded instead of load for Blazor apps)
-  await host.page.waitForURL(/\/gameplay(\?.*)?$/, { timeout: 15000, waitUntil: 'domcontentloaded' });
+  // Wait for navigation to /multi-gameplay (use domcontentloaded instead of load for Blazor apps)
+  await host.page.waitForURL(/\/multi-gameplay(\?.*)?$/, { timeout: 15000, waitUntil: 'domcontentloaded' });
 
   console.log(`[${host.playerName}] Game started, navigated to gameplay page`);
 }
@@ -96,7 +96,7 @@ export async function hostStartFullGame(host: PlayerContext, lobbyId: string): P
   const startButton = host.page.locator('button:has-text("PLAY FULL GAME")');
   await startButton.click();
 
-  await host.page.waitForURL(/\/gameplay(\?.*)?$/, { timeout: 15000, waitUntil: 'domcontentloaded' });
+  await host.page.waitForURL(/\/multi-gameplay(\?.*)?$/, { timeout: 15000, waitUntil: 'domcontentloaded' });
 
   console.log(`[${host.playerName}] Full game started`);
 }
@@ -323,9 +323,9 @@ export async function assertAllPlayersInGame(players: PlayerContext[]): Promise<
   console.log('Asserting all players in game...');
 
   for (const player of players) {
-    // Wait for navigation to /gameplay (SignalR event triggers this)
+    // Wait for navigation to /multi-gameplay (SignalR event triggers this)
     // Use a longer timeout since SignalR events may take a moment
-    await player.page.waitForURL(/\/gameplay(\?.*)?$/, { timeout: 20000, waitUntil: 'domcontentloaded' });
+    await player.page.waitForURL(/\/multi-gameplay(\?.*)?$/, { timeout: 20000, waitUntil: 'domcontentloaded' });
     console.log(`  ✓ [${player.playerName}] navigated to gameplay page`);
 
     // Wait for game UI to be visible (any game state indicator)
@@ -347,6 +347,6 @@ export async function assertAllPlayersInGame(players: PlayerContext[]): Promise<
  */
 export async function assertOnLobbyPage(player: PlayerContext): Promise<void> {
   expect(player.page.url()).toContain('/');
-  expect(player.page.url()).not.toContain('/gameplay');
+  expect(player.page.url()).not.toContain('/multi-gameplay');
   await expect(player.page.locator('#createLobbyBtn')).toBeVisible();
 }

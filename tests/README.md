@@ -120,7 +120,7 @@ const score = await actions.getCurrentScore(player);
 expect(score).toBeGreaterThan(0);
 
 // Verify specific game states
-expect(player.page.url()).toContain('/gameplay');
+expect(player.page.url()).toContain('/multi-gameplay');
 ```
 
 ## Available Helper Functions
@@ -158,7 +158,7 @@ expect(player.page.url()).toContain('/gameplay');
 - `closeGameResultModal(player)` - Close win/lose modal
 
 **Assertions:**
-- `assertAllPlayersInGame(players)` - Verify all in /gameplay
+- `assertAllPlayersInGame(players)` - Verify all in /multi-gameplay
 - `assertOnLobbyPage(player)` - Verify on lobby page
 
 ## Troubleshooting

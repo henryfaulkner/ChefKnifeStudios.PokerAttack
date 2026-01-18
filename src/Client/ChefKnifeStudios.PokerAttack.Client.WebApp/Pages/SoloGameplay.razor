@@ -1,5 +1,7 @@
+@using ChefKnifeStudios.PokerAttack.Client.Core.Extensions
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Gameplay
+@using ChefKnifeStudios.PokerAttack.Client.Shared.Components.SoloGameplay
 @using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Models
 @using ChefKnifeStudios.PokerAttack.Shared.Enums
@@ -25,7 +27,7 @@
                             <div class="sidebar mat-layout-grid-cell mat-layout-grid-cell-span-3 bgclr-surface2">
                                 <span class="mat-h4">Round: @SoloGameplayViewModel.RoundNumber</span>
                                 <span class="mat-h4">Score: @SoloGameplayViewModel.Score / @SoloGameplayViewModel.Threshold</span>
-                                <span class="mat-h4">Wallet: @SoloGameplayViewModel.Wallet</span>
+                                <span class="mat-h4">@SoloGameplayViewModel.RunTimeInSeconds.FormatAsMinutesSeconds()</span>
                                 <span class="mat-h4">Hands Available: @SoloGameplayViewModel.AvailablePlayHands</span>
                                 <span class="mat-h4">Discards Available: @SoloGameplayViewModel.AvailableDiscards</span>
                             </div>
@@ -103,28 +105,7 @@
                         <span class="mat-h3">SHOP</span>
                         <span class="mat-h4">Wallet: @SoloGameplayViewModel.Wallet</span>
 
-                        <div class="shop-items">
-                            @foreach (var shopItem in SoloGameplayViewModel.ShopItems)
-                            {
-                                <div class="shop__card">
-                                    @ItemCategoryPill(shopItem)
-                                    <span class="shop__card-name mat-h6">@shopItem.Name</span>
-                                    <span class="shop__card-description mat-body1">@shopItem.Description</span>
-                                    <span class="shop__card-cost mat-body1">Price: @shopItem.Price</span>
-
-                                    @if (shopItem.WasPurchased)
-                                    {
-                                        <MatButton Disabled="true">PURCHASED</MatButton>
-                                    }
-                                    else
-                                    {
-                                        <MatButton OnClick="() => HandleItemPurchased(shopItem)" OnClickStopPropagation="true">
-                                            BUY
-                                        </MatButton>
-                                    }
-                                </div>
-                            }
-                        </div>
+                        <SoloShop />
 
                         <MatButton Class="continue-btn" OnClick="HandleContinuePressed" Unelevated="true">
                             START NEXT ROUND
@@ -162,15 +143,3 @@
     }
 </div>
 
-@{
-    RenderFragment ItemCategoryPill(ShopItem item)
-    {
-        return item.Root switch
-        {
-            ItemScoring => @<Pill Type="@PillTypes.Primary" Text="Scoring Item" />,
-            ItemGameplay => @<Pill Type="@PillTypes.Secondary" Text="Gameplay Item" />,
-            ItemWager => @<Pill Type="@PillTypes.Destructive" Text="Wager Item" />,
-            _ => @<></>
-        };
-    }
-}

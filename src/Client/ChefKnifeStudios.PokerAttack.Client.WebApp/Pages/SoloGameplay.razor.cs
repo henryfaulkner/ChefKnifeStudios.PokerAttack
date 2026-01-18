@@ -1,4 +1,3 @@
-using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
 using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
@@ -24,6 +23,7 @@ public partial class SoloGameplay : ComponentBase, IDisposable, IAsyncDisposable
         nameof(ISoloGameplayViewModel.Wallet),
         nameof(ISoloGameplayViewModel.RoundNumber),
         nameof(ISoloGameplayViewModel.Threshold),
+        nameof(ISoloGameplayViewModel.RunTimeInSeconds),
         nameof(ISoloGameplayViewModel.CardsInHand),
         nameof(ISoloGameplayViewModel.AvailablePlayHands),
         nameof(ISoloGameplayViewModel.AvailableDiscards),
@@ -139,11 +139,6 @@ public partial class SoloGameplay : ComponentBase, IDisposable, IAsyncDisposable
     void HandleContinuePressed()
     {
         _ = SoloGameplayViewModel.AdvancePhaseAsync();
-    }
-
-    void HandleItemPurchased(ShopItem item)
-    {
-        _ = SoloGameplayViewModel.PurchaseItemAsync(item.ItemId);
     }
 
     void HandleReturnToMenuPressed()

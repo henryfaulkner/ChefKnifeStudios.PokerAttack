@@ -1,0 +1,28 @@
+.solo-shop {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}
+
+.solo-shop__card {
+    border: 2px solid var(--mdc-theme-primary, #6200ee);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 32px 16px;
+}
+
+.solo-shop__card.selected {
+    border: 3px solid black;
+}
+
+.solo-shop__card-cost {
+    font-style: italic;
+}
+
+@media (max-width: 500px) {
+    .solo-shop {
+        flex-direction: column;
+    }
+}

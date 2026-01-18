@@ -59,15 +59,20 @@ public partial class SettingsBlade : ComponentBase, IDisposable
     {
         try
         {
-            if (GameId is { Length: > 0 })
+            if (NavigationManager.IsOnMultiGameplay())
             {
-                await GameplayEndpointsService.LeaveGameAsync(GameId, ApplicationViewModel.Player.Id);
-                NavigationManager.NavigateToLobby();
+                // Multiplayer - call API to leave game
+                if (GameId is { Length: > 0 })
+                {
+                    await GameplayEndpointsService.LeaveGameAsync(GameId, ApplicationViewModel.Player.Id);
+                }
+                else
+                {
+                    Logger.LogWarning("Player unable to leave multiplayer game because their GameId was null or empty.");
+                }
             }
-            else
-            {
-                Logger.LogWarning("Player unable to leave game because their GameId was null or empty.");
-            }
+            // For both multi and solo, navigate to lobby
+            NavigationManager.NavigateToLobby();
         }
         catch (Exception ex)
         {

@@ -273,7 +273,7 @@ async function playGameRound(players: PlayerContext[], roundNumber: number): Pro
     try {
       // Check if player is on gameplay page (might have been eliminated and sent to lobby)
       const url = player.page.url();
-      if (!url.includes('/gameplay')) {
+      if (!url.includes('/multi-gameplay')) {
         console.log(`    [${player.playerName}] Not on gameplay page - eliminated or game ended`);
         eliminatedPlayers.push(player);
         continue;
@@ -355,7 +355,7 @@ async function checkGameComplete(players: PlayerContext[]): Promise<boolean> {
   for (const player of players) {
     try {
       const url = player.page.url();
-      if (url.includes('/gameplay')) {
+      if (url.includes('/multi-gameplay')) {
         playersInGame++;
         console.log(`  [${player.playerName}] still on gameplay page`);
       } else {
@@ -416,7 +416,7 @@ async function assertGameComplete(players: PlayerContext[], gameNumber: number):
       const currentUrl = player.page.url();
 
       // If still on gameplay page, wait for navigation to lobby
-      if (currentUrl.includes('/gameplay')) {
+      if (currentUrl.includes('/multi-gameplay')) {
         console.log(`  [${player.playerName}] Still on gameplay, waiting for navigation...`);
         await player.page.waitForURL(/\/$/, { timeout: 20000, waitUntil: 'domcontentloaded' }).catch((err) => {
           console.log(`  ⚠ [${player.playerName}] Navigation timeout: ${err.message}`);
