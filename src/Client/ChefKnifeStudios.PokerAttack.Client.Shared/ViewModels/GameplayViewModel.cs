@@ -4,7 +4,6 @@ using ChefKnifeStudios.PokerAttack.Client.Shared.Constants;
 using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
-using ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
 using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
@@ -43,7 +42,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     readonly IToastService _toastService;
     readonly IEventNotificationService _eventNotificationService;
     readonly NavigationManager _navigationManager;
-    readonly IAudioJsInterop _audioJsInterop;
+    readonly IAudioService _audioService;
     readonly IGameDataStore _gameDataStore;
 
     const int _DEFAULT_NUM_PLAY_HANDS = 5;
@@ -87,14 +86,14 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         IToastService toastService,
         IEventNotificationService eventNotificationService,
         NavigationManager navigationManager,
-        IAudioJsInterop audioJsInterop,
+        IAudioService audioService,
         IGameDataStore gameDataStore)
     {
         _signalRNotificationService = signalRNotificationService;
         _toastService = toastService;
         _eventNotificationService = eventNotificationService;
         _navigationManager = navigationManager;
-        _audioJsInterop = audioJsInterop;
+        _audioService = audioService;
         _gameDataStore = gameDataStore;
 
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
@@ -171,7 +170,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     {
         if (index < 0 || index >= CardsInHand.Count) return;
         CardsInHand[index].IsSelected = !CardsInHand[index].IsSelected;
-        _ = _audioJsInterop.PlayOneShotAsync(FilePaths.PlaceCardThree);
+        _ = _audioService.PlayOneShotAsync(FilePaths.PlaceCardThree);
     }
 
     // --- Sort methods updated to track current mode ---
@@ -240,7 +239,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                             {
                                 for (int i = 0; i < newCardCount; i++)
                                 {
-                                    await _audioJsInterop.PlayOneShotAsync(Constants.FilePaths.SlideCardOne);
+                                    await _audioService.PlayOneShotAsync(Constants.FilePaths.SlideCardOne);
                                     await Task.Delay(150); // Stagger the sound effects
                                 }
                             });

@@ -53,6 +53,8 @@ builder.Services.AddSingleton<ILobbyJsInterop, LobbyJsInterop>();
 builder.Services.AddSingleton<IRecorderInterop, RecorderInterop>();
 
 builder.Services.AddTransient<IToastService, ToastService>();
+builder.Services.AddTransient<ISettingsService, SettingsService>();
+builder.Services.AddTransient<IAudioService, AudioService>();
 builder.Services.AddSingleton<IInputService, InputService>();
 builder.Services.AddScoped<IEventNotificationService, EventNotificationService>();
 builder.Services.AddScoped<ISignalRNotificationService, SignalRNotificationService>();

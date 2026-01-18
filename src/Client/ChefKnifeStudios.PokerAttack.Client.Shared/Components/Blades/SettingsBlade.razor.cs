@@ -1,10 +1,10 @@
-﻿using ChefKnifeStudios.PokerAttack.Client.Core.Services;
+using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
+using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.Blades;
 
@@ -15,6 +15,7 @@ public partial class SettingsBlade : ComponentBase, IDisposable
     [Inject] ILogger<SettingsBlade> Logger { get; set; } = null!;
     [Inject] IEventNotificationService EventNotificationService { get; set; } = null!;
     [Inject] IApplicationViewModel ApplicationViewModel { get; set; } = null!;
+    [Inject] ISettingsService SettingsService { get; set; } = null!;
     [Inject] NavigationManager NavigationManager { get; set; } = null!;
     [Inject] IGameplayEndpointsService GameplayEndpointsService { get; set; } = null!;
 
@@ -51,15 +52,7 @@ public partial class SettingsBlade : ComponentBase, IDisposable
 
     void HandleSettingPressed(string propertyName, bool val)
     {
-        var type = ApplicationViewModel.Settings.GetType();
-        var properties = type.GetProperties();
-        foreach (var property in properties)
-        {
-            if (property.Name == propertyName)
-            {
-                property.SetValue(ApplicationViewModel.Settings, val);
-            }
-        }
+        SettingsService.SetSettingValue(propertyName, val);
     }
 
     async Task HandleLeaveGamePressed()

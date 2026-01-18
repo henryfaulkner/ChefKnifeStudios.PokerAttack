@@ -1,5 +1,6 @@
 @using System.Reflection
 @using System.ComponentModel
+@using ChefKnifeStudios.PokerAttack.Client.Shared.Models
 
 <div class="settings-blade">
     <BladeContainer @ref="_bladeContainer">
@@ -11,7 +12,8 @@
             <div class="blade-content">
                 <div class="settings-list">
                     @{
-                        var type = ApplicationViewModel.Settings.GetType();
+                        var settings = SettingsService.GetSettings();
+                        var type = typeof(Settings);
                         var properties = type.GetProperties();
                     }
                     @foreach (var property in properties)
@@ -19,7 +21,7 @@
                         var description = property.GetCustomAttribute<DescriptionAttribute>()?.Description ?? property.Name;
                         <MatCheckbox
                             TValue="bool"
-                            Value="@(property.GetValue(ApplicationViewModel.Settings) as bool? ?? false)"
+                            Value="@(property.GetValue(settings) as bool? ?? false)"
                             ValueChanged="(e) => HandleSettingPressed(property.Name, e)"
                         >
                             <span class="setting-label mat-body1">

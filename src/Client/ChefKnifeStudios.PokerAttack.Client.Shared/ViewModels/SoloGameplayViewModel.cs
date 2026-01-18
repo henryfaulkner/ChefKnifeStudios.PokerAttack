@@ -2,16 +2,12 @@
 using ChefKnifeStudios.PokerAttack.Client.Shared.Constants;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
-using ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
 using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Gameplay;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 
@@ -38,7 +34,7 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
     readonly IToastService _toastService;
     readonly IEventNotificationService _eventNotificationService;
     readonly NavigationManager _navigationManager;
-    readonly IAudioJsInterop _audioJsInterop;
+    readonly IAudioService _audioService;
 
     const int _DEFAULT_NUM_PLAY_HANDS = 5;
     const int _DEFAULT_NUM_DISCARDS = 5;
@@ -80,12 +76,12 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
         IToastService toastService,
         IEventNotificationService eventNotificationService,
         NavigationManager navigationManager,
-        IAudioJsInterop audioJsInterop)
+        IAudioService audioService)
     {
         _toastService = toastService;
         _eventNotificationService = eventNotificationService;
         _navigationManager = navigationManager;
-        _audioJsInterop = audioJsInterop;
+        _audioService = audioService;
 
         _timerToken = TimerHelper.SetInterval(() =>
         {
@@ -143,7 +139,7 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
     {
         if (index < 0 || index >= CardsInHand.Count) return;
         CardsInHand[index].IsSelected = !CardsInHand[index].IsSelected;
-        _ = _audioJsInterop.PlayOneShotAsync(FilePaths.PlaceCardThree);
+        _ = _audioService.PlayOneShotAsync(FilePaths.PlaceCardThree);
     }
 
     public void SortByRank()

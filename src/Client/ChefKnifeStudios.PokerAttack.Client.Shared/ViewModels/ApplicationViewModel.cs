@@ -1,8 +1,7 @@
-﻿using Blazored.LocalStorage;
+using Blazored.LocalStorage;
 using ChefKnifeStudios.PokerAttack.Client.Core.Enums;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Constants;
-using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
 using ChefKnifeStudios.PokerAttack.Shared;
@@ -21,7 +20,6 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 public interface IApplicationViewModel : IViewModel
 {
     PlayerDTO Player { get; }
-    Settings Settings { get; }
     Task InitAsync();
 }
 
@@ -41,9 +39,6 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
         Id = Guid.NewGuid().ToString(),
         Name = string.Empty,
     };
-
-    [ObservableProperty]
-    Settings settings = new();
 
     public ApplicationViewModel(
         ISignalRNotificationService signalRNotificationService,
@@ -74,45 +69,12 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
             _localStorageService.SetItem(LocalStorageConstants.PlayerNameKey, Player.Name);
         }
 
-        Settings? storedSettings = _localStorageService.GetItem<Settings>(LocalStorageConstants.SettingsKey);
-        if (storedSettings is Settings settings)
-        {
-            Settings = settings;
-        }
-        else
-        {
-            _localStorageService.SetItem(LocalStorageConstants.SettingsKey, Settings);
-        }
-
-        Settings.PropertyChanged += HandleSettingsPropertyChanged;
-
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
-    }
-
-    partial void OnSettingsChanged(Settings? oldValue, Settings newValue)
-    {
-        if (oldValue is not null)
-        {
-            oldValue.PropertyChanged -= HandleSettingsPropertyChanged;
-        }
-
-        if (newValue is not null)
-        {
-            newValue.PropertyChanged += HandleSettingsPropertyChanged;
-        }
-
-        _localStorageService.SetItem(LocalStorageConstants.SettingsKey, newValue);
-    }
-
-    void HandleSettingsPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-        _localStorageService.SetItem(LocalStorageConstants.SettingsKey, Settings);
     }
 
     public void Dispose()
     {
         _signalRNotificationService.HandleNotificationReceived -= HandleSignalRNotificationReceived;
-        Settings.PropertyChanged -= HandleSettingsPropertyChanged;
     }
 
     public async Task InitAsync()
