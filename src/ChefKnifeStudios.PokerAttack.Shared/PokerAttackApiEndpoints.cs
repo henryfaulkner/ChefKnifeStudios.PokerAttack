@@ -60,4 +60,17 @@ public class PokerAttackApiEndpoints
 
         public const string PublishRecording = $"{EndpointGroup}/recording";
     }
+
+    public class SoloGameplay
+    {
+        const string EndpointGroup = "/solo";
+
+        public const string StartGame = $"{EndpointGroup}/start-game";
+        public const string PlayHand = $"{EndpointGroup}/play-hand/{{gameId}}";
+        public const string Discard = $"{EndpointGroup}/discard/{{gameId}}";
+        public const string EndRound = $"{EndpointGroup}/end-round/{{gameId}}";
+        public const string GetGameState = $"{EndpointGroup}/game-state/{{gameId}}";
+        public const string PurchaseShopItem = $"{EndpointGroup}/purchase/{{gameId}}/{{shopItemId}}";
+        public const string AdvancePhase = $"{EndpointGroup}/advance-phase/{{gameId}}";
+    }
 }

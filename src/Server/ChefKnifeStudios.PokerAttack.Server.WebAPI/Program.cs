@@ -68,6 +68,7 @@ builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IGameStateMachineService, GameStateMachineService>();
 builder.Services.AddScoped<IPlayerPowerService, PlayerPowerService>();
 builder.Services.AddScoped<IShopService, ShopService>();
+builder.Services.AddScoped<ISoloGameplayService, SoloGameplayService>();
 builder.Services.AddSingleton<IScoringRulesService, ScoringRulesService>();
 builder.Services.AddSingleton<IItemEffectsService, ItemEffectsService>();
 builder.Services.AddSingleton<IWagerService, WagerService>();
@@ -133,7 +134,8 @@ app.MapTestEndpoints()
    .MapPlayerPowerEndpoints()
    .MapShopEndpoints()
    .MapScoringRulesEndpoints()
-   .MapUploadEndpoints();
+   .MapUploadEndpoints()
+   .MapSoloGameplayEndpoints();
 
 app.MapDefaultEndpoints();
 

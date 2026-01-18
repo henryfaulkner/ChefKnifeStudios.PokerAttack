@@ -18,7 +18,6 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
     [Inject] IGameStateMachineViewModel GameStateMachineViewModel { get; set; } = null!;
     [Inject] IInputService InputService { get; set; } = null!;
     [Inject] IInputJsInterop InputJsInterop { get; set; } = null!;
-    [Inject] IPlayerViewModel PlayerViewModel { get; set; } = null!;
     [Inject] IGameDataStore GameDataStore { get; set; } = null!;
 
     readonly string[] _subscriptions =

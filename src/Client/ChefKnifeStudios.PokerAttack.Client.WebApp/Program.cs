@@ -64,6 +64,7 @@ builder.Services.AddTransient<IPlayerPowerEndpointsService, PlayerPowerEndpoints
 builder.Services.AddTransient<IScoringRulesEndpointsService, ScoringRulesEndpointsService>();
 builder.Services.AddTransient<IShopEndpointsService, ShopEndpointsService>();
 builder.Services.AddTransient<IUploadEndpointsService, UploadEndpointsService>();
+builder.Services.AddTransient<ISoloGameplayEndpointsService, SoloGameplayEndpointsService>();
 
 builder.Services.AddMatBlazor();
 builder.Services.AddMatToaster(config =>
@@ -94,6 +95,7 @@ builder.Services.AddTransient<IShopViewModel, ShopViewModel>();
 builder.Services.AddTransient<IPlayerPowerSelectionViewModel, PlayerPowerSelectionViewModel>();
 builder.Services.AddScoped<IGameDataStore, GameDataStore>();
 builder.Services.AddScoped<IGameDataService, GameDataService>();
+builder.Services.AddScoped<ISoloGameplayViewModel, SoloGameplayViewModel>();
 #endregion
 
 builder.UseSentry(options =>

@@ -187,24 +187,6 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         ApplySort();
     }
 
-    private void ApplySort()
-    {
-        if (_currentSortMode == SortMode.None) return;
-
-        var sorted = _currentSortMode switch
-        {
-            SortMode.ByRank => CardsInHand.OrderBy(c => c.Rank).ThenBy(c => c.Suit).ToList(),
-            SortMode.BySuit => CardsInHand.OrderBy(c => c.Suit).ThenBy(c => c.Rank).ToList(),
-            _ => CardsInHand.ToList()
-        };
-
-        CardsInHand.Clear();
-        foreach (var card in sorted)
-        {
-            CardsInHand.Add(card);
-        }
-    }
-
     public void ClearSelections()
     {
         foreach (var card in CardsInHand)
@@ -323,6 +305,24 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                 }
         }
         return Task.CompletedTask;
+    }
+
+    void ApplySort()
+    {
+        if (_currentSortMode == SortMode.None) return;
+
+        var sorted = _currentSortMode switch
+        {
+            SortMode.ByRank => CardsInHand.OrderBy(c => c.Rank).ThenBy(c => c.Suit).ToList(),
+            SortMode.BySuit => CardsInHand.OrderBy(c => c.Suit).ThenBy(c => c.Rank).ToList(),
+            _ => CardsInHand.ToList()
+        };
+
+        CardsInHand.Clear();
+        foreach (var card in sorted)
+        {
+            CardsInHand.Add(card);
+        }
     }
 
     static int CountNewCards(
