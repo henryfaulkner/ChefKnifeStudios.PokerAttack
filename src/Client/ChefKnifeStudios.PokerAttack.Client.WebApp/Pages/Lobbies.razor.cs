@@ -12,6 +12,7 @@ public partial class Lobbies : ComponentBase
     [Inject] ILobbyViewModel LobbyViewModel { get; set; } = null!;
     [Inject] IFeatureFlagService FeatureFlagService { get; set; } = null!;
     [Inject] ILogger<Lobbies> Logger { get; set; } = null!;
+    [Inject] NavigationManager NavigationManager { get; set; } = null!;
 
     bool _showScoringGuide = false;
 
@@ -23,6 +24,11 @@ public partial class Lobbies : ComponentBase
     void HandleCreateLobbyPressed()
     {
         _ = LobbyViewModel.CreateLobbyAsync(ApplicationViewModel.Player);
+    }
+
+    void HandlePlaySoloPressed()
+    {
+        NavigationManager.NavigateToSoloGameplay();
     }
 
     void HandleCloseModalPressed()

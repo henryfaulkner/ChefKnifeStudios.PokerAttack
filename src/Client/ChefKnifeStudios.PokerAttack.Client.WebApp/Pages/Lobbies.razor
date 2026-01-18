@@ -21,9 +21,23 @@
                     CREATE LOBBY
                 </MatButton>
 
+                <MatButton
+                    Id="playSoloBtn"
+                    Class="play-solo-btn"
+                    OnClick="HandlePlaySoloPressed"
+                    Unelevated
+                >
+                    PLAY SOLO
+                </MatButton>
+
                 @if (FeatureFlagService.IsEnabled(FeatureFlags.EnableHowToPlay))
                 {
-                    <MatButton OnClick="HandleShowScoringGuidePressed" Icon="help">
+                    <MatButton 
+                        Id="scoringGuideBtn"
+                        Class="scoring-guide-btn"
+                        OnClick="HandleShowScoringGuidePressed" 
+                        Icon="help"
+                    >
                         HOW TO SCORE
                     </MatButton>
                 }

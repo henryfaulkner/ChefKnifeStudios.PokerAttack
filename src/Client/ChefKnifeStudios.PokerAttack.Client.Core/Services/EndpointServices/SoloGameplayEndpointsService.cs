@@ -13,7 +13,6 @@ public interface ISoloGameplayEndpointsService
     Task<Result<StartSoloGameResDTO?>> StartGameAsync(StartSoloGameReqDTO request, CancellationToken cancellationToken = default);
     Task<Result<PlayHandResDTO?>> PlayHandAsync(string gameId, PlayHandReqDTO request, CancellationToken cancellationToken = default);
     Task<Result<DiscardResDTO?>> DiscardAsync(string gameId, DiscardReqDTO request, CancellationToken cancellationToken = default);
-    Task<Result> EndRoundAsync(string gameId, CancellationToken cancellationToken = default);
     Task<Result<SoloGameStateDTO?>> GetGameStateAsync(string gameId, CancellationToken cancellationToken = default);
     Task<Result<PurchaseItemResDTO?>> PurchaseShopItemAsync(string gameId, string shopItemId, CancellationToken cancellationToken = default);
     Task<Result<AdvancePhaseResDTO?>> AdvancePhaseAsync(string gameId, CancellationToken cancellationToken = default);
@@ -78,24 +77,6 @@ public class SoloGameplayEndpointsService : ISoloGameplayEndpointsService
                 cancellationToken
             );
             return res.LogErrors(_logger, $"SoloGameplay DiscardAsync call. Game Id {gameId}");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occured.");
-            return Result.Error();
-        }
-    }
-
-    public async Task<Result> EndRoundAsync(string gameId, CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            var res = await _httpService.PostAsync<object, object?>(
-                Endpoints.EndRound.FormatRoute(gameId),
-                new { },
-                cancellationToken
-            );
-            return res.IsSuccess ? Result.Success() : Result.Error();
         }
         catch (Exception ex)
         {

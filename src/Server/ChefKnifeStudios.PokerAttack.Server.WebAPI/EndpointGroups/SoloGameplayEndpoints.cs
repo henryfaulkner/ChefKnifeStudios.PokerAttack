@@ -7,6 +7,8 @@ namespace ChefKnifeStudios.PokerAttack.Server.WebAPI.EndpointGroups;
 
 public static class SoloGameplayEndpoints
 {
+    const string Prefix = "Solo";
+
     public static IEndpointRouteBuilder MapSoloGameplayEndpoints(this IEndpointRouteBuilder builder)
     {
         var group = builder
@@ -21,7 +23,7 @@ public static class SoloGameplayEndpoints
         {
             return await soloGameplayService.StartGameAsync(reqBody, cancellationToken);
         })
-        .WithName(nameof(Endpoints.StartGame))
+        .WithName($"{Prefix}{nameof(Endpoints.StartGame)}")
         .Accepts<StartSoloGameReqDTO>("application/json")
         .Produces<StartSoloGameResDTO>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
@@ -35,7 +37,7 @@ public static class SoloGameplayEndpoints
         {
             return await soloGameplayService.PlayHandAsync(gameId, reqBody, cancellationToken);
         })
-        .WithName(nameof(Endpoints.PlayHand))
+        .WithName($"{Prefix}{nameof(Endpoints.PlayHand)}")
         .Accepts<PlayHandReqDTO>("application/json")
         .Produces<PlayHandResDTO>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
@@ -49,21 +51,9 @@ public static class SoloGameplayEndpoints
         {
             return await soloGameplayService.DiscardAsync(gameId, reqBody, cancellationToken);
         })
-        .WithName(nameof(Endpoints.Discard))
+        .WithName($"{Prefix}{nameof(Endpoints.Discard)}")
         .Accepts<DiscardReqDTO>("application/json")
         .Produces<DiscardResDTO>(StatusCodes.Status200OK)
-        .Produces(StatusCodes.Status400BadRequest)
-        .Produces(StatusCodes.Status500InternalServerError);
-
-        group.MapPost(Endpoints.EndRound, async (
-            string gameId,
-            ISoloGameplayService soloGameplayService,
-            CancellationToken cancellationToken = default) =>
-        {
-            return await soloGameplayService.EndRoundAsync(gameId, cancellationToken);
-        })
-        .WithName(nameof(Endpoints.EndRound))
-        .Produces(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);
 
@@ -74,7 +64,7 @@ public static class SoloGameplayEndpoints
         {
             return await soloGameplayService.GetGameStateAsync(gameId, cancellationToken);
         })
-        .WithName(nameof(Endpoints.GetGameState))
+        .WithName($"{Prefix}{nameof(Endpoints.GetGameState)}")
         .Produces<SoloGameStateDTO>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status500InternalServerError);
@@ -87,7 +77,7 @@ public static class SoloGameplayEndpoints
         {
             return await soloGameplayService.PurchaseShopItemAsync(gameId, shopItemId, cancellationToken);
         })
-        .WithName(nameof(Endpoints.PurchaseShopItem))
+        .WithName($"{Prefix}{nameof(Endpoints.PurchaseShopItem)}")
         .Produces<PurchaseItemResDTO>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);
@@ -99,7 +89,7 @@ public static class SoloGameplayEndpoints
         {
             return await soloGameplayService.AdvancePhaseAsync(gameId, cancellationToken);
         })
-        .WithName(nameof(Endpoints.AdvancePhase))
+        .WithName($"{Prefix}{nameof(Endpoints.AdvancePhase)}")
         .Produces<AdvancePhaseResDTO>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);

@@ -21,4 +21,9 @@ public static class NavigationManagerExtensions
     {
         return navManager.Uri.Contains("gameplay", StringComparison.InvariantCultureIgnoreCase);
     }
+
+    public static void NavigateToSoloGameplay(this NavigationManager navManager)
+    {
+        navManager.NavigateTo($"/solo-gameplay", replace: true);
+    }
 }
