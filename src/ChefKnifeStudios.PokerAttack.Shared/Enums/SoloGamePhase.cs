@@ -5,6 +5,5 @@ public enum SoloGamePhase
     InGame,
     Scoreboard,
     Shop,
-    Elimination,
     GameOver
 }

@@ -113,32 +113,6 @@
                     </div>
                     break;
                 }
-            case SoloGamePhase.Elimination:
-                {
-                    <div class="elimination-container">
-                        <span class="mat-h3">ELIMINATED</span>
-                        <span class="mat-h4">You reached Round @SoloGameplayViewModel.RoundNumber</span>
-                        <span class="mat-h4">Final Score: @SoloGameplayViewModel.Score</span>
-
-                        <MatButton Class="continue-btn" OnClick="HandleContinuePressed" Unelevated="true">
-                            CONTINUE
-                        </MatButton>
-                    </div>
-                    break;
-                }
-            case SoloGamePhase.GameOver:
-                {
-                    <div class="game-over-container">
-                        <span class="mat-h2">GAME OVER</span>
-                        <span class="mat-h4">You reached Round @SoloGameplayViewModel.RoundNumber</span>
-                        <span class="mat-h4">Thanks for playing!</span>
-
-                        <MatButton Class="home-btn" OnClick="HandleReturnToMenuPressed" Unelevated="true">
-                            RETURN TO MENU
-                        </MatButton>
-                    </div>
-                    break;
-                }
         }
     }
 </div>

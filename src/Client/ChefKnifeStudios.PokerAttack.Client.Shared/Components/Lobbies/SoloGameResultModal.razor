@@ -1,0 +1,50 @@
+@namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.Lobbies
+
+<MatDialog Class="solo-game-result-modal" IsOpen="@SoloGameResultStore.HasResult">
+    <MatDialogTitle>
+        <span class="mat-h2">GAME OVER</span>
+    </MatDialogTitle>
+    <MatDialogContent>
+        <div class="result-stats">
+            <div class="stat-row highlight">
+                <span class="stat-label">Round Reached</span>
+                <span class="stat-value mat-h3">@SoloGameResultStore.RoundReached</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Final Chips</span>
+                <span class="stat-value">@SoloGameResultStore.FinalWallet</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Total Score</span>
+                <span class="stat-value">@SoloGameResultStore.TotalScore</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Hands Played</span>
+                <span class="stat-value">@SoloGameResultStore.HandsPlayed</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Discards Used</span>
+                <span class="stat-value">@SoloGameResultStore.DiscardsUsed</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Best Hand</span>
+                <span class="stat-value">@SoloGameResultStore.HighestSingleHandScore</span>
+            </div>
+            @if (SoloGameResultStore.PurchasedItemNames.Any())
+            {
+                <div class="stat-row items">
+                    <span class="stat-label">Items Purchased</span>
+                    <div class="items-list">
+                        @foreach (var item in SoloGameResultStore.PurchasedItemNames)
+                        {
+                            <span class="item-pill">@item</span>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="HandleClosePressed" Unelevated="true">RETURN TO LOBBY</MatButton>
+    </MatDialogActions>
+</MatDialog>

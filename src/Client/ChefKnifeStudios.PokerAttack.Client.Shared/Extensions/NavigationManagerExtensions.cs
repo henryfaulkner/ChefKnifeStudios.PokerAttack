@@ -7,9 +7,14 @@ public static class NavigationManagerExtensions
         navManager.NavigateTo("/", replace: true);
     }
 
-    public static void NavigateToLobbyWithGameResult(this NavigationManager navManager, string gameResult)
+    public static void NavigateToLobbyWithMultiGameResult(this NavigationManager navManager, string gameResult)
     {
-        navManager.NavigateTo($"/?gameresult={gameResult}", replace: true);
+        navManager.NavigateTo($"/?multi-gameresult={gameResult}", replace: true);
+    }
+
+    public static void NavigateToLobbyWithSoloGameResult(this NavigationManager navManager)
+    {
+        navManager.NavigateTo("/?solo-gameresult=show", replace: true);
     }
 
     public static void NavigateToGameplay(this NavigationManager navManager, string gameId)

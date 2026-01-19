@@ -1,0 +1,54 @@
+::deep .solo-game-result-modal {
+    max-width: 500px;
+}
+
+::deep .solo-game-result-modal .mdc-dialog__title {
+    text-align: center;
+}
+
+.result-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: #F8F1F6;
+    border-radius: 8px;
+}
+
+.stat-row.highlight {
+    background-color: #E3F2E1;
+}
+
+.stat-row.items {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.stat-label {
+    font-weight: 500;
+}
+
+.stat-value {
+    font-weight: 600;
+}
+
+.items-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.item-pill {
+    padding: 4px 12px;
+    background-color: #E8DEF8;
+    border-radius: 16px;
+    font-size: 0.875rem;
+}

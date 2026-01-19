@@ -28,6 +28,13 @@ public interface ISoloGameplayViewModel : IViewModel
     ObservableCollection<ShopItem> ShopItems { get; }
     bool IsLoading { get; }
 
+    // Comprehensive stats tracking
+    int TotalScore { get; }
+    int HandsPlayed { get; }
+    int DiscardsUsed { get; }
+    int HighestSingleHandScore { get; }
+    List<string> PurchasedItemNames { get; }
+
     Task StartGameAsync(string playerName, CancellationToken cancellationToken = default);
     Task PlaySelectedCardsAsync(CancellationToken cancellationToken = default);
     Task DiscardSelectedCardsAsync(CancellationToken cancellationToken = default);
@@ -46,6 +53,7 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
     readonly NavigationManager _navigationManager;
     readonly IAudioService _audioService;
     readonly IApplicationViewModel _applicationViewModel;
+    readonly ISoloGameResultStore _soloGameResultStore;
 
     const int _BASE_THRESHOLD = 500;
     const int _THRESHOLD_INCREMENT = 250;
@@ -89,6 +97,22 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
     [ObservableProperty]
     int _runTimeInSeconds = 0;
 
+    // Comprehensive stats tracking
+    [ObservableProperty]
+    int _totalScore = 0;
+
+    [ObservableProperty]
+    int _handsPlayed = 0;
+
+    [ObservableProperty]
+    int _discardsUsed = 0;
+
+    [ObservableProperty]
+    int _highestSingleHandScore = 0;
+
+    [ObservableProperty]
+    List<string> _purchasedItemNames = [];
+
     CancellationTokenSource? _timerToken;
 
     enum SortMode
@@ -105,13 +129,15 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
         IToastService toastService,
         NavigationManager navigationManager,
         IAudioService audioService,
-        IApplicationViewModel applicationViewModel)
+        IApplicationViewModel applicationViewModel,
+        ISoloGameResultStore soloGameResultStore)
     {
         _endpointsService = endpointsService;
         _toastService = toastService;
         _navigationManager = navigationManager;
         _audioService = audioService;
         _applicationViewModel = applicationViewModel;
+        _soloGameResultStore = soloGameResultStore;
     }
 
     public void Dispose()
@@ -199,6 +225,14 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
             Wallet = response.Wallet;
             AvailablePlayHands = response.HandsRemaining;
 
+            // Track comprehensive stats
+            HandsPlayed++;
+            TotalScore += handResult.HandScore;
+            if (handResult.HandScore > HighestSingleHandScore)
+            {
+                HighestSingleHandScore = handResult.HandScore;
+            }
+
             RefreshCardsInHand(response.NewCards);
             ApplySort();
 
@@ -238,6 +272,9 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
         {
             var response = result.Value;
             AvailableDiscards = response.DiscardsRemaining;
+
+            // Track comprehensive stats
+            DiscardsUsed++;
 
             RefreshCardsInHand(response.NewCards);
             ApplySort();
@@ -300,6 +337,21 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
                 Threshold = CalculateThreshold(RoundNumber);
                 RunTimeInSeconds = _applicationViewModel.GameSettings.RoundTimeMs / 1000;
             }
+
+            // Handle GameOver - populate result store and navigate to lobby
+            if (Phase == SoloGamePhase.GameOver)
+            {
+                _soloGameResultStore.SetResult(new SoloGameResultData(
+                    RoundReached: RoundNumber,
+                    FinalWallet: Wallet,
+                    TotalScore: TotalScore,
+                    HandsPlayed: HandsPlayed,
+                    DiscardsUsed: DiscardsUsed,
+                    HighestSingleHandScore: HighestSingleHandScore,
+                    PurchasedItemNames: PurchasedItemNames.ToList()
+                ));
+                _navigationManager.NavigateToLobbyWithSoloGameResult();
+            }
         }
         else
         {
@@ -325,6 +377,9 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
             {
                 purchasedItem.WasPurchased = true;
             }
+
+            // Track comprehensive stats
+            PurchasedItemNames = [.. PurchasedItemNames, response.PurchasedItem.Item.Name];
 
             _toastService.ShowSuccess($"Purchased {response.PurchasedItem.Item.Name}");
         }

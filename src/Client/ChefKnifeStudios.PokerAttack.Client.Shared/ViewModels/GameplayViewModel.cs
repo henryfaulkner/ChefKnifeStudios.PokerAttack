@@ -280,12 +280,12 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
                 }
             case PokerAttackNotificationType.GameWon:
                 {
-                    _navigationManager.NavigateToLobbyWithGameResult("winner");
+                    _navigationManager.NavigateToLobbyWithMultiGameResult("winner");
                     break;
                 }
             case PokerAttackNotificationType.GameLost:
                 {
-                    _navigationManager.NavigateToLobbyWithGameResult("loser");
+                    _navigationManager.NavigateToLobbyWithMultiGameResult("loser");
                     break;
                 }
         }

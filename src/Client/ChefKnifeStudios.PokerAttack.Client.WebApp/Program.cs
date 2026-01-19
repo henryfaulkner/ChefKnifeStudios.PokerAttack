@@ -102,6 +102,7 @@ builder.Services.AddTransient<IPlayerPowerSelectionViewModel, PlayerPowerSelecti
 builder.Services.AddScoped<IGameDataStore, GameDataStore>();
 builder.Services.AddScoped<IGameDataService, GameDataService>();
 builder.Services.AddScoped<ISoloGameplayViewModel, SoloGameplayViewModel>();
+builder.Services.AddScoped<ISoloGameResultStore, SoloGameResultStore>();
 #endregion
 
 builder.UseSentry(options =>

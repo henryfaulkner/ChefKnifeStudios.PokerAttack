@@ -298,8 +298,8 @@ public class SoloGameplayService(
                 }
                 else
                 {
-                    // Player failed - go to Elimination
-                    newPhase = SoloGamePhase.Elimination;
+                    // Player failed - go directly to GameOver (no elimination phase needed in solo)
+                    newPhase = SoloGamePhase.GameOver;
                     game.Phase = newPhase;
                 }
                 break;
@@ -331,12 +331,6 @@ public class SoloGameplayService(
                 newCards = game.CardsInHand.Select(c => c.MapToDTO());
                 handsAvailable = game.HandsRemaining;
                 discardsAvailable = game.DiscardsRemaining;
-                break;
-
-            case SoloGamePhase.Elimination:
-                // Game over
-                newPhase = SoloGamePhase.GameOver;
-                game.Phase = newPhase;
                 break;
 
             case SoloGamePhase.GameOver:

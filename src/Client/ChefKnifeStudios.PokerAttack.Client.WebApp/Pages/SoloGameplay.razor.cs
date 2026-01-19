@@ -141,11 +141,6 @@ public partial class SoloGameplay : ComponentBase, IDisposable, IAsyncDisposable
         _ = SoloGameplayViewModel.AdvancePhaseAsync();
     }
 
-    void HandleReturnToMenuPressed()
-    {
-        NavigationManager.NavigateTo("/");
-    }
-
     void ToggleCardSelection(int index)
     {
         SoloGameplayViewModel.ToggleCardSelection(index);

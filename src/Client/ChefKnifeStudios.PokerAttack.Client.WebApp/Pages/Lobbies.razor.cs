@@ -6,7 +6,11 @@ namespace ChefKnifeStudios.PokerAttack.Client.WebApp.Pages;
 
 public partial class Lobbies : ComponentBase
 {
-    [SupplyParameterFromQuery] public required string? GameResult { get; set; }
+    [SupplyParameterFromQuery(Name = "multi-gameresult")]
+    public string? MultiGameResult { get; set; }
+
+    [SupplyParameterFromQuery(Name = "solo-gameresult")]
+    public string? SoloGameResult { get; set; }
 
     [Inject] IApplicationViewModel ApplicationViewModel { get; set; } = null!;
     [Inject] ILobbyViewModel LobbyViewModel { get; set; } = null!;
@@ -31,9 +35,9 @@ public partial class Lobbies : ComponentBase
         NavigationManager.NavigateToSoloGameplay();
     }
 
-    void HandleCloseModalPressed()
+    void HandleCloseMultiModalPressed()
     {
-        GameResult = null;
+        MultiGameResult = null;
         StateHasChanged();
     }
 
@@ -45,7 +49,7 @@ public partial class Lobbies : ComponentBase
 
     void HandleCloseScoringGuidePressed()
     {
-        _showScoringGuide = false; 
+        _showScoringGuide = false;
         StateHasChanged();
     }
 }
