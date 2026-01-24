@@ -1,11 +1,3 @@
-::deep .solo-game-result-modal {
-    max-width: 500px;
-}
-
-::deep .solo-game-result-modal .mdc-dialog__title {
-    text-align: center;
-}
-
 .result-stats {
     display: flex;
     flex-direction: column;

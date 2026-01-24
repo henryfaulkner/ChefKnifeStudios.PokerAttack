@@ -1,9 +1,11 @@
-@namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.Lobbies
+@using ChefKnifeStudios.PokerAttack.Client.Core.Services
+@using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs
+@using ChefKnifeStudios.PokerAttack.Client.Shared.Services
+@inject ISoloGameResultStore SoloGameResultStore
+@inject IEventNotificationService EventService
 
-<MatDialog Class="solo-game-result-modal" IsOpen="@SoloGameResultStore.HasResult">
-    <MatDialogTitle>
-        <span class="mat-h2">GAME OVER</span>
-    </MatDialogTitle>
+<MatDialog IsOpen="true" CanBeClosed="true" Closed="HandleClose">
+    <MatDialogTitle>GAME OVER</MatDialogTitle>
     <MatDialogContent>
         <div class="result-stats">
             <div class="stat-row highlight">
@@ -45,6 +47,18 @@
         </div>
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="HandleClosePressed" Unelevated="true">RETURN TO LOBBY</MatButton>
+        <MatButton OnClick="HandleClose">Play Again</MatButton>
     </MatDialogActions>
 </MatDialog>
+
+@code {
+    void HandleClose()
+    {
+        SoloGameResultStore.Clear();
+
+        EventService.PostEvent(this, new SoloGameResultModalEventArgs
+        {
+            ModalAction = ModalEventArgs.ModalActions.Close
+        });
+    }
+}

@@ -1,28 +1,58 @@
-﻿using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
+using ChefKnifeStudios.PokerAttack.Client.Core.Services;
+using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
+using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
+using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 using ChefKnifeStudios.PokerAttack.Shared;
 using Microsoft.AspNetCore.Components;
+using System.ComponentModel;
 
 namespace ChefKnifeStudios.PokerAttack.Client.WebApp.Pages;
 
-public partial class Lobbies : ComponentBase
+public partial class Lobbies : ComponentBase, IDisposable
 {
     [SupplyParameterFromQuery(Name = "multi-gameresult")]
     public string? MultiGameResult { get; set; }
 
-    [SupplyParameterFromQuery(Name = "solo-gameresult")]
-    public string? SoloGameResult { get; set; }
-
     [Inject] IApplicationViewModel ApplicationViewModel { get; set; } = null!;
     [Inject] ILobbyViewModel LobbyViewModel { get; set; } = null!;
     [Inject] IFeatureFlagService FeatureFlagService { get; set; } = null!;
-    [Inject] ILogger<Lobbies> Logger { get; set; } = null!;
     [Inject] NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] IEventNotificationService EventService { get; set; } = null!;
+    [Inject] ISoloGameResultStore SoloGameResultStore { get; set; } = null!;
+    [Inject] IScoringRulesViewModel ScoringRulesViewModel { get; set; } = null!;
 
-    bool _showScoringGuide = false;
-
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await base.OnInitializedAsync();
+        SoloGameResultStore.PropertyChanged += SoloGameResultStore_PropertyChanged;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (!firstRender) return;
+
+        if (!string.IsNullOrWhiteSpace(MultiGameResult))
+        {
+            ShowMultiGameResultModal();
+        }
+
+        if (SoloGameResultStore.HasResult)
+        {
+            ShowSoloGameResultModal();
+        }
+    }
+
+    public void Dispose()
+    {
+        SoloGameResultStore.PropertyChanged -= SoloGameResultStore_PropertyChanged;
+    }
+
+    void SoloGameResultStore_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ISoloGameResultStore.HasResult) && SoloGameResultStore.HasResult)
+        {
+            ShowSoloGameResultModal();
+        }
     }
 
     void HandleCreateLobbyPressed()
@@ -35,21 +65,32 @@ public partial class Lobbies : ComponentBase
         NavigationManager.NavigateToSoloGameplay();
     }
 
-    void HandleCloseMultiModalPressed()
-    {
-        MultiGameResult = null;
-        StateHasChanged();
-    }
-
     void HandleShowScoringGuidePressed()
     {
-        _showScoringGuide = true;
-        StateHasChanged();
+        _ = ScoringRulesViewModel.LoadAsync();
+
+        EventService.PostEvent(this, new ScoringRulesModalEventArgs
+        {
+            ModalAction = ModalEventArgs.ModalActions.Open
+        });
     }
 
-    void HandleCloseScoringGuidePressed()
+    void ShowMultiGameResultModal()
     {
-        _showScoringGuide = false;
-        StateHasChanged();
+        if (string.IsNullOrWhiteSpace(MultiGameResult)) return;
+
+        EventService.PostEvent(this, new MultiGameResultModalEventArgs
+        {
+            ModalAction = ModalEventArgs.ModalActions.Open,
+            GameResult = MultiGameResult
+        });
+    }
+
+    void ShowSoloGameResultModal()
+    {
+        EventService.PostEvent(this, new SoloGameResultModalEventArgs
+        {
+            ModalAction = ModalEventArgs.ModalActions.Open
+        });
     }
 }

@@ -23,4 +23,8 @@
     <ProjectReference Include="..\ChefKnifeStudios.PokerAttack.Client.Core\ChefKnifeStudios.PokerAttack.Client.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="EventArgs\ModalEventArgs\" />
+  </ItemGroup>
+
 </Project>

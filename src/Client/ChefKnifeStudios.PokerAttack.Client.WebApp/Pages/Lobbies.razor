@@ -1,4 +1,4 @@
-﻿@using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Blades
+@using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Blades
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components.FABs
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Gameplay
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Lobbies
@@ -15,7 +15,7 @@
             <div class="lobby-actions">
                 <EditablePlayerName Player="@ApplicationViewModel.Player" />
 
-                <MatButton 
+                <MatButton
                     Id="createLobbyBtn"
                     Class="create-lobby-btn"
                     OnClick="HandleCreateLobbyPressed"
@@ -35,10 +35,10 @@
 
                 @if (FeatureFlagService.IsEnabled(FeatureFlags.EnableHowToPlay))
                 {
-                    <MatButton 
+                    <MatButton
                         Id="scoringGuideBtn"
                         Class="scoring-guide-btn"
-                        OnClick="HandleShowScoringGuidePressed" 
+                        OnClick="HandleShowScoringGuidePressed"
                         Icon="help"
                     >
                         HOW TO SCORE
@@ -48,17 +48,5 @@
 
             <LobbyList />
         </div>
-
-        <MultiGameResultModal
-            GameResult="@MultiGameResult"
-            OnClose="HandleCloseMultiModalPressed"
-        />
-
-        <SoloGameResultModal />
-
-        <ScoringRulesModal 
-            IsOpen="@_showScoringGuide" 
-            OnClose="HandleCloseScoringGuidePressed"
-        />
     </div>
 </div>

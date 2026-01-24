@@ -1,10 +1,12 @@
-﻿@using ChefKnifeStudios.PokerAttack.Shared.DTOs
+@using ChefKnifeStudios.PokerAttack.Client.Core.Services
+@using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs
+@using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels
 @using ChefKnifeStudios.PokerAttack.Shared.Enums
+@inject IScoringRulesViewModel ScoringRulesViewModel
+@inject IEventNotificationService EventService
 
-<MatDialog Class="scoring-guide-modal" IsOpen="@IsOpen">
-    <MatDialogTitle>
-        <h2 class="mat-h2">Scoring Guide</h2>
-    </MatDialogTitle>
+<MatDialog IsOpen="true" CanBeClosed="true" Closed="HandleClose">
+    <MatDialogTitle>Scoring Guide</MatDialogTitle>
     <MatDialogContent>
         @if (ScoringRulesViewModel.IsLoading)
         {
@@ -32,7 +34,7 @@
                                     <Pill Text="@context.HandTypeName" Type="PillTypes.Primary" />
                                 </td>
                                 <td class="mat-body1">@context.BaseChips</td>
-                                <td class="mat-body1">×@context.BaseMultiplier</td>
+                                <td class="mat-body1">x@context.BaseMultiplier</td>
                                 <td class="mat-body2">@context.Description</td>
                             </MatTableRow>
                         </MatTable>
@@ -74,6 +76,18 @@
         }
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="OnClose">CLOSE</MatButton>
+        <MatButton OnClick="HandleClose">Close</MatButton>
     </MatDialogActions>
 </MatDialog>
+
+@code {
+    string GetHandTypeName(Hands handType) => handType.GetDescription() ?? string.Empty;
+
+    void HandleClose()
+    {
+        EventService.PostEvent(this, new ScoringRulesModalEventArgs
+        {
+            ModalAction = ModalEventArgs.ModalActions.Close
+        });
+    }
+}

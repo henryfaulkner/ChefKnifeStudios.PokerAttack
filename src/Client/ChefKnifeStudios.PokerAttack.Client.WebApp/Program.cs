@@ -54,7 +54,7 @@ builder.Services.AddSingleton<IRecorderInterop, RecorderInterop>();
 
 // Register Scoped Services
 builder.Services.AddScoped<IInputService, InputService>();
-builder.Services.AddScoped<IEventNotificationService, EventNotificationService>();
+builder.Services.AddSingleton<IEventNotificationService, EventNotificationService>();
 builder.Services.AddScoped<ISignalRNotificationService, SignalRNotificationService>();
 builder.Services.AddSingleton<ICardImageService, CardImageService>();
 
@@ -93,6 +93,7 @@ builder.Services.AddBlazoredLocalStorage();
 
 #region REGISTER VIEWMODELS
 builder.Services.AddScoped<IApplicationViewModel, ApplicationViewModel>();
+builder.Services.AddScoped<IModalControllerViewModel, ModalControllerViewModel>();
 builder.Services.AddScoped<IGameDataStore, GameDataStore>();
 builder.Services.AddScoped<ISoloGameResultStore, SoloGameResultStore>();
 builder.Services.AddScoped<IGameDataService, GameDataService>();
