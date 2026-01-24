@@ -15,21 +15,31 @@ public partial class ShopViewModel : BaseViewModel, IShopViewModel, IDisposable
     [ObservableProperty]
     int _shopTimeSeconds;
 
-    CancellationTokenSource _timerToken;
+    CancellationTokenSource? _timerToken;
 
     public ShopViewModel(IApplicationViewModel applicationViewModel)
     {
         _applicationViewModel = applicationViewModel;
         ShopTimeSeconds = _applicationViewModel.GameSettings.ShopTimeMs / 1000;
-        _timerToken = TimerHelper.SetInterval(() =>
-        {
-            if (ShopTimeSeconds > 0) ShopTimeSeconds--;
-        }, 1000);
+        StartTimer();
     }
 
     public void Dispose()
     {
-        _timerToken.Cancel();
-        _timerToken.Dispose();
+        _timerToken?.Cancel();
+        _timerToken?.Dispose();
+    }
+
+    void StartTimer()
+    {
+        // Cancel any existing timer
+        _timerToken?.Cancel();
+        _timerToken?.Dispose();
+        _timerToken = null;
+
+        _timerToken = TimerHelper.SetInterval(() =>
+        {
+            if (ShopTimeSeconds > 0) ShopTimeSeconds--;
+        }, 1000);
     }
 }

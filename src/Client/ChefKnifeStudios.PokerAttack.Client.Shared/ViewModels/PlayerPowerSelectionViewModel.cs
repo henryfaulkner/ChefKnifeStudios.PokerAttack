@@ -15,21 +15,31 @@ public partial class PlayerPowerSelectionViewModel : BaseViewModel, IPlayerPower
     [ObservableProperty]
     int _selectionTimeSeconds;
 
-    CancellationTokenSource _timerToken;
+    CancellationTokenSource? _timerToken;
 
     public PlayerPowerSelectionViewModel(IApplicationViewModel applicationViewModel)
     {
         _applicationViewModel = applicationViewModel;
         SelectionTimeSeconds = _applicationViewModel.GameSettings.PlayerPowerSelectionTimeMs / 1000;
-        _timerToken = TimerHelper.SetInterval(() =>
-        {
-            if (SelectionTimeSeconds > 0) SelectionTimeSeconds--;
-        }, 1000);
+        StartTimer();
     }
 
     public void Dispose()
     {
-        _timerToken.Cancel();
-        _timerToken.Dispose();
+        _timerToken?.Cancel();
+        _timerToken?.Dispose();
+    }
+
+    void StartTimer()
+    {
+        // Cancel any existing timer
+        _timerToken?.Cancel();
+        _timerToken?.Dispose();
+        _timerToken = null;
+
+        _timerToken = TimerHelper.SetInterval(() =>
+        {
+            if (SelectionTimeSeconds > 0) SelectionTimeSeconds--;
+        }, 1000);
     }
 }

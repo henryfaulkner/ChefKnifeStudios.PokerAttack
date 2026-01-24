@@ -292,8 +292,8 @@ export async function isInEliminationPhase(player: PlayerContext): Promise<boole
  */
 export async function isGameComplete(player: PlayerContext): Promise<boolean> {
   // Game complete when we see the result modal on the lobby page
-  const wonModal = await player.page.locator('.game-result-modal:has-text("You are a winner")').isVisible();
-  const lostModal = await player.page.locator('.game-result-modal:has-text("You are a loser")').isVisible();
+  const wonModal = await player.page.locator('.multi-game-result-modal:has-text("You are a winner")').isVisible();
+  const lostModal = await player.page.locator('.multi-game-result-modal:has-text("You are a loser")').isVisible();
   return wonModal || lostModal;
 }
 
@@ -303,7 +303,7 @@ export async function isGameComplete(player: PlayerContext): Promise<boolean> {
 export async function closeGameResultModal(player: PlayerContext): Promise<void> {
   console.log(`[${player.playerName}] Closing game result modal...`);
 
-  const closeButton = player.page.locator('.game-result-modal button:has-text("CLOSE")');
+  const closeButton = player.page.locator('.multi-game-result-modal button:has-text("CLOSE")');
   await closeButton.click();
 
   // Wait for modal to close

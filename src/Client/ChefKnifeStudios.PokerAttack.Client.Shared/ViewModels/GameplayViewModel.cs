@@ -71,7 +71,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
     [ObservableProperty]
     int _powerCharges = _DEFAULT_NUM_POWER_CHARGES;
 
-    CancellationTokenSource _timerToken;
+    CancellationTokenSource? _timerToken;
 
     enum SortMode
     {
@@ -102,17 +102,14 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
         _eventNotificationService.EventReceived += HandleEventReceived;
 
-        _timerToken = TimerHelper.SetInterval(() =>
-        {
-            if (RunTimeInSeconds > 0) RunTimeInSeconds--;
-        }, 1000);
+        StartTimer();
     }
 
     public void Dispose()
     {
         _signalRNotificationService.HandleNotificationReceived -= HandleSignalRNotificationReceived;
-        _timerToken.Cancel();
-        _timerToken.Dispose();
+        _timerToken?.Cancel();
+        _timerToken?.Dispose();
     }
 
     public async Task StartGameAsync(string playerId, CancellationToken cancellationToken = default)
@@ -357,6 +354,19 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         {
             CardsInHand.Add(cardItem);
         }    
+    }
+
+    void StartTimer()
+    {
+        // Cancel any existing timer
+        _timerToken?.Cancel();
+        _timerToken?.Dispose();
+        _timerToken = null;
+
+        _timerToken = TimerHelper.SetInterval(() =>
+        {
+            if (RunTimeInSeconds > 0) RunTimeInSeconds--;
+        }, 1000);
     }
 }
 

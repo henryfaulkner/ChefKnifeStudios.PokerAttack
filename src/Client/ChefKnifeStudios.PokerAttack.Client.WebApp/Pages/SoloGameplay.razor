@@ -10,6 +10,7 @@
 @page "/solo-gameplay"
 
 <div class="solo-gameplay gameplay">
+    <CascadingValue Value="SoloGameplayViewModel">
     @if (SoloGameplayViewModel.IsLoading)
     {
         <div class="loading-container">
@@ -80,40 +81,41 @@
             case SoloGamePhase.Scoreboard:
                 {
                     <div class="scoreboard-container">
-                        <span class="mat-h3">ROUND @SoloGameplayViewModel.RoundNumber COMPLETE</span>
-                        <span class="mat-h4">Your Score: @SoloGameplayViewModel.Score</span>
-                        <span class="mat-h4">Threshold: @SoloGameplayViewModel.Threshold</span>
-
-                        @if (SoloGameplayViewModel.Score >= SoloGameplayViewModel.Threshold)
-                        {
-                            <span class="mat-h4 success-text">You survived this round!</span>
-                        }
-                        else
-                        {
-                            <span class="mat-h4 danger-text">You did not meet the threshold...</span>
-                        }
-
-                        <MatButton Class="continue-btn" OnClick="HandleContinuePressed" Unelevated="true">
-                            CONTINUE
-                        </MatButton>
+                        <div class="top-bar">
+                            <span class="mat-h3">ROUND @SoloGameplayViewModel.RoundNumber COMPLETE</span>
+                            <span class="mat-h4">Your Score: @SoloGameplayViewModel.Score</span>
+                            <span class="mat-h4">Threshold: @SoloGameplayViewModel.Threshold</span>
+                            @if (SoloGameplayViewModel.Score >= SoloGameplayViewModel.Threshold)
+                            {
+                                <span class="mat-h4 success-text">You survived this round!</span>
+                            }
+                            else
+                            {
+                                <span class="mat-h4 danger-text">You did not meet the threshold...</span>
+                            }
+                            <MatButton Class="continue-btn" OnClick="HandleContinuePressed" Unelevated="true">
+                                CONTINUE
+                            </MatButton>
+                        </div>
                     </div>
                     break;
                 }
             case SoloGamePhase.Shop:
                 {
                     <div class="shop-container">
-                        <span class="mat-h3">SHOP</span>
-                        <span class="mat-h4">Wallet: @SoloGameplayViewModel.Wallet</span>
-
+                        <div class="top-bar">
+                            <span class="mat-h3">SHOP</span>
+                            <span class="mat-h4">Wallet: @SoloGameplayViewModel.Wallet</span>
+                            <MatButton Class="continue-btn" OnClick="HandleContinuePressed" Unelevated="true">
+                                START NEXT ROUND
+                            </MatButton>
+                        </div>
                         <SoloShop />
-
-                        <MatButton Class="continue-btn" OnClick="HandleContinuePressed" Unelevated="true">
-                            START NEXT ROUND
-                        </MatButton>
                     </div>
                     break;
                 }
         }
     }
+    </CascadingValue>
 </div>
 

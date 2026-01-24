@@ -56,7 +56,7 @@ builder.Services.AddSingleton<IRecorderInterop, RecorderInterop>();
 builder.Services.AddScoped<IInputService, InputService>();
 builder.Services.AddScoped<IEventNotificationService, EventNotificationService>();
 builder.Services.AddScoped<ISignalRNotificationService, SignalRNotificationService>();
-builder.Services.AddScoped<ICardImageService, CardImageService>();
+builder.Services.AddSingleton<ICardImageService, CardImageService>();
 
 // Register Transient Services
 builder.Services.AddTransient<IToastService, ToastService>();
@@ -92,6 +92,10 @@ builder.Services.AddBlazoredLocalStorage();
 
 #region REGISTER VIEWMODELS
 builder.Services.AddScoped<IApplicationViewModel, ApplicationViewModel>();
+builder.Services.AddScoped<IGameDataStore, GameDataStore>();
+builder.Services.AddScoped<ISoloGameResultStore, SoloGameResultStore>();
+builder.Services.AddScoped<IGameDataService, GameDataService>();
+
 builder.Services.AddTransient<IGameplayViewModel, GameplayViewModel>();
 builder.Services.AddTransient<IGameStateMachineViewModel, GameStateMachineViewModel>();
 builder.Services.AddTransient<ILobbyViewModel, LobbyViewModel>();
@@ -99,10 +103,7 @@ builder.Services.AddTransient<IPlayerViewModel, PlayerViewModel>();
 builder.Services.AddTransient<IScoringRulesViewModel, ScoringRulesViewModel>();
 builder.Services.AddTransient<IShopViewModel, ShopViewModel>();
 builder.Services.AddTransient<IPlayerPowerSelectionViewModel, PlayerPowerSelectionViewModel>();
-builder.Services.AddScoped<IGameDataStore, GameDataStore>();
-builder.Services.AddScoped<IGameDataService, GameDataService>();
-builder.Services.AddScoped<ISoloGameplayViewModel, SoloGameplayViewModel>();
-builder.Services.AddScoped<ISoloGameResultStore, SoloGameResultStore>();
+builder.Services.AddTransient<ISoloGameplayViewModel, SoloGameplayViewModel>();
 #endregion
 
 builder.UseSentry(options =>

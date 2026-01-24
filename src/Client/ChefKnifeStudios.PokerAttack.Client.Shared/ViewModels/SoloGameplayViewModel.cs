@@ -56,7 +56,7 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
     readonly ISoloGameResultStore _soloGameResultStore;
 
     const int _BASE_THRESHOLD = 500;
-    const int _THRESHOLD_INCREMENT = 250;
+    const double _THRESHOLD_EXPONENT = 1.1;
 
     [ObservableProperty]
     string? _gameId;
@@ -458,10 +458,15 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
         }
     }
 
-    static int CalculateThreshold(int roundNumber) => _BASE_THRESHOLD + (_THRESHOLD_INCREMENT * (roundNumber - 1));
+    static int CalculateThreshold(int roundNumber) => (int)(_BASE_THRESHOLD * Math.Pow(roundNumber, _THRESHOLD_EXPONENT));
 
     void StartTimer()
     {
+        // Cancel any existing timer
+        _timerToken?.Cancel();
+        _timerToken?.Dispose();
+        _timerToken = null;
+
         _timerToken = TimerHelper.SetInterval(() =>
         {
             if (Phase != SoloGamePhase.InGame) return;

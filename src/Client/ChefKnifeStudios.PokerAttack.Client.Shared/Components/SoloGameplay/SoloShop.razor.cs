@@ -8,7 +8,7 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.SoloGameplay;
 
 public partial class SoloShop : ComponentBase, IDisposable
 {
-    [Inject] ISoloGameplayViewModel SoloGameplayViewModel { get; set; } = null!;
+    [CascadingParameter] ISoloGameplayViewModel SoloGameplayViewModel { get; set; } = null!;
 
     protected override void OnInitialized()
     {
