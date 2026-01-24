@@ -88,7 +88,7 @@ builder.Services.AddSingleton<IItemRepository, ItemRepository>();
 string azureStorageConnectionString = builder.Configuration.GetConnectionString("AzureStorage")!;
 builder.Services.AddSingleton<IStorageService>(sp =>
     new BlobStorageService(
-        azureStorageConnectionString,
+        "https://pokerattackstorage.blob.core.windows.net",
         sp.GetRequiredService<ILogger<BlobStorageService>>()
     ));
 
@@ -138,7 +138,7 @@ app.MapTestEndpoints()
    .MapPlayerPowerEndpoints()
    .MapShopEndpoints()
    .MapScoringRulesEndpoints()
-   .MapUploadEndpoints()
+   .MapBlobStorageEndpoints()
    .MapSoloGameplayEndpoints()
    .MapSettingsEndpoints();
 

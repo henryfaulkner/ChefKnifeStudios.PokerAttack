@@ -1,5 +1,6 @@
 @using ChefKnifeStudios.PokerAttack.Client.Core.Extensions
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components
+@using ChefKnifeStudios.PokerAttack.Client.Shared.Components.FABs
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Gameplay
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components.SoloGameplay
 @using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels
@@ -10,112 +11,114 @@
 @page "/solo-gameplay"
 
 <div class="solo-gameplay gameplay">
-    <CascadingValue Value="SoloGameplayViewModel">
-    @if (SoloGameplayViewModel.IsLoading)
-    {
-        <div class="loading-container">
-            <span class="mat-h4">Starting Game...</span>
-        </div>
-    }
-    else
-    {
-        @switch (SoloGameplayViewModel.Phase)
-        {
-            case SoloGamePhase.InGame:
-                {
-                    <div class="mat-layout-grid" style="padding: 0;">
-                        <div class="mat-layout-grid-inner">
-                            <div class="sidebar mat-layout-grid-cell mat-layout-grid-cell-span-3 bgclr-surface2">
-                                <span class="mat-h4">Round: @SoloGameplayViewModel.RoundNumber</span>
-                                <span class="mat-h4">Score: @SoloGameplayViewModel.Score / @SoloGameplayViewModel.Threshold</span>
-                                <span class="mat-h4">@SoloGameplayViewModel.RunTimeInSeconds.FormatAsMinutesSeconds()</span>
-                                <span class="mat-h4">Hands Available: @SoloGameplayViewModel.AvailablePlayHands</span>
-                                <span class="mat-h4">Discards Available: @SoloGameplayViewModel.AvailableDiscards</span>
-                            </div>
-                            <div class="gaming-container mat-layout-grid-cell mat-layout-grid-cell-span-9">
-                                <CardHand Cards="@SoloGameplayViewModel.CardsInHand.ToList()" />
+    <FabList Fabs="[ FabList.FABs.Settings, ]" />
 
-                                <div class="action-buttons">
-                                    <MatButton Id="playHandBtn"
-                                               Class="play-hand-btn action-btn"
-                                               OnClick="HandlePlayHandPressed"
-                                               Unelevated="true">
-                                        <span class="key-bind mat-body1">[Q]&nbsp;</span>PLAY HAND
-                                    </MatButton>
-                                    <MatButton Id="discardBtn"
-                                               Class="discard-btn action-btn"
-                                               OnClick="HandleDiscardPressed"
-                                               Unelevated="true">
-                                        <span class="key-bind">[W]&nbsp;</span>DISCARD
-                                    </MatButton>
-                                    <MatButton Id="endRoundBtn"
-                                               Class="end-round-btn action-btn"
-                                               OnClick="HandleEndRoundPressed"
-                                               Unelevated="true">
-                                        <span class="key-bind">[E]&nbsp;</span>END ROUND
-                                    </MatButton>
-                                    <MatButton Id="sortByRankBtn"
-                                               Class="sort-by-rank-btn action-btn"
-                                               OnClick="HandleSortByRankPressed"
-                                               Unelevated="true">
-                                        <span class="key-bind">[A]&nbsp;</span>SORT BY RANK
-                                    </MatButton>
-                                    <MatButton Id="sortBySuitBtn"
-                                               Class="sort-by-suit-btn action-btn"
-                                               OnClick="HandleSortBySuitPressed"
-                                               Unelevated="true">
-                                        <span class="key-bind">[S]&nbsp;</span>SORT BY SUIT
-                                    </MatButton>
-                                    <MatButton Id="clearSelectionsBtn"
-                                               Class="clear-selections-btn action-btn"
-                                               OnClick="HandleClearSelectionsPressed"
-                                               Unelevated="true">
-                                        <span class="key-bind">[D]&nbsp;</span>CLEAR SELECTIONS
-                                    </MatButton>
+    <CascadingValue Value="SoloGameplayViewModel">
+        @if (SoloGameplayViewModel.IsLoading)
+        {
+            <div class="loading-container">
+                <span class="mat-h4">Starting Game...</span>
+            </div>
+        }
+        else
+        {
+            @switch (SoloGameplayViewModel.Phase)
+            {
+                case SoloGamePhase.InGame:
+                    {
+                        <div class="mat-layout-grid" style="padding: 0;">
+                            <div class="mat-layout-grid-inner">
+                                <div class="sidebar mat-layout-grid-cell mat-layout-grid-cell-span-3 bgclr-surface2">
+                                    <span class="mat-h4">Round: @SoloGameplayViewModel.RoundNumber</span>
+                                    <span class="mat-h4">Score: @SoloGameplayViewModel.Score / @SoloGameplayViewModel.Threshold</span>
+                                    <span class="mat-h4">@SoloGameplayViewModel.RunTimeInSeconds.FormatAsMinutesSeconds()</span>
+                                    <span class="mat-h4">Hands Available: @SoloGameplayViewModel.AvailablePlayHands</span>
+                                    <span class="mat-h4">Discards Available: @SoloGameplayViewModel.AvailableDiscards</span>
+                                </div>
+                                <div class="gaming-container mat-layout-grid-cell mat-layout-grid-cell-span-9">
+                                    <CardHand Cards="@SoloGameplayViewModel.CardsInHand.ToList()" />
+
+                                    <div class="action-buttons">
+                                        <MatButton Id="playHandBtn"
+                                                   Class="play-hand-btn action-btn"
+                                                   OnClick="HandlePlayHandPressed"
+                                                   Unelevated="true">
+                                            <span class="key-bind mat-body1">[Q]&nbsp;</span>PLAY HAND
+                                        </MatButton>
+                                        <MatButton Id="discardBtn"
+                                                   Class="discard-btn action-btn"
+                                                   OnClick="HandleDiscardPressed"
+                                                   Unelevated="true">
+                                            <span class="key-bind">[W]&nbsp;</span>DISCARD
+                                        </MatButton>
+                                        <MatButton Id="endRoundBtn"
+                                                   Class="end-round-btn action-btn"
+                                                   OnClick="HandleEndRoundPressed"
+                                                   Unelevated="true">
+                                            <span class="key-bind">[E]&nbsp;</span>END ROUND
+                                        </MatButton>
+                                        <MatButton Id="sortByRankBtn"
+                                                   Class="sort-by-rank-btn action-btn"
+                                                   OnClick="HandleSortByRankPressed"
+                                                   Unelevated="true">
+                                            <span class="key-bind">[A]&nbsp;</span>SORT BY RANK
+                                        </MatButton>
+                                        <MatButton Id="sortBySuitBtn"
+                                                   Class="sort-by-suit-btn action-btn"
+                                                   OnClick="HandleSortBySuitPressed"
+                                                   Unelevated="true">
+                                            <span class="key-bind">[S]&nbsp;</span>SORT BY SUIT
+                                        </MatButton>
+                                        <MatButton Id="clearSelectionsBtn"
+                                                   Class="clear-selections-btn action-btn"
+                                                   OnClick="HandleClearSelectionsPressed"
+                                                   Unelevated="true">
+                                            <span class="key-bind">[D]&nbsp;</span>CLEAR SELECTIONS
+                                        </MatButton>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    break;
-                }
-            case SoloGamePhase.Scoreboard:
-                {
-                    <div class="scoreboard-container">
-                        <div class="top-bar">
-                            <span class="mat-h3">ROUND @SoloGameplayViewModel.RoundNumber COMPLETE</span>
-                            <span class="mat-h4">Your Score: @SoloGameplayViewModel.Score</span>
-                            <span class="mat-h4">Threshold: @SoloGameplayViewModel.Threshold</span>
-                            @if (SoloGameplayViewModel.Score >= SoloGameplayViewModel.Threshold)
-                            {
-                                <span class="mat-h4 success-text">You survived this round!</span>
-                            }
-                            else
-                            {
-                                <span class="mat-h4 danger-text">You did not meet the threshold...</span>
-                            }
-                            <MatButton Class="continue-btn" OnClick="HandleContinuePressed" Unelevated="true">
-                                CONTINUE
-                            </MatButton>
+                        break;
+                    }
+                case SoloGamePhase.Scoreboard:
+                    {
+                        <div class="scoreboard-container">
+                            <div class="top-bar">
+                                <span class="mat-h3">ROUND @SoloGameplayViewModel.RoundNumber COMPLETE</span>
+                                <span class="mat-h4">Your Score: @SoloGameplayViewModel.Score</span>
+                                <span class="mat-h4">Threshold: @SoloGameplayViewModel.Threshold</span>
+                                @if (SoloGameplayViewModel.Score >= SoloGameplayViewModel.Threshold)
+                                {
+                                    <span class="mat-h4 success-text">You survived this round!</span>
+                                }
+                                else
+                                {
+                                    <span class="mat-h4 danger-text">You did not meet the threshold...</span>
+                                }
+                                <MatButton Class="continue-btn" OnClick="HandleContinuePressed" Unelevated="true">
+                                    CONTINUE
+                                </MatButton>
+                            </div>
                         </div>
-                    </div>
-                    break;
-                }
-            case SoloGamePhase.Shop:
-                {
-                    <div class="shop-container">
-                        <div class="top-bar">
-                            <span class="mat-h3">SHOP</span>
-                            <span class="mat-h4">Wallet: @SoloGameplayViewModel.Wallet</span>
-                            <MatButton Class="continue-btn" OnClick="HandleContinuePressed" Unelevated="true">
-                                START NEXT ROUND
-                            </MatButton>
+                        break;
+                    }
+                case SoloGamePhase.Shop:
+                    {
+                        <div class="shop-container">
+                            <div class="top-bar">
+                                <span class="mat-h3">SHOP</span>
+                                <span class="mat-h4">Wallet: @SoloGameplayViewModel.Wallet</span>
+                                <MatButton Class="continue-btn" OnClick="HandleContinuePressed" Unelevated="true">
+                                    START NEXT ROUND
+                                </MatButton>
+                            </div>
+                            <SoloShop />
                         </div>
-                        <SoloShop />
-                    </div>
-                    break;
-                }
+                        break;
+                    }
+            }
         }
-    }
     </CascadingValue>
 </div>
 

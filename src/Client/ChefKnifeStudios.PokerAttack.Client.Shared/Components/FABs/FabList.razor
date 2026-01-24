@@ -1,0 +1,22 @@
+@using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Blades
+
+<div class="fab-list @GetPositionClass() @GetDirectionClass() @GetMobilePositionClass() @GetMobileDirectionClass()">
+    @foreach (var fab in Fabs)
+    {
+        switch (fab)
+        {
+            case FABs.Settings:
+                {
+                    <SettingsFab />
+                }
+                break;
+            case FABs.Help:
+                {
+                    <HelpFab />
+                }
+                break;
+            default:
+                break;
+        }
+    }
+</div>

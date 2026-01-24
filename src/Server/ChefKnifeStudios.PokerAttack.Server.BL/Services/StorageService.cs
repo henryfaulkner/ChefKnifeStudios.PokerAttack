@@ -1,5 +1,7 @@
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Azure.Storage.Sas;
+using Azure.Identity;
 using Microsoft.Extensions.Logging;
 
 namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
@@ -9,16 +11,27 @@ public interface IStorageService
     Task<string> StoreAsync(string containerName, string[] directoryNames, string filename, MemoryStream dataToStore, CancellationToken cancellationToken = default);
     Task<string> StoreAsync(string containerName, string[] directoryNames, string filename, byte[] dataToStore, CancellationToken cancellationToken = default);
     Task<byte[]> DownloadAsync(string url, string containerName, CancellationToken cancellationToken = default);
+    Task<string> GenerateUserDelegationSasAsync(string containerName, string blobName, int durationInMinutes = 60, CancellationToken cancellationToken = default);
 }
 
 public class BlobStorageService : IStorageService
 {
-    private readonly BlobServiceClient _blobServiceClient;
-    private readonly ILogger<BlobStorageService> _logger;
+    readonly BlobServiceClient _blobServiceClient;
+    readonly ILogger<BlobStorageService> _logger;
 
-    public BlobStorageService(string azureStorageConnectionString, ILogger<BlobStorageService> logger)
+    // Cached User Delegation Key for fast SAS token generation
+    UserDelegationKey? _cachedUserDelegationKey;
+    DateTimeOffset _keyExpiresOn = DateTimeOffset.MinValue;
+    readonly SemaphoreSlim _keyLock = new(1, 1);
+    const int KEY_DURATION_MINUTES = 60;
+    const int KEY_REFRESH_BUFFER_MINUTES = 5;
+
+    public BlobStorageService(string storageAccountUrl, ILogger<BlobStorageService> logger)
     {
-        _blobServiceClient = new BlobServiceClient(azureStorageConnectionString);
+        _blobServiceClient = new BlobServiceClient(
+            new Uri(storageAccountUrl),
+            new DefaultAzureCredential()
+        );
         _logger = logger;
     }
 
@@ -106,12 +119,101 @@ public class BlobStorageService : IStorageService
         }
     }
 
-    #region Private Methods
+    /// <summary>
+    /// Generates a User Delegation SAS for the client-side WASM app.
+    /// This is the core of the "Token Exchange" flow.
+    /// Uses a cached User Delegation Key for fast, local cryptographic signing.
+    /// </summary>
+    public async Task<string> GenerateUserDelegationSasAsync(string containerName, string blobName, int durationInMinutes = 5, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("Generating User Delegation SAS for blob: {BlobName} in container: {ContainerName}", blobName, containerName);
+
+        try
+        {
+            // 1. Get or refresh the cached User Delegation Key
+            var userDelegationKey = await GetOrRefreshUserDelegationKeyAsync(cancellationToken);
+
+            // 2. Define the SAS permissions and constraints
+            var sasBuilder = new BlobSasBuilder
+            {
+                BlobContainerName = containerName,
+                BlobName = blobName,
+                Resource = "b", // "b" for blob level access
+                StartsOn = DateTimeOffset.UtcNow,
+                ExpiresOn = DateTimeOffset.UtcNow.AddMinutes(durationInMinutes)
+            };
+
+            // Allow read access for the client
+            sasBuilder.SetPermissions(BlobSasPermissions.Read);
+
+            // 3. Construct the full URI with the SAS token (fast, local crypto operation)
+            var blobClient = _blobServiceClient.GetBlobContainerClient(containerName).GetBlobClient(blobName);
+            var sasUri = new BlobUriBuilder(blobClient.Uri)
+            {
+                // Sign the SAS with the cached User Delegation Key
+                Sas = sasBuilder.ToSasQueryParameters(userDelegationKey, _blobServiceClient.AccountName)
+            }.ToUri();
+
+            return sasUri.ToString();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to generate User Delegation SAS for {BlobName}", blobName);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Gets the cached User Delegation Key or refreshes it if expired/near expiration.
+    /// This avoids a network call to Azure for each SAS token generation.
+    /// </summary>
+    private async Task<Azure.Storage.Blobs.Models.UserDelegationKey> GetOrRefreshUserDelegationKeyAsync(CancellationToken cancellationToken)
+    {
+        // Check if key is still valid (with buffer time)
+        if (_cachedUserDelegationKey is not null &&
+            DateTimeOffset.UtcNow.AddMinutes(KEY_REFRESH_BUFFER_MINUTES) < _keyExpiresOn)
+        {
+            return _cachedUserDelegationKey;
+        }
+
+        // Need to refresh - use lock to prevent multiple concurrent refreshes
+        await _keyLock.WaitAsync(cancellationToken);
+        try
+        {
+            // Double-check after acquiring lock
+            if (_cachedUserDelegationKey is not null &&
+                DateTimeOffset.UtcNow.AddMinutes(KEY_REFRESH_BUFFER_MINUTES) < _keyExpiresOn)
+            {
+                return _cachedUserDelegationKey;
+            }
+
+            _logger.LogInformation("Refreshing User Delegation Key (valid for {Duration} minutes)", KEY_DURATION_MINUTES);
+
+            var keyStartsOn = DateTimeOffset.UtcNow;
+            var keyExpiresOn = keyStartsOn.AddMinutes(KEY_DURATION_MINUTES);
+
+            var response = await _blobServiceClient.GetUserDelegationKeyAsync(
+                keyStartsOn,
+                keyExpiresOn,
+                cancellationToken);
+
+            _cachedUserDelegationKey = response.Value;
+            _keyExpiresOn = keyExpiresOn;
+
+            _logger.LogInformation("User Delegation Key refreshed, expires at {ExpiresOn}", _keyExpiresOn);
+
+            return _cachedUserDelegationKey;
+        }
+        finally
+        {
+            _keyLock.Release();
+        }
+    }
 
     /// <summary>
     /// Uploads data to Azure Blob Storage with virtual directory structure
     /// </summary>
-    private async Task<string> UploadToBlobAsync(string containerName, string[] directoryNames, string filename, MemoryStream dataToStore, CancellationToken cancellationToken)
+    async Task<string> UploadToBlobAsync(string containerName, string[] directoryNames, string filename, MemoryStream dataToStore, CancellationToken cancellationToken)
     {
         // Get or create container
         var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
@@ -133,6 +235,4 @@ public class BlobStorageService : IStorageService
 
         return blobClient.Uri.AbsoluteUri;
     }
-
-    #endregion
 }

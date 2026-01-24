@@ -1,4 +1,5 @@
 ﻿@using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Blades
+@using ChefKnifeStudios.PokerAttack.Client.Shared.Components.FABs
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Gameplay
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Lobbies
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components
@@ -7,6 +8,8 @@
 @page "/"
 
 <div class="main">
+    <FabList Fabs="[ FabList.FABs.Settings, FabList.FABs.Help, ]" />
+
     <div class="container">
         <div class="content">
             <div class="lobby-actions">

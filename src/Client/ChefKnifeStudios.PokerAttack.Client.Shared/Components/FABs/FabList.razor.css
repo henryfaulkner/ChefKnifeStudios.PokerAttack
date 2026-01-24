@@ -1,0 +1,106 @@
+.fab-list {
+    position: fixed;
+    z-index: 1;
+    display: flex;
+    gap: 1rem;
+}
+
+/* Corner positions */
+.fab-list--bottom-right {
+    right: 1rem;
+    bottom: 1rem;
+}
+
+.fab-list--bottom-left {
+    left: 1rem;
+    bottom: 1rem;
+}
+
+.fab-list--top-right {
+    right: 1rem;
+    top: 1rem;
+}
+
+.fab-list--top-left {
+    left: 1rem;
+    top: 1rem;
+}
+
+/* Stack directions - bottom corners stack upward, right corners stack leftward */
+.fab-list--vertical {
+    flex-direction: column-reverse;
+}
+
+.fab-list--horizontal {
+    flex-direction: row-reverse;
+}
+
+/* Top corners stack downward */
+.fab-list--top-left.fab-list--vertical,
+.fab-list--top-right.fab-list--vertical {
+    flex-direction: column;
+}
+
+/* Left corners stack rightward */
+.fab-list--top-left.fab-list--horizontal,
+.fab-list--bottom-left.fab-list--horizontal {
+    flex-direction: row;
+}
+
+/* Mobile overrides (max-width: 768px) */
+@media (max-width: 768px) {
+    /* Mobile corner positions */
+    .fab-list--mobile-bottom-right {
+        right: 1rem;
+        bottom: 1rem;
+        left: auto;
+        top: auto;
+    }
+
+    .fab-list--mobile-bottom-left {
+        left: 1rem;
+        bottom: 1rem;
+        right: auto;
+        top: auto;
+    }
+
+    .fab-list--mobile-top-right {
+        right: 1rem;
+        top: 1rem;
+        left: auto;
+        bottom: auto;
+    }
+
+    .fab-list--mobile-top-left {
+        left: 1rem;
+        top: 1rem;
+        right: auto;
+        bottom: auto;
+    }
+
+    /* Mobile stack directions */
+    .fab-list--mobile-vertical {
+        flex-direction: column-reverse;
+    }
+
+    .fab-list--mobile-horizontal {
+        flex-direction: row-reverse;
+    }
+
+    /* Mobile top corners stack downward */
+    .fab-list--mobile-top-left.fab-list--mobile-vertical,
+    .fab-list--mobile-top-right.fab-list--mobile-vertical {
+        flex-direction: column;
+    }
+
+    /* Mobile left corners stack rightward */
+    .fab-list--mobile-top-left.fab-list--mobile-horizontal,
+    .fab-list--mobile-bottom-left.fab-list--mobile-horizontal {
+        flex-direction: row;
+    }
+}
+
+/* Override child FAB positioning since parent handles it */
+::deep .app-fab--absolute {
+    position: static;
+}

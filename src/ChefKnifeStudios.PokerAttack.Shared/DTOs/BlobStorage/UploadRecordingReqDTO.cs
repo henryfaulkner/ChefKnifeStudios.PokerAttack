@@ -1,4 +1,4 @@
-namespace ChefKnifeStudios.PokerAttack.Shared.DTOs.Upload;
+namespace ChefKnifeStudios.PokerAttack.Shared.DTOs.BlobStorage;
 
 public class UploadRecordingReqDTO
 {

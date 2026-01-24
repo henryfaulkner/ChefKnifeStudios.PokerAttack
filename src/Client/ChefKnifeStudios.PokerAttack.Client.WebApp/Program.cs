@@ -68,9 +68,10 @@ builder.Services.AddTransient<IGameplayEndpointsService, GameplayEndpointsServic
 builder.Services.AddTransient<IPlayerPowerEndpointsService, PlayerPowerEndpointsService>();
 builder.Services.AddTransient<IScoringRulesEndpointsService, ScoringRulesEndpointsService>();
 builder.Services.AddTransient<IShopEndpointsService, ShopEndpointsService>();
-builder.Services.AddTransient<IUploadEndpointsService, UploadEndpointsService>();
+builder.Services.AddTransient<IBlobStorageEndpointsService, BlobStorageEndpointsService>();
 builder.Services.AddTransient<ISoloGameplayEndpointsService, SoloGameplayEndpointsService>();
 builder.Services.AddTransient<ISettingsEndpointsService, SettingsEndpointsService>();
+builder.Services.AddTransient<IBlobAccessService, BlobAccessService>();
 
 builder.Services.AddMatBlazor();
 builder.Services.AddMatToaster(config =>
