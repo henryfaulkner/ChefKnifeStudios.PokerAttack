@@ -1,6 +1,7 @@
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
-using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
+using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs.ModalEvents;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
@@ -8,14 +9,14 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 public interface IModalControllerViewModel : IViewModel
 {
     bool IsOpen { get; }
-    Modals CurrentModal { get; }
+    ModalType CurrentModal { get; }
     object? ModalData { get; }
 }
 
 public class ModalControllerViewModel : BaseViewModel, IModalControllerViewModel, IDisposable
 {
     readonly IEventNotificationService _eventService;
-    readonly Microsoft.AspNetCore.Components.NavigationManager _navigation;
+    readonly NavigationManager _navigation;
 
     bool _isOpen;
     public bool IsOpen
@@ -24,8 +25,8 @@ public class ModalControllerViewModel : BaseViewModel, IModalControllerViewModel
         private set => SetProperty(ref _isOpen, value);
     }
 
-    Modals _currentModal;
-    public Modals CurrentModal
+    ModalType _currentModal;
+    public ModalType CurrentModal
     {
         get => _currentModal;
         private set => SetProperty(ref _currentModal, value);
@@ -42,7 +43,7 @@ public class ModalControllerViewModel : BaseViewModel, IModalControllerViewModel
 
     public ModalControllerViewModel(
         IEventNotificationService eventService,
-        Microsoft.AspNetCore.Components.NavigationManager navigation)
+        NavigationManager navigation)
     {
         _eventService = eventService;
         _navigation = navigation;
@@ -64,7 +65,6 @@ public class ModalControllerViewModel : BaseViewModel, IModalControllerViewModel
                 break;
 
             case ModalEventArgs.ModalActions.Close:
-            case ModalEventArgs.ModalActions.CloseAll:
                 CloseModal();
                 break;
         }
@@ -75,7 +75,7 @@ public class ModalControllerViewModel : BaseViewModel, IModalControllerViewModel
     void OpenModal(ModalEventArgs args)
     {
         CurrentModal = GetModalTypeFromEvent(args);
-        if (CurrentModal == Modals.None) return;
+        if (CurrentModal == ModalType.None) return;
 
         ModalData = args switch
         {
@@ -89,7 +89,7 @@ public class ModalControllerViewModel : BaseViewModel, IModalControllerViewModel
     void CloseModal()
     {
         IsOpen = false;
-        CurrentModal = Modals.None;
+        CurrentModal = ModalType.None;
         ModalData = null;
     }
 
@@ -111,12 +111,13 @@ public class ModalControllerViewModel : BaseViewModel, IModalControllerViewModel
         }
     }
 
-    static Modals GetModalTypeFromEvent(IEventArgs args) => args switch
+    static ModalType GetModalTypeFromEvent(IEventArgs args) => args switch
     {
-        ScoringRulesModalEventArgs => Modals.ScoringRules,
-        MultiGameResultModalEventArgs => Modals.MultiGameResult,
-        SoloGameResultModalEventArgs => Modals.SoloGameResult,
-        _ => Modals.None
+        ScoringRulesModalEventArgs => ModalType.ScoringRules,
+        MultiGameResultModalEventArgs => ModalType.MultiGameResult,
+        SoloGameResultModalEventArgs => ModalType.SoloGameResult,
+        HowToPlayModalEventArgs => ModalType.HowToPlay,
+        _ => ModalType.None
     };
 
     public void Dispose()

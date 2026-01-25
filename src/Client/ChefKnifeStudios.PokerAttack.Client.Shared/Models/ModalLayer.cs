@@ -1,9 +1,10 @@
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.Models;
 
-public enum Modals
+public enum ModalType
 {
     None,
     ScoringRules,
     MultiGameResult,
-    SoloGameResult
+    SoloGameResult,
+    HowToPlay,
 }

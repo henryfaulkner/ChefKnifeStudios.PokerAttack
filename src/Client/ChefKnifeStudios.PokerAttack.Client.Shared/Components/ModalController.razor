@@ -1,17 +1,18 @@
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Modals
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Models
 
-@if (ViewModel.IsOpen)
+@if (ModalControllerViewModel.IsOpen)
 {
-    @RenderModal(ViewModel.CurrentModal)
+    @RenderModal(ModalControllerViewModel.CurrentModal)
 }
 
 @code {
-    RenderFragment RenderModal(Modals modal) => modal switch
+    RenderFragment RenderModal(ModalType modal) => modal switch
     {
-        Modals.ScoringRules => @<ScoringRulesModal />,
-        Modals.MultiGameResult => @<MultiGameResultModal GameResult="@(ViewModel.ModalData as string ?? string.Empty)" />,
-        Modals.SoloGameResult => @<SoloGameResultModal />,
+        ModalType.ScoringRules => @<ScoringRulesModal />,
+        ModalType.MultiGameResult => @<MultiGameResultModal GameResult="@(ModalControllerViewModel.ModalData as string ?? string.Empty)" />,
+        ModalType.SoloGameResult => @<SoloGameResultModal />,
+        ModalType.HowToPlay => @<HowToPlayModal />,
         _ => @<text></text>
     };
 }

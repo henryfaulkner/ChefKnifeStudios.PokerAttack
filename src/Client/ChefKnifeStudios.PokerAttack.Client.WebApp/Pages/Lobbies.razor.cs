@@ -1,5 +1,5 @@
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
-using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
+using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs.ModalEvents;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 using ChefKnifeStudios.PokerAttack.Shared;

@@ -1,7 +1,6 @@
-﻿using ChefKnifeStudios.PokerAttack.Client.Core.Extensions;
-using ChefKnifeStudios.PokerAttack.Client.Core.Services;
+﻿using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Constants;
-using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
+using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs.ModalEvents;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Shared;

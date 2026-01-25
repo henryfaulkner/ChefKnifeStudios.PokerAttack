@@ -6,11 +6,11 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components;
 
 public partial class ModalController : ComponentBase, IDisposable
 {
-    [Inject] IModalControllerViewModel ViewModel { get; set; } = null!;
+    [Inject] IModalControllerViewModel ModalControllerViewModel { get; set; } = null!;
 
     protected override void OnInitialized()
     {
-        ViewModel.PropertyChanged += OnViewModelChanged;
+        ModalControllerViewModel.PropertyChanged += OnViewModelChanged;
     }
 
     void OnViewModelChanged(object? sender, PropertyChangedEventArgs e)
@@ -20,6 +20,6 @@ public partial class ModalController : ComponentBase, IDisposable
 
     public void Dispose()
     {
-        ViewModel.PropertyChanged -= OnViewModelChanged;
+        ModalControllerViewModel.PropertyChanged -= OnViewModelChanged;
     }
 }

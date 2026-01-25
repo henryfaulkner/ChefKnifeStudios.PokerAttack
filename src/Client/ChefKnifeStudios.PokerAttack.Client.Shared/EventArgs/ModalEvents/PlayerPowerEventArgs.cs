@@ -1,7 +1,7 @@
 ﻿using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs;
 
-namespace ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
+namespace ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs.ModalEvents;
 
 public class PlayerPowerEventArgs : IEventArgs
 {

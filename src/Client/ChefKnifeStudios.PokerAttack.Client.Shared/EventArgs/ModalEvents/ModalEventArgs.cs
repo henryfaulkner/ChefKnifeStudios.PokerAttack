@@ -1,6 +1,6 @@
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 
-namespace ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
+namespace ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs.ModalEvents;
 
 public class ModalEventArgs : IEventArgs
 {
@@ -8,7 +8,6 @@ public class ModalEventArgs : IEventArgs
     {
         Open,
         Close,
-        CloseAll,
     }
 
     public required ModalActions ModalAction { get; init; }

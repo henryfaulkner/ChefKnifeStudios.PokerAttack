@@ -1,4 +1,4 @@
-namespace ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
+namespace ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs.ModalEvents;
 
 public class MultiGameResultModalEventArgs : ModalEventArgs
 {

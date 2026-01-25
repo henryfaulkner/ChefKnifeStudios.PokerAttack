@@ -1,0 +1,11 @@
+﻿<MatDialog IsOpen="true" CanBeClosed="true" Class="how-to-play-modal">
+    <MatDialogContent>
+        <video width="320" height="240" controls poster="_content/ChefKnifeStudios.PokerAttack.Client.Shared/images/Company-Logo-with-Background.png">
+            <source type="video/mp4" src="@GetSoloGameplayVideo("mp4")">
+            Your browser does not support the video tag.
+        </video>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="HandleClosePressed">CLOSE</MatButton>
+    </MatDialogActions>
+</MatDialog>
