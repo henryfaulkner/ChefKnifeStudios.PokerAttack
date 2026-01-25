@@ -12,6 +12,7 @@ public interface IStorageService
     Task<string> StoreAsync(string containerName, string[] directoryNames, string filename, byte[] dataToStore, CancellationToken cancellationToken = default);
     Task<byte[]> DownloadAsync(string url, string containerName, CancellationToken cancellationToken = default);
     Task<string> GenerateUserDelegationSasAsync(string containerName, string blobName, int durationInMinutes = 60, CancellationToken cancellationToken = default);
+    string GetBlobUrl(string containerName, string blobName);
 }
 
 public class BlobStorageService : IStorageService
@@ -233,6 +234,15 @@ public class BlobStorageService : IStorageService
 
         await blobClient.UploadAsync(dataToStore, overwrite: true, cancellationToken);
 
+        return blobClient.Uri.AbsoluteUri;
+    }
+
+    /// <summary>
+    /// Gets the direct blob URL without SAS token (for anonymous access scenarios).
+    /// </summary>
+    public string GetBlobUrl(string containerName, string blobName)
+    {
+        var blobClient = _blobServiceClient.GetBlobContainerClient(containerName).GetBlobClient(blobName);
         return blobClient.Uri.AbsoluteUri;
     }
 }

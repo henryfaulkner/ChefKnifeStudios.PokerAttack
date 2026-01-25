@@ -8,6 +8,7 @@ using ChefKnifeStudios.PokerAttack.Server.Infrastructure.PlayerPowers;
 using ChefKnifeStudios.PokerAttack.Server.WebAPI.EndpointGroups;
 using ChefKnifeStudios.PokerAttack.Server.WebAPI.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
 using Microsoft.AspNetCore.SignalR;
 using Scalar.AspNetCore;
 
@@ -91,6 +92,10 @@ builder.Services.AddSingleton<IStorageService>(sp =>
         "https://pokerattackstorage.blob.core.windows.net",
         sp.GetRequiredService<ILogger<BlobStorageService>>()
     ));
+
+// Register Feature Flag Service
+var featureFlags = builder.Configuration.GetSection("FeatureFlags").Get<Dictionary<FeatureFlags, bool>>() ?? new();
+builder.Services.AddSingleton<IFeatureFlagService>(new FeatureFlagService(featureFlags));
 
 // Register Eventing Service
 builder.Services.AddSingleton<IEventNotificationService, EventNotificationService>();

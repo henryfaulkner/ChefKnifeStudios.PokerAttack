@@ -47,3 +47,24 @@ html, body {
 .mdc-paginator {
     display: none !important;
 }
+
+@media (min-width: 592px) {
+    .how-to-play-modal.mdc-dialog .mdc-dialog__container {
+        width: 100%;
+    }
+
+    .how-to-play-modal.mdc-dialog .mdc-dialog__surface {
+        max-width: none;
+        width: 80%;
+        height: 90%;
+    }
+
+    .how-to-play-modal .mat-tab-group {
+        height: 100%;
+    }
+
+    .how-to-play-modal .mat-tab-group-content {
+        height: 90%;
+        margin-top: 8px;
+    }
+}

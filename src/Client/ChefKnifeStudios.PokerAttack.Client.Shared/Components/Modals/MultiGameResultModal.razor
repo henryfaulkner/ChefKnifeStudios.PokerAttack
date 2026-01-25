@@ -4,7 +4,7 @@
 @inject IEventNotificationService EventService
 @inject NavigationManager NavigationManager
 
-<MatDialog IsOpen="true" CanBeClosed="true" Closed="HandleClose">
+<MatDialog IsOpen="true" CanBeClosed="true" IsOpenChanged="HandleOpenChanged">
     <MatDialogTitle>Game Result</MatDialogTitle>
     <MatDialogContent>
         @switch (GameResult)
@@ -18,21 +18,24 @@
         }
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="HandleClose">Close</MatButton>
+        <MatButton OnClick="@(() => HandleOpenChanged(false))">Close</MatButton>
     </MatDialogActions>
 </MatDialog>
 
 @code {
     [Parameter] public required string GameResult { get; set; }
 
-    void HandleClose()
+    void HandleOpenChanged(bool isOpen)
     {
-        NavigationManager.NavigateTo("/", replace: true);
-
-        EventService.PostEvent(this, new MultiGameResultModalEventArgs
+        if (!isOpen)
         {
-            ModalAction = ModalEventArgs.ModalActions.Close,
-            GameResult = GameResult
-        });
+            NavigationManager.NavigateTo("/", replace: true);
+
+            EventService.PostEvent(this, new MultiGameResultModalEventArgs
+            {
+                ModalAction = ModalEventArgs.ModalActions.Close,
+                GameResult = GameResult
+            });
+        }
     }
 }

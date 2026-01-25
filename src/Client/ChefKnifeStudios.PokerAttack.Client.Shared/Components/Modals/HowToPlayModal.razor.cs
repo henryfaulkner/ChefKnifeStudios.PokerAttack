@@ -9,13 +9,21 @@ public partial class HowToPlayModal : ComponentBase
     [Inject] IBlobAccessService BlobAccessService { get; set; } = null!;
     [Inject] IEventNotificationService EventNotificationService { get; set; } = null!;
 
-    void HandleClosePressed()
+    string _videoUrl = string.Empty;
+
+    protected override async Task OnInitializedAsync()
     {
-        EventNotificationService.PostEvent(this, new HowToPlayModalEventArgs
-        {
-            ModalAction = ModalEventArgs.ModalActions.Close
-        });
+        _videoUrl = await BlobAccessService.GetBlobUrlWithSasAsync("video", "SoloGameplayVideo.mp4");
     }
 
-    async Task GetSoloGameplayVideo(string fileExtension) => await BlobAccessService.GetBlobUrlWithSasAsync("video", $"SoloGameplayVideo.{fileExtension}");
+    void HandleOpenChanged(bool isOpen)
+    {
+        if (!isOpen)
+        {
+            EventNotificationService.PostEvent(this, new HowToPlayModalEventArgs
+            {
+                ModalAction = ModalEventArgs.ModalActions.Close
+            });
+        }
+    }
 }

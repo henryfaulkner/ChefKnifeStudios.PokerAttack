@@ -1,11 +1,26 @@
-﻿<MatDialog IsOpen="true" CanBeClosed="true" Class="how-to-play-modal">
+﻿<MatDialog
+    IsOpen="true"
+    CanBeClosed="true"
+    IsOpenChanged="HandleOpenChanged"
+    Class="how-to-play-modal"
+>
     <MatDialogContent>
-        <video width="320" height="240" controls poster="_content/ChefKnifeStudios.PokerAttack.Client.Shared/images/Company-Logo-with-Background.png">
-            <source type="video/mp4" src="@GetSoloGameplayVideo("mp4")">
-            Your browser does not support the video tag.
-        </video>
+        <MatTabGroup>
+            <MatTab Label="Quick Start">
+
+            </MatTab>
+            <MatTab Label="Docs">
+                <iframe
+                    src="https://docs.google.com/document/d/1oUnFL4Py3nW0i1YK4lK_VZI5plfe43_d9kG-FOUbAQU/edit?usp=sharing"
+                    style="width: 100%; height: 100%;"
+                ></iframe>
+            </MatTab>
+            <MatTab Label="Videos">
+
+            </MatTab>
+        </MatTabGroup>
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="HandleClosePressed">CLOSE</MatButton>
+        <MatButton OnClick="@(() => HandleOpenChanged(false))">CLOSE</MatButton>
     </MatDialogActions>
 </MatDialog>

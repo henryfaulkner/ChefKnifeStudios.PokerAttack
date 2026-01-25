@@ -5,7 +5,7 @@
 @inject ISoloGameResultStore SoloGameResultStore
 @inject IEventNotificationService EventService
 
-<MatDialog IsOpen="true" CanBeClosed="true" Closed="HandleClose">
+<MatDialog IsOpen="true" CanBeClosed="true" IsOpenChanged="HandleOpenChanged">
     <MatDialogTitle>GAME OVER</MatDialogTitle>
     <MatDialogContent>
         <div class="result-stats">
@@ -48,18 +48,21 @@
         </div>
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="HandleClose">Play Again</MatButton>
+        <MatButton OnClick="@(() => HandleOpenChanged(false))">Play Again</MatButton>
     </MatDialogActions>
 </MatDialog>
 
 @code {
-    void HandleClose()
+    void HandleOpenChanged(bool isOpen)
     {
-        SoloGameResultStore.Clear();
-
-        EventService.PostEvent(this, new SoloGameResultModalEventArgs
+        if (!isOpen)
         {
-            ModalAction = ModalEventArgs.ModalActions.Close
-        });
+            SoloGameResultStore.Clear();
+
+            EventService.PostEvent(this, new SoloGameResultModalEventArgs
+            {
+                ModalAction = ModalEventArgs.ModalActions.Close
+            });
+        }
     }
 }

@@ -6,7 +6,7 @@
 @inject IScoringRulesViewModel ScoringRulesViewModel
 @inject IEventNotificationService EventService
 
-<MatDialog IsOpen="true" CanBeClosed="true" Closed="HandleClose">
+<MatDialog IsOpen="true" CanBeClosed="true" IsOpenChanged="HandleOpenChanged">
     <MatDialogTitle>Scoring Guide</MatDialogTitle>
     <MatDialogContent>
         @if (ScoringRulesViewModel.IsLoading)
@@ -77,18 +77,21 @@
         }
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="HandleClose">Close</MatButton>
+        <MatButton OnClick="@(() => HandleOpenChanged(false))">Close</MatButton>
     </MatDialogActions>
 </MatDialog>
 
 @code {
     string GetHandTypeName(Hands handType) => handType.GetDescription() ?? string.Empty;
 
-    void HandleClose()
+    void HandleOpenChanged(bool isOpen)
     {
-        EventService.PostEvent(this, new ScoringRulesModalEventArgs
+        if (!isOpen)
         {
-            ModalAction = ModalEventArgs.ModalActions.Close
-        });
+            EventService.PostEvent(this, new ScoringRulesModalEventArgs
+            {
+                ModalAction = ModalEventArgs.ModalActions.Close
+            });
+        }
     }
 }

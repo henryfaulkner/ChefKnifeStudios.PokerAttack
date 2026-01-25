@@ -1,6 +1,8 @@
 using Ardalis.Result;
 using ChefKnifeStudios.PokerAttack.Server.BL.Services;
+using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.BlobStorage;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
 
 using Endpoints = ChefKnifeStudios.PokerAttack.Shared.PokerAttackApiEndpoints.BlobStorage;
 
@@ -65,6 +67,7 @@ public static class BlobStorageEndpoints
             string blobPath,
             int? duration,
             IStorageService storageService,
+            IFeatureFlagService featureFlagService,
             CancellationToken cancellationToken = default) =>
         {
             // Validate request
@@ -80,17 +83,28 @@ public static class BlobStorageEndpoints
 
             var durationInMinutes = duration ?? 5;
 
-            // Generate SAS token using cached User Delegation Key
-            var sasUrl = await storageService.GenerateUserDelegationSasAsync(
-                containerName,
-                blobPath,
-                durationInMinutes,
-                cancellationToken
-            );
+            string blobUrl;
+            DateTimeOffset expiresOn;
 
-            var expiresOn = DateTimeOffset.UtcNow.AddMinutes(durationInMinutes);
+            if (featureFlagService.IsEnabled(FeatureFlags.EnableBlobStorageSas))
+            {
+                // Generate SAS token using cached User Delegation Key
+                blobUrl = await storageService.GenerateUserDelegationSasAsync(
+                    containerName,
+                    blobPath,
+                    durationInMinutes,
+                    cancellationToken
+                );
+                expiresOn = DateTimeOffset.UtcNow.AddMinutes(durationInMinutes);
+            }
+            else
+            {
+                // Return direct blob URL for anonymous access (no SAS)
+                blobUrl = storageService.GetBlobUrl(containerName, blobPath);
+                expiresOn = DateTimeOffset.MaxValue; // No expiration for anonymous access
+            }
 
-            var response = new GenerateSasTokenResDTO(sasUrl, expiresOn);
+            var response = new GenerateSasTokenResDTO(blobUrl, expiresOn);
 
             return Results.Ok(Result.Success(response));
         })
