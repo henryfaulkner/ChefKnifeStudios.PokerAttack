@@ -1,17 +1,36 @@
 ﻿@using ChefKnifeStudios.PokerAttack.Client.Core.Services
 @using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs.ModalEvents
+@using ChefKnifeStudios.PokerAttack.Client.Shared.Helpers
+@using ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop
 @inject IEventNotificationService EventNotificationService
+@inject ICommonJsInterop CommonJsInterop
+@inject NavigationManager NavigationManager
 
 <MatFAB Icon="help_outline"
     OnClick="HandlePressed"
 />
 
 @code {
-    void HandlePressed()
+    async Task HandlePressed()
     {
-        EventNotificationService.PostEvent(this, new HowToPlayModalEventArgs() 
-        { 
-            ModalAction = ModalEventArgs.ModalActions.Open, 
-        });
+        var screenSize = await CommonJsInterop.GetViewPortSizeAsync();
+        var breakpoint = ScreenSizeHelper.GetBreakpoint(screenSize);
+
+        switch (breakpoint)
+        {
+            case ScreenSizeBreakpoint.MobilePortrait:
+            case ScreenSizeBreakpoint.MobileLandscape:
+            case ScreenSizeBreakpoint.Tablet:
+                NavigationManager.NavigateTo("https://docs.google.com/document/d/1oUnFL4Py3nW0i1YK4lK_VZI5plfe43_d9kG-FOUbAQU/edit", forceLoad: true);
+                break;
+            case ScreenSizeBreakpoint.Desktop:
+            case ScreenSizeBreakpoint.LargeDesktop:
+            default:
+                EventNotificationService.PostEvent(this, new HowToPlayModalEventArgs()
+                {
+                    ModalAction = ModalEventArgs.ModalActions.Open,
+                });
+                break;
+        }
     }
 }

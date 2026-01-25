@@ -10,29 +10,29 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
 public interface ICommonJsInterop
 {
     ValueTask DisposeAsync();
-    ValueTask<BoundingRect?> GetBoundingRect(string elementId);
-    ValueTask<BoundingRect?> GetBoundingRectWithPageOffset(string elementId);
-    ValueTask<string> Prompt(string message);
-    Task ScrollToTop(string elementId, int? delayMilliseconds = 100);
-    Task ScrollToEnd(string elementId, int? delayMilliseconds = 100);
-    Task ScrollIntoView(string elementId, int? delayMilliseconds = 100);
-    Task SetFocus(string elementId);
-    Task SetFocusBySelector(string cssSelector);
-    Task LoseFocus(string elementId);
-    Task ClickElement(string selector);
-    ValueTask<string> BodyClickEventCallback(Func<System.EventArgs, Task> callback);
-    Task AddClassToElement(string className, string elementId, int milisecondsToHaveClass);
-    Task AddClassToAllElementsWithClass(string targetClass, string newClass);
-    Task RemoveClassFromAllElementsWithClass(string targetClass, string removedClass);
-    Task KeyDownEventCallback(Func<KeyboardEventArgs, Task> callback);
-    Task<int> GetViewPortWidth();
-    Task<Vector2> GetViewPortSize();
-    Task<bool> OpenLinkInNewTab(string url);
-    Task CopyTextToClipboard(string elementId);
-    Task SelectTextForElementById(string elementId);
-    Task AddOutsideClickListener(string elementId, Action callback);
-    Task RemoveOutsideClickListener(string elementId);
-    Task RemoveAllViaQuerySelector(string querySelector);
+    ValueTask<BoundingRect?> GetBoundingRectAsync(string elementId);
+    ValueTask<BoundingRect?> GetBoundingRectWithPageOffsetAsync(string elementId);
+    ValueTask<string> PromptAsync(string message);
+    Task ScrollToTopAsync(string elementId, int? delayMilliseconds = 100);
+    Task ScrollToEndAsync(string elementId, int? delayMilliseconds = 100);
+    Task ScrollIntoViewAsync(string elementId, int? delayMilliseconds = 100);
+    Task SetFocusAsync(string elementId);
+    Task SetFocusBySelectorAsync(string cssSelector);
+    Task LoseFocusAsync(string elementId);
+    Task ClickElementAsync(string selector);
+    ValueTask<string> BodyClickEventCallbackAsync(Func<System.EventArgs, Task> callback);
+    Task AddClassToElementAsync(string className, string elementId, int milisecondsToHaveClass);
+    Task AddClassToAllElementsWithClassAsync(string targetClass, string newClass);
+    Task RemoveClassFromAllElementsWithClassAsync(string targetClass, string removedClass);
+    Task KeyDownEventCallbackAsync(Func<KeyboardEventArgs, Task> callback);
+    Task<int> GetViewPortWidthAsync();
+    Task<Vector2> GetViewPortSizeAsync();
+    Task<bool> OpenLinkInNewTabAsync(string url);
+    Task CopyTextToClipboardAsync(string elementId);
+    Task SelectTextForElementByIdAsync(string elementId);
+    Task AddOutsideClickListenerAsync(string elementId, Action callback);
+    Task RemoveOutsideClickListenerAsync(string elementId);
+    Task RemoveAllViaQuerySelectorAsync(string querySelector);
 }
 
 public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
@@ -63,7 +63,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         }
     }
 
-    public async ValueTask<string> Prompt(string message)
+    public async ValueTask<string> PromptAsync(string message)
     {
         if (string.IsNullOrWhiteSpace(message)) return string.Empty;
 
@@ -78,7 +78,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         }
     }
 
-    public async Task SetFocusBySelector(string cssSelector)
+    public async Task SetFocusBySelectorAsync(string cssSelector)
     {
         if (string.IsNullOrWhiteSpace(cssSelector)) return;
 
@@ -90,7 +90,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         catch (Exception ex) { LogError(ex); }
     }
 
-    public async Task SetFocus(string elementId)
+    public async Task SetFocusAsync(string elementId)
     {
         if (string.IsNullOrWhiteSpace(elementId)) return;
 
@@ -102,7 +102,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         catch (Exception ex) { LogError(ex); }
     }
 
-    public async Task LoseFocus(string elementId)
+    public async Task LoseFocusAsync(string elementId)
     {
         if (string.IsNullOrWhiteSpace(elementId)) return;
 
@@ -114,7 +114,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         catch (Exception ex) { LogError(ex); }
     }
 
-    public async Task ScrollToTop(string elementId, int? delayMilliseconds = 100)
+    public async Task ScrollToTopAsync(string elementId, int? delayMilliseconds = 100)
     {
         if (string.IsNullOrWhiteSpace(elementId)) return;
 
@@ -126,7 +126,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         catch (Exception ex) { LogError(ex); }
     }
 
-    public async Task ScrollToEnd(string elementId, int? delayMilliseconds = 100)
+    public async Task ScrollToEndAsync(string elementId, int? delayMilliseconds = 100)
     {
         if (string.IsNullOrWhiteSpace(elementId)) return;
 
@@ -138,7 +138,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         catch (Exception ex) { LogError(ex); }
     }
 
-    public async Task ScrollIntoView(string selector, int? delayMilliseconds = 100)
+    public async Task ScrollIntoViewAsync(string selector, int? delayMilliseconds = 100)
     {
         if (string.IsNullOrWhiteSpace(selector)) return;
 
@@ -150,7 +150,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         catch (Exception ex) { LogError(ex); }
     }
 
-    public async ValueTask<BoundingRect?> GetBoundingRect(string elementId)
+    public async ValueTask<BoundingRect?> GetBoundingRectAsync(string elementId)
     {
         if (string.IsNullOrWhiteSpace(elementId)) return null;
 
@@ -166,7 +166,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         }
     }
 
-    public async ValueTask<BoundingRect?> GetBoundingRectWithPageOffset(string elementId)
+    public async ValueTask<BoundingRect?> GetBoundingRectWithPageOffsetAsync(string elementId)
     {
         if (string.IsNullOrWhiteSpace(elementId)) return null;
 
@@ -182,7 +182,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         }
     }
 
-    public async Task ClickElement(string selector)
+    public async Task ClickElementAsync(string selector)
     {
         if (string.IsNullOrWhiteSpace(selector)) return;
 
@@ -194,7 +194,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         catch (Exception ex) { LogError(ex); }
     }
 
-    public async ValueTask<string> BodyClickEventCallback(Func<System.EventArgs, Task> callback)
+    public async ValueTask<string> BodyClickEventCallbackAsync(Func<System.EventArgs, Task> callback)
     {
         try
         {
@@ -210,7 +210,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         }
     }
 
-    public async Task AddClassToElement(string className, string elementId, int milisecondsToHaveClass = 1000)
+    public async Task AddClassToElementAsync(string className, string elementId, int milisecondsToHaveClass = 1000)
     {
         try
         {
@@ -220,7 +220,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         catch (Exception ex) { LogError(ex); }
     }
 
-    public async Task AddClassToAllElementsWithClass(string targetClass, string newClass)
+    public async Task AddClassToAllElementsWithClassAsync(string targetClass, string newClass)
     {
         try
         {
@@ -230,7 +230,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         catch (Exception ex) { LogError(ex); }
     }
 
-    public async Task RemoveClassFromAllElementsWithClass(string targetClass, string removedClass)
+    public async Task RemoveClassFromAllElementsWithClassAsync(string targetClass, string removedClass)
     {
         try
         {
@@ -240,7 +240,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         catch (Exception ex) { LogError(ex); }
     }
 
-    public async Task KeyDownEventCallback(Func<KeyboardEventArgs, Task> callback)
+    public async Task KeyDownEventCallbackAsync(Func<KeyboardEventArgs, Task> callback)
     {
         try
         {
@@ -252,7 +252,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         catch (Exception ex) { LogError(ex); }
     }
 
-    public async Task<int> GetViewPortWidth()
+    public async Task<int> GetViewPortWidthAsync()
     {
         try
         {
@@ -273,7 +273,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         [JsonPropertyName("y")]
         public float Y { get; set; }
     }
-    public async Task<Vector2> GetViewPortSize()
+    public async Task<Vector2> GetViewPortSizeAsync()
     {
         try
         {
@@ -287,7 +287,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         return Vector2.Zero;
     }
 
-    public async Task<bool> OpenLinkInNewTab(string url)
+    public async Task<bool> OpenLinkInNewTabAsync(string url)
     {
         try
         {
@@ -302,7 +302,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         return false;
     }
 
-    public async Task CopyTextToClipboard(string elementId)
+    public async Task CopyTextToClipboardAsync(string elementId)
     {
         try
         {
@@ -313,7 +313,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         catch (Exception ex) { LogError(ex); }
     }
 
-    public async Task SelectTextForElementById(string elementId)
+    public async Task SelectTextForElementByIdAsync(string elementId)
     {
         try
         {
@@ -325,7 +325,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
     }
 
     readonly Dictionary<string, (Action Callback, object? Listener)> _outsideClickCallbackDict = new();
-    public async Task AddOutsideClickListener(string elementId, Action callback)
+    public async Task AddOutsideClickListenerAsync(string elementId, Action callback)
     {
         try
         {
@@ -355,7 +355,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         }
     }
 
-    public async Task RemoveOutsideClickListener(string elementId)
+    public async Task RemoveOutsideClickListenerAsync(string elementId)
     {
         try
         {
@@ -376,7 +376,7 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         }
     }
 
-    public async Task RemoveAllViaQuerySelector(string querySelector)
+    public async Task RemoveAllViaQuerySelectorAsync(string querySelector)
     {
         try
         {

@@ -26,14 +26,14 @@ public partial class BladeContainer : ComponentBase, IDisposable
 
     public void Dispose()
     {
-        CommonJsInteropService.RemoveOutsideClickListener(_elementId);
+        _ = CommonJsInteropService.RemoveOutsideClickListenerAsync(_elementId);
     }
 
     public void Open()
     {
         _lastOpenedUtc = DateTime.UtcNow;
         _isOpen = true;
-        CommonJsInteropService.AddOutsideClickListener(_elementId, HandleClosePressed);
+        _ = CommonJsInteropService.AddOutsideClickListenerAsync(_elementId, HandleClosePressed);
         StateHasChanged();
     }
 
@@ -45,7 +45,7 @@ public partial class BladeContainer : ComponentBase, IDisposable
             return;
 
         _isOpen = false;
-        CommonJsInteropService.RemoveOutsideClickListener(_elementId);
+        _ = CommonJsInteropService.RemoveOutsideClickListenerAsync(_elementId);
         StateHasChanged();
     }
 
