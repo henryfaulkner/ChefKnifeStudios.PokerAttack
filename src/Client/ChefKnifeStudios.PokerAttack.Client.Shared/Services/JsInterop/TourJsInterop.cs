@@ -6,6 +6,12 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
 
 public interface ITourJsInterop
 {
+    /// <summary>
+    /// Tracks whether the tour has been shown during this app session.
+    /// Resets when the app reloads (browser refresh), but persists during internal navigation.
+    /// </summary>
+    bool HasShownTourThisSession { get; set; }
+
     ValueTask DisposeAsync();
     Task HighlightElementAsync(string selector, string title, string description);
     Task StartTourAsync(IEnumerable<TourStep> steps);
@@ -24,6 +30,8 @@ public class TourJsInterop : ITourJsInterop, IAsyncDisposable
 {
     readonly Lazy<Task<IJSObjectReference>> _moduleTask;
     readonly ILogger<TourJsInterop> _logger;
+
+    public bool HasShownTourThisSession { get; set; }
 
     public TourJsInterop(
         IJSRuntime jsRuntime,

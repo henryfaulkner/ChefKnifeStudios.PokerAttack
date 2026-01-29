@@ -1,4 +1,6 @@
+using Blazored.LocalStorage;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
+using ChefKnifeStudios.PokerAttack.Client.Shared.Constants;
 using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs.ModalEvents;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
@@ -22,6 +24,8 @@ public partial class Lobbies : ComponentBase, IDisposable
     [Inject] ISoloGameResultStore SoloGameResultStore { get; set; } = null!;
     [Inject] IScoringRulesViewModel ScoringRulesViewModel { get; set; } = null!;
     [Inject] ITourJsInterop TourJsInterop { get; set; } = null!;
+    [Inject] ISettingsService SettingsService { get; set; } = null!;
+    [Inject] ISyncLocalStorageService LocalStorage { get; set; } = null!;
 
     protected override void OnInitialized()
     {
@@ -43,13 +47,26 @@ public partial class Lobbies : ComponentBase, IDisposable
             ShowSoloGameResultModal();
         }
 
-        // POC: Show tour highlighting the CREATE LOBBY button on first render
-        // TODO: Add logic to check if user is new (e.g., via LocalStorage)
         await ShowWelcomeTourAsync();
     }
 
     async Task ShowWelcomeTourAsync()
     {
+        // Only show tour once per app session (resets on browser refresh)
+        if (TourJsInterop.HasShownTourThisSession)
+        {
+            return;
+        }
+
+        var settings = SettingsService.GetSettings();
+        var hasSeenTour = LocalStorage.GetItem<bool>(LocalStorageConstants.HasSeenTourKey);
+
+        // Show tour if "Always Show" is ON, or if user hasn't seen it yet
+        if (!settings.IsAlwaysShowAppTour && hasSeenTour)
+        {
+            return;
+        }
+
         // Small delay to ensure DOM is fully rendered
         await Task.Delay(500);
 
@@ -83,6 +100,15 @@ public partial class Lobbies : ComponentBase, IDisposable
         };
 
         await TourJsInterop.StartTourAsync(tourSteps);
+
+        // Mark tour as shown this session
+        TourJsInterop.HasShownTourThisSession = true;
+
+        // Mark tour as seen in localStorage (only matters for first-time users)
+        if (!hasSeenTour)
+        {
+            LocalStorage.SetItem(LocalStorageConstants.HasSeenTourKey, true);
+        }
     }
 
     public void Dispose()
