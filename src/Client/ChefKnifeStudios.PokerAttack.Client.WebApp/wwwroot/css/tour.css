@@ -1,0 +1,97 @@
+/* Driver.js Tour Styling - Matches Poker Attack theme */
+
+/* Overlay - darker for better focus on highlighted element */
+.driver-overlay {
+    background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Main popover container */
+.poker-attack-tour.driver-popover {
+    background-color: var(--clr-surface2, #f2ecee);
+    border: 2px solid var(--clr-1p, #6442d6);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(100, 66, 214, 0.3);
+    padding: 16px;
+}
+
+/* Arrow styling - matches border color */
+/*.poker-attack-tour.driver-popover .driver-popover-arrow-side-bottom {
+    border-top-color: var(--clr-1p, #6442d6);
+}
+
+.poker-attack-tour.driver-popover .driver-popover-arrow-side-top {
+    border-bottom-color: var(--clr-1p, #6442d6);
+}
+
+.poker-attack-tour.driver-popover .driver-popover-arrow-side-left {
+    border-right-color: var(--clr-1p, #6442d6);
+}
+
+.poker-attack-tour.driver-popover .driver-popover-arrow-side-right {
+    border-left-color: var(--clr-1p, #6442d6);
+}*/
+
+/* Title */
+/*.poker-attack-tour .driver-popover-title {
+    color: var(--clr-1p, #6442d6);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}*/
+
+/* Description */
+/*.poker-attack-tour .driver-popover-description {
+    color: var(--clr-on-1p-container, #1e0060);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}*/
+
+/* Footer */
+/*.poker-attack-tour .driver-popover-footer {
+    margin-top: 16px;
+    gap: 8px;
+}*/
+
+/* Navigation buttons */
+/*.poker-attack-tour .driver-popover-prev-btn,
+.poker-attack-tour .driver-popover-next-btn {
+    background-color: var(--clr-1p, #6442d6);
+    color: var(--clr-on-1p, #fff);
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.poker-attack-tour .driver-popover-prev-btn:hover,
+.poker-attack-tour .driver-popover-next-btn:hover {
+    background-color: var(--clr-1p-container, #9f86ff);
+}
+
+.poker-attack-tour .driver-popover-prev-btn:focus,
+.poker-attack-tour .driver-popover-next-btn:focus {
+    outline: 2px solid var(--clr-1p-container, #9f86ff);
+    outline-offset: 2px;
+}*/
+
+/* Close button */
+/*.poker-attack-tour .driver-popover-close-btn {
+    color: var(--clr-1p, #6442d6);
+    font-size: 1.25rem;
+    transition: color 0.2s ease;
+}
+
+.poker-attack-tour .driver-popover-close-btn:hover {
+    color: var(--clr-1p-container, #9f86ff);
+}*/
+
+/* Progress text */
+/*.poker-attack-tour .driver-popover-progress-text {
+    color: var(--clr-outline, #787579);
+    font-size: 0.8rem;
+}*/
