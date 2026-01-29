@@ -51,6 +51,7 @@ builder.Services.AddSingleton<ICommonJsInterop, CommonJsInterop>();
 builder.Services.AddSingleton<IInputJsInterop, InputJsInterop>();
 builder.Services.AddSingleton<ILobbyJsInterop, LobbyJsInterop>();
 builder.Services.AddSingleton<IRecorderInterop, RecorderInterop>();
+builder.Services.AddSingleton<ITourJsInterop, TourJsInterop>();
 
 // Register Scoped Services
 builder.Services.AddScoped<IInputService, InputService>();
