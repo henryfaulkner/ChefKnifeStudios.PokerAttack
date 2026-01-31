@@ -21,7 +21,7 @@ public partial class Lobbies : ComponentBase, IDisposable
     [Inject] IFeatureFlagService FeatureFlagService { get; set; } = null!;
     [Inject] NavigationManager NavigationManager { get; set; } = null!;
     [Inject] IEventNotificationService EventService { get; set; } = null!;
-    [Inject] ISoloGameResultStore SoloGameResultStore { get; set; } = null!;
+    [Inject] ISoloGameDataStore SoloGameDataStore { get; set; } = null!;
     [Inject] IScoringRulesViewModel ScoringRulesViewModel { get; set; } = null!;
     [Inject] ITourJsInterop TourJsInterop { get; set; } = null!;
     [Inject] ISettingsService SettingsService { get; set; } = null!;
@@ -29,7 +29,7 @@ public partial class Lobbies : ComponentBase, IDisposable
 
     protected override void OnInitialized()
     {
-        SoloGameResultStore.PropertyChanged += SoloGameResultStore_PropertyChanged;
+        SoloGameDataStore.PropertyChanged += SoloGameDataStore_PropertyChanged;
     }
 
     protected override async void OnAfterRender(bool firstRender)
@@ -42,7 +42,7 @@ public partial class Lobbies : ComponentBase, IDisposable
             ShowMultiGameResultModal();
         }
 
-        if (SoloGameResultStore.HasResult)
+        if (SoloGameDataStore.TryRestoreResultFromLocalStorage())
         {
             ShowSoloGameResultModal();
         }
@@ -113,12 +113,12 @@ public partial class Lobbies : ComponentBase, IDisposable
 
     public void Dispose()
     {
-        SoloGameResultStore.PropertyChanged -= SoloGameResultStore_PropertyChanged;
+        SoloGameDataStore.PropertyChanged -= SoloGameDataStore_PropertyChanged;
     }
 
-    void SoloGameResultStore_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    void SoloGameDataStore_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(ISoloGameResultStore.HasResult) && SoloGameResultStore.HasResult)
+        if (e.PropertyName == nameof(ISoloGameDataStore.Result) && SoloGameDataStore.HasResult)
         {
             ShowSoloGameResultModal();
         }

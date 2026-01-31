@@ -96,7 +96,7 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<IApplicationViewModel, ApplicationViewModel>();
 builder.Services.AddScoped<IModalControllerViewModel, ModalControllerViewModel>();
 builder.Services.AddScoped<IGameDataStore, GameDataStore>();
-builder.Services.AddScoped<ISoloGameResultStore, SoloGameResultStore>();
+builder.Services.AddScoped<ISoloGameDataStore, SoloGameDataStore>();
 builder.Services.AddScoped<IGameDataService, GameDataService>();
 
 builder.Services.AddTransient<IGameplayViewModel, GameplayViewModel>();

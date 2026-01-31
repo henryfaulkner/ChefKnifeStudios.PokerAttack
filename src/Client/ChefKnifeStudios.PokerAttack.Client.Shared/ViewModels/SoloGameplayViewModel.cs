@@ -36,6 +36,7 @@ public interface ISoloGameplayViewModel : IViewModel
     List<string> PurchasedItemNames { get; }
 
     Task StartGameAsync(string playerName, CancellationToken cancellationToken = default);
+    Task<bool> ResumeGameAsync(CancellationToken cancellationToken = default);
     Task PlaySelectedCardsAsync(CancellationToken cancellationToken = default);
     Task DiscardSelectedCardsAsync(CancellationToken cancellationToken = default);
     Task AdvancePhaseAsync(CancellationToken cancellationToken = default);
@@ -53,7 +54,7 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
     readonly NavigationManager _navigationManager;
     readonly IAudioService _audioService;
     readonly IApplicationViewModel _applicationViewModel;
-    readonly ISoloGameResultStore _soloGameResultStore;
+    readonly ISoloGameDataStore _soloGameDataStore;
 
     const int _BASE_THRESHOLD = 500;
     const double _THRESHOLD_EXPONENT = 1.1;
@@ -130,14 +131,14 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
         NavigationManager navigationManager,
         IAudioService audioService,
         IApplicationViewModel applicationViewModel,
-        ISoloGameResultStore soloGameResultStore)
+        ISoloGameDataStore soloGameDataStore)
     {
         _endpointsService = endpointsService;
         _toastService = toastService;
         _navigationManager = navigationManager;
         _audioService = audioService;
         _applicationViewModel = applicationViewModel;
-        _soloGameResultStore = soloGameResultStore;
+        _soloGameDataStore = soloGameDataStore;
     }
 
     public void Dispose()
@@ -173,6 +174,10 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
             // Initialize timer
             RunTimeInSeconds = _applicationViewModel.GameSettings.RoundTimeMs / 1000;
             StartTimer();
+
+            // Save active game state for persistence
+            SaveActiveGameState();
+            SaveGameStats();
         }
         else
         {
@@ -180,6 +185,77 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
         }
 
         IsLoading = false;
+    }
+
+    public async Task<bool> ResumeGameAsync(CancellationToken cancellationToken = default)
+    {
+        if (_soloGameDataStore.ActiveGame?.GameId is null) return false;
+
+        IsLoading = true;
+
+        var result = await _endpointsService.GetGameStateAsync(
+            _soloGameDataStore.ActiveGame.GameId,
+            cancellationToken
+        );
+
+        if (!result.IsSuccess || result.Value is null)
+        {
+            IsLoading = false;
+            return false;
+        }
+
+        var state = result.Value;
+
+        // Check if game already ended
+        if (state.Phase == "GameOver")
+        {
+            IsLoading = false;
+            return false;
+        }
+
+        // Populate ViewModel from server state
+        GameId = state.GameId;
+        PlayerId = state.PlayerId;
+        RoundNumber = state.RoundNumber;
+        Score = state.Score;
+        Wallet = state.Wallet;
+        AvailablePlayHands = state.HandsAvailable;
+        AvailableDiscards = state.DiscardsAvailable;
+        Threshold = CalculateThreshold(RoundNumber);
+
+        if (Enum.TryParse<SoloGamePhase>(state.Phase, out var phase))
+        {
+            Phase = phase;
+        }
+
+        RefreshCardsInHand(state.Cards);
+
+        // Restore client-side tracked stats from GameResult in localStorage
+        if (_soloGameDataStore.TryRestoreResultFromLocalStorage() && _soloGameDataStore.Result is not null)
+        {
+            var savedStats = _soloGameDataStore.Result;
+            TotalScore = savedStats.TotalScore;
+            HandsPlayed = savedStats.HandsPlayed;
+            DiscardsUsed = savedStats.DiscardsUsed;
+            HighestSingleHandScore = savedStats.HighestSingleHandScore;
+            PurchasedItemNames = savedStats.PurchasedItemNames.ToList();
+        }
+
+        // Restore timer with elapsed time accounted
+        RunTimeInSeconds = _soloGameDataStore.GetRestoredRemainingSeconds();
+        if (RunTimeInSeconds <= 0 && Phase == SoloGamePhase.InGame)
+        {
+            // Time expired - advance phase immediately
+            IsLoading = false;
+            await AdvancePhaseAsync(cancellationToken);
+        }
+        else if (Phase == SoloGamePhase.InGame)
+        {
+            StartTimer();
+        }
+
+        IsLoading = false;
+        return true;
     }
 
     public async Task PlaySelectedCardsAsync(CancellationToken cancellationToken = default)
@@ -238,6 +314,10 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
 
             // Play card dealing sounds
             await PlayCardDealSoundsAsync(selectedCards.Count);
+
+            // Save active game state for persistence
+            SaveActiveGameState();
+            SaveGameStats();
         }
         else
         {
@@ -281,6 +361,10 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
 
             // Play card dealing sounds
             await PlayCardDealSoundsAsync(selectedCards.Count);
+
+            // Save active game state for persistence
+            SaveActiveGameState();
+            SaveGameStats();
         }
         else
         {
@@ -338,19 +422,18 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
                 RunTimeInSeconds = _applicationViewModel.GameSettings.RoundTimeMs / 1000;
             }
 
-            // Handle GameOver - populate result store and navigate to lobby
+            // Handle GameOver - clear active game and navigate to lobby (stats already saved)
             if (Phase == SoloGamePhase.GameOver)
             {
-                _soloGameResultStore.SetResult(new SoloGameResultData(
-                    RoundReached: RoundNumber,
-                    FinalWallet: Wallet,
-                    TotalScore: TotalScore,
-                    HandsPlayed: HandsPlayed,
-                    DiscardsUsed: DiscardsUsed,
-                    HighestSingleHandScore: HighestSingleHandScore,
-                    PurchasedItemNames: PurchasedItemNames.ToList()
-                ));
+                SaveGameStats();
+                _soloGameDataStore.ClearActiveGame();
                 _navigationManager.NavigateToLobbyWithSoloGameResult();
+            }
+            else if (Phase == SoloGamePhase.InGame)
+            {
+                // Save active game state when entering new round
+                SaveActiveGameState();
+                SaveGameStats();
             }
         }
         else
@@ -382,6 +465,7 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
             PurchasedItemNames = [.. PurchasedItemNames, response.PurchasedItem.Item.Name];
 
             _toastService.ShowSuccess($"Purchased {response.PurchasedItem.Item.Name}");
+            SaveGameStats();
         }
         else
         {
@@ -481,5 +565,29 @@ public partial class SoloGameplayViewModel : BaseViewModel, ISoloGameplayViewMod
                 _ = AdvancePhaseAsync();
             }
         }, 1000);
+    }
+
+    void SaveActiveGameState()
+    {
+        _soloGameDataStore.SetActiveGame(new ISoloGameDataStore.ActiveGameState
+        {
+            GameId = GameId,
+            RemainingSeconds = RunTimeInSeconds,
+            SavedTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+        });
+    }
+
+    void SaveGameStats()
+    {
+        _soloGameDataStore.SetResult(new ISoloGameDataStore.GameResult
+        {
+            RoundReached = RoundNumber,
+            FinalWallet = Wallet,
+            TotalScore = TotalScore,
+            HandsPlayed = HandsPlayed,
+            DiscardsUsed = DiscardsUsed,
+            HighestSingleHandScore = HighestSingleHandScore,
+            PurchasedItemNames = PurchasedItemNames.ToList()
+        });
     }
 }

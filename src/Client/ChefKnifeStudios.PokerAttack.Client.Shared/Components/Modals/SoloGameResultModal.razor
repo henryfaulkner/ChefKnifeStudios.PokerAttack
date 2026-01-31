@@ -2,50 +2,53 @@
 @using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs
 @using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs.ModalEvents
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Services
-@inject ISoloGameResultStore SoloGameResultStore
+@inject ISoloGameDataStore SoloGameDataStore
 @inject IEventNotificationService EventService
 
 <MatDialog IsOpen="true" CanBeClosed="true" IsOpenChanged="HandleOpenChanged">
     <MatDialogTitle>GAME OVER</MatDialogTitle>
     <MatDialogContent>
-        <div class="result-stats">
-            <div class="stat-row highlight">
-                <span class="stat-label">Round Reached</span>
-                <span class="stat-value mat-h3">@SoloGameResultStore.RoundReached</span>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label">Final Chips</span>
-                <span class="stat-value">@SoloGameResultStore.FinalWallet</span>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label">Total Score</span>
-                <span class="stat-value">@SoloGameResultStore.TotalScore</span>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label">Hands Played</span>
-                <span class="stat-value">@SoloGameResultStore.HandsPlayed</span>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label">Discards Used</span>
-                <span class="stat-value">@SoloGameResultStore.DiscardsUsed</span>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label">Best Hand</span>
-                <span class="stat-value">@SoloGameResultStore.HighestSingleHandScore</span>
-            </div>
-            @if (SoloGameResultStore.PurchasedItemNames.Any())
-            {
-                <div class="stat-row items">
-                    <span class="stat-label">Items Purchased</span>
-                    <div class="items-list">
-                        @foreach (var item in SoloGameResultStore.PurchasedItemNames)
-                        {
-                            <span class="item-pill">@item</span>
-                        }
-                    </div>
+        @if (SoloGameDataStore.Result is not null)
+        {
+            <div class="result-stats">
+                <div class="stat-row highlight">
+                    <span class="stat-label">Round Reached</span>
+                    <span class="stat-value mat-h3">@SoloGameDataStore.Result.RoundReached</span>
                 </div>
-            }
-        </div>
+                <div class="stat-row">
+                    <span class="stat-label">Final Chips</span>
+                    <span class="stat-value">@SoloGameDataStore.Result.FinalWallet</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Total Score</span>
+                    <span class="stat-value">@SoloGameDataStore.Result.TotalScore</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Hands Played</span>
+                    <span class="stat-value">@SoloGameDataStore.Result.HandsPlayed</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Discards Used</span>
+                    <span class="stat-value">@SoloGameDataStore.Result.DiscardsUsed</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Best Hand</span>
+                    <span class="stat-value">@SoloGameDataStore.Result.HighestSingleHandScore</span>
+                </div>
+                @if (SoloGameDataStore.Result.PurchasedItemNames.Any())
+                {
+                    <div class="stat-row items">
+                        <span class="stat-label">Items Purchased</span>
+                        <div class="items-list">
+                            @foreach (var item in SoloGameDataStore.Result.PurchasedItemNames)
+                            {
+                                <span class="item-pill">@item</span>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@(() => HandleOpenChanged(false))">Play Again</MatButton>
@@ -57,7 +60,7 @@
     {
         if (!isOpen)
         {
-            SoloGameResultStore.Clear();
+            SoloGameDataStore.ClearResult();
 
             EventService.PostEvent(this, new SoloGameResultModalEventArgs
             {

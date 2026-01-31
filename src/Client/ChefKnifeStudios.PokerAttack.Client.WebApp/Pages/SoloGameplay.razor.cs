@@ -15,6 +15,7 @@ public partial class SoloGameplay : ComponentBase, IDisposable, IAsyncDisposable
     [Inject] IInputJsInterop InputJsInterop { get; set; } = null!;
     [Inject] IInputService InputService { get; set; } = null!;
     [Inject] NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] ISoloGameDataStore SoloGameDataStore { get; set; } = null!;
 
     readonly string[] _subscriptions =
     [
@@ -55,10 +56,29 @@ public partial class SoloGameplay : ComponentBase, IDisposable, IAsyncDisposable
     {
         await base.OnInitializedAsync();
 
-        // Start the solo game
+        // Check if we have a saved game to resume
+        if (SoloGameDataStore.TryRestoreActiveGameFromLocalStorage())
+        {
+            var resumed = await SoloGameplayViewModel.ResumeGameAsync();
+            if (resumed)
+            {
+                // Successfully resumed - set up event handlers and return
+                SetupEventHandlers();
+                return;
+            }
+            // Resume failed - clear stale state
+            SoloGameDataStore.ClearActiveGame();
+        }
+
+        // Start a new game
         var playerName = ApplicationViewModel.Player?.Name ?? "Player";
         await SoloGameplayViewModel.StartGameAsync(playerName);
 
+        SetupEventHandlers();
+    }
+
+    void SetupEventHandlers()
+    {
         SoloGameplayViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
         SoloGameplayViewModel.CardsInHand.CollectionChanged += CardsInHand_CollectionChanged;
         SoloGameplayViewModel.ShopItems.CollectionChanged += ShopItems_CollectionChanged;
