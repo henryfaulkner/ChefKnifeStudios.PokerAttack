@@ -1,7 +1,9 @@
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
+using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
+using ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
 using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
@@ -18,6 +20,7 @@ public partial class SettingsBlade : ComponentBase, IDisposable
     [Inject] ISettingsService SettingsService { get; set; } = null!;
     [Inject] NavigationManager NavigationManager { get; set; } = null!;
     [Inject] IGameplayEndpointsService GameplayEndpointsService { get; set; } = null!;
+    [Inject] ICommonJsInterop CommonJsInterop { get; set; } = null!;
 
     BladeContainer? _bladeContainer;
 
@@ -50,9 +53,19 @@ public partial class SettingsBlade : ComponentBase, IDisposable
         await Task.CompletedTask;
     }
 
-    void HandleSettingPressed(string propertyName, bool val)
+    async void HandleSettingPressed(string propertyName, bool val)
     {
         SettingsService.SetSettingValue(propertyName, val);
+
+        // Apply theme immediately when dark mode setting changes
+        if (propertyName == nameof(Settings.IsDarkModeEnabled))
+        {
+            var themeName = val ? "dark" : "light";
+            await CommonJsInterop.SetThemeAsync(themeName);
+
+            // Notify other components (e.g., MainLayout) to update their theme
+            EventNotificationService.PostEvent(this, new ThemeChangedEventArgs { IsDarkMode = val });
+        }
     }
 
     async Task HandleLeaveGamePressed()

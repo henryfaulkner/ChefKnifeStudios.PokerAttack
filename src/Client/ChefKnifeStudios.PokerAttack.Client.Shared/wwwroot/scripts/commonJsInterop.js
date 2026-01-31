@@ -219,3 +219,17 @@ export function removeAllViaQuerySelector(selector) {
         elements.forEach(element => element.remove());
     } catch (e) { }
 }
+
+// Known theme classes - add new themes here as they're created
+const THEMES = ['light', 'dark'];
+
+export function setTheme(themeName) {
+    try {
+        // Remove all known theme classes
+        document.body.classList.remove(...THEMES);
+        // Add the new theme class (if not 'light', which is the default with no class)
+        if (themeName && themeName !== 'light') {
+            document.body.classList.add(themeName);
+        }
+    } catch (e) { }
+}

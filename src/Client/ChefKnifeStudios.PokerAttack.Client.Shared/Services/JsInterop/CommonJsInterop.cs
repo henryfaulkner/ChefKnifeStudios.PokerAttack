@@ -33,6 +33,7 @@ public interface ICommonJsInterop
     Task AddOutsideClickListenerAsync(string elementId, Action callback);
     Task RemoveOutsideClickListenerAsync(string elementId);
     Task RemoveAllViaQuerySelectorAsync(string querySelector);
+    Task SetThemeAsync(string themeName);
 }
 
 public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
@@ -382,6 +383,16 @@ public class CommonJsInterop : ICommonJsInterop, IAsyncDisposable
         {
             var module = await moduleTask.Value;
             await module.InvokeVoidAsync("removeAllViaQuerySelector", querySelector);
+        }
+        catch (Exception ex) { LogError(ex); }
+    }
+
+    public async Task SetThemeAsync(string themeName)
+    {
+        try
+        {
+            var module = await moduleTask.Value;
+            await module.InvokeVoidAsync("setTheme", themeName);
         }
         catch (Exception ex) { LogError(ex); }
     }

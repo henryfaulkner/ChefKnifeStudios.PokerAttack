@@ -1,8 +1,16 @@
-﻿@using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Blades
+﻿@using ChefKnifeStudios.PokerAttack.Client.Core.Services
+@using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Blades
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Lobbies
+@using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs
+@using ChefKnifeStudios.PokerAttack.Client.Shared.Services
+@using ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop
 
 @inherits LayoutComponentBase
+@implements IDisposable
+@inject ISettingsService SettingsService
+@inject ICommonJsInterop CommonJsInterop
+@inject IEventNotificationService EventNotificationService
 
 <div class="page bgclr-surface1">
     <MatThemeProvider Theme="@_theme">
@@ -15,16 +23,61 @@
     </MatThemeProvider>
 </div>
 
-@code 
+@code
 {
-    MatTheme _theme = new()
+    MatTheme _theme = null!;
+
+    static readonly MatTheme LightTheme = new()
     {
-        Background = ColorConstants.Surface1,
-        OnPrimary = ColorConstants.OnPrimary,
-        OnSecondary = ColorConstants.OnSecondaryContainer,
-        OnSurface = ColorConstants.OnTertiaryContainer,
-        Primary = ColorConstants.Primary,
-        Secondary = ColorConstants.SecondaryContainer,
-        Surface = ColorConstants.Surface5,
+        Background = ColorConstants.Light.Background,
+        OnPrimary = ColorConstants.Light.OnPrimary,
+        OnSecondary = ColorConstants.Light.OnSecondary,
+        OnSurface = ColorConstants.Light.OnSurface,
+        Primary = ColorConstants.Light.Primary,
+        Secondary = ColorConstants.Light.Secondary,
+        Surface = ColorConstants.Light.Surface,
     };
+
+    static readonly MatTheme DarkTheme = new()
+    {
+        Background = ColorConstants.Dark.Background,
+        OnPrimary = ColorConstants.Dark.OnPrimary,
+        OnSecondary = ColorConstants.Dark.OnSecondary,
+        OnSurface = ColorConstants.Dark.OnSurface,
+        Primary = ColorConstants.Dark.Primary,
+        Secondary = ColorConstants.Dark.Secondary,
+        Surface = ColorConstants.Dark.Surface,
+    };
+
+    protected override void OnInitialized()
+    {
+        var settings = SettingsService.GetSettings();
+        _theme = settings.IsDarkModeEnabled ? DarkTheme : LightTheme;
+
+        EventNotificationService.EventReceived += HandleEventReceived;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var settings = SettingsService.GetSettings();
+            var themeName = settings.IsDarkModeEnabled ? "dark" : "light";
+            await CommonJsInterop.SetThemeAsync(themeName);
+        }
+    }
+
+    async Task HandleEventReceived(object sender, IEventArgs e)
+    {
+        if (e is ThemeChangedEventArgs themeArgs)
+        {
+            _theme = themeArgs.IsDarkMode ? DarkTheme : LightTheme;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    public void Dispose()
+    {
+        EventNotificationService.EventReceived -= HandleEventReceived;
+    }
 }

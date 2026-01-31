@@ -12,4 +12,8 @@ public partial class Settings : ObservableObject
     [ObservableProperty]
     [property: Description("Always Show App Tour")]
     bool _isAlwaysShowAppTour = false;
+
+    [ObservableProperty]
+    [property: Description("Enable Dark Mode")]
+    bool _isDarkModeEnabled = false;
 }

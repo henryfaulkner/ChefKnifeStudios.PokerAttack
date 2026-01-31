@@ -1,0 +1,41 @@
+﻿.mat,
+.mat-h1,
+.mat-h2,
+.mat-h3,
+.mat-h4,
+.mat-h5,
+.mat-h6,
+.mat-subtitle1,
+.mat-subtitle2,
+.mat-body1,
+.mat-body2,
+.mat-caption,
+.mat-button,
+.mat-overline {
+    color: var(--clr-1p, #214e7e);
+}
+
+.mdc-paginator {
+    display: none !important;
+}
+
+.mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__input,
+.mdc-text-field:not(.mdc-text-field--disabled) .mdc-floating-label,
+.mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__icon--trailing,
+.mdc-dialog .mdc-dialog__title {
+    color: var(--clr-1p, #214e7e);
+}
+
+.mdc-table th {
+    color: var(--clr-1p, #214e7e);
+    background-color: var(--mdc-theme-table-header, rgba(25, 28, 32, 0.08));
+    border-color: var(--mdc-theme-table-border, rgba(25, 28, 32, 0.1));
+}
+
+.mdc-table td {
+    border-color: var(--mdc-theme-table-border, rgba(25, 28, 32, 0.1));
+}
+
+.mat-tab-label.mdc-tab:not(.mdc-tab--active) .mdc-tab__content .mdc-tab__text-label {
+    color: var(--clr-1t, #65587B);
+}

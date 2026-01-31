@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(del \"C:\\Projects\\ChefKnifeStudios.PokerAttack\\src\\Client\\ChefKnifeStudios.PokerAttack.Client.WebApp\\wwwroot\\css\\NewColors.css\")",
+      "WebFetch(domain:www.matblazor.com)",
+      "Bash(dotnet build:*)",
+      "WebFetch(domain:m3.material.io)",
+      "WebSearch"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

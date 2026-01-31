@@ -1,183 +1,216 @@
+/* Material 3 Baseline - Light theme (default) */
+.root-not-used {
+    --clr-1p: #6750A4;             /* Primary            */
+    --clr-on-1p: #FFFFFF;          /* On Primary         */
+    --clr-1p-container: #EADDFF;   /* Primary Container  */
+    --clr-on-1p-container: #21005D;/* On Primary Cont.   */
+    --clr-1s: #625B71;             /* Secondary          */
+    --clr-on-1s: #FFFFFF;          /* On Secondary       */
+    --clr-1s-container: #E8DEF8;   /* Secondary Cont.    */
+    --clr-on-1s-container: #1D192B;/* On Secondary Cont. */
+    --clr-1t: #7D5260;             /* Tertiary           */
+    --clr-on-1t: #FFFFFF;          /* On Tertiary        */
+    --clr-1t-container: #FFD8E4;   /* Tertiary Container */
+    --clr-on-1t-container: #31111D;/* On Tertiary Cont.  */
+    --clr-err: #B3261E;            /* Error              */
+    --clr-on-err: #FFFFFF;         /* On Error           */
+    --clr-err-container: #F9DEDC;  /* Error Container    */
+    --clr-outline: #79747E;        /* Outline            */
+    --clr-surface1: #FFFBFE;       /* Surface 1          */
+    --clr-surface2: #FFFBFE;       /* Surface 2          */
+    --clr-surface3: #FFFBFE;       /* Surface 3          */
+    --clr-surface4: #FFFBFE;       /* Surface 4          */
+    --clr-surface5: #FFFBFE;       /* Surface 5          */
+    --clr-on-surface: #1C1B1F;     /* On Surface         */
+    --clr-surface-variant: #E7E0EC;/* Surface Variant    */
+    --clr-on-surface-variant: #49454F;/* On Surface Var. */
+}
+
+/* Material 3 Baseline - Dark theme */
+.dark-not-used {
+    --clr-1p: #D0BCFF;             /* Primary            */
+    --clr-on-1p: #381E72;          /* On Primary         */
+    --clr-1p-container: #4F378B;   /* Primary Container  */
+    --clr-on-1p-container: #EADDFF;/* On Primary Cont.   */
+    --clr-1s: #CCC2DC;             /* Secondary          */
+    --clr-on-1s: #332D41;          /* On Secondary       */
+    --clr-1s-container: #4A4458;   /* Secondary Cont.    */
+    --clr-on-1s-container: #E8DEF8;/* On Secondary Cont. */
+    --clr-1t: #EFB8C8;             /* Tertiary           */
+    --clr-on-1t: #492532;          /* On Tertiary        */
+    --clr-1t-container: #633B48;   /* Tertiary Container */
+    --clr-on-1t-container: #FFD8E4;/* On Tertiary Cont.  */
+    --clr-err: #F2B8B5;            /* Error              */
+    --clr-on-err: #601410;         /* On Error           */
+    --clr-err-container: #8C1D18;  /* Error Container    */
+    --clr-outline: #938F99;        /* Outline            */
+    --clr-surface1: #1C1B1F;       /* Surface 1          */
+    --clr-surface2: #1C1B1F;       /* Surface 2          */
+    --clr-surface3: #1C1B1F;       /* Surface 3          */
+    --clr-surface4: #1C1B1F;       /* Surface 4          */
+    --clr-surface5: #1C1B1F;       /* Surface 5          */
+    --clr-on-surface: #E6E1E5;     /* On Surface         */
+    --clr-surface-variant: #49454F;/* Surface Variant    */
+    --clr-on-surface-variant: #CAC4D0;/* On Surface Var. */
+}
+
 :root {
-    --clr-1p: #6442d6; /* Primary           - 100% | var(--clr-1p, #6442d6);                   */
-    --clr-on-1p: #fff; /* On Primary        - 100% | var(--clr-on-1p, #fff);                   */
-    --clr-1p-container: #9f86ff; /* Primary Container - 100% | var(--clr-1p-container, #9f86ff);         */
-    --clr-on-1p-container: #1e0060; /* On Primary Cont.  - 100% | var(--clr-on-1p-container, #1e0060);      */
-    --clr-1s: #5d5d74; /* Secondary         - 100% | var(--clr-1s, #5d5d74);                   */
-    --clr-on-1s: #fff; /* On Secondary      - 100% | var(--clr-on-1s, #fff);                   */
-    --clr-1s-container: #dcdaf5; /* Secondary Cont.   - 100% | var(--clr-1s-container, #dcdaf5);         */
-    --clr-on-1s-container: #21182b; /* On Secondary Cont.- 100% | var(--clr-on-1s-container, #21182b);      */
-    --clr-1t: #7d5260;
-    --clr-on-1t: #fff;
-    --clr-1t-container: #f1d3f9; /* Tertiary Container- 100% | var(--clr-1t-container, #f1d3f9);         */
-    --clr-on-1t-container: #271430; /* On Tertiary Cont. - 100% | var(--clr-on-1t-container, #271430);      */
-    --clr-err: #ff6240; /* Error             - 100% | var(--clr-err, #ff6240);                  */
-    --clr-on-err: #490909; /* On Error          - 100% | var(--clr-on-err, #490909);               */
-    --clr-err-container: #f9dedc; /* Error Container   - 100% | var(--clr-err-container, #f9dedc);        */
-    --clr-outline: #787579; /* Outline           - 100% | var(--clr-outline, #787579);              */
-    --clr-surface1: #f8f1f6; /* Surface 1         - 100% | var(--clr-surface1, #f8f1f6);             */
-    --clr-surface2: #f2ecee; /* Surface 2         - 100% | var(--clr-surface2, #f2ecee);             */
-    --clr-surface3: #ece7e9; /* Surface 3         - 100% | var(--clr-surface3, #ece7e9);             */
-    --clr-surface4: #e6e1e3; /* Surface 4         - 100% | var(--clr-surface4, #e6e1e3);             */
-    --clr-surface5: #e6e1e3; /* Surface 5         - 100% | var(--clr-surface5, #e6e1e3);             */
+    /* Primary - Deep Blue (#214e7e) */
+    --clr-1p: #214E7E; /* User's Primary Hex */
+    --clr-on-1p: #FFFFFF; /* White text on Primary */
+    --clr-1p-container: #D7E2FF; /* Light blue container */
+    --clr-on-1p-container: #001B3F; /* Dark blue text on container */
+    /* Secondary - Steel Blue (Derived from #96aacc) */
+    --clr-1s: #385E7F; /* Darker accessible version of your hex */
+    --clr-on-1s: #FFFFFF;
+    --clr-1s-container: #96AACC; /* User's Secondary Hex (used as Container) */
+    --clr-on-1s-container: #0E1D2A; /* Dark text on your secondary color */
+    /* Tertiary - Complementary Slate/Violet */
+    /* Generated to balance the cool blues without clashing */
+    --clr-1t: #65587B;
+    --clr-on-1t: #FFFFFF;
+    --clr-1t-container: #ECDCFF;
+    --clr-on-1t-container: #211634;
+    /* Error - Standard M3 Light Error */
+    --clr-err: #BA1A1A;
+    --clr-on-err: #FFFFFF;
+    --clr-err-container: #FFDAD6;
+    --clr-on-err-container: #410002;
+    /* Surface & Background - Tinted Cool White */
+    --clr-outline: #74777F;
+    --clr-surface1: #F5F9FF; /* Very subtle blue tint */
+    --clr-surface2: #EFF5FF;
+    --clr-surface3: #E9F1FF;
+    --clr-surface4: #E4EEFF;
+    --clr-surface5: #DFEBFF;
+    --clr-on-surface: #191C20; /* Almost Black */
+    --clr-surface-variant: #E0E2EC;
+    --clr-on-surface-variant: #43474E;
+    --mdc-theme-on-error: var(--clr-on-err); /* #FFFFFF */
+    /* Text on Background / Light */
+    --mdc-theme-text-primary-on-background: var(--clr-on-surface); /* #191C20 */
+    --mdc-theme-text-secondary-on-background: var(--clr-on-surface-variant); /* #43474E */
+    --mdc-theme-text-hint-on-background: rgba(25, 28, 32, 0.38);
+    --mdc-theme-text-disabled-on-background: rgba(25, 28, 32, 0.38);
+    --mdc-theme-text-icon-on-background: var(--clr-on-surface-variant);
+    /* Legacy 'On-Light' explicitly maps to the light theme values */
+    --mdc-theme-text-primary-on-light: #191C20;
+    --mdc-theme-text-secondary-on-light: #43474E;
+    --mdc-theme-text-hint-on-light: rgba(25, 28, 32, 0.38);
+    --mdc-theme-text-disabled-on-light: rgba(25, 28, 32, 0.38);
+    --mdc-theme-text-icon-on-light: #43474E;
+    --mdc-theme-table-header: rgba(25, 28, 32, 0.08);
+    --mdc-theme-table-border: rgba(25, 28, 32, 0.1);
+    /* Logic for 'On-Dark' while in Light Mode (for dark buttons/cards) */
+    --mdc-theme-text-primary-on-dark: #FFFFFF;
+    --mdc-theme-text-secondary-on-dark: rgba(255, 255, 255, 0.7);
+    --mdc-theme-text-hint-on-dark: rgba(255, 255, 255, 0.5);
+    --mdc-theme-text-disabled-on-dark: rgba(255, 255, 255, 0.5);
+    --mdc-theme-text-icon-on-dark: rgba(255, 255, 255, 0.5);
 }
 
+/* Gemini - Dark theme */
+.dark {
+    /* Primary - Gemini Blue/Violet */
+    --clr-1p: #D3E3FD; /* Primary (Light blue-white) */
+    --clr-on-1p: #041E49; /* On Primary */
+    --clr-1p-container: #0842A0; /* Primary Container */
+    --clr-on-1p-container: #D3E3FD; /* On Primary Cont. */
+    /* Secondary - Neutral Blues */
+    --clr-1s: #A8C7FA; /* Secondary */
+    --clr-on-1s: #062E6F; /* On Secondary */
+    --clr-1s-container: #0842A0; /* Secondary Cont. */
+    --clr-on-1s-container: #D3E3FD; /* On Secondary Cont. */
+    /* Tertiary - Gemini Brand Accent */
+    --clr-1t: #C2E7FF; /* Tertiary (Sky Blue) */
+    --clr-on-1t: #001D35; /* On Tertiary */
+    --clr-1t-container: #004A77; /* Tertiary Container */
+    --clr-on-1t-container: #C2E7FF; /* On Tertiary Cont. */
+    /* Error - Standard M3 Dark Error */
+    --clr-err: #F2B8B5;
+    --clr-on-err: #601410;
+    --clr-err-container: #8C1D18;
+    /* Surface & Background - The "Deep Space" feel */
+    --clr-outline: #8E918F;
+    --clr-surface1: #131314; /* Base Surface (Gemini's dark grey) */
+    --clr-surface2: #1E1F20; /* Lighter Surface (Cards) */
+    --clr-surface3: #28292A; /* Elevated Surface */
+    --clr-surface4: #2F3032;
+    --clr-surface5: #363739;
+    --clr-on-surface: #E3E3E3; /* High Emphasis Text */
+    --clr-surface-variant: #444746;
+    --clr-on-surface-variant: #C4C7C5; /* Medium Emphasis Text */
+
+    --mdc-theme-on-error: var(--clr-on-err); /* #601410 */
+    /* Text on Background / Dark */
+    --mdc-theme-text-primary-on-background: var(--clr-on-surface); /* #E3E3E3 */
+    --mdc-theme-text-secondary-on-background: var(--clr-on-surface-variant); /* #C4C7C5 */
+    --mdc-theme-text-hint-on-background: rgba(227, 227, 227, 0.38);
+    --mdc-theme-text-disabled-on-background: rgba(227, 227, 227, 0.38);
+    --mdc-theme-text-icon-on-background: var(--clr-on-surface-variant);
+    /* Logic for 'On-Dark' while in Dark Mode */
+    --mdc-theme-text-primary-on-dark: #E3E3E3;
+    --mdc-theme-text-secondary-on-dark: #C4C7C5;
+    --mdc-theme-text-hint-on-dark: rgba(227, 227, 227, 0.38);
+    --mdc-theme-text-disabled-on-dark: rgba(227, 227, 227, 0.38);
+    --mdc-theme-text-icon-on-dark: #C4C7C5;
+    --mdc-theme-table-header: rgba(227, 227, 227, 0.08);
+    --mdc-theme-table-border: rgba(227, 227, 227, 0.1);
+    /* Legacy 'On-Light' explicitly maps to light colors for rare light elements in dark mode */
+    --mdc-theme-text-primary-on-light: #191C20;
+    --mdc-theme-text-secondary-on-light: #43474E;
+}
+
+/* Color utility classes */
 .clr-1p {
-    color: var(--clr-1p, #6442d6);
+    color: var(--clr-1p);
 }
+.clr-on-1p { color: var(--clr-on-1p); }
+.clr-1p-container { color: var(--clr-1p-container); }
+.clr-on-1p-container { color: var(--clr-on-1p-container); }
+.clr-1s { color: var(--clr-1s); }
+.clr-on-1s { color: var(--clr-on-1s); }
+.clr-1s-container { color: var(--clr-1s-container); }
+.clr-on-1s-container { color: var(--clr-on-1s-container); }
+.clr-1t { color: var(--clr-1t); }
+.clr-on-1t { color: var(--clr-on-1t); }
+.clr-1t-container { color: var(--clr-1t-container); }
+.clr-on-1t-container { color: var(--clr-on-1t-container); }
+.clr-err { color: var(--clr-err); }
+.clr-on-err { color: var(--clr-on-err); }
+.clr-err-container { color: var(--clr-err-container); }
+.clr-outline { color: var(--clr-outline); }
+.clr-surface1 { color: var(--clr-surface1); }
+.clr-surface2 { color: var(--clr-surface2); }
+.clr-surface3 { color: var(--clr-surface3); }
+.clr-surface4 { color: var(--clr-surface4); }
+.clr-surface5 { color: var(--clr-surface5); }
+.clr-on-surface { color: var(--clr-on-surface); }
+.clr-surface-variant { color: var(--clr-surface-variant); }
+.clr-on-surface-variant { color: var(--clr-on-surface-variant); }
 
-.clr-on-1p {
-    color: var(--clr-on-1p, #fff);
-}
-
-.clr-1p-container {
-    color: var(--clr-1p-container, #9f86ff);
-}
-
-.clr-on-1p-container {
-    color: var(--clr-on-1p-container, #1e0060);
-}
-
-.clr-1s {
-    color: var(--clr-1s, #5d5d74);
-}
-
-.clr-on-1s {
-    color: var(--clr-on-1s, #fff);
-}
-
-.clr-1s-container {
-    color: var(--clr-1s-container, #dcdaf5);
-}
-
-.clr-on-1s-container {
-    color: var(--clr-on-1s-container, #21182b);
-}
-
-.clr-1t {
-    color: var(--clr-1t, #7d5260);
-}
-
-.clr-on-1t {
-    color: var(--clr-on-1t, #fff);
-}
-
-.clr-1t-container {
-    color: var(--clr-1t-container, #f1d3f9);
-}
-
-.clr-on-1t-container {
-    color: var(--clr-on-1t-container, #271430);
-}
-
-.clr-err {
-    color: var(--clr-err, #ff6240);
-}
-
-.clr-on-err {
-    color: var(--clr-on-err, #490909);
-}
-
-.clr-err-container {
-    color: var(--clr-err-container, #f9dedc);
-}
-
-.clr-outline {
-    color: var(--clr-outline, #787579);
-}
-
-.clr-surface1 {
-    color: var(--clr-surface, #f8f1f6);
-}
-
-.clr-surface2 {
-    color: var(--clr-surface2, #f2ecee);
-}
-
-.clr-surface3 {
-    color: var(--clr-surface3, #ece7e9);
-}
-
-.clr-surface4 {
-    color: var(--clr-surface4, #e6e1e3);
-}
-
-.clr-surface5 {
-    color: var(--clr-surface5, #e6e1e3);
-}
-
-.bgclr-1p {
-    background-color: var(--clr-1p, #6442d6);
-}
-
-.bgclr-on-1p {
-    background-color: var(--clr-on-1p, #fff);
-}
-
-.bgclr-1p-container {
-    background-color: var(--clr-1p-container, #9f86ff);
-}
-
-.bgclr-on-1p-container {
-    background-color: var(--clr-on-1p-container, #1e0060);
-}
-
-.bgclr-1s {
-    background-color: var(--clr-1s, #5d5d74);
-}
-
-.bgclr-on-1s {
-    background-color: var(--clr-on-1s, #fff);
-}
-
-.bgclr-1s-container {
-    background-color: var(--clr-1s-container, #dcdaf5);
-}
-
-.bgclr-on-1s-container {
-    background-color: var(--clr-on-1s-container, #21182b);
-}
-
-.bgclr-1t-container {
-    background-color: var(--clr-1t-container, #f1d3f9);
-}
-
-.bgclr-on-1t-container {
-    background-color: var(--clr-on-1t-container, #271430);
-}
-
-.bgclr-err {
-    background-color: var(--clr-err, #ff6240);
-}
-
-.bgclr-on-err {
-    background-color: var(--clr-on-err, #490909);
-}
-
-.bgclr-err-container {
-    background-color: var(--clr-err-container, #f9dedc);
-}
-
-.bgclr-outline {
-    background-color: var(--clr-outline, #787579);
-}
-
-.bgclr-surface1 {
-    background-color: var(--clr-surface, #f8f1f6);
-}
-
-.bgclr-surface2 {
-    background-color: var(--clr-surface2, #f2ecee);
-}
-
-.bgclr-surface3 {
-    background-color: var(--clr-surface3, #ece7e9);
-}
-
-.bgclr-surface4 {
-    background-color: var(--clr-surface4, #e6e1e3);
-}
-
-.bgclr-surface5 {
-    background-color: var(--clr-surface5, #e6e1e3);
-}
+/* Background color utility classes */
+.bgclr-1p { background-color: var(--clr-1p); }
+.bgclr-on-1p { background-color: var(--clr-on-1p); }
+.bgclr-1p-container { background-color: var(--clr-1p-container); }
+.bgclr-on-1p-container { background-color: var(--clr-on-1p-container); }
+.bgclr-1s { background-color: var(--clr-1s); }
+.bgclr-on-1s { background-color: var(--clr-on-1s); }
+.bgclr-1s-container { background-color: var(--clr-1s-container); }
+.bgclr-on-1s-container { background-color: var(--clr-on-1s-container); }
+.bgclr-1t { background-color: var(--clr-1t); }
+.bgclr-on-1t { background-color: var(--clr-on-1t); }
+.bgclr-1t-container { background-color: var(--clr-1t-container); }
+.bgclr-on-1t-container { background-color: var(--clr-on-1t-container); }
+.bgclr-err { background-color: var(--clr-err); }
+.bgclr-on-err { background-color: var(--clr-on-err); }
+.bgclr-err-container { background-color: var(--clr-err-container); }
+.bgclr-outline { background-color: var(--clr-outline); }
+.bgclr-surface1 { background-color: var(--clr-surface1); }
+.bgclr-surface2 { background-color: var(--clr-surface2); }
+.bgclr-surface3 { background-color: var(--clr-surface3); }
+.bgclr-surface4 { background-color: var(--clr-surface4); }
+.bgclr-surface5 { background-color: var(--clr-surface5); }
+.bgclr-on-surface { background-color: var(--clr-on-surface); }
+.bgclr-surface-variant { background-color: var(--clr-surface-variant); }
+.bgclr-on-surface-variant { background-color: var(--clr-on-surface-variant); }

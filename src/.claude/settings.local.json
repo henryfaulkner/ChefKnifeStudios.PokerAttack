@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(curl:*)",
+      "Bash(cat:*)",
+      "Bash(dotnet build:*)",
+      "Bash(dotnet restore:*)",
+      "Bash(dotnet add:*)",
+      "Bash(xargs:*)",
+      "WebFetch(domain:driverjs.com)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
