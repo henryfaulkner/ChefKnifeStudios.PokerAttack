@@ -9,28 +9,28 @@ using System.ComponentModel;
 
 namespace ChefKnifeStudios.PokerAttack.Client.WebApp.Pages;
 
-public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
+public partial class MultiGameplay : ComponentBase, IDisposable, IAsyncDisposable
 {
     [SupplyParameterFromQuery] public required string GameId { get; set; }
 
     [Inject] IApplicationViewModel ApplicationViewModel { get; set; } = null!;
-    [Inject] IGameplayViewModel GameplayViewModel { get; set; } = null!;
+    [Inject] IMultiGameplayViewModel MultiGameplayViewModel { get; set; } = null!;
     [Inject] IGameStateMachineViewModel GameStateMachineViewModel { get; set; } = null!;
     [Inject] IInputService InputService { get; set; } = null!;
     [Inject] IInputJsInterop InputJsInterop { get; set; } = null!;
-    [Inject] IGameDataStore GameDataStore { get; set; } = null!;
+    [Inject] IMultiGameDataStore MultiGameDataStore { get; set; } = null!;
 
     readonly string[] _subscriptions =
     [
-        nameof(IGameplayViewModel.RunTimeInSeconds),
-        nameof(IGameplayViewModel.Score),
-        nameof(IGameplayViewModel.CardsInHand),
-        nameof(IGameplayViewModel.AvailablePlayHands),
-        nameof(IGameplayViewModel.AvailableDiscards),
-        nameof(IGameplayViewModel.PowerCharges),
+        nameof(IMultiGameplayViewModel.RunTimeInSeconds),
+        nameof(IMultiGameplayViewModel.Score),
+        nameof(IMultiGameplayViewModel.CardsInHand),
+        nameof(IMultiGameplayViewModel.AvailablePlayHands),
+        nameof(IMultiGameplayViewModel.AvailableDiscards),
+        nameof(IMultiGameplayViewModel.PowerCharges),
         nameof(IGameStateMachineViewModel.GameState),
-        nameof(IGameDataStore.IsLoadingWallet),
-        nameof(IGameDataStore.Wallet),
+        nameof(IMultiGameDataStore.IsLoadingWallet),
+        nameof(IMultiGameDataStore.Wallet),
     ];
 
     protected override void OnInitialized()
@@ -57,16 +57,16 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
     {
         await base.OnInitializedAsync();
 
-        // Reset and set GameId in GameDataStore
-        GameDataStore.Reset();
-        GameDataStore.GameId = GameId;
+        // Reset and set GameId in MultiGameDataStore
+        MultiGameDataStore.Reset();
+        MultiGameDataStore.GameId = GameId;
 
-        await GameplayViewModel.StartGameAsync(ApplicationViewModel.Player.Id);
+        await MultiGameplayViewModel.StartGameAsync(ApplicationViewModel.Player.Id);
 
-        GameplayViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
-        GameplayViewModel.CardsInHand.CollectionChanged += CardsInHand_CollectionChanged;
+        MultiGameplayViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
+        MultiGameplayViewModel.CardsInHand.CollectionChanged += CardsInHand_CollectionChanged;
         GameStateMachineViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
-        GameDataStore.PropertyChanged += ViewModel_OnPropertyChanged;
+        MultiGameDataStore.PropertyChanged += ViewModel_OnPropertyChanged;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -87,10 +87,10 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
 
     public void Dispose()
     {
-        GameplayViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
-        GameplayViewModel.CardsInHand.CollectionChanged -= CardsInHand_CollectionChanged;
+        MultiGameplayViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
+        MultiGameplayViewModel.CardsInHand.CollectionChanged -= CardsInHand_CollectionChanged;
         GameStateMachineViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
-        GameDataStore.PropertyChanged -= ViewModel_OnPropertyChanged;
+        MultiGameDataStore.PropertyChanged -= ViewModel_OnPropertyChanged;
     }
 
     void CardsInHand_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -105,7 +105,7 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
         {
             if (GameStateMachineViewModel.GameState == GameStates.InGame)
             {
-                _ = GameplayViewModel.StartRoundAsync(ApplicationViewModel.Player.Id);
+                _ = MultiGameplayViewModel.StartRoundAsync(ApplicationViewModel.Player.Id);
             }
         }
         Task.Run(async () => await InvokeAsync(StateHasChanged));
@@ -114,43 +114,43 @@ public partial class Gameplay : ComponentBase, IDisposable, IAsyncDisposable
     void HandlePlayHandPressed()
     {
         if (GameStateMachineViewModel.GameState != GameStates.InGame) return;
-        _ = GameplayViewModel.PlaySelectedCardsAsync(ApplicationViewModel.Player.Id);
+        _ = MultiGameplayViewModel.PlaySelectedCardsAsync(ApplicationViewModel.Player.Id);
     }
 
     void HandleDiscardPressed()
     {
         if (GameStateMachineViewModel.GameState != GameStates.InGame) return;
-        _ = GameplayViewModel.DiscardSelectedCardsAsync(ApplicationViewModel.Player.Id);
+        _ = MultiGameplayViewModel.DiscardSelectedCardsAsync(ApplicationViewModel.Player.Id);
     }
 
     void HandleSortByRankPressed()
     {
         if (GameStateMachineViewModel.GameState != GameStates.InGame) return;
-        GameplayViewModel.SortByRank();
+        MultiGameplayViewModel.SortByRank();
     }
 
     void HandleSortBySuitPressed()
     {
         if (GameStateMachineViewModel.GameState != GameStates.InGame) return;
-        GameplayViewModel.SortBySuit();
+        MultiGameplayViewModel.SortBySuit();
     }
 
     void HandleClearSelectionsPressed()
     {
         if (GameStateMachineViewModel.GameState != GameStates.InGame) return;
-        GameplayViewModel.ClearSelections();
+        MultiGameplayViewModel.ClearSelections();
     }
 
     void HandleActivatePowerPressed()
     {
         if (GameStateMachineViewModel.GameState != GameStates.InGame) return;
-        _ = GameplayViewModel.ActivatePlayerPowerAsync(ApplicationViewModel.Player.Id);
+        _ = MultiGameplayViewModel.ActivatePlayerPowerAsync(ApplicationViewModel.Player.Id);
     }
 
     void ToggleCardSelection(int index)
     {
         if (GameStateMachineViewModel.GameState != GameStates.InGame) return;
-        GameplayViewModel.ToggleCardSelection(index);
+        MultiGameplayViewModel.ToggleCardSelection(index);
         StateHasChanged();
     }
 

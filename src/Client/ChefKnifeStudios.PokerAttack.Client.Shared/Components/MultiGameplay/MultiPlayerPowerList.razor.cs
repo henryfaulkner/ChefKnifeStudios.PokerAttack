@@ -5,42 +5,42 @@ using Microsoft.AspNetCore.Components;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
-namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.Gameplay;
+namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.MultiGameplay;
 
-public partial class Shop : ComponentBase
+public partial class MultiPlayerPowerList : ComponentBase
 {
-    [Inject] IGameDataService GameDataService { get; set; } = null!;
-    [Inject] IGameDataStore GameDataStore { get; set; } = null!;
-    [Inject] IShopViewModel ShopViewModel { get; set; } = null!;
+    [Inject] IMultiGameDataService MultiGameDataService { get; set; } = null!;
+    [Inject] IMultiGameDataStore MultiGameDataStore { get; set; } = null!;
+    [Inject] IMultiPlayerPowerSelectionViewModel MultiPlayerPowerSelectionViewModel { get; set; } = null!;
 
     readonly string[] _subscriptions =
     [
-        nameof(IGameDataStore.IsLoadingShop),
-        nameof(IGameDataStore.ShopItems),
-        nameof(IShopViewModel.ShopTimeSeconds)
+        nameof(IMultiGameDataStore.IsLoadingPlayerPowers),
+        nameof(IMultiGameDataStore.PlayerPowers),
+        nameof(IMultiPlayerPowerSelectionViewModel.SelectionTimeSeconds),
     ];
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        ShopViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
-        GameDataStore.PropertyChanged += ViewModel_OnPropertyChanged;
-        GameDataStore.ShopItems.CollectionChanged += HandleCollectionChanged;
-        foreach (var item in GameDataStore.ShopItems)
+        MultiGameDataStore.PropertyChanged += ViewModel_OnPropertyChanged;
+        MultiPlayerPowerSelectionViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
+        MultiGameDataStore.PlayerPowers.CollectionChanged += HandleCollectionChanged;
+        foreach (var item in MultiGameDataStore.PlayerPowers)
         {
             if (item is INotifyPropertyChanged npc)
                 npc.PropertyChanged += HandleItemPropertyChanged;
         }
 
-        _ = GameDataService.LoadShopItemsAsync();
+        _ = MultiGameDataService.LoadPlayerPowersAsync();
     }
 
     public void Dispose()
     {
-        ShopViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
-        GameDataStore.PropertyChanged -= ViewModel_OnPropertyChanged;
-        GameDataStore.ShopItems.CollectionChanged -= HandleCollectionChanged;
-        foreach (var item in GameDataStore.ShopItems)
+        MultiGameDataStore.PropertyChanged -= ViewModel_OnPropertyChanged;
+        MultiPlayerPowerSelectionViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
+        MultiGameDataStore.PlayerPowers.CollectionChanged -= HandleCollectionChanged;
+        foreach (var item in MultiGameDataStore.PlayerPowers)
         {
             if (item is INotifyPropertyChanged npc)
                 npc.PropertyChanged -= HandleItemPropertyChanged;
@@ -83,9 +83,9 @@ public partial class Shop : ComponentBase
         InvokeAsync(StateHasChanged);
     }
 
-    async Task HandleItemPurchased(ShopItem shopItem)
+    async Task HandlePowerSelected(PlayerPowerListItem playerPower)
     {
-        await GameDataService.PurchaseShopItemAsync(shopItem);
+        await MultiGameDataService.SelectPlayerPowerAsync(playerPower);
         await InvokeAsync(StateHasChanged);
     }
 }

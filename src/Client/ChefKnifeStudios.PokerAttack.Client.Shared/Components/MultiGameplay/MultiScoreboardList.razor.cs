@@ -5,42 +5,38 @@ using Microsoft.AspNetCore.Components;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
-namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.Gameplay;
+namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.MultiGameplay;
 
-public partial class PlayerPowerList : ComponentBase
+public partial class MultiScoreboardList : ComponentBase, IDisposable
 {
-    [Inject] IGameDataService GameDataService { get; set; } = null!;
-    [Inject] IGameDataStore GameDataStore { get; set; } = null!;
-    [Inject] IPlayerPowerSelectionViewModel PlayerPowerSelectionViewModel { get; set; } = null!;
+    [Inject] IMultiGameDataService MultiGameDataService { get; set; } = null!;
+    [Inject] IMultiGameDataStore MultiGameDataStore { get; set; } = null!;
 
     readonly string[] _subscriptions =
     [
-        nameof(IGameDataStore.IsLoadingPlayerPowers),
-        nameof(IGameDataStore.PlayerPowers),
-        nameof(IPlayerPowerSelectionViewModel.SelectionTimeSeconds),
+        nameof(IMultiGameDataStore.IsLoadingScoreboard),
+        nameof(IMultiGameDataStore.ScoreboardItems),
     ];
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        GameDataStore.PropertyChanged += ViewModel_OnPropertyChanged;
-        PlayerPowerSelectionViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
-        GameDataStore.PlayerPowers.CollectionChanged += HandleCollectionChanged;
-        foreach (var item in GameDataStore.PlayerPowers)
+        MultiGameDataStore.PropertyChanged += ViewModel_OnPropertyChanged;
+        MultiGameDataStore.ScoreboardItems.CollectionChanged += HandleCollectionChanged;
+        foreach (var item in MultiGameDataStore.ScoreboardItems)
         {
             if (item is INotifyPropertyChanged npc)
                 npc.PropertyChanged += HandleItemPropertyChanged;
         }
 
-        _ = GameDataService.LoadPlayerPowersAsync();
+        _ = MultiGameDataService.LoadScoreboardAsync();
     }
 
     public void Dispose()
     {
-        GameDataStore.PropertyChanged -= ViewModel_OnPropertyChanged;
-        PlayerPowerSelectionViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
-        GameDataStore.PlayerPowers.CollectionChanged -= HandleCollectionChanged;
-        foreach (var item in GameDataStore.PlayerPowers)
+        MultiGameDataStore.PropertyChanged -= ViewModel_OnPropertyChanged;
+        MultiGameDataStore.ScoreboardItems.CollectionChanged -= HandleCollectionChanged;
+        foreach (var item in MultiGameDataStore.ScoreboardItems)
         {
             if (item is INotifyPropertyChanged npc)
                 npc.PropertyChanged -= HandleItemPropertyChanged;
@@ -81,11 +77,5 @@ public partial class PlayerPowerList : ComponentBase
     void HandleItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         InvokeAsync(StateHasChanged);
-    }
-
-    async Task HandlePowerSelected(PlayerPowerListItem playerPower)
-    {
-        await GameDataService.SelectPlayerPowerAsync(playerPower);
-        await InvokeAsync(StateHasChanged);
     }
 }

@@ -14,7 +14,7 @@ using System.Text.Json;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 
-public interface IGameplayViewModel : IViewModel
+public interface IMultiGameplayViewModel : IViewModel
 {
     int RunTimeInSeconds { get; }
     int Score { get; }
@@ -35,14 +35,14 @@ public interface IGameplayViewModel : IViewModel
     Task ActivatePlayerPowerAsync(string playerId, CancellationToken cancellationToken = default);
 }
 
-public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDisposable
+public partial class MultIMultiGameplayViewModel : BaseViewModel, IMultiGameplayViewModel, IDisposable
 {
     readonly ISignalRNotificationService _signalRNotificationService;
     readonly IToastService _toastService;
     readonly IEventNotificationService _eventNotificationService;
     readonly NavigationManager _navigationManager;
     readonly IAudioService _audioService;
-    readonly IGameDataStore _gameDataStore;
+    readonly IMultiGameDataStore _multiGameDataStore;
     readonly IApplicationViewModel _applicationViewModel;
 
     const int _DEFAULT_NUM_PLAY_HANDS = 5;
@@ -81,13 +81,13 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 
     SortMode _currentSortMode = SortMode.None;
 
-    public GameplayViewModel(
+    public MultIMultiGameplayViewModel(
         ISignalRNotificationService signalRNotificationService,
         IToastService toastService,
         IEventNotificationService eventNotificationService,
         NavigationManager navigationManager,
         IAudioService audioService,
-        IGameDataStore gameDataStore,
+        IMultiGameDataStore multiGameDataStore,
         IApplicationViewModel applicationViewModel)
     {
         _signalRNotificationService = signalRNotificationService;
@@ -95,7 +95,7 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
         _eventNotificationService = eventNotificationService;
         _navigationManager = navigationManager;
         _audioService = audioService;
-        _gameDataStore = gameDataStore;
+        _multiGameDataStore = multiGameDataStore;
         _applicationViewModel = applicationViewModel;
 
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
@@ -113,8 +113,8 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
 
     public async Task StartGameAsync(string playerId, CancellationToken cancellationToken = default)
     {
-        if (_gameDataStore.GameId is null) throw new ApplicationException("GameDataStore.GameId must be set before starting the game.");
-        await _signalRNotificationService.StartGameAsync(_gameDataStore.GameId, playerId);
+        if (_multiGameDataStore.GameId is null) throw new ApplicationException("GameDataStore.GameId must be set before starting the game.");
+        await _signalRNotificationService.StartGameAsync(_multiGameDataStore.GameId, playerId);
     }
 
     public Task StartRoundAsync(string playerId, CancellationToken cancellationToken = default)
@@ -200,8 +200,8 @@ public partial class GameplayViewModel : BaseViewModel, IGameplayViewModel, IDis
             _toastService.ShowWarning("Not enough power charges");
             return;
         }
-        if (_gameDataStore.GameId is null) throw new ApplicationException("GameDataStore.GameId must be set before activating power.");
-        await _signalRNotificationService.ActivatePlayerPowerAsync(_gameDataStore.GameId, playerId);
+        if (_multiGameDataStore.GameId is null) throw new ApplicationException("GameDataStore.GameId must be set before activating power.");
+        await _signalRNotificationService.ActivatePlayerPowerAsync(_multiGameDataStore.GameId, playerId);
         PowerCharges--;
     }
 

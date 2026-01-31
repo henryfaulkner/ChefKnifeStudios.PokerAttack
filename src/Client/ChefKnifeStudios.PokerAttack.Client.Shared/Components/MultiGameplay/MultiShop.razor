@@ -3,13 +3,13 @@
 @using ChefKnifeStudios.PokerAttack.Client.Core.Extensions
 
 <div class="shop">
-    @if (GameDataStore.IsLoadingShop)
+    @if (MultiGameDataStore.IsLoadingShop)
     {
         <div class="mat-body1">Loading...</div>
     }
     else
     {
-        @foreach (var shopItem in GameDataStore.ShopItems)
+        @foreach (var shopItem in MultiGameDataStore.ShopItems)
         {
             <div class="shop__card">
                 @ItemCategoryPill(shopItem)
@@ -36,7 +36,7 @@
                 }
             </div>
         }
-        <span class="mat-h4">@ShopViewModel.ShopTimeSeconds.FormatAsMinutesSeconds()</span>
+        <span class="mat-h4">@MultiShopViewModel.ShopTimeSeconds.FormatAsMinutesSeconds()</span>
     }
 </div>
 

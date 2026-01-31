@@ -1,13 +1,13 @@
 @using ChefKnifeStudios.PokerAttack.Client.Core.Extensions
 
 <div class="player-power-list">
-    @if (GameDataStore.IsLoadingPlayerPowers)
+    @if (MultiGameDataStore.IsLoadingPlayerPowers)
     {
         <div class="mat-body1">Loading...</div>
     }
     else
     {
-        @foreach (var powerOption in GameDataStore.PlayerPowers)
+        @foreach (var powerOption in MultiGameDataStore.PlayerPowers)
         {
             <div class="player-power-list__card @(powerOption.IsSelected ? "selected" : string.Empty)">
                 <span class="player-power-list__card-name mat-h6">@powerOption.Name</span>
@@ -33,6 +33,6 @@
                 }
             </div>
         }
-        <span class="mat-h4">@PlayerPowerSelectionViewModel.SelectionTimeSeconds.FormatAsMinutesSeconds()</span>
+        <span class="mat-h4">@MultiPlayerPowerSelectionViewModel.SelectionTimeSeconds.FormatAsMinutesSeconds()</span>
     }
 </div>

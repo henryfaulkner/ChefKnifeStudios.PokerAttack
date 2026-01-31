@@ -95,17 +95,17 @@ builder.Services.AddBlazoredLocalStorage();
 #region REGISTER VIEWMODELS
 builder.Services.AddScoped<IApplicationViewModel, ApplicationViewModel>();
 builder.Services.AddScoped<IModalControllerViewModel, ModalControllerViewModel>();
-builder.Services.AddScoped<IGameDataStore, GameDataStore>();
 builder.Services.AddScoped<ISoloGameDataStore, SoloGameDataStore>();
-builder.Services.AddScoped<IGameDataService, GameDataService>();
+builder.Services.AddScoped<IMultiGameDataService, MultiGameDataService>();
+builder.Services.AddScoped<IMultiGameDataStore, MultiGameDataStore>();
 
-builder.Services.AddTransient<IGameplayViewModel, GameplayViewModel>();
+builder.Services.AddTransient<IMultiGameplayViewModel, MultIMultiGameplayViewModel>();
+builder.Services.AddTransient<IMultiShopViewModel, MultiShopViewModel>();
+builder.Services.AddTransient<IMultiPlayerPowerSelectionViewModel, MultiPlayerPowerSelectionViewModel>();
 builder.Services.AddTransient<IGameStateMachineViewModel, GameStateMachineViewModel>();
 builder.Services.AddTransient<ILobbyViewModel, LobbyViewModel>();
 builder.Services.AddTransient<IPlayerViewModel, PlayerViewModel>();
 builder.Services.AddTransient<IScoringRulesViewModel, ScoringRulesViewModel>();
-builder.Services.AddTransient<IShopViewModel, ShopViewModel>();
-builder.Services.AddTransient<IPlayerPowerSelectionViewModel, PlayerPowerSelectionViewModel>();
 builder.Services.AddTransient<ISoloGameplayViewModel, SoloGameplayViewModel>();
 #endregion
 

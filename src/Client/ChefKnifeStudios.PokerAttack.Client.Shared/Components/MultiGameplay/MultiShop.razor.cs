@@ -5,38 +5,42 @@ using Microsoft.AspNetCore.Components;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
-namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.Gameplay;
+namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.MultiGameplay;
 
-public partial class ScoreboardList : ComponentBase, IDisposable
+public partial class MultiShop : ComponentBase
 {
-    [Inject] IGameDataService GameDataService { get; set; } = null!;
-    [Inject] IGameDataStore GameDataStore { get; set; } = null!;
+    [Inject] IMultiGameDataService MultiGameDataService { get; set; } = null!;
+    [Inject] IMultiGameDataStore MultiGameDataStore { get; set; } = null!;
+    [Inject] IMultiShopViewModel MultiShopViewModel { get; set; } = null!;
 
     readonly string[] _subscriptions =
     [
-        nameof(IGameDataStore.IsLoadingScoreboard),
-        nameof(IGameDataStore.ScoreboardItems),
+        nameof(IMultiGameDataStore.IsLoadingShop),
+        nameof(IMultiGameDataStore.ShopItems),
+        nameof(IMultiShopViewModel.ShopTimeSeconds)
     ];
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        GameDataStore.PropertyChanged += ViewModel_OnPropertyChanged;
-        GameDataStore.ScoreboardItems.CollectionChanged += HandleCollectionChanged;
-        foreach (var item in GameDataStore.ScoreboardItems)
+        MultiShopViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
+        MultiGameDataStore.PropertyChanged += ViewModel_OnPropertyChanged;
+        MultiGameDataStore.ShopItems.CollectionChanged += HandleCollectionChanged;
+        foreach (var item in MultiGameDataStore.ShopItems)
         {
             if (item is INotifyPropertyChanged npc)
                 npc.PropertyChanged += HandleItemPropertyChanged;
         }
 
-        _ = GameDataService.LoadScoreboardAsync();
+        _ = MultiGameDataService.LoadShopItemsAsync();
     }
 
     public void Dispose()
     {
-        GameDataStore.PropertyChanged -= ViewModel_OnPropertyChanged;
-        GameDataStore.ScoreboardItems.CollectionChanged -= HandleCollectionChanged;
-        foreach (var item in GameDataStore.ScoreboardItems)
+        MultiShopViewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
+        MultiGameDataStore.PropertyChanged -= ViewModel_OnPropertyChanged;
+        MultiGameDataStore.ShopItems.CollectionChanged -= HandleCollectionChanged;
+        foreach (var item in MultiGameDataStore.ShopItems)
         {
             if (item is INotifyPropertyChanged npc)
                 npc.PropertyChanged -= HandleItemPropertyChanged;
@@ -77,5 +81,11 @@ public partial class ScoreboardList : ComponentBase, IDisposable
     void HandleItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         InvokeAsync(StateHasChanged);
+    }
+
+    async Task HandleItemPurchased(ShopItem shopItem)
+    {
+        await MultiGameDataService.PurchaseShopItemAsync(shopItem);
+        await InvokeAsync(StateHasChanged);
     }
 }

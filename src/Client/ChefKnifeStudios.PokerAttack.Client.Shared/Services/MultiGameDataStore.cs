@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 
-public interface IGameDataStore : INotifyPropertyChanged
+public interface IMultiGameDataStore : INotifyPropertyChanged
 {
     string? GameId { get; set; }
     int Wallet { get; set; }
@@ -20,7 +20,7 @@ public interface IGameDataStore : INotifyPropertyChanged
     void Reset();
 }
 
-public partial class GameDataStore : ObservableObject, IGameDataStore
+public partial class MultiGameDataStore : ObservableObject, IMultiGameDataStore
 {
     [ObservableProperty]
     string? _gameId;
@@ -52,7 +52,7 @@ public partial class GameDataStore : ObservableObject, IGameDataStore
     [ObservableProperty]
     bool _isLoadingScoreboard;
 
-    public GameDataStore()
+    public MultiGameDataStore()
     {
         Reset();
     }

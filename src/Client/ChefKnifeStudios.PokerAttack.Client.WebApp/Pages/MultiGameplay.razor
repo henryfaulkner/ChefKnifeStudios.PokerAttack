@@ -1,6 +1,6 @@
 ﻿@using ChefKnifeStudios.PokerAttack.Client.Shared.Components
 @using ChefKnifeStudios.PokerAttack.Client.Shared.Components.FABs
-@using ChefKnifeStudios.PokerAttack.Client.Shared.Components.Gameplay
+@using ChefKnifeStudios.PokerAttack.Client.Shared.Components.MultiGameplay
 @using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs
 @using ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels
 @using ChefKnifeStudios.PokerAttack.Shared.Enums
@@ -21,15 +21,15 @@
                             <div 
                                 class="sidebar mat-layout-grid-cell mat-layout-grid-cell-span-3 bgclr-surface2"
                             >
-                                <span class="mat-h4">Score: @GameplayViewModel.Score</span>
-                                <span class="mat-h4">@GameplayViewModel.RunTimeInSeconds.FormatAsMinutesSeconds()</span>
-                                <span class="mat-h4">Hands Available: @GameplayViewModel.AvailablePlayHands</span>
-                                <span class="mat-h4">Discards Available: @GameplayViewModel.AvailableDiscards</span>
-                                <span class="mat-h4">Power: @(GameplayViewModel.ActivePlayerPower?.Name ?? "No Power???")</span>
-                                <span class="mat-h4">Power Charges: @GameplayViewModel.PowerCharges/2</span>
+                                <span class="mat-h4">Score: @MultiGameplayViewModel.Score</span>
+                                <span class="mat-h4">@MultiGameplayViewModel.RunTimeInSeconds.FormatAsMinutesSeconds()</span>
+                                <span class="mat-h4">Hands Available: @MultiGameplayViewModel.AvailablePlayHands</span>
+                                <span class="mat-h4">Discards Available: @MultiGameplayViewModel.AvailableDiscards</span>
+                                <span class="mat-h4">Power: @(MultiGameplayViewModel.ActivePlayerPower?.Name ?? "No Power???")</span>
+                                <span class="mat-h4">Power Charges: @MultiGameplayViewModel.PowerCharges/2</span>
                             </div>
                             <div class="gaming-container mat-layout-grid-cell mat-layout-grid-cell-span-9">
-                                <CardHand Cards="@GameplayViewModel.CardsInHand.ToList()" />
+                                <CardHand Cards="@MultiGameplayViewModel.CardsInHand.ToList()" />
 
                                 <div class="action-buttons">
                                     <MatButton Id="playHandBtn"
@@ -97,7 +97,7 @@
             case GameStates.Shop:
                 {
                     <span class="mat-body1">SHOP</span>
-                    <span class="mat-body1">Wallet: @(GameDataStore.IsLoadingWallet ? "LOADING" : GameDataStore.Wallet.ToString("C2"))</span>
+                    <span class="mat-body1">Wallet: @(MultiGameDataStore.IsLoadingWallet ? "LOADING" : MultiGameDataStore.Wallet.ToString("C2"))</span>
                     <Shop />
                     break;
                 }

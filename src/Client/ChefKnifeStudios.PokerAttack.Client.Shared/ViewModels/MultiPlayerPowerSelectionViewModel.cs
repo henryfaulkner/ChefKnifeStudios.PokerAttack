@@ -3,24 +3,24 @@ using ChefKnifeStudios.PokerAttack.Shared;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 
-public interface IShopViewModel : IViewModel
+public interface IMultiPlayerPowerSelectionViewModel : IViewModel
 {
-    int ShopTimeSeconds { get; }
+    int SelectionTimeSeconds { get; }
 }
 
-public partial class ShopViewModel : BaseViewModel, IShopViewModel, IDisposable
+public partial class MultiPlayerPowerSelectionViewModel : BaseViewModel, IMultiPlayerPowerSelectionViewModel, IDisposable
 {
     readonly IApplicationViewModel _applicationViewModel;
 
     [ObservableProperty]
-    int _shopTimeSeconds;
+    int _selectionTimeSeconds;
 
     CancellationTokenSource? _timerToken;
 
-    public ShopViewModel(IApplicationViewModel applicationViewModel)
+    public MultiPlayerPowerSelectionViewModel(IApplicationViewModel applicationViewModel)
     {
         _applicationViewModel = applicationViewModel;
-        ShopTimeSeconds = _applicationViewModel.GameSettings.ShopTimeMs / 1000;
+        SelectionTimeSeconds = _applicationViewModel.GameSettings.PlayerPowerSelectionTimeMs / 1000;
         StartTimer();
     }
 
@@ -39,7 +39,7 @@ public partial class ShopViewModel : BaseViewModel, IShopViewModel, IDisposable
 
         _timerToken = TimerHelper.SetInterval(() =>
         {
-            if (ShopTimeSeconds > 0) ShopTimeSeconds--;
+            if (SelectionTimeSeconds > 0) SelectionTimeSeconds--;
         }, 1000);
     }
 }

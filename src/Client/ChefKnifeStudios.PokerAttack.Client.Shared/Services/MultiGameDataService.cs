@@ -14,7 +14,7 @@ using System.Text.Json;
 
 namespace ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 
-public interface IGameDataService : IDisposable
+public interface IMultiGameDataService : IDisposable
 {
     Task LoadWalletAsync(CancellationToken cancellationToken = default);
     Task LoadShopItemsAsync(CancellationToken cancellationToken = default);
@@ -24,9 +24,9 @@ public interface IGameDataService : IDisposable
     Task SelectPlayerPowerAsync(PlayerPowerListItem playerPower, CancellationToken cancellationToken = default);
 }
 
-public class GameDataService : IGameDataService
+public class MultiGameDataService : IMultiGameDataService
 {
-    readonly ILogger<GameDataService> _logger;
+    readonly ILogger<MultiGameDataService> _logger;
     readonly IApplicationViewModel _applicationViewModel;
     readonly IGameplayEndpointsService _gameplayEndpointsService;
     readonly IShopEndpointsService _shopEndpointsService;
@@ -34,10 +34,10 @@ public class GameDataService : IGameDataService
     readonly IToastService _toastService;
     readonly IEventNotificationService _eventNotificationService;
     readonly ISignalRNotificationService _signalRNotificationService;
-    readonly IGameDataStore _gameDataStore;
+    readonly IMultiGameDataStore _multiGameDataStore;
 
-    public GameDataService(
-        ILogger<GameDataService> logger,
+    public MultiGameDataService(
+        ILogger<MultiGameDataService> logger,
         IApplicationViewModel applicationViewModel,
         IGameplayEndpointsService gameplayEndpointsService,
         IShopEndpointsService shopEndpointsService,
@@ -45,7 +45,7 @@ public class GameDataService : IGameDataService
         IToastService toastService,
         IEventNotificationService eventNotificationService,
         ISignalRNotificationService signalRNotificationService,
-        IGameDataStore gameDataStore)
+        IMultiGameDataStore multiGameDataStore)
     {
         _logger = logger;
         _applicationViewModel = applicationViewModel;
@@ -55,7 +55,7 @@ public class GameDataService : IGameDataService
         _toastService = toastService;
         _eventNotificationService = eventNotificationService;
         _signalRNotificationService = signalRNotificationService;
-        _gameDataStore = gameDataStore;
+        _multiGameDataStore = multiGameDataStore;
 
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
     }
@@ -67,57 +67,57 @@ public class GameDataService : IGameDataService
 
     public async Task LoadWalletAsync(CancellationToken cancellationToken = default)
     {
-        if (_gameDataStore.GameId is null) throw new ApplicationException("GameDataStore.GameId must be set before loading wallets.");
-        _gameDataStore.IsLoadingWallet = true;
-        _gameDataStore.Wallet = (await _gameplayEndpointsService.GetPlayerWalletAsync(
-            _gameDataStore.GameId,
+        if (_multiGameDataStore.GameId is null) throw new ApplicationException("MultiGameDataStore.GameId must be set before loading wallets.");
+        _multiGameDataStore.IsLoadingWallet = true;
+        _multiGameDataStore.Wallet = (await _gameplayEndpointsService.GetPlayerWalletAsync(
+            _multiGameDataStore.GameId,
             _applicationViewModel.Player.Id,
             cancellationToken
         )).Value ?? 0;
-        _gameDataStore.IsLoadingWallet = false;
+        _multiGameDataStore.IsLoadingWallet = false;
     }
 
     public async Task LoadShopItemsAsync(CancellationToken cancellationToken = default)
     {
-        if (_gameDataStore.GameId is null) throw new ApplicationException("GameDataStore.GameId must be set before loading shop items.");
-        _gameDataStore.IsLoadingShop = true;
-        _gameDataStore.ShopItems = (await _shopEndpointsService.GetShopItemsAsync(
-            _gameDataStore.GameId,
+        if (_multiGameDataStore.GameId is null) throw new ApplicationException("MultiGameDataStore.GameId must be set before loading shop items.");
+        _multiGameDataStore.IsLoadingShop = true;
+        _multiGameDataStore.ShopItems = (await _shopEndpointsService.GetShopItemsAsync(
+            _multiGameDataStore.GameId,
             cancellationToken
         )).Value?
             .Select(x => new ShopItem(x))
             .ToObservableCollection() ?? [];
-        _gameDataStore.IsLoadingShop = false;
+        _multiGameDataStore.IsLoadingShop = false;
     }
 
     public async Task LoadPlayerPowersAsync(CancellationToken cancellationToken = default)
     {
-        _gameDataStore.IsLoadingPlayerPowers = true;
+        _multiGameDataStore.IsLoadingPlayerPowers = true;
         var playerPowers = (await _playerPowerEndpointsService.GetPlayerPowersAsync()).Value;
-        _gameDataStore.PlayerPowers = playerPowers?.Select(x => new PlayerPowerListItem(x)).ToObservableCollection() ?? [];
-        _gameDataStore.IsLoadingPlayerPowers = false;
+        _multiGameDataStore.PlayerPowers = playerPowers?.Select(x => new PlayerPowerListItem(x)).ToObservableCollection() ?? [];
+        _multiGameDataStore.IsLoadingPlayerPowers = false;
     }
 
     public async Task LoadScoreboardAsync(CancellationToken cancellationToken = default)
     {
-        if (_gameDataStore.GameId is null) throw new ApplicationException("GameDataStore.GameId must be set before loading rounds.");
-        _gameDataStore.IsLoadingScoreboard = true;
-        var round = (await _gameplayEndpointsService.GetLatestRoundAsync(_gameDataStore.GameId, cancellationToken)).Value;
-        _gameDataStore.ScoreboardItems = round?.Scores.Select(x => new ScoreboardListItem(x)).ToObservableCollection() ?? [];
-        _gameDataStore.IsLoadingScoreboard = false;
+        if (_multiGameDataStore.GameId is null) throw new ApplicationException("MultiGameDataStore.GameId must be set before loading rounds.");
+        _multiGameDataStore.IsLoadingScoreboard = true;
+        var round = (await _gameplayEndpointsService.GetLatestRoundAsync(_multiGameDataStore.GameId, cancellationToken)).Value;
+        _multiGameDataStore.ScoreboardItems = round?.Scores.Select(x => new ScoreboardListItem(x)).ToObservableCollection() ?? [];
+        _multiGameDataStore.IsLoadingScoreboard = false;
     }
 
     public async Task PurchaseShopItemAsync(ShopItem item, CancellationToken cancellationToken = default)
     {
-        if (_gameDataStore.GameId is null) throw new ApplicationException("GameDataStore.GameId must be set before purchasing items.");
-        if (_gameDataStore.Wallet < item.Price)
+        if (_multiGameDataStore.GameId is null) throw new ApplicationException("MultiGameDataStore.GameId must be set before purchasing items.");
+        if (_multiGameDataStore.Wallet < item.Price)
         {
             _toastService.ShowWarning("Not enough funds to purchase item");
             return;
         }
 
         var result = await _shopEndpointsService.PurchaseShopItemAsync(
-            _gameDataStore.GameId,
+            _multiGameDataStore.GameId,
             _applicationViewModel.Player.Id,
             item.ItemId,
             cancellationToken
@@ -125,9 +125,9 @@ public class GameDataService : IGameDataService
 
         if (result.IsSuccess && result.Value is not null)
         {
-            _gameDataStore.Wallet -= item.Price;
+            _multiGameDataStore.Wallet -= item.Price;
             item.WasPurchased = true;
-            _gameDataStore.PlayerItems.Add(item);
+            _multiGameDataStore.PlayerItems.Add(item);
         }
         else
         {
@@ -137,10 +137,10 @@ public class GameDataService : IGameDataService
 
     public async Task SelectPlayerPowerAsync(PlayerPowerListItem playerPower, CancellationToken cancellationToken = default)
     {
-        if (_gameDataStore.GameId is null) throw new ApplicationException("GameDataStore.GameId must be set before submitting player power.");
+        if (_multiGameDataStore.GameId is null) throw new ApplicationException("MultiGameDataStore.GameId must be set before submitting player power.");
         try
         {
-            foreach (var pp in _gameDataStore.PlayerPowers) pp.IsSelected = false;
+            foreach (var pp in _multiGameDataStore.PlayerPowers) pp.IsSelected = false;
             playerPower.IsSelected = true;
             if (playerPower is null)
             {
@@ -149,7 +149,7 @@ public class GameDataService : IGameDataService
             }
 
             var res = await _playerPowerEndpointsService.SelectPlayerPowerAsync(
-                _gameDataStore.GameId,
+                _multiGameDataStore.GameId,
                 _applicationViewModel.Player.Id,
                 playerPower.Id,
                 cancellationToken
@@ -201,7 +201,7 @@ public class GameDataService : IGameDataService
                     var ids = args.Players.Select(p => p.PlayerId).ToHashSet(StringComparer.OrdinalIgnoreCase);
 
                     // Mark items that are starting elimination
-                    foreach (var item in _gameDataStore.ScoreboardItems)
+                    foreach (var item in _multiGameDataStore.ScoreboardItems)
                     {
                         item.IsEliminating = ids.Contains(item.ClientUserId);
                     }
