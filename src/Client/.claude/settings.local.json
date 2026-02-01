@@ -5,7 +5,10 @@
       "WebFetch(domain:www.matblazor.com)",
       "Bash(dotnet build:*)",
       "WebFetch(domain:m3.material.io)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(dir \"C:\\Projects\\ChefKnifeStudios.PokerAttack\\src\\Server\" /s /b *.cs)",
+      "Bash(findstr:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

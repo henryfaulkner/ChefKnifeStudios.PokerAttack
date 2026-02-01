@@ -7,4 +7,5 @@ public static class LocalStorageConstants
     public const string HasSeenTourKey = "HasSeenTour";
     public const string SoloGameStateKey = "SoloGameState";
     public const string SoloGameResultKey = "SoloGameResult";
+    public const string MultiGameStateKey = "MultiGameState";
 }

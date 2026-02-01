@@ -257,22 +257,68 @@ public class SignalRNotificationHub(
     {
         try
         {
-            logger.LogWarning(
-                "Player disconnected from game. Removing immediately: PlayerId={PlayerId}, GameId={GameId}",
+            logger.LogInformation(
+                "Player disconnected from game. Marking as away (grace period active): PlayerId={PlayerId}, GameId={GameId}",
                 playerId, gameId);
 
             // Use scoped service to avoid lifetime issues
             using var scope = serviceProvider.CreateScope();
             var scopedGameService = scope.ServiceProvider.GetRequiredService<IGameService>();
 
-            // Remove player from game immediately
-            await scopedGameService.LeaveGameAsync(gameId, playerId);
+            // Mark player as "away" instead of removing immediately
+            // This gives them a grace period to reconnect
+            await scopedGameService.MarkPlayerAwayAsync(gameId, playerId);
         }
         catch (Exception ex)
         {
             logger.LogError(ex,
-                "Error removing disconnected player from game: PlayerId={PlayerId}, GameId={GameId}",
+                "Error marking disconnected player as away: PlayerId={PlayerId}, GameId={GameId}",
                 playerId, gameId);
+        }
+    }
+
+    // -------------------------
+    // Reconnection handling
+    // -------------------------
+    public async Task ReconnectToGame(string gameId)
+    {
+        var userId = Context.UserIdentifier;
+        if (string.IsNullOrEmpty(userId))
+        {
+            logger.LogWarning("ReconnectToGame called without user identifier");
+            return;
+        }
+
+        try
+        {
+            // Use scoped service to avoid lifetime issues
+            using var scope = serviceProvider.CreateScope();
+            var scopedGameService = scope.ServiceProvider.GetRequiredService<IGameService>();
+
+            var result = await scopedGameService.ReconnectPlayerAsync(gameId, userId);
+
+            if (result.IsSuccess)
+            {
+                // Add player back to SignalR group
+                var groupName = notificationHelper.GetGameGroupName(gameId);
+                await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+
+                logger.LogInformation(
+                    "Player reconnected to game: PlayerId={PlayerId}, GameId={GameId}",
+                    userId, gameId);
+            }
+            else
+            {
+                logger.LogWarning(
+                    "Player reconnection failed: PlayerId={PlayerId}, GameId={GameId}, Errors={Errors}",
+                    userId, gameId, string.Join(", ", result.Errors));
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex,
+                "Error during player reconnection: PlayerId={PlayerId}, GameId={GameId}",
+                userId, gameId);
         }
     }
 }

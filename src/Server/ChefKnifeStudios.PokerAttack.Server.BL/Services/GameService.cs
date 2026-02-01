@@ -26,8 +26,12 @@ public interface IGameService
     Task<Result<int>> GetPlayerWalletAsync(string playerId, CancellationToken ct = default);
     Task<Result> EndRoundAsync(string gameId, CancellationToken ct = default);
     Task<Result<RoundDTO>> GetLatestRoundFromGame(string gameId, CancellationToken ct = default);
+    Task<Result<MultiGameStateDTO>> GetMultiGameStateAsync(string gameId, string playerId, CancellationToken ct = default);
     Task<Result> EndGameAsync(string gameId, CancellationToken ct = default);
     Task<Result> LeaveGameAsync(string gameId, string playerId, CancellationToken ct = default);
+    Task<Result> MarkPlayerAwayAsync(string gameId, string playerId, CancellationToken ct = default);
+    Task<Result> ReconnectPlayerAsync(string gameId, string playerId, CancellationToken ct = default);
+    Task<Result> CleanupAwayPlayersAsync(TimeSpan gracePeriod, CancellationToken ct = default);
     Task<Result> StartEliminationAsync(string gameId, CancellationToken ct = default);
     Task<Result> FinishEliminationAsync(string gameId, CancellationToken ct = default);
     Task<Result> StartShoppingAsync(string gameId, CancellationToken ct = default);
@@ -384,6 +388,44 @@ public class GameService(
         return Result.Success(dtoResult.Value);
     }
 
+    public async Task<Result<MultiGameStateDTO>> GetMultiGameStateAsync(string gameId, string playerId, CancellationToken ct = default)
+    {
+        var activeGameResult = await activeGameRepository.GetAsync(gameId, ct);
+        if (!activeGameResult.IsSuccess || activeGameResult.Value is null)
+            return Result.NotFound($"Game not found: Game Id {gameId}");
+
+        var activeGame = activeGameResult.Value;
+
+        // Verify player is in the game
+        if (!activeGame.Players.Any(p => p.Id == playerId))
+            return Result.NotFound($"Player not in game: Player Id {playerId}");
+
+        var gamePlayerResult = await gamePlayerRepository.GetAsync(playerId, ct);
+        if (!gamePlayerResult.IsSuccess || gamePlayerResult.Value is null)
+            return Result.NotFound($"GamePlayer not found: Player Id {playerId}");
+
+        var gamePlayer = gamePlayerResult.Value;
+
+        // Get current game state
+        var gameStateResult = await gameStateRepository.GetAsync(gameId, ct);
+        var currentGameState = gameStateResult.IsSuccess ? gameStateResult.Value : GameStates.GameStart;
+
+        return Result.Success(new MultiGameStateDTO
+        {
+            GameId = gameId,
+            PlayerId = playerId,
+            GameState = currentGameState,
+            RoundNumber = activeGame.RoundNumber,
+            Score = gamePlayer.Score,
+            Wallet = gamePlayer.Wallet,
+            HandsRemaining = gamePlayer.HandsRemaining,
+            DiscardsRemaining = gamePlayer.DiscardsRemaining,
+            PowerCharges = gamePlayer.PlayerPower is not null ? 2 : 0, // Default power charges
+            Cards = gamePlayer.CardsInHand.Select(x => x.MapToDTO()),
+            ActivePower = gamePlayer.PlayerPower?.MapToDTO()
+        });
+    }
+
     public async Task<Result> EndGameAsync(string gameId, CancellationToken ct = default)
     {
         var activeGameResult = await activeGameRepository.GetAsync(gameId, ct);
@@ -476,6 +518,120 @@ public class GameService(
             logger.LogWarning(ex, "Game ended before loser could leave (expected race-condition at game end).");
             return Result.Success(); // Not a failure - expected race condition
         }
+    }
+
+    public async Task<Result> MarkPlayerAwayAsync(string gameId, string playerId, CancellationToken ct = default)
+    {
+        var gamePlayerResult = await gamePlayerRepository.GetAsync(playerId, ct);
+        if (!gamePlayerResult.IsSuccess || gamePlayerResult.Value is null)
+        {
+            logger.LogWarning("Cannot mark player away: GamePlayer {playerId} not found", playerId);
+            return Result.NotFound("GamePlayer not found");
+        }
+
+        var gamePlayer = gamePlayerResult.Value;
+        gamePlayer.ConnectionStatus = PlayerConnectionStatus.Away;
+        gamePlayer.DisconnectedAt = DateTimeOffset.UtcNow;
+
+        var updateResult = await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
+        if (!updateResult.IsSuccess)
+        {
+            logger.LogWarning("Failed to update player {playerId} connection status to Away", playerId);
+            return Result.Error("Failed to update player status");
+        }
+
+        logger.LogInformation(
+            "Player marked as away: PlayerId={PlayerId}, GameId={GameId}",
+            playerId, gameId);
+
+        // Notify other players that this player is away
+        await notificationHelper.BroadcastToGameAsync(
+            gameId,
+            new PokerAttackNotification(PokerAttackNotificationType.PlayerAway, playerId));
+
+        return Result.Success();
+    }
+
+    public async Task<Result> ReconnectPlayerAsync(string gameId, string playerId, CancellationToken ct = default)
+    {
+        var gamePlayerResult = await gamePlayerRepository.GetAsync(playerId, ct);
+        if (!gamePlayerResult.IsSuccess || gamePlayerResult.Value is null)
+        {
+            logger.LogWarning("Cannot reconnect player: GamePlayer {playerId} not found", playerId);
+            return Result.NotFound("GamePlayer not found");
+        }
+
+        var gamePlayer = gamePlayerResult.Value;
+
+        // Only allow reconnect if player is "away", not fully "disconnected"
+        if (gamePlayer.ConnectionStatus == PlayerConnectionStatus.Disconnected)
+        {
+            logger.LogWarning("Player {playerId} was fully removed from game, cannot reconnect", playerId);
+            return Result.Error("Player was fully removed from game");
+        }
+
+        gamePlayer.ConnectionStatus = PlayerConnectionStatus.Connected;
+        gamePlayer.DisconnectedAt = null;
+
+        var updateResult = await gamePlayerRepository.UpdateAsync(playerId, gamePlayer, ct);
+        if (!updateResult.IsSuccess)
+        {
+            logger.LogWarning("Failed to update player {playerId} connection status to Connected", playerId);
+            return Result.Error("Failed to update player status");
+        }
+
+        logger.LogInformation(
+            "Player reconnected: PlayerId={PlayerId}, GameId={GameId}",
+            playerId, gameId);
+
+        // Notify other players that this player is back
+        await notificationHelper.BroadcastToGameAsync(
+            gameId,
+            new PokerAttackNotification(PokerAttackNotificationType.PlayerReconnected, playerId));
+
+        return Result.Success();
+    }
+
+    public async Task<Result> CleanupAwayPlayersAsync(TimeSpan gracePeriod, CancellationToken ct = default)
+    {
+        var allGamesResult = await activeGameRepository.GetAllAsync(ct);
+        if (!allGamesResult.IsSuccess || allGamesResult.Value is null)
+            return Result.Success(); // No games to clean up
+
+        var awayThreshold = DateTimeOffset.UtcNow - gracePeriod;
+        var cleanedUpCount = 0;
+
+        foreach (var (gameId, game) in allGamesResult.Value)
+        {
+            foreach (var player in game.Players.ToList())
+            {
+                var gamePlayerResult = await gamePlayerRepository.GetAsync(player.Id, ct);
+                if (!gamePlayerResult.IsSuccess || gamePlayerResult.Value is null)
+                    continue;
+
+                var gamePlayer = gamePlayerResult.Value;
+
+                // Check if player has been away too long
+                if (gamePlayer.ConnectionStatus == PlayerConnectionStatus.Away
+                    && gamePlayer.DisconnectedAt.HasValue
+                    && gamePlayer.DisconnectedAt.Value < awayThreshold)
+                {
+                    logger.LogInformation(
+                        "Removing player who exceeded grace period: PlayerId={PlayerId}, GameId={GameId}, AwayFor={AwaySeconds}s",
+                        player.Id, gameId, (DateTimeOffset.UtcNow - gamePlayer.DisconnectedAt.Value).TotalSeconds);
+
+                    await LeaveGameAsync(gameId, player.Id, ct);
+                    cleanedUpCount++;
+                }
+            }
+        }
+
+        if (cleanedUpCount > 0)
+        {
+            logger.LogInformation("Cleaned up {Count} away players who exceeded grace period", cleanedUpCount);
+        }
+
+        return Result.Success();
     }
 
     // Start a run (per-player deck)

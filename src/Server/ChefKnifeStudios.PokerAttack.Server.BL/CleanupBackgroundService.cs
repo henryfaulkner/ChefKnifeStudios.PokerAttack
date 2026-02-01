@@ -1,3 +1,4 @@
+using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
@@ -11,8 +12,10 @@ public class CleanupBackgroundService : BackgroundService
 {
     readonly ILogger<CleanupBackgroundService> _logger;
     readonly IServiceProvider _serviceProvider;
-    readonly TimeSpan _cleanupInterval = TimeSpan.FromHours(1); // Run every hour
+    readonly TimeSpan _lobbyCleanupInterval = TimeSpan.FromHours(1); // Run lobby cleanup every hour
+    readonly TimeSpan _awayPlayerCleanupInterval = TimeSpan.FromSeconds(30); // Check away players every 30 seconds
     readonly TimeSpan _lobbyMaxAge = TimeSpan.FromHours(24); // Delete lobbies older than 24 hours
+    readonly TimeSpan _awayPlayerGracePeriod = TimeSpan.FromSeconds(60); // Remove players away for > 60 seconds
 
     public CleanupBackgroundService(
         ILogger<CleanupBackgroundService> logger,
@@ -26,6 +29,17 @@ public class CleanupBackgroundService : BackgroundService
     {
         _logger.LogInformation("Cleanup Background Service started");
 
+        // Run two cleanup loops concurrently
+        var lobbyCleanupTask = RunLobbyCleanupLoopAsync(stoppingToken);
+        var awayPlayerCleanupTask = RunAwayPlayerCleanupLoopAsync(stoppingToken);
+
+        await Task.WhenAll(lobbyCleanupTask, awayPlayerCleanupTask);
+
+        _logger.LogInformation("Cleanup Background Service stopped");
+    }
+
+    async Task RunLobbyCleanupLoopAsync(CancellationToken stoppingToken)
+    {
         while (!stoppingToken.IsCancellationRequested)
         {
             try
@@ -34,14 +48,36 @@ public class CleanupBackgroundService : BackgroundService
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred during cleanup");
+                _logger.LogError(ex, "Error occurred during lobby cleanup");
             }
 
-            // Wait for next cleanup cycle
-            await Task.Delay(_cleanupInterval, stoppingToken);
+            await Task.Delay(_lobbyCleanupInterval, stoppingToken);
         }
+    }
 
-        _logger.LogInformation("Cleanup Background Service stopped");
+    async Task RunAwayPlayerCleanupLoopAsync(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            try
+            {
+                await CleanupAwayPlayersAsync(stoppingToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred during away player cleanup");
+            }
+
+            await Task.Delay(_awayPlayerCleanupInterval, stoppingToken);
+        }
+    }
+
+    async Task CleanupAwayPlayersAsync(CancellationToken cancellationToken)
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var gameService = scope.ServiceProvider.GetRequiredService<IGameService>();
+
+        await gameService.CleanupAwayPlayersAsync(_awayPlayerGracePeriod, cancellationToken);
     }
 
     async Task CleanupStaleLobbiesAsync(CancellationToken cancellationToken)

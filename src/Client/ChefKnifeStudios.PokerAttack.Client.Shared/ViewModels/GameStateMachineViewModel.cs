@@ -11,7 +11,7 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.ViewModels;
 
 public interface IGameStateMachineViewModel : IViewModel
 {
-    GameStates GameState { get; }
+    GameStates GameState { get; set; }
 }
 
 public partial class GameStateMachineViewModel : BaseViewModel, IGameStateMachineViewModel, IDisposable

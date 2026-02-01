@@ -31,4 +31,8 @@ public enum PokerAttackNotificationType
     PlayerPowersReadied,
 
     MessageSent,
+
+    // Connection status notifications
+    PlayerAway,
+    PlayerReconnected,
 }

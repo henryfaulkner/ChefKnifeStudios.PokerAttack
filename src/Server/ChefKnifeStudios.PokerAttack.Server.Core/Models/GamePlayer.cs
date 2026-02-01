@@ -3,6 +3,13 @@ using ChefKnifeStudios.PokerAttack.Shared.Enums;
 
 namespace ChefKnifeStudios.PokerAttack.Server.Core.Models;
 
+public enum PlayerConnectionStatus
+{
+    Connected,
+    Away,
+    Disconnected
+}
+
 public class GamePlayer
 {
     public required Deck Deck { get; set; }
@@ -18,6 +25,10 @@ public class GamePlayer
     public int DiscardsRemaining { get; set; }
     public bool IsEliminating { get; set; }
     public bool IsEliminated { get; set; }
+
+    // Connection status for graceful disconnect handling
+    public PlayerConnectionStatus ConnectionStatus { get; set; } = PlayerConnectionStatus.Connected;
+    public DateTimeOffset? DisconnectedAt { get; set; }
 
     public void UnflipAllCards()
     {

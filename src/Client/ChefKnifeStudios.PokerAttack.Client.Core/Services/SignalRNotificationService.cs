@@ -27,6 +27,7 @@ public interface ISignalRNotificationService
     Task DiscardAsync(string playerId, List<CardDTO> discardCards);
     Task ActivatePlayerPowerAsync(string gameId, string playerId);
     Task TransitionGameStateAsync(string gameId, GameEvents gameEvent);
+    Task ReconnectToGameAsync(string gameId);
 
     // TODO: remove for server-run implimentation
     Task EndGameAsync(string gameId);
@@ -341,6 +342,21 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error leaving game {gameId} for player {playerId}", gameId, playerId);
+        }
+    }
+
+    public async Task ReconnectToGameAsync(string gameId)
+    {
+        try
+        {
+            if (!await EnsureConnectedAsync(nameof(ReconnectToGameAsync)))
+                return;
+
+            await _hubConnection!.InvokeAsync("ReconnectToGame", gameId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error reconnecting to game {gameId}", gameId);
         }
     }
 }

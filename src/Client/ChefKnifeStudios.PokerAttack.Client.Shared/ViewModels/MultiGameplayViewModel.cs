@@ -1,4 +1,5 @@
 ﻿using ChefKnifeStudios.PokerAttack.Client.Core.Services;
+using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Constants;
 using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs.ModalEvents;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
@@ -25,6 +26,7 @@ public interface IMultiGameplayViewModel : IViewModel
     int PowerCharges { get; }
 
     Task StartGameAsync(string playerId, CancellationToken cancellationToken = default);
+    Task<bool> RejoinGameAsync(string playerId, CancellationToken cancellationToken = default);
     Task StartRoundAsync(string playerId, CancellationToken cancellationToken = default);
     Task PlaySelectedCardsAsync(string playerId, CancellationToken cancellationToken = default);
     Task DiscardSelectedCardsAsync(string playerId, CancellationToken cancellationToken = default);
@@ -44,6 +46,8 @@ public partial class MultIMultiGameplayViewModel : BaseViewModel, IMultiGameplay
     readonly IAudioService _audioService;
     readonly IMultiGameDataStore _multiGameDataStore;
     readonly IApplicationViewModel _applicationViewModel;
+    readonly IGameplayEndpointsService _gameplayEndpointsService;
+    readonly IGameStateMachineViewModel _gameStateMachineViewModel;
 
     const int _DEFAULT_NUM_PLAY_HANDS = 5;
     const int _DEFAULT_NUM_DISCARDS = 5;
@@ -88,7 +92,9 @@ public partial class MultIMultiGameplayViewModel : BaseViewModel, IMultiGameplay
         NavigationManager navigationManager,
         IAudioService audioService,
         IMultiGameDataStore multiGameDataStore,
-        IApplicationViewModel applicationViewModel)
+        IApplicationViewModel applicationViewModel,
+        IGameplayEndpointsService gameplayEndpointsService,
+        IGameStateMachineViewModel gameStateMachineViewModel)
     {
         _signalRNotificationService = signalRNotificationService;
         _toastService = toastService;
@@ -97,6 +103,8 @@ public partial class MultIMultiGameplayViewModel : BaseViewModel, IMultiGameplay
         _audioService = audioService;
         _multiGameDataStore = multiGameDataStore;
         _applicationViewModel = applicationViewModel;
+        _gameplayEndpointsService = gameplayEndpointsService;
+        _gameStateMachineViewModel = gameStateMachineViewModel;
 
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
         _eventNotificationService.EventReceived += HandleEventReceived;
@@ -115,11 +123,77 @@ public partial class MultIMultiGameplayViewModel : BaseViewModel, IMultiGameplay
     {
         if (_multiGameDataStore.GameId is null) throw new ApplicationException("GameDataStore.GameId must be set before starting the game.");
         await _signalRNotificationService.StartGameAsync(_multiGameDataStore.GameId, playerId);
+
+        // Save active game state for potential refresh recovery
+        SaveActiveGameState(playerId);
+    }
+
+    public async Task<bool> RejoinGameAsync(string playerId, CancellationToken cancellationToken = default)
+    {
+        if (_multiGameDataStore.GameId is null) return false;
+
+        try
+        {
+            // Fetch full game state from server
+            var stateResult = await _gameplayEndpointsService.GetMultiGameStateAsync(
+                _multiGameDataStore.GameId,
+                playerId,
+                cancellationToken);
+
+            if (!stateResult.IsSuccess || stateResult.Value is null)
+            {
+                return false;
+            }
+
+            var state = stateResult.Value;
+
+            // Restore game state machine state from server
+            _gameStateMachineViewModel.GameState = state.GameState;
+
+            // Restore ViewModel state from server
+            Score = state.Score;
+            AvailablePlayHands = state.HandsRemaining;
+            AvailableDiscards = state.DiscardsRemaining;
+            PowerCharges = state.PowerCharges;
+            ActivePlayerPower = state.ActivePower;
+            RefreshCardsInHand(state.Cards);
+            ApplySort();
+
+            // Restore timer from saved state (server doesn't track per-player timer)
+            var remainingSeconds = _multiGameDataStore.GetRestoredRemainingSeconds();
+            if (remainingSeconds > 0)
+            {
+                RunTimeInSeconds = remainingSeconds;
+            }
+
+            // Reconnect to the game (marks player as connected again on server)
+            await _signalRNotificationService.ReconnectToGameAsync(_multiGameDataStore.GameId);
+
+            // Update saved state with current timestamp
+            SaveActiveGameState(playerId);
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public Task StartRoundAsync(string playerId, CancellationToken cancellationToken = default)
     {
         return Task.CompletedTask;
+    }
+
+    void SaveActiveGameState(string playerId)
+    {
+        _multiGameDataStore.SetActiveGame(new IMultiGameDataStore.ActiveGameState
+        {
+            GameId = _multiGameDataStore.GameId,
+            PlayerId = playerId,
+            RemainingSeconds = RunTimeInSeconds,
+            SavedTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+        });
     }
 
     public async Task PlaySelectedCardsAsync(string playerId, CancellationToken cancellationToken = default)
@@ -221,6 +295,12 @@ public partial class MultIMultiGameplayViewModel : BaseViewModel, IMultiGameplay
                         ResetStats();
                         AvailablePlayHands = runStartedDTO.HandsAvailable;
                         AvailableDiscards = runStartedDTO.DiscardsAvailable;
+
+                        // Save state for potential refresh recovery
+                        if (_multiGameDataStore.ActiveGame?.PlayerId is string playerId)
+                        {
+                            SaveActiveGameState(playerId);
+                        }
                     }
                     break;
                 }
@@ -276,11 +356,13 @@ public partial class MultIMultiGameplayViewModel : BaseViewModel, IMultiGameplay
                 }
             case PokerAttackNotificationType.GameWon:
                 {
+                    _multiGameDataStore.ClearActiveGame();
                     _navigationManager.NavigateToLobbyWithMultiGameResult("winner");
                     break;
                 }
             case PokerAttackNotificationType.GameLost:
                 {
+                    _multiGameDataStore.ClearActiveGame();
                     _navigationManager.NavigateToLobbyWithMultiGameResult("loser");
                     break;
                 }

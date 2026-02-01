@@ -57,12 +57,36 @@ public partial class MultiGameplay : ComponentBase, IDisposable, IAsyncDisposabl
     {
         await base.OnInitializedAsync();
 
-        // Reset and set GameId in MultiGameDataStore
+        // Check if we have a saved game to resume (browser refresh scenario)
+        if (MultiGameDataStore.TryRestoreActiveGameFromLocalStorage()
+            && MultiGameDataStore.ActiveGame?.GameId == GameId
+            && MultiGameDataStore.ActiveGame?.PlayerId == ApplicationViewModel.Player.Id)
+        {
+            // Set GameId before rejoin attempt
+            MultiGameDataStore.GameId = GameId;
+
+            var rejoined = await MultiGameplayViewModel.RejoinGameAsync(ApplicationViewModel.Player.Id);
+            if (rejoined)
+            {
+                // Successfully rejoined - set up event handlers and return
+                SetupEventHandlers();
+                return;
+            }
+            // Rejoin failed - clear stale state
+            MultiGameDataStore.ClearActiveGame();
+        }
+
+        // Start a new game
         MultiGameDataStore.Reset();
         MultiGameDataStore.GameId = GameId;
 
         await MultiGameplayViewModel.StartGameAsync(ApplicationViewModel.Player.Id);
 
+        SetupEventHandlers();
+    }
+
+    void SetupEventHandlers()
+    {
         MultiGameplayViewModel.PropertyChanged += ViewModel_OnPropertyChanged;
         MultiGameplayViewModel.CardsInHand.CollectionChanged += CardsInHand_CollectionChanged;
         GameStateMachineViewModel.PropertyChanged += ViewModel_OnPropertyChanged;

@@ -53,6 +53,20 @@ public static class GameplayEndpoints
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);
 
+        group.MapGet(Endpoints.GetMultiGameState, async (
+            IGameService gameService,
+            string gameId,
+            string playerId,
+            CancellationToken cancellationToken = default) =>
+        {
+            var result = await gameService.GetMultiGameStateAsync(gameId, playerId, cancellationToken);
+            return result.IsSuccess ? Results.Ok(result.Value) : Results.NotFound(result.Errors);
+        })
+        .WithName(nameof(Endpoints.GetMultiGameState))
+        .Produces<MultiGameStateDTO>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound)
+        .Produces(StatusCodes.Status500InternalServerError);
+
         return builder;
     }
 }

@@ -13,6 +13,7 @@ public interface IGameplayEndpointsService
     Task<Result<RoundDTO?>> GetLatestRoundAsync(string gameId, CancellationToken cancellationToken = default);
     Task<Result<int?>> GetPlayerWalletAsync(string gameId, string playerId, CancellationToken cancellationToken = default);
     Task<Result<Discard>> LeaveGameAsync(string gameId, string playerId, CancellationToken cancellationToken = default);
+    Task<Result<MultiGameStateDTO?>> GetMultiGameStateAsync(string gameId, string playerId, CancellationToken cancellationToken = default);
 }
 
 public class GameplayEndpointsService : IGameplayEndpointsService
@@ -71,6 +72,23 @@ public class GameplayEndpointsService : IGameplayEndpointsService
                 cancellationToken
             );
             return res.LogErrors(_logger, $"Gameplay LeaveGame call. Game Id {gameId}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occured.");
+            return Result.Error();
+        }
+    }
+
+    public async Task<Result<MultiGameStateDTO?>> GetMultiGameStateAsync(string gameId, string playerId, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var res = await _httpService.GetAsync<MultiGameStateDTO?>(
+                Endpoints.GetMultiGameState.FormatRoute(gameId).FormatRoute(playerId),
+                cancellationToken
+            );
+            return res.LogErrors(_logger, $"Gameplay GetMultiGameState call. Game Id {gameId}, Player Id {playerId}");
         }
         catch (Exception ex)
         {
