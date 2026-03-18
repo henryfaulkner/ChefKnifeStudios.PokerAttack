@@ -85,14 +85,6 @@ builder.Services.AddSingleton<IPlayerPowerEffectRegistry, PlayerPowerEffectRegis
 // Register Item Singletons
 builder.Services.AddSingleton<IItemRepository, ItemRepository>();
 
-// Register Blob Storage Service
-string azureStorageConnectionString = builder.Configuration.GetConnectionString("AzureStorage")!;
-builder.Services.AddSingleton<IStorageService>(sp =>
-    new BlobStorageService(
-        "https://pokerattackstorage.blob.core.windows.net",
-        sp.GetRequiredService<ILogger<BlobStorageService>>()
-    ));
-
 // Register Feature Flag Service
 var featureFlags = builder.Configuration.GetSection("FeatureFlags").Get<Dictionary<FeatureFlags, bool>>() ?? new();
 builder.Services.AddSingleton<IFeatureFlagService>(new FeatureFlagService(featureFlags));
@@ -143,7 +135,6 @@ app.MapTestEndpoints()
    .MapPlayerPowerEndpoints()
    .MapShopEndpoints()
    .MapScoringRulesEndpoints()
-   .MapBlobStorageEndpoints()
    .MapSoloGameplayEndpoints()
    .MapSettingsEndpoints();
 

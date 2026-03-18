@@ -6,15 +6,7 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.Components.Modals;
 
 public partial class HowToPlayModal : ComponentBase
 {
-    [Inject] IBlobAccessService BlobAccessService { get; set; } = null!;
     [Inject] IEventNotificationService EventNotificationService { get; set; } = null!;
-
-    string _videoUrl = string.Empty;
-
-    protected override async Task OnInitializedAsync()
-    {
-        _videoUrl = await BlobAccessService.GetBlobUrlWithSasAsync("video", "SoloGameplayVideo.mp4");
-    }
 
     void HandleOpenChanged(bool isOpen)
     {

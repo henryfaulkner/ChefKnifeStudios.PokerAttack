@@ -54,14 +54,6 @@ public class PokerAttackApiEndpoints
         public const string GetScoringRules = $"{EndpointGroup}";
     }
 
-    public class BlobStorage
-    {
-        const string EndpointGroup = "/blob-storage";
-
-        public const string UploadRecording = $"{EndpointGroup}/recording";
-        public const string GenerateSasToken = $"{EndpointGroup}/sas-token/{{containerName}}/{{*blobPath}}";
-    }
-
     public class SoloGameplay
     {
         const string EndpointGroup = "/solo";
