@@ -25,6 +25,15 @@ test('isolated browsers join a lobby and receive the game transition', async ({ 
       await expect(page).toHaveURL(/\/multi-gameplay/);
       await expect(page.getByRole('alertdialog')).toHaveCount(0);
     }
+    // Verify the actual gameplay components render, beyond a successful route change.
+    await Promise.all(pages.map(async page => {
+      await expect(page.locator('.player-power-list__card').first()).toBeVisible({ timeout: 20000 });
+      await page.getByRole('button', { name: 'PICK A POWER', exact: true }).first().click();
+      await expect(page.locator('.card-hand .card')).toHaveCount(8, { timeout: 30000 });
+      await page.locator('.card-hand .card').first().click();
+      await page.locator('#playHandBtn').click();
+      await expect(page.getByText('Hands Available: 4', { exact: true })).toBeVisible();
+    }));
   } finally {
     await Promise.all(contexts.map(context => context.close()));
   }
