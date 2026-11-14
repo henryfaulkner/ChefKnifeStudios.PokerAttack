@@ -22,6 +22,7 @@ builder.Services.RegisterDataServices(connectionString);
 
 // Register GameSettings from configuration
 builder.Services.Configure<GameSettings>(builder.Configuration.GetSection("GameSettings"));
+builder.Services.Configure<ResilienceSettings>(builder.Configuration.GetSection("ResilienceSettings"));
 
 // Add services to the container.
 builder.Services.AddProblemDetails();
@@ -65,7 +66,15 @@ builder.Services.AddSingleton<IPokerAttackNotificationHelper, PokerAttackNotific
 builder.Services.AddSingleton<IPlayerConnectionTracker, PlayerConnectionTracker>();
 
 // Register Key-Value Stores
-builder.Services.AddSingleton(typeof(IKeyValueRepository<>), typeof(InMemoryKeyValueRepository<>));
+// InMemoryKeyValueRepository<> remains registered under its own name for tests and local dev;
+// Postgres is the durable store live traffic uses (Program.cs is the single DI swap point).
+builder.Services.AddSingleton(typeof(InMemoryKeyValueRepository<>));
+builder.Services.AddScoped(typeof(IKeyValueRepository<>), typeof(PostgresKeyValueRepository<>));
+builder.Services.AddScoped<IPlayerSessionStore, PlayerSessionStore>();
+builder.Services.AddScoped<IExpiredStateSweeper, ExpiredStateSweeper>();
+
+// Register Clock
+builder.Services.AddSingleton<IClock, SystemClock>();
 
 // Register Domain Services
 builder.Services.AddScoped<ILobbyService, LobbyService>();
@@ -74,6 +83,7 @@ builder.Services.AddScoped<IGameStateMachineService, GameStateMachineService>();
 builder.Services.AddScoped<IPlayerPowerService, PlayerPowerService>();
 builder.Services.AddScoped<IShopService, ShopService>();
 builder.Services.AddScoped<ISoloGameplayService, SoloGameplayService>();
+builder.Services.AddScoped<IGameResyncService, GameResyncService>();
 builder.Services.AddSingleton<IScoringRulesService, ScoringRulesService>();
 builder.Services.AddSingleton<IItemEffectsService, ItemEffectsService>();
 builder.Services.AddSingleton<IWagerService, WagerService>();
@@ -96,26 +106,35 @@ builder.Services.AddHostedService<EventNotificationServiceSubscriber>();
 // Register Cleanup Background Service
 builder.Services.AddHostedService<CleanupBackgroundService>();
 
+// Register Phase Reconciler
+builder.Services.AddSingleton<IPhaseReconcilerService, PhaseReconcilerService>();
+builder.Services.AddHostedService<PhaseReconcilerBackgroundService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.UseExceptionHandler();
 
-app.MapOpenApi()
-    .AllowAnonymous();
-
-app.MapScalarApiReference(options =>
+// OpenAPI/Scalar are documentation UI and do not belong on the production hot start path —
+// gate them out of Production so every deploy's cold start is faster.
+if (!app.Environment.IsProduction())
 {
-    options.HiddenClients = true;
-    options
-        .WithTitle("PokerAttack API")
-        .WithDocumentDownloadType(DocumentDownloadType.Both)
-        .WithTheme(ScalarTheme.Solarized)
-        .WithLayout(ScalarLayout.Classic)
-        .WithClientButton(false)
-        .WithDarkMode(true)
-        .WithDefaultHttpClient(ScalarTarget.JavaScript, ScalarClient.Axios);
-}).AllowAnonymous();
+    app.MapOpenApi()
+        .AllowAnonymous();
+
+    app.MapScalarApiReference(options =>
+    {
+        options.HiddenClients = true;
+        options
+            .WithTitle("PokerAttack API")
+            .WithDocumentDownloadType(DocumentDownloadType.Both)
+            .WithTheme(ScalarTheme.Solarized)
+            .WithLayout(ScalarLayout.Classic)
+            .WithClientButton(false)
+            .WithDarkMode(true)
+            .WithDefaultHttpClient(ScalarTarget.JavaScript, ScalarClient.Axios);
+    }).AllowAnonymous();
+}
 
 app.UseCors(policy =>
     policy.WithOrigins(
@@ -141,3 +160,6 @@ app.MapTestEndpoints()
 app.MapDefaultEndpoints();
 
 app.Run();
+
+// Exposes Program for WebApplicationFactory<Program> in contract tests.
+public partial class Program { }

@@ -25,6 +25,7 @@ public interface IGameService
     Task<Result<int>> GetPlayerScoreAsync(string playerId, CancellationToken ct = default);
     Task<Result<int>> GetPlayerWalletAsync(string playerId, CancellationToken ct = default);
     Task<Result> EndRoundAsync(string gameId, CancellationToken ct = default);
+    Task<Result> FinishScoreboardAsync(string gameId, CancellationToken ct = default);
     Task<Result<RoundDTO>> GetLatestRoundFromGame(string gameId, CancellationToken ct = default);
     Task<Result> EndGameAsync(string gameId, CancellationToken ct = default);
     Task<Result> LeaveGameAsync(string gameId, string playerId, CancellationToken ct = default);
@@ -50,7 +51,8 @@ public class GameService(
     IItemEffectsService itemEffectsService,
     IWagerService wagerService,
     IPlayerPowerService playerPowerService,
-    IOptions<GameSettings> gameSettings) : IGameService
+    IOptions<GameSettings> gameSettings,
+    IClock clock) : IGameService
 {
     readonly GameSettings _gameSettings = gameSettings.Value;
 
@@ -58,6 +60,7 @@ public class GameService(
     const int _NUM_ROUNDS_BEFORE_ELIMINATION = 3;
     const int _BASE_HANDS_AVAILABLE = 5;
     const int _BASE_DISCARDS_AVAILABLE = 5;
+    const int _SCOREBOARD_DWELL_MS = 5000;
 
     public async Task<Result> StartGameAsync(string gameId, CancellationToken ct = default)
     {
@@ -73,6 +76,14 @@ public class GameService(
         var game = gameResult.Value;
         game.RoundNumber += 1;
 
+        // Persisted deadline replaces Task.Delay: the reconciler calls EndRoundAsync once this
+        // expires, so the round survives an interruption instead of wedging when the process
+        // that would have awaited the delay is gone.
+        var now = clock.UtcNow;
+        game.CurrentPhase = GameStates.InGame;
+        game.PhaseStartedAt = now;
+        game.PhaseExpiresAt = now.AddMilliseconds(_gameSettings.RoundTimeMs);
+
         var updateResult = await activeGameRepository.UpdateAsync(gameId, game, ct);
         if (!updateResult.IsSuccess)
             return Result.Error("Failed to update game round number.");
@@ -87,12 +98,6 @@ public class GameService(
             taskList.Add(StartRun(player.Id, _gameSettings.RoundTimeMs));
         }
         await Task.WhenAll(taskList);
-
-        await Task.Delay(_gameSettings.RoundTimeMs);
-
-        var endResult = await EndRoundAsync(gameId, ct);
-        if (!endResult.IsSuccess)
-            return endResult;
 
         return Result.Success();
     }
@@ -346,7 +351,35 @@ public class GameService(
         if (!transitionResult.IsSuccess)
             return transitionResult;
 
-        await Task.Delay(5000);
+        // Persisted deadline replaces Task.Delay: the reconciler calls FinishScoreboardAsync once
+        // this expires, so the scoreboard dwell survives an interruption.
+        var scoreboardGameResult = await activeGameRepository.GetAsync(gameId, ct);
+        if (scoreboardGameResult.IsSuccess && scoreboardGameResult.Value is ActiveGame scoreboardGame)
+        {
+            var now = clock.UtcNow;
+            scoreboardGame.CurrentPhase = GameStates.Scoreboard;
+            scoreboardGame.PhaseStartedAt = now;
+            scoreboardGame.PhaseExpiresAt = now.AddMilliseconds(_SCOREBOARD_DWELL_MS);
+            await activeGameRepository.UpdateAsync(gameId, scoreboardGame, ct);
+        }
+
+        return Result.Success();
+    }
+
+    public async Task<Result> FinishScoreboardAsync(string gameId, CancellationToken ct = default)
+    {
+        // Check if game is still in Scoreboard state - if not, something else already advanced it
+        var gameStateResult = await gameStateRepository.GetAsync(gameId, ct);
+        if (!gameStateResult.IsSuccess || gameStateResult.Value != GameStates.Scoreboard)
+        {
+            logger.LogInformation("Skipping scoreboard dwell finish - game {GameId} is no longer in Scoreboard state (current: {State})",
+                gameId, gameStateResult.Value);
+            return Result.Success();
+        }
+
+        var game = await gameRepository.FirstOrDefaultAsync(new GetGameByClientIdSpec(gameId), ct);
+        if (game is null)
+            return Result.NotFound($"Game Record not found: Game Record Id {gameId}");
 
         var gameRounds = await roundRepository.ListAsync(new GetRoundsByGameIdSpec(game.Id), ct);
         int numRounds = gameRounds.Count;

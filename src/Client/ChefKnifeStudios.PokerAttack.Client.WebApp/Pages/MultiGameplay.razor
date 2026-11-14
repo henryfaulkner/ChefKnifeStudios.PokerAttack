@@ -9,6 +9,22 @@
 @page "/multi-gameplay"
 
 <div class="gameplay">
+    @if (MultiGameplayViewModel.IsReconnecting)
+    {
+        <div class="reconnect-overlay" style="position:fixed;inset:0;z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;background:rgba(0,0,0,0.6);">
+            <span class="mat-body1">Reconnecting…</span>
+        </div>
+    }
+    else if (MultiGameplayViewModel.ReconnectFailed)
+    {
+        <div class="reconnect-overlay" style="position:fixed;inset:0;z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;background:rgba(0,0,0,0.6);">
+            <span class="mat-body1">Connection lost.</span>
+            <MatButton Id="retryConnectionBtn" OnClick="HandleRetryConnectionPressed" Unelevated="true">
+                RETRY
+            </MatButton>
+        </div>
+    }
+
     <FabList Fabs="[ FabList.FABs.Settings, ]" />
 
     <CascadingValue Value="GameStateMachineViewModel">

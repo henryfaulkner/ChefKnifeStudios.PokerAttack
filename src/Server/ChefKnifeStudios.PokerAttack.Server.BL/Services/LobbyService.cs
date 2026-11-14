@@ -38,9 +38,11 @@ public class LobbyService(
     IKeyValueRepository<ActiveGame> activeGameRepository,
     IKeyValueRepository<GamePlayer> gamePlayerRepository,
     IGameStateMachineService gameStateMachineService,
+    IClock clock,
     ILogger<LobbyService> logger) : ILobbyService
 {
     const int NumCardsInHand = 8;
+    const int _LobbyMaxAgeHours = 24;
 
     public async Task<Result<LobbyDTO>> CreateLobbyAsync(PlayerDTO hostPlayer, CancellationToken cancellationToken = default)
     {
@@ -67,9 +69,10 @@ public class LobbyService(
             Id = lobbyId,
             HostPlayer = hostPlayerModel,
             Players = new() { hostPlayerModel },
+            CreatedAt = clock.UtcNow,
         };
 
-        var addResult = await lobbyRepository.AddAsync(lobbyId, lobby, cancellationToken);
+        var addResult = await lobbyRepository.AddAsync(lobbyId, lobby, clock.UtcNow.AddHours(_LobbyMaxAgeHours), cancellationToken);
         if (!addResult.IsSuccess)
             return Result.Error("Failed to create lobby.");
 

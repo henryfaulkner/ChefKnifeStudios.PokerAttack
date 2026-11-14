@@ -35,6 +35,7 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
     readonly IToastService _toastService;
     readonly ISyncLocalStorageService _localStorageService;
     readonly ISettingsEndpointsService _settingsEndpointsService;
+    readonly IMultiGameDataStore _multiGameDataStore;
 
     [ObservableProperty]
     PlayerDTO _player = new()
@@ -59,7 +60,8 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
         IWebAssemblyHostEnvironment hostEnvironment,
         IToastService toastService,
         ISyncLocalStorageService localStorageService,
-        ISettingsEndpointsService settingsEndpointsService)
+        ISettingsEndpointsService settingsEndpointsService,
+        IMultiGameDataStore multiGameDataStore)
     {
         _signalRNotificationService = signalRNotificationService;
         _lobbyJsInterop = lobbyJsInterop;
@@ -69,6 +71,7 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
         _toastService = toastService;
         _localStorageService = localStorageService;
         _settingsEndpointsService = settingsEndpointsService;
+        _multiGameDataStore = multiGameDataStore;
 
         string? storedName = _localStorageService.GetItem<string>(LocalStorageConstants.PlayerNameKey);
         if (storedName is string name)
@@ -104,6 +107,9 @@ public partial class ApplicationViewModel : BaseViewModel, IApplicationViewModel
             {
                 _logger.LogWarning("Failed to load game settings from server, using defaults.");
             }
+
+            _multiGameDataStore.RestoreFromLocalStorage();
+            _signalRNotificationService.SetCurrentIds(_multiGameDataStore.GameId, _multiGameDataStore.LobbyId);
 
             await _signalRNotificationService.InitAsync(Player.Id);
 

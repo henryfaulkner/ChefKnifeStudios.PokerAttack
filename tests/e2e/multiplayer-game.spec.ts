@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { execSync } from 'child_process';
 import { createPlayerContext, navigateToHome, cleanupPlayers, cleanupServerData, wait, PlayerContext } from '../helpers/setup';
 import * as actions from '../helpers/actions';
 
@@ -475,3 +476,76 @@ async function assertThreeGamesCompleted(players: PlayerContext[]): Promise<void
 
   console.log('  ✓ Test completed - all players on lobby page');
 }
+
+/**
+ * SC-001: A game in progress must survive a restart of the game server mid-round.
+ *
+ * This is the single acceptance test for User Story 1 (Scale-to-Zero Resilience). It force-
+ * restarts the API container while two players are mid-round, then asserts both boards
+ * recover to a correct, live state and the round completes — the exact failure this feature
+ * fixes (see specs/001-scale-to-zero-resilience/quickstart.md's staged expectations).
+ *
+ * Requires the docker-compose stack to be running locally (`docker compose up`) with the
+ * web API service named `chefknifestudios.pokerattack.server.webapi` (see docker-compose.yml).
+ */
+test.describe('Restart mid-round - Scale-to-Zero Resilience (SC-001)', () => {
+  test('two-player game survives an API restart mid-round', async ({ browser }) => {
+    const clientUrl = process.env.CLIENT_URL || process.env.API_URL || 'https://localhost:7150';
+    const apiServiceName = process.env.API_CONTAINER_SERVICE || 'chefknifestudios.pokerattack.server.webapi';
+
+    await cleanupServerData(clientUrl);
+
+    const players: PlayerContext[] = [];
+    players.push(await createPlayerContext(browser, 'restart-player-1', 'Restart Host'));
+    players.push(await createPlayerContext(browser, 'restart-player-2', 'Restart Guest'));
+
+    await Promise.all(players.map(player => navigateToHome(player, clientUrl)));
+
+    try {
+      const lobbyId = await actions.createLobby(players[0]);
+      await actions.joinLobby(players[1], lobbyId);
+      await actions.hostStartGame(players[0], lobbyId);
+      await actions.assertAllPlayersInGame(players);
+
+      // Get into an active, timed round before restarting — the freebie selection and the
+      // round timer are exactly the durable-deadline paths this feature makes restart-safe.
+      await actions.waitForGameState(players[0], 'WAITING ON OTHER PLAYERS');
+      await Promise.all(players.map((player, index) => actions.selectPlayerPower(player, index % 3)));
+
+      // Wait for the round to actually be in progress (play-hand button visible) before
+      // restarting, rather than a fixed sleep — this is the specific observable condition
+      // that proves the round has started.
+      await expect(players[0].page.locator('#playHandBtn')).toBeVisible({ timeout: 30000 });
+      await expect(players[1].page.locator('#playHandBtn')).toBeVisible({ timeout: 30000 });
+
+      console.log(`Restarting API container "${apiServiceName}" mid-round...`);
+      // Timeout basis: must exceed a real cold start. Measured at 3-8s pre-ReadyToRun
+      // (research.md R7); revisited once T070 measures the post-ReadyToRun number.
+      execSync(`docker compose restart ${apiServiceName}`, { stdio: 'inherit' });
+
+      // Both clients must reconnect, rejoin their game group, resync, and see the round
+      // continue to completion — waiting on the observable board state, not a fixed sleep.
+      for (const player of players) {
+        await expect(player.page.locator('#playHandBtn')).toBeVisible({ timeout: 60000 });
+      }
+
+      // Play out the round on both boards to confirm the game actually continues, not just
+      // that the UI redrew.
+      for (const player of players) {
+        let handsRemaining = await actions.getAvailablePlayHands(player);
+        while (handsRemaining > 0) {
+          await actions.playHand(player);
+          await wait(500);
+          handsRemaining = await actions.getAvailablePlayHands(player);
+        }
+      }
+
+      const scoreboardAppeared = await actions.waitForScoreboard(players[0], 60000);
+      expect(scoreboardAppeared).toBe(true);
+
+      console.log('✓ Game survived API restart mid-round and the round completed');
+    } finally {
+      await cleanupPlayers(players);
+    }
+  });
+});

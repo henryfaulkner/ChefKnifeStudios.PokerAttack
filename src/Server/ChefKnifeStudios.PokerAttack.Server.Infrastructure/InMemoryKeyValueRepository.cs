@@ -21,6 +21,12 @@ public class InMemoryKeyValueRepository<TValue> : IKeyValueRepository<TValue>
         return Task.FromResult(Result.Success());
     }
 
+    // In-memory store has no TTL sweep of its own — expiry is a durable-store concern (the
+    // sweep reads expires_at from Postgres). The in-memory fake simply ignores the TTL, which
+    // is correct for unit tests and local dev where nothing outlives the process anyway.
+    public virtual Task<Result> AddAsync(string key, TValue value, DateTime expiresAt, CancellationToken ct = default)
+        => AddAsync(key, value, ct);
+
     public virtual Task<Result<TValue?>> GetAsync(string key, CancellationToken ct = default)
     {
         _store.TryGetValue(key, out var value);

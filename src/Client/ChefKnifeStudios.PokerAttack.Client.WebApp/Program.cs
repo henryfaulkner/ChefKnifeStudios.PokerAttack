@@ -1,5 +1,6 @@
 using Blazored.LocalStorage;
 using ChefKnifeStudios.PokerAttack.Client.Core;
+using ChefKnifeStudios.PokerAttack.Client.Core.Enums;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
@@ -40,6 +41,13 @@ builder.Services.AddSingleton<IHttpServiceFactory>(sp =>
 {
     var clientFactory = sp.GetRequiredService<IHttpClientFactory>();
     return new HttpServiceFactory(name => clientFactory.CreateClient(name));
+});
+
+builder.Services.AddSingleton<IWarmupService>(sp =>
+{
+    var clientFactory = sp.GetRequiredService<IHttpClientFactory>();
+    var logger = sp.GetRequiredService<ILogger<WarmupService>>();
+    return new WarmupService(() => clientFactory.CreateClient(nameof(APIs.PokerAttackAPI)), logger);
 });
 
 builder.Services.AddSingleton<IFeatureFlagService>(sp =>

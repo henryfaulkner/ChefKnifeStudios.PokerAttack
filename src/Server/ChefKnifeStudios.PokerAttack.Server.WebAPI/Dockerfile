@@ -8,7 +8,9 @@ RUN dotnet build -c Release
 
 FROM build AS publish
 
-RUN dotnet publish -c Release -o /app/publish /p:UseAppHost=false
+# -r linux-x64 required at publish time for PublishReadyToRun (enabled in the csproj);
+# --no-self-contained keeps the framework-dependent deployment the base image expects.
+RUN dotnet publish -c Release -o /app/publish -r linux-x64 --no-self-contained /p:UseAppHost=false
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app

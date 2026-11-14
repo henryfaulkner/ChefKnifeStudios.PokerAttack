@@ -1,4 +1,5 @@
 ﻿using ChefKnifeStudios.PokerAttack.Client.Core.Services;
+using ChefKnifeStudios.PokerAttack.Client.Core.Services.EndpointServices;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Constants;
 using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs.ModalEvents;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
@@ -23,7 +24,11 @@ public interface IMultiGameplayViewModel : IViewModel
     int AvailableDiscards { get; }
     PlayerPowerDTO? ActivePlayerPower { get; }
     int PowerCharges { get; }
+    bool IsReconnecting { get; }
+    bool ReconnectFailed { get; }
 
+    Task RetryConnectionAsync(string playerId, CancellationToken cancellationToken = default);
+    Task ResyncAsync(string playerId, CancellationToken cancellationToken = default);
     Task StartGameAsync(string playerId, CancellationToken cancellationToken = default);
     Task StartRoundAsync(string playerId, CancellationToken cancellationToken = default);
     Task PlaySelectedCardsAsync(string playerId, CancellationToken cancellationToken = default);
@@ -44,6 +49,7 @@ public partial class MultIMultiGameplayViewModel : BaseViewModel, IMultiGameplay
     readonly IAudioService _audioService;
     readonly IMultiGameDataStore _multiGameDataStore;
     readonly IApplicationViewModel _applicationViewModel;
+    readonly IGameplayEndpointsService _gameplayEndpointsService;
 
     const int _DEFAULT_NUM_PLAY_HANDS = 5;
     const int _DEFAULT_NUM_DISCARDS = 5;
@@ -70,6 +76,12 @@ public partial class MultIMultiGameplayViewModel : BaseViewModel, IMultiGameplay
     [ObservableProperty]
     int _powerCharges = _DEFAULT_NUM_POWER_CHARGES;
 
+    [ObservableProperty]
+    bool _isReconnecting;
+
+    [ObservableProperty]
+    bool _reconnectFailed;
+
     CancellationTokenSource? _timerToken;
 
     enum SortMode
@@ -88,7 +100,8 @@ public partial class MultIMultiGameplayViewModel : BaseViewModel, IMultiGameplay
         NavigationManager navigationManager,
         IAudioService audioService,
         IMultiGameDataStore multiGameDataStore,
-        IApplicationViewModel applicationViewModel)
+        IApplicationViewModel applicationViewModel,
+        IGameplayEndpointsService gameplayEndpointsService)
     {
         _signalRNotificationService = signalRNotificationService;
         _toastService = toastService;
@@ -97,9 +110,12 @@ public partial class MultIMultiGameplayViewModel : BaseViewModel, IMultiGameplay
         _audioService = audioService;
         _multiGameDataStore = multiGameDataStore;
         _applicationViewModel = applicationViewModel;
+        _gameplayEndpointsService = gameplayEndpointsService;
 
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
         _eventNotificationService.EventReceived += HandleEventReceived;
+        _signalRNotificationService.ConnectionStateChanged += HandleConnectionStateChangedAsync;
+        _signalRNotificationService.Rejoined += HandleRejoinedAsync;
 
         StartTimer();
     }
@@ -107,8 +123,56 @@ public partial class MultIMultiGameplayViewModel : BaseViewModel, IMultiGameplay
     public void Dispose()
     {
         _signalRNotificationService.HandleNotificationReceived -= HandleSignalRNotificationReceived;
+        _signalRNotificationService.ConnectionStateChanged -= HandleConnectionStateChangedAsync;
+        _signalRNotificationService.Rejoined -= HandleRejoinedAsync;
         _timerToken?.Cancel();
         _timerToken?.Dispose();
+    }
+
+    Task HandleRejoinedAsync(string? gameId) =>
+        gameId is not null ? ResyncAsync(_applicationViewModel.Player.Id) : Task.CompletedTask;
+
+    public async Task ResyncAsync(string playerId, CancellationToken cancellationToken = default)
+    {
+        if (_multiGameDataStore.GameId is not string gameId) return;
+
+        var result = await _gameplayEndpointsService.GetGameStateAsync(gameId, playerId, cancellationToken);
+
+        if (result.Status == Ardalis.Result.ResultStatus.NotFound)
+        {
+            // Spec edge case: player returns after the game already ended (or the game/player
+            // id is unknown) — show the game-over/result screen rather than a stalled board.
+            _navigationManager.NavigateToLobbyWithMultiGameResult("ended");
+            return;
+        }
+
+        if (!result.IsSuccess || result.Value is not GameStateDTO state) return;
+
+        Score = state.Player.Score;
+        AvailablePlayHands = state.Player.HandsRemaining;
+        AvailableDiscards = state.Player.DiscardsRemaining;
+        RefreshCardsInHand(state.Player.CardsInHand);
+        ApplySort();
+
+        // Countdown derived from PhaseExpiresAt - ServerTimeUtc rather than the device clock,
+        // so a skewed client clock does not break the accuracy of the remaining-time display.
+        RunTimeInSeconds = state.PhaseExpiresAt is DateTime expiresAt
+            ? Math.Max(0, (int)(expiresAt - state.ServerTimeUtc).TotalSeconds)
+            : 0;
+    }
+
+    Task HandleConnectionStateChangedAsync(bool isReconnecting, bool retriesExhausted)
+    {
+        IsReconnecting = isReconnecting;
+        ReconnectFailed = retriesExhausted;
+        return Task.CompletedTask;
+    }
+
+    public async Task RetryConnectionAsync(string playerId, CancellationToken cancellationToken = default)
+    {
+        ReconnectFailed = false;
+        IsReconnecting = true;
+        await _signalRNotificationService.InitAsync(playerId);
     }
 
     public async Task StartGameAsync(string playerId, CancellationToken cancellationToken = default)

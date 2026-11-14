@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -10,17 +10,24 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.10" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="NUnit" Version="4.2.2" />
     <PackageReference Include="NUnit.Analyzers" Version="4.4.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.13.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\ChefKnifeStudios.PokerAttack.Shared\ChefKnifeStudios.PokerAttack.Shared.csproj" />
     <ProjectReference Include="..\..\Client\ChefKnifeStudios.PokerAttack.Client.Core\ChefKnifeStudios.PokerAttack.Client.Core.csproj" />
+    <ProjectReference Include="..\..\Client\ChefKnifeStudios.PokerAttack.Client.Shared\ChefKnifeStudios.PokerAttack.Client.Shared.csproj" />
     <ProjectReference Include="..\ChefKnifeStudios.PokerAttack.Server.BL\ChefKnifeStudios.PokerAttack.Server.BL.csproj" />
+    <ProjectReference Include="..\ChefKnifeStudios.PokerAttack.Server.Core\ChefKnifeStudios.PokerAttack.Server.Core.csproj" />
+    <ProjectReference Include="..\ChefKnifeStudios.PokerAttack.Server.Infrastructure\ChefKnifeStudios.PokerAttack.Server.Infrastructure.csproj" />
+    <ProjectReference Include="..\ChefKnifeStudios.PokerAttack.Server.Data\ChefKnifeStudios.PokerAttack.Server.Data.csproj" />
+    <ProjectReference Include="..\ChefKnifeStudios.PokerAttack.Server.WebAPI\ChefKnifeStudios.PokerAttack.Server.WebAPI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

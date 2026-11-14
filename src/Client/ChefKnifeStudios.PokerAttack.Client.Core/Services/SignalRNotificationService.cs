@@ -12,11 +12,32 @@ namespace ChefKnifeStudios.PokerAttack.Client.Core.Services;
 
 public delegate Task PokerAttackNotificationHandler(PokerAttackNotification notification);
 
+public delegate Task ConnectionStateChangedHandler(bool isReconnecting, bool retriesExhausted);
+
 public interface ISignalRNotificationService
 {
     event PokerAttackNotificationHandler? HandleNotificationReceived;
 
+    /// <summary>
+    /// Raised when the connection starts reconnecting, when it recovers, and when the retry
+    /// schedule is exhausted without recovering. Consumers use this to surface loading/retry UI.
+    /// </summary>
+    event ConnectionStateChangedHandler? ConnectionStateChanged;
+
+    /// <summary>
+    /// Raised after group membership has been re-established following a reconnect or a
+    /// full close-and-reinit, with the game id (if any) that was rejoined. Consumers use
+    /// this as the trigger to call the state resync endpoint.
+    /// </summary>
+    event Func<string?, Task>? Rejoined;
+
     Task InitAsync(string playerId);
+
+    /// <summary>
+    /// Sets the game/lobby id to rejoin on reconnect. Called by consumers (typically from
+    /// localStorage-restored state) so a reconnect or full re-init knows what to rejoin.
+    /// </summary>
+    void SetCurrentIds(string? gameId, string? lobbyId);
     Task JoinLobbyGroupAsync(string lobbyId);
     Task LeaveLobbyGroupAsync(string lobbyId);
     Task JoinGameGroupAsync(string gameId);
@@ -35,13 +56,30 @@ public interface ISignalRNotificationService
 
 public class SignalRNotificationService : ISignalRNotificationService, IDisposable
 {
+    // The default WithAutomaticReconnect() schedule spans ~30s, which is shorter than a cold
+    // start plus image pull — the connection would die permanently before the server is up.
+    private static readonly TimeSpan[] RetrySchedule =
+    [
+        TimeSpan.FromSeconds(0),
+        TimeSpan.FromSeconds(2),
+        TimeSpan.FromSeconds(5),
+        TimeSpan.FromSeconds(10),
+        TimeSpan.FromSeconds(15),
+        TimeSpan.FromSeconds(30),
+    ];
+
     private HubConnection? _hubConnection;
+    private string? _playerId;
+    private string? _currentGameId;
+    private string? _currentLobbyId;
 
     private readonly IConfiguration _configuration;
     private readonly IWebAssemblyHostEnvironment _hostEnvironment;
     private readonly ILogger<SignalRNotificationService> _logger;
 
     public event PokerAttackNotificationHandler? HandleNotificationReceived;
+    public event ConnectionStateChangedHandler? ConnectionStateChanged;
+    public event Func<string?, Task>? Rejoined;
 
     public SignalRNotificationService(
         IConfiguration configuration,
@@ -53,8 +91,16 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
         _logger = logger;
     }
 
+    public void SetCurrentIds(string? gameId, string? lobbyId)
+    {
+        _currentGameId = gameId;
+        _currentLobbyId = lobbyId;
+    }
+
     public async Task InitAsync(string playerId)
     {
+        _playerId = playerId;
+
         if (_hubConnection != null && _hubConnection.State == HubConnectionState.Connected)
             return;
 
@@ -94,7 +140,7 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
 
                 _hubConnection = new HubConnectionBuilder()
                     .WithUrl(url)
-                    .WithAutomaticReconnect()
+                    .WithAutomaticReconnect(RetrySchedule)
                     .ConfigureLogging(logging => {
                         logging.SetMinimumLevel(LogLevel.Debug);
                     })
@@ -107,6 +153,10 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
                     HandleNotificationReceived?.Invoke(notification);
                 });
 
+                _hubConnection.Reconnecting += OnReconnecting;
+                _hubConnection.Reconnected += OnReconnected;
+                _hubConnection.Closed += OnClosed;
+
                 await _hubConnection.StartAsync();
             }
         }
@@ -115,6 +165,73 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
             _logger.LogError(ex, "Error initializing SignalR Notification Hub");
             _hubConnection = null;
         }
+    }
+
+    private Task OnReconnecting(Exception? error)
+    {
+        _logger.LogWarning(error, "SignalR connection lost, attempting to reconnect");
+        return ConnectionStateChanged?.Invoke(true, false) ?? Task.CompletedTask;
+    }
+
+    private async Task OnReconnected(string? connectionId)
+    {
+        _logger.LogInformation("SignalR reconnected with connection id {connectionId}", connectionId);
+        await RejoinGroupsAsync();
+        if (ConnectionStateChanged is not null)
+            await ConnectionStateChanged.Invoke(false, false);
+    }
+
+    /// <summary>
+    /// Reconnected never fires when the connection fully closes rather than reconnecting —
+    /// this is the fallback that re-runs InitAsync and then follows the same rejoin sequence.
+    /// </summary>
+    private async Task OnClosed(Exception? error)
+    {
+        _logger.LogWarning(error, "SignalR connection closed");
+
+        if (RetrySchedule.Length == 0 || _playerId is null)
+        {
+            if (ConnectionStateChanged is not null)
+                await ConnectionStateChanged.Invoke(false, true);
+            return;
+        }
+
+        foreach (var delay in RetrySchedule)
+        {
+            if (delay > TimeSpan.Zero)
+                await Task.Delay(delay);
+
+            try
+            {
+                await InitAsync(_playerId);
+                if (_hubConnection?.State == HubConnectionState.Connected)
+                {
+                    await RejoinGroupsAsync();
+                    if (ConnectionStateChanged is not null)
+                        await ConnectionStateChanged.Invoke(false, false);
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Reconnect attempt after Closed failed");
+            }
+        }
+
+        _logger.LogError("SignalR retry schedule exhausted; connection could not be re-established");
+        if (ConnectionStateChanged is not null)
+            await ConnectionStateChanged.Invoke(false, true);
+    }
+
+    private async Task RejoinGroupsAsync()
+    {
+        if (_currentGameId is string gameId)
+            await JoinGameGroupAsync(gameId);
+        else if (_currentLobbyId is string lobbyId)
+            await JoinLobbyGroupAsync(lobbyId);
+
+        if (Rejoined is not null)
+            await Rejoined.Invoke(_currentGameId);
     }
 
     public void Dispose()
@@ -135,6 +252,9 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
         try
         {
             if (_hubConnection == null) return;
+            _hubConnection.Reconnecting -= OnReconnecting;
+            _hubConnection.Reconnected -= OnReconnected;
+            _hubConnection.Closed -= OnClosed;
             _ = _hubConnection.StopAsync();
             _hubConnection = null;
         }

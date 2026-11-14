@@ -1,3 +1,6 @@
+using Blazored.LocalStorage;
+using ChefKnifeStudios.PokerAttack.Client.Core.Services;
+using ChefKnifeStudios.PokerAttack.Client.Shared.Constants;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
@@ -8,6 +11,7 @@ namespace ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 public interface IMultiGameDataStore : INotifyPropertyChanged
 {
     string? GameId { get; set; }
+    string? LobbyId { get; set; }
     int Wallet { get; set; }
     bool IsLoadingWallet { get; set; }
     ObservableCollection<ShopItem> ShopItems { get; set; }
@@ -18,12 +22,19 @@ public interface IMultiGameDataStore : INotifyPropertyChanged
     ObservableCollection<ScoreboardListItem> ScoreboardItems { get; set; }
     bool IsLoadingScoreboard { get; set; }
     void Reset();
+    void RestoreFromLocalStorage();
 }
 
 public partial class MultiGameDataStore : ObservableObject, IMultiGameDataStore
 {
+    readonly ISyncLocalStorageService _localStorage;
+    readonly ISignalRNotificationService _signalRNotificationService;
+
     [ObservableProperty]
     string? _gameId;
+
+    [ObservableProperty]
+    string? _lobbyId;
 
     [ObservableProperty]
     int _wallet;
@@ -52,9 +63,33 @@ public partial class MultiGameDataStore : ObservableObject, IMultiGameDataStore
     [ObservableProperty]
     bool _isLoadingScoreboard;
 
-    public MultiGameDataStore()
+    public MultiGameDataStore(
+        ISyncLocalStorageService localStorage,
+        ISignalRNotificationService signalRNotificationService)
     {
+        _localStorage = localStorage;
+        _signalRNotificationService = signalRNotificationService;
         Reset();
+    }
+
+    partial void OnGameIdChanged(string? value)
+    {
+        if (value is null)
+            _localStorage.RemoveItem(LocalStorageConstants.CurrentGameIdKey);
+        else
+            _localStorage.SetItem(LocalStorageConstants.CurrentGameIdKey, value);
+
+        _signalRNotificationService.SetCurrentIds(value, LobbyId);
+    }
+
+    partial void OnLobbyIdChanged(string? value)
+    {
+        if (value is null)
+            _localStorage.RemoveItem(LocalStorageConstants.CurrentLobbyIdKey);
+        else
+            _localStorage.SetItem(LocalStorageConstants.CurrentLobbyIdKey, value);
+
+        _signalRNotificationService.SetCurrentIds(GameId, value);
     }
 
     public void Reset()
@@ -62,6 +97,7 @@ public partial class MultiGameDataStore : ObservableObject, IMultiGameDataStore
         // Reset all properties to default values
         // This will be called when visiting the Game page
         GameId = null;
+        LobbyId = null;
         Wallet = 0;
         IsLoadingWallet = false;
         ShopItems = [];
@@ -70,5 +106,11 @@ public partial class MultiGameDataStore : ObservableObject, IMultiGameDataStore
         IsLoadingPlayerPowers = false;
         ScoreboardItems = [];
         IsLoadingScoreboard = false;
+    }
+
+    public void RestoreFromLocalStorage()
+    {
+        GameId = _localStorage.GetItem<string>(LocalStorageConstants.CurrentGameIdKey);
+        LobbyId = _localStorage.GetItem<string>(LocalStorageConstants.CurrentLobbyIdKey);
     }
 }

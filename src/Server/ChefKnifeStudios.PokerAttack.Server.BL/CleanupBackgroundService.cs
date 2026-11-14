@@ -11,101 +11,102 @@ public class CleanupBackgroundService : BackgroundService
 {
     readonly ILogger<CleanupBackgroundService> _logger;
     readonly IServiceProvider _serviceProvider;
+    readonly IClock _clock;
     readonly TimeSpan _cleanupInterval = TimeSpan.FromHours(1); // Run every hour
-    readonly TimeSpan _lobbyMaxAge = TimeSpan.FromHours(24); // Delete lobbies older than 24 hours
 
     public CleanupBackgroundService(
         ILogger<CleanupBackgroundService> logger,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider,
+        IClock clock)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
+        _clock = clock;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("Cleanup Background Service started");
 
+        // Opportunistic sweep at startup: an idle period that stopped the container is
+        // exactly when cleanup is due and exactly when nothing was running to do it (FR-013).
+        await RunSweepAsync(stoppingToken);
+
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                await CleanupStaleLobbiesAsync(stoppingToken);
+                await Task.Delay(_cleanupInterval, stoppingToken);
+                await RunSweepAsync(stoppingToken);
             }
-            catch (Exception ex)
+            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
             {
-                _logger.LogError(ex, "Error occurred during cleanup");
+                break;
             }
-
-            // Wait for next cleanup cycle
-            await Task.Delay(_cleanupInterval, stoppingToken);
         }
 
         _logger.LogInformation("Cleanup Background Service stopped");
     }
 
-    async Task CleanupStaleLobbiesAsync(CancellationToken cancellationToken)
+    async Task RunSweepAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await SweepExpiredStateAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred during cleanup");
+        }
+    }
+
+    async Task SweepExpiredStateAsync(CancellationToken cancellationToken)
     {
         using var scope = _serviceProvider.CreateScope();
+        var sweeper = scope.ServiceProvider.GetRequiredService<IExpiredStateSweeper>();
         var lobbyRepository = scope.ServiceProvider.GetRequiredService<IKeyValueRepository<Lobby>>();
         var activeGameRepository = scope.ServiceProvider.GetRequiredService<IKeyValueRepository<ActiveGame>>();
         var gamePlayerRepository = scope.ServiceProvider.GetRequiredService<IKeyValueRepository<GamePlayer>>();
         var gameStateRepository = scope.ServiceProvider.GetRequiredService<IKeyValueRepository<GameStates>>();
         var gameModeRepository = scope.ServiceProvider.GetRequiredService<IKeyValueRepository<GameModes>>();
 
+        var now = _clock.UtcNow;
+
+        // Read the associated GameId before the sweep deletes the Lobby row out from under us.
+        var expiringGameIds = new Dictionary<string, string?>();
         var allLobbiesResult = await lobbyRepository.GetAllAsync(cancellationToken);
-        if (!allLobbiesResult.IsSuccess || allLobbiesResult.Value is null)
+        if (allLobbiesResult.IsSuccess)
         {
-            _logger.LogWarning("Failed to retrieve lobbies for cleanup");
+            foreach (var (lobbyId, lobby) in allLobbiesResult.Value)
+                expiringGameIds[lobbyId] = lobby.GameId;
+        }
+
+        var removed = await sweeper.SweepExpiredAsync(now, cancellationToken);
+        if (removed.Count == 0)
+        {
+            _logger.LogInformation("No expired state found");
             return;
         }
 
-        var allLobbies = allLobbiesResult.Value;
-        var now = DateTime.UtcNow;
-        var staleLobbies = allLobbies
-            .Where(kvp => (now - kvp.Value.CreatedAt) > _lobbyMaxAge)
-            .ToList();
+        _logger.LogInformation("Swept {Count} expired state_kv rows", removed.Count);
 
-        if (!staleLobbies.Any())
+        // An expired Lobby cascades to its associated ActiveGame's dependent data, mirroring
+        // the previous per-lobby cleanup — orphaned GamePlayer/GameStates/GameModes rows would
+        // otherwise outlive the lobby that created them.
+        foreach (var (type, key) in removed)
         {
-            _logger.LogInformation("No stale lobbies found");
-            return;
-        }
+            if (type != nameof(Lobby)) continue;
+            if (!expiringGameIds.TryGetValue(key, out var gameId) || string.IsNullOrEmpty(gameId)) continue;
 
-        _logger.LogInformation("Found {Count} stale lobbies to cleanup", staleLobbies.Count);
-
-        foreach (var (lobbyId, lobby) in staleLobbies)
-        {
             try
             {
-                // Delete the lobby first
-                await lobbyRepository.DeleteAsync(lobbyId, cancellationToken);
-                _logger.LogInformation(
-                    "Deleted stale lobby {LobbyId} (created {CreatedAt}, age: {Age:F1} hours)",
-                    lobbyId,
-                    lobby.CreatedAt,
-                    (now - lobby.CreatedAt).TotalHours
-                );
-
-                // If the lobby has an associated game, cleanup all related game data
-                if (!string.IsNullOrEmpty(lobby.GameId))
-                {
-                    await CleanupGameDataAsync(
-                        lobby.GameId,
-                        activeGameRepository,
-                        gamePlayerRepository,
-                        gameStateRepository,
-                        gameModeRepository,
-                        cancellationToken);
-                }
+                await CleanupGameDataAsync(gameId, activeGameRepository, gamePlayerRepository, gameStateRepository, gameModeRepository, cancellationToken);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to delete lobby {LobbyId}", lobbyId);
+                _logger.LogError(ex, "Failed to cascade-cleanup game data for expired lobby {LobbyId}", key);
             }
         }
-
-        _logger.LogInformation("Lobby cleanup completed. Deleted {Count} lobbies", staleLobbies.Count);
     }
 
     async Task CleanupGameDataAsync(

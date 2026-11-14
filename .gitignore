@@ -404,3 +404,5 @@ src/**/appsettings.*.json
 tests/test-results/
 tests/playwright-report/
 tests/playwright/.cache/
+
+.claude

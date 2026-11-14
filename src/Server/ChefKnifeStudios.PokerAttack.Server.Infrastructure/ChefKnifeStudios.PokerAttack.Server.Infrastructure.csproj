@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ChefKnifeStudios.PokerAttack.Server.Core\ChefKnifeStudios.PokerAttack.Server.Core.csproj" />
+    <ProjectReference Include="..\ChefKnifeStudios.PokerAttack.Server.Data\ChefKnifeStudios.PokerAttack.Server.Data.csproj" />
+    <ProjectReference Include="..\..\ChefKnifeStudios.PokerAttack.Shared\ChefKnifeStudios.PokerAttack.Shared.csproj" />
   </ItemGroup>
 
 </Project>

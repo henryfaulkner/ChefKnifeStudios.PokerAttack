@@ -1,3 +1,4 @@
+using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using ChefKnifeStudios.PokerAttack.Server.Data.Models;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
@@ -15,17 +16,20 @@ public sealed class EventNotificationServiceSubscriber : IHostedService
     readonly ILogger<EventNotificationServiceSubscriber> _logger;
     readonly IServiceScopeFactory _scopeFactory;
     readonly GameSettings _gameSettings;
+    readonly IClock _clock;
 
     public EventNotificationServiceSubscriber(
         IEventNotificationService eventBus,
         ILogger<EventNotificationServiceSubscriber> logger,
         IServiceScopeFactory scopeFactory,
-        IOptions<GameSettings> gameSettings)
+        IOptions<GameSettings> gameSettings,
+        IClock clock)
     {
         _eventBus = eventBus;
         _logger = logger;
         _scopeFactory = scopeFactory;
         _gameSettings = gameSettings.Value;
+        _clock = clock;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
@@ -53,6 +57,7 @@ public sealed class EventNotificationServiceSubscriber : IHostedService
                         // create a scope to resolve scoped services (GameService, etc.)
                         using var scope = _scopeFactory.CreateScope();
                         var gameService = scope.ServiceProvider.GetRequiredService<IGameService>();
+                        var activeGameRepository = scope.ServiceProvider.GetRequiredService<IKeyValueRepository<ActiveGame>>();
 
                         _logger.LogInformation("Dispatching GameStateChanged for GameId={GameId} NewState={NewState}", gs.GameId, gs.NewState);
 
@@ -66,24 +71,23 @@ public sealed class EventNotificationServiceSubscriber : IHostedService
                             case GameStates.Elimination:
                                 {
                                     await gameService.StartEliminationAsync(gs.GameId);
-                                    await Task.Delay(_gameSettings.EliminationTimeMs);
-                                    await gameService.FinishEliminationAsync(gs.GameId);
+                                    // Persisted deadline replaces Task.Delay: the reconciler calls
+                                    // FinishEliminationAsync once this expires, so elimination survives
+                                    // an interruption instead of wedging.
+                                    await SetPhaseDeadlineAsync(activeGameRepository, gs.GameId, GameStates.Elimination, _gameSettings.EliminationTimeMs);
                                     break;
                                 }
                             case GameStates.Shop:
                                 {
                                     await gameService.StartShoppingAsync(gs.GameId);
-                                    await Task.Delay(_gameSettings.ShopTimeMs);
-                                    await gameService.FinishShoppingAsync(gs.GameId);
+                                    await SetPhaseDeadlineAsync(activeGameRepository, gs.GameId, GameStates.Shop, _gameSettings.ShopTimeMs);
                                     break;
                                 }
                             case GameStates.Freebie:
                                 {
                                     _logger.LogInformation("Freebie timer starting for GameId={GameId}", gs.GameId);
                                     await gameService.StartPlayerPowerSelectionAsync(gs.GameId);
-                                    await Task.Delay(_gameSettings.PlayerPowerSelectionTimeMs);
-                                    _logger.LogInformation("Freebie timer expired for GameId={GameId}, calling FinishPlayerPowerSelectionAsync", gs.GameId);
-                                    await gameService.FinishPlayerPowerSelectionAsync(gs.GameId);
+                                    await SetPhaseDeadlineAsync(activeGameRepository, gs.GameId, GameStates.Freebie, _gameSettings.PlayerPowerSelectionTimeMs);
                                     break;
                                 }
                             case GameStates.GameOver:
@@ -102,5 +106,19 @@ public sealed class EventNotificationServiceSubscriber : IHostedService
         {
             _logger.LogError(ex, "Error handling backend event in EventNotificationServiceSubscriber.");
         }
+    }
+
+    async Task SetPhaseDeadlineAsync(IKeyValueRepository<ActiveGame> activeGameRepository, string gameId, GameStates phase, int durationMs)
+    {
+        var activeGameResult = await activeGameRepository.GetAsync(gameId);
+        if (!activeGameResult.IsSuccess || activeGameResult.Value is not ActiveGame activeGame)
+            return;
+
+        var now = _clock.UtcNow;
+        activeGame.CurrentPhase = phase;
+        activeGame.PhaseStartedAt = now;
+        activeGame.PhaseExpiresAt = now.AddMilliseconds(durationMs);
+
+        await activeGameRepository.UpdateAsync(gameId, activeGame);
     }
 }

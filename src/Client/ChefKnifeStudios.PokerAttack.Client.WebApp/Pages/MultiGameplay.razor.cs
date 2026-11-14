@@ -31,6 +31,8 @@ public partial class MultiGameplay : ComponentBase, IDisposable, IAsyncDisposabl
         nameof(IGameStateMachineViewModel.GameState),
         nameof(IMultiGameDataStore.IsLoadingWallet),
         nameof(IMultiGameDataStore.Wallet),
+        nameof(IMultiGameplayViewModel.IsReconnecting),
+        nameof(IMultiGameplayViewModel.ReconnectFailed),
     ];
 
     protected override void OnInitialized()
@@ -60,6 +62,10 @@ public partial class MultiGameplay : ComponentBase, IDisposable, IAsyncDisposabl
         // Reset and set GameId in MultiGameDataStore
         MultiGameDataStore.Reset();
         MultiGameDataStore.GameId = GameId;
+
+        // Resync on initial load covers a browser refresh mid-game — the board would
+        // otherwise show nothing until the next broadcast arrives.
+        await MultiGameplayViewModel.ResyncAsync(ApplicationViewModel.Player.Id);
 
         await MultiGameplayViewModel.StartGameAsync(ApplicationViewModel.Player.Id);
 
@@ -145,6 +151,11 @@ public partial class MultiGameplay : ComponentBase, IDisposable, IAsyncDisposabl
     {
         if (GameStateMachineViewModel.GameState != GameStates.InGame) return;
         _ = MultiGameplayViewModel.ActivatePlayerPowerAsync(ApplicationViewModel.Player.Id);
+    }
+
+    void HandleRetryConnectionPressed()
+    {
+        _ = MultiGameplayViewModel.RetryConnectionAsync(ApplicationViewModel.Player.Id);
     }
 
     void ToggleCardSelection(int index)

@@ -52,6 +52,44 @@ namespace ChefKnifeStudios.PokerAttack.Server.Data.Migrations
                     b.ToTable("Games", "PokerAttack");
                 });
 
+            modelBuilder.Entity("ChefKnifeStudios.PokerAttack.Server.Data.Models.PlayerSessionEntity", b =>
+                {
+                    b.Property<string>("PlayerId")
+                        .HasColumnType("text")
+                        .HasColumnName("player_id");
+
+                    b.Property<bool>("Connected")
+                        .HasColumnType("boolean")
+                        .HasColumnName("connected");
+
+                    b.Property<DateTime?>("DisconnectedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("disconnected_at");
+
+                    b.Property<string>("GameId")
+                        .HasColumnType("text")
+                        .HasColumnName("game_id");
+
+                    b.Property<string>("LobbyId")
+                        .HasColumnType("text")
+                        .HasColumnName("lobby_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("PlayerId");
+
+                    b.HasIndex("DisconnectedAt")
+                        .HasDatabaseName("ix_player_session_disconnected_at")
+                        .HasFilter("disconnected_at IS NOT NULL");
+
+                    b.HasIndex("GameId")
+                        .HasDatabaseName("ix_player_session_game_id");
+
+                    b.ToTable("player_session", "PokerAttack");
+                });
+
             modelBuilder.Entity("ChefKnifeStudios.PokerAttack.Server.Data.Models.Round", b =>
                 {
                     b.Property<int>("Id")
@@ -115,6 +153,41 @@ namespace ChefKnifeStudios.PokerAttack.Server.Data.Migrations
                     b.HasIndex("RoundId");
 
                     b.ToTable("RoundScores", "PokerAttack");
+                });
+
+            modelBuilder.Entity("ChefKnifeStudios.PokerAttack.Server.Data.Models.StateKeyValue", b =>
+                {
+                    b.Property<string>("Type")
+                        .HasColumnType("text")
+                        .HasColumnName("type");
+
+                    b.Property<string>("Key")
+                        .HasColumnType("text")
+                        .HasColumnName("key");
+
+                    b.Property<DateTime?>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("value");
+
+                    b.HasKey("Type", "Key");
+
+                    b.HasIndex("ExpiresAt")
+                        .HasDatabaseName("ix_state_kv_expires_at")
+                        .HasFilter("expires_at IS NOT NULL");
+
+                    b.HasIndex("Type")
+                        .HasDatabaseName("ix_state_kv_type");
+
+                    b.ToTable("state_kv", "PokerAttack");
                 });
 
             modelBuilder.Entity("ChefKnifeStudios.PokerAttack.Server.Data.Models.Round", b =>

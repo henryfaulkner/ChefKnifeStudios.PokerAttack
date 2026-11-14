@@ -26,10 +26,20 @@ public partial class Lobbies : ComponentBase, IDisposable
     [Inject] ITourJsInterop TourJsInterop { get; set; } = null!;
     [Inject] ISettingsService SettingsService { get; set; } = null!;
     [Inject] ISyncLocalStorageService LocalStorage { get; set; } = null!;
+    [Inject] IWarmupService WarmupService { get; set; } = null!;
 
     protected override void OnInitialized()
     {
         SoloGameDataStore.PropertyChanged += SoloGameDataStore_PropertyChanged;
+
+        // Opening the lobby screen is evident intent to play — warm the backend while the
+        // player reads/decides, so game start never eats the cold start (FR-020).
+        WarmupService.WarmOnIntent();
+    }
+
+    void HandlePlayIntentHover()
+    {
+        WarmupService.WarmOnIntent();
     }
 
     protected override async void OnAfterRender(bool firstRender)
