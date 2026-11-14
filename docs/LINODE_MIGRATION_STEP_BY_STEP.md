@@ -240,7 +240,7 @@ az acr repository show -n chefknife --image "chefknifestudios.pokerattack.server
 
 ### C05 — Configure pilot HTTPS, proxy and network rules
 
-- [ ] C05 complete.
+- [x] C05 complete. 2026-11-14: additive validated Caddy reload, valid public TLS, exact CORS, public test/ops denial, external 8082 refused, existing TransitJazz real hub replay healthy. See [WP07 evidence](LINODE_WP07_EVIDENCE.md).
 
 **Actions:** Validate candidate Compose with `config --quiet`. Verify M01's manually published pilot DNS read-only. Add the pilot site to the existing proxy. Preserve certificate volumes, validate the full proxy config and perform a scheduled reload. Permit public 80/443 and selected SSH route; do not expose API ports or broaden DB access. Restrict staging `/test/*` to the runner/private path while blocking it on the production virtual host. Verify co-tenant websockets after shared-proxy reload.
 
