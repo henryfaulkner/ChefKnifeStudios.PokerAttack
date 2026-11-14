@@ -34,4 +34,4 @@ The VM helper defaults to the previously verified host `170.187.142.115`, root S
 - `public.__EFMigrationsHistory` is shared with ExpenseTracker. Discover its actual location/contents and compare only PokerAttack migration IDs. Never move, clear or replace shared history.
 - Queries do not authorize migrations, cleanup, role changes, credential rotation, backups/restores or co-tenant modifications. Perform those only within an explicitly authorized operational task.
 
-Keep the shared `ExpenseTracker` schema and other databases intact. The current runtime credential may be overprivileged: distinguish verified DB identity from verified least privilege, and prefer an existing restricted reader when available.
+Keep the shared `ExpenseTracker` schema and other databases intact. Production uses the restricted `pokerattack_runtime` role; legacy shared postgres password rotation is explicitly deferred. Distinguish privileged VM peer access from runtime-role verification, and prefer an existing restricted reader when available.

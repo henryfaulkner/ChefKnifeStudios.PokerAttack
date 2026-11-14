@@ -29,7 +29,9 @@ Connection strings are parsed with explicit .NET `set_ConnectionString`, `get_Ke
 
 Passwords travel only through temporary process `PGPASSWORD`, not command arguments/files. The helper restores overridden environment variables and output encoding in `finally`. It preserves explicitly configured SSL modes/certificate paths; an absent SSL policy is not evidence of verified TLS. Complex multi-host/client-certificate setups should use the caller's approved libpq service rather than guessed translations. Parameter values use temporary environment variables and psql literal quoting. Reviewed SQL only: the helper rejects psql command lines, but does not authorize arbitrary SQL.
 
-When current ACA settings must be inspected under an authorized inventory, select `poker-attack-rg` / `poker-attack-api`, capture the response in process memory, and read only `ConnectionStrings__PokerAttackDB`. Inspect whether it is a direct setting or a secret reference before resolving it. Never print unfiltered resource JSON, secret lists or environment settings. The existing runtime uses direct settings; revalidate that fact.
+Production moved to Linode on 2026-11-14. The runtime role is `pokerattack_runtime` in `expensetrackerdb`; the isolated pilot role is `pokerattack_pilot_runtime` in `pokerattack_pilot`. The pilot is stopped after cutover. Use the existing VM read-only helper below for routine reviewed queries. Root peer access does not establish runtime-role permissions. Current release configuration and recovery are documented in `docs/LINODE_PRODUCTION_OPERATIONS.md`; configuration files are secret-bearing and must not be printed or copied into this skill.
+
+The old ACA app `poker-attack-api` was retired at the owner's direction; it is no longer the current configuration source. Shared postgres password rotation was explicitly deferred. Do not rotate it or change ExpenseTracker/TransitJazz settings during a data query.
 
 ## VM route without a database password
 

@@ -1,7 +1,7 @@
 # PokerAttack Linode migration: agent execution checklist
 
 **Prepared:** 2026-11-14
-**Status:** IN PROGRESS — WP01 inventory, WP02 isolation/baseline and WP03 hosting verified; WP04/WP05 local implementation verified; WP06 backup/host verification recorded; registry/role preparation underway. Owner confirmed LISH and recovery defaults. No publication or deployment.
+**Status:** IN PROGRESS - production now runs on Linode and served clients use the new API/hub. Final production browser checks and owner-directed ACA removal are underway. Shared rotation deferred by explicit owner decision. See [WP08 evidence](LINODE_WP08_EVIDENCE.md).
 **Design:** [Migration design document](LINODE_SERVER_MIGRATION_DESIGN_DOCUMENT.md)
 **Implementation breakdown:** [Work packages](LINODE_IMPLEMENTATION_WORK_PACKAGES.md)
 
@@ -13,7 +13,7 @@ Checkboxes mean **verified completion**, not “code written” or “command at
 
 Resume by inspecting the ledger, current source, live image/config and incomplete dependencies. Revalidate time-sensitive facts such as DNS, ACA activity and backup age before mutation. Use the existing shared Linode with capacity assumed sufficient, as instructed by the owner. The API/SignalR container limit is fixed at 0.25 CPU and 512 MiB; no capacity survey, resize or new VM selection is required. Stop dependent work on observed failures; independent preparation may continue. Do not paste this entire document into a shell.
 
-**Execution update (2026-11-14):** WP01-WP05 completed; source/images published only after legacy Azure definitions 39/40/41 were disabled. GitHub Actions currently runs build/test only. WP06 core pilot prerequisites are verified, including encrypted shared backups and isolated restore; shared-credential replacement remains a production gate. WP07 public isolated pilot is running, with gameplay/recovery verification in progress. Production clients and ACA remain unchanged. Owner approved a 30-minute observation after gameplay and rollback checks pass, retaining shared-database backups. See [WP06 evidence](LINODE_WP06_EVIDENCE.md) and [WP07 evidence](LINODE_WP07_EVIDENCE.md).
+**Execution update (2026-11-14):** Owner explicitly directed production cutover and ACA production removal, with shared-password rotation deferred. The 30-minute pilot observation and controlled rollback passed. ACA is fully stopped, pilot stopped, Linode production healthy; both served endpoints are now `https://api.playpokerattack.com/`. This direction supersedes the planned ACA retention period; unverified alert/reboot/automation items remain follow-ups, not fabricated passes. See [WP08 evidence](LINODE_WP08_EVIDENCE.md).
 
 **Manual DNS boundary:** M01 and M02 are owner/operator steps. The agent prepares exact records and rollback instructions and verifies resolution read-only; it does not create, edit or delete DNS records through any tool. Record the operator's completion before checking these items. Wait for manual completion only when the next action depends on DNS; continue independent repository preparation meanwhile.
 
@@ -315,7 +315,7 @@ Test-NetConnection REPLACE_WITH_VM_IP -Port 8082
 
 ### E01 — Assemble the cutover and rollback package
 
-- [ ] E01 complete.
+- [x] E01 complete for owner-directed cutover. Protected configs/backups and encrypted ACA resource snapshots preserved; validated production proxy/TLS and prepared both-endpoint client artifact. Owner superseded ACA retention/removal timing and deferred shared rotation.
 
 **Actions:** Recheck A02–A05 live values, backup age, schema compatibility, all release gates and absence of queued deploy/cleanup jobs. Prepare root-only production env, the tested digest, saved ACA/client rollback artifacts and exact revision/traffic commands. Prepare the client release with both BaseUri values set to the chosen production hostname and no hub suffix; verify published `prod` configuration resolves correctly. Prepare the maintenance landing page and reload/new-game message. Verify M02's manual DNS completion and configure the production Caddy site with test routes denied and valid certificate; scheduled proxy reload requires co-tenant checks. Before the production API starts, this hostname may deliberately return 503. Confirm migration/rollback budget and observation dates in worksheet.
 
@@ -323,7 +323,7 @@ Test-NetConnection REPLACE_WITH_VM_IP -Port 8082
 
 ### E02 — Enter maintenance, stop ACA and finalize schema gate
 
-- [ ] E02 complete.
+- [x] E02 complete. Maintenance visible on apex/www/default SWA; all ACA revisions inactive and zero replicas at 17:34 UTC; old endpoint 404. Pilot stopped. No production schema migration required or executed. Existing sessions explicitly reset by maintenance; exact pre-existing live-game count unavailable.
 
 **Actions:** Publish maintenance entry page to deter new sessions, announce required reload/reset through the agreed mechanism, and observe existing games. Let them finish within the selected drain budget or explicitly record their termination. Recheck that no automated process can restart ACA. Capture active revisions, deactivate all of them, wait for replicas/connections to stop and verify the old endpoint no longer accepts gameplay. Stale tabs must not be able to create games on ACA. Stop the isolated pilot before replacing runtime configuration. If a reviewed compatible schema migration is necessary, take/confirm a fresh backup and run its matching bundle once with separate credentials and the same release lock; verify history afterward. Otherwise record that no migration was run.
 
@@ -347,7 +347,7 @@ Expected: no active revisions, then verified replica stop. Setting minimum repli
 
 ### E03 — Start exactly one Linode production process
 
-- [ ] E03 complete.
+- [x] E03 complete. Linode Production started 17:35:21Z at the reviewed digest/config/limits; public ready 200 and test/ops routes 404. Controlled two-player game persisted one round/two scores at 17:41 UTC with private message isolation.
 
 **Actions:** Under the deployment lock, activate protected production config with exact `Production` environment and actual production DB role. Start only `pokerattack-app` server at the selected digest/loopback port. Check local/public health, running image and correct DB identity without dumping secrets. Confirm test routes absent, CORS exact, certificate valid and ACA still stopped. Use a controlled game/client to prove production round persistence and hub delivery before opening public entry. Do not call cleanup or repurpose production as the full test suite's target.
 
@@ -357,7 +357,7 @@ Verify the production container also reports `NanoCpus=250000000` and `Memory=53
 
 ### E04 — Publish both client endpoints and reopen entry
 
-- [ ] E04 complete.
+- [x] E04 complete. Served apex/www/default SWA both point to api.playpokerattack.com with environment prod; real apex/www browsers used production WSS, completed a round and solo game-over at 17:44:19Z. Browser game persisted one round/two scores.
 
 **Actions:** Deploy the prepared client artifact through the existing SWA pipeline, replacing the maintenance entry page when E03 passes. Inspect served `appsettings.json`, environment header and any environment-specific override; both named URLs must use the new hostname. Verify fresh browser API calls and WebSockets target Linode, including apex/www routes actually used. Check stale-tab/reload behavior and discovered caching/service-worker behavior. Complete a multiplayer round and solo smoke using controlled player IDs; verify production DB records. Confirm old ACA URL remains unavailable for gameplay. Record UTC public cutover time.
 

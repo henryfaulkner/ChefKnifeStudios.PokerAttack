@@ -1,6 +1,6 @@
 # PokerAttack release tooling
 
-Repository preparation only. Installation and secret provisioning belong to WP06 after shared-host backup/restore proof. Do not run a production release while ACA production replicas are active. Production remains on ACA until WP08 maintenance.
+Production is installed on Linode after the verified pilot and owner-directed cutover. See [production operations](../../docs/LINODE_PRODUCTION_OPERATIONS.md) for current identities, recovery and unfinished operational follow-ups. The owner directed ACA retirement and deferred shared password rotation. Production releases use the protected command below; never start a second authoritative game process.
 
 ## Paths and boundaries
 

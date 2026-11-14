@@ -1,6 +1,6 @@
 # PokerAttack Linode implementation work packages
 
-**Status:** WP01-WP05 complete. WP06 core pilot prerequisites verified (encrypted shared backups/restores, restricted roles, registry access and protected host tooling); shared-credential replacement remains a production gate. WP07 public isolated pilot is running and verification is in progress. Production remains on ACA. Owner confirmed LISH, maintenance anytime and a 30-minute pilot observation after gameplay and rollback checks pass.
+**Status:** Production API/client cutover COMPLETE on 2026-11-14: pilot observation/live rollback passed; one Linode Production process and both served client endpoints verified with real multiplayer/solo and persisted rounds. Production known-good promoted. ACA app deleted; dedicated environment deletion is awaiting Azure completion. Shared rotation explicitly deferred; alert/reboot/GitHub CD follow-ups remain. [Production evidence](LINODE_WP08_EVIDENCE.md).
 
 **Owner direction, 2026-11-14:** Use production `api.playpokerattack.com` and pilot `pilot-api.playpokerattack.com`. Use GitHub Actions for future CI/CD, superseding Azure Pipelines delivery below; legacy Azure definitions 39/40/41 are disabled. WP09 must implement equivalent GitHub environment protections, branch controls, credentials and deployment concurrency. Original Azure-specific details are historical until translated in WP09.
 **Design:** [Migration design](LINODE_SERVER_MIGRATION_DESIGN_DOCUMENT.md)
@@ -29,16 +29,16 @@ Capacity is an accepted planning assumption, not a claim of measured headroom. R
 
 | Package | Deliverable / suggested change title | Depends on | Checklist coverage | Status |
 | --- | --- | --- | --- | --- |
-| WP01 | Record verified configuration and manual DNS handoffs | Implementation request | A01–A05 | COMPLETE — inventory/findings recorded; role/credential/firewall remediation remains a deployment gate |
-| WP02 | Isolate migration builds and establish a passing test baseline | WP01 | B01; baseline part of B04 | COMPLETE — local baseline and live isolation verified; no publication |
+| WP01 | Record verified configuration and manual DNS handoffs | Implementation request | A01–A05 | COMPLETE - live inventory recorded; shared rotation now explicitly deferred |
+| WP02 | Isolate migration builds and establish a passing test baseline | WP01 | B01; baseline part of B04 | COMPLETE - isolation verified before publication; legacy deployment definitions remain disabled |
 | WP03 | Make API hosting ready for Caddy and production probes | WP02 | Server part of B02; hosting tests in B04 | COMPLETE — 26 isolated hosting tests plus 11 BL tests passed |
-| WP04 | Prepare client recovery and isolated multiplayer tests | WP02–WP03 | Client part of B02; B05; client checks in B04 | COMPLETE ? 28 hosting/recovery, 21 guards and 2 artifact checks passed; full pilot smoke remains WP07 |
+| WP04 | Prepare client recovery and isolated multiplayer tests | WP02–WP03 | Client part of B02; B05; client checks in B04 | COMPLETE - client recovery/startup fixes, local/CI and public browser checks passed |
 | WP05 | Add container packaging and controlled release commands | WP03–WP04 | Repository part of B03; remaining B04 | COMPLETE ? both images, scoped disposable runtime, 8 release failure tests and 3 browser smokes passed |
-| WP06 | Prepare protected host configuration, backups and pilot database | WP01, WP05 | C01–C04; operational part of B03 | NOT STARTED |
-| WP07 | Verify public pilot, rollback and monitoring | WP06; manual M01 | M01, C05, D01–D05 | NOT STARTED |
-| WP08 | Perform coordinated production cutover | WP07; manual M02 | M02, E01–E04; R01 if needed | NOT STARTED |
-| WP09 | Enable GitHub Actions Linode-only continuous delivery | WP07–WP08 | F02 | NOT STARTED |
-| WP10 | Observe production and retire obsolete server resources | WP08; WP09 before retirement | F01, F03–F04 | NOT STARTED |
+| WP06 | Prepare protected host configuration, backups and pilot database | WP01, WP05 | C01–C04; operational part of B03 | COMPLETE for cutover - backups/restore, scoped roles, protected tooling; shared rotation explicitly deferred |
+| WP07 | Verify public pilot, rollback and monitoring | WP06; manual M01 | M01, C05, D01–D05 | PILOT ACCEPTED - gameplay, live rollback, 30-minute/20-connection observation passed; broader operational follow-ups retained |
+| WP08 | Perform coordinated production cutover | WP07; manual M02 | M02, E01–E04; R01 if needed | COMPLETE - production API/client switched; real multiplayer/solo and persistence verified |
+| WP09 | Enable GitHub Actions Linode-only continuous delivery | WP07–WP08 | F02 | BUILD/TEST ACTIVE; GitHub deployment automation remains pending; controlled manual release used |
+| WP10 | Observe production and retire obsolete server resources | WP08; WP09 before retirement | F01, F03–F04 | IN PROGRESS - owner directed immediate ACA removal; app deleted, dedicated environment deleting; production observation continues |
 
 Manual M01/M02 record preparation belongs to WP01; their execution can happen as soon as names/host IP are verified, before their dependent packages. WP10 observation can run while WP09 is completed. Repository work in WP02–WP05 does not wait for DNS. Shared files such as `Program.cs` and pipeline YAML should be edited in this sequence to keep review and integration straightforward. This breakdown does not request parallel agents.
 
