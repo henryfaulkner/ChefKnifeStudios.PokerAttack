@@ -1,0 +1,144 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+umask 077
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+unset COMPOSE_FILE COMPOSE_PROFILES COMPOSE_PROJECT_NAME DOCKER_HOST DOCKER_CONTEXT DOCKER_TLS_VERIFY DOCKER_CERT_PATH
+[[ $EUID == 0 ]] || { echo 'Run through the restricted root deployment interface.' >&2; exit 1; }
+fail() { echo "$*" >&2; exit 1; }
+[[ $# -ge 2 ]] || fail 'Usage: deploy|promote|rollback|status pilot|production [identities]'
+action=$1 target=$2
+[[ $target == production || $target == pilot ]] || fail 'Invalid target.'
+case $action in
+  deploy) [[ $# == 4 && $3 =~ ^sha256:[a-f0-9]{64}$ && $4 =~ ^[a-f0-9]{64}$ ]] || fail 'Invalid deploy identities.' ;;
+  promote) [[ $# == 4 && $3 =~ ^sha256:[a-f0-9]{64}$ && $4 =~ ^[a-f0-9]{64}$ ]] || fail 'Invalid promotion identities.' ;;
+  rollback|status) [[ $# == 2 ]] || fail 'Unexpected arguments.' ;;
+  *) fail 'Unknown operation.' ;;
+esac
+root=/etc/pokerattack
+export DOCKER_CONFIG=$root/registry
+state=/var/lib/pokerattack
+install_dir=/opt/pokerattack
+validator=$install_dir/validate-config.py
+base=$state/$target
+project=pokerattack-$target
+port=8081
+[[ $target == production ]] || port=8082
+mkdir -p "$base/releases"
+exec 9>"$state/deploy.lock"
+flock -n 9 || fail 'Another PokerAttack operation holds the lock.'
+[[ ! -e $base/transaction ]] || fail 'Interrupted transaction: inspect and recover under the host lock before retrying.'
+
+pair() {
+  local name=$1 result
+  [[ -L $base/$name ]] || return 1
+  result=$(readlink -f "$base/$name")
+  [[ $result == "$base/releases/"* && -d $result ]] || fail 'Invalid release pointer.'
+  printf '%s\n' "$result"
+}
+compose() {
+  docker compose --project-name "$project" --env-file "$1/release.env" -f "$install_dir/compose.yaml" "${@:2}"
+}
+point() {
+  ln -s "$2" "$base/$1.next"
+  mv -Tf "$base/$1.next" "$base/$1"
+}
+ready() {
+  local release=$1 id actual expected
+  id=$(compose "$release" ps -q api) || return 1
+  [[ -n $id ]] || return 1
+  expected=$(docker image inspect --format '{{.Id}}' "$(cat "$release/image")") || return 1
+  actual=$(docker inspect --format '{{.Image}} {{.State.Running}} {{.HostConfig.NanoCpus}} {{.HostConfig.Memory}}' "$id") || return 1
+  [[ $actual == "$expected true 250000000 536870912" ]] || return 1
+  curl --silent --fail --max-time 5 "http://127.0.0.1:$port/health/ready" >/dev/null
+}
+wait_ready() {
+  local release=$1
+  for ((attempt=0;attempt<30;attempt++)); do
+    if ready "$release"; then return 0; fi
+    sleep 2
+  done
+  return 1
+}
+maintenance() { python3 "$validator" maintenance "$target" "$root/$target/maintenance" unused; }
+
+active=$(pair active || true)
+if [[ $action == status ]]; then
+  if [[ -n $active ]]; then
+    printf 'Active image: '; cat "$active/image"
+    if ready "$active"; then echo 'Local readiness: healthy'; else echo 'Local readiness: failed'; fi
+  else echo 'No active release recorded.'; fi
+  [[ ! -L $base/pending ]] || echo 'External verification and promotion pending.'
+  exit 0
+fi
+
+if [[ $action == promote ]]; then
+  pending=$(pair pending) || fail 'No pending candidate.'
+  [[ $pending == "$active" && $(cat "$pending/digest") == "$3" ]] || fail 'Promotion does not match active pending release.'
+  python3 "$validator" verification "$target" "$root/$target/verification/$4.json" "$4" "$3" "$(cat "$pending/config-id")"
+  ready "$pending" || fail 'Candidate no longer ready or resource/image identity differs.'
+  good=$(pair known-good || true)
+  [[ -z $good || $good == "$pending" ]] || point previous-good "$good"
+  point known-good "$pending"
+  rm "$base/pending"
+  echo 'Verified image/config pair promoted.'
+  exit 0
+fi
+
+[[ ! -L $base/pending || $action == rollback ]] || fail 'Resolve the pending candidate before another deployment.'
+if [[ $action == deploy ]]; then
+  digest=$3 config_id=$4
+  config=$root/$target/configs/$config_id.env
+  python3 "$validator" config "$target" "$config" "$config_id"
+  image=chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@$digest
+  # A failed pull must leave the currently running server untouched.
+  docker pull "$image" >/dev/null
+  candidate=$base/releases/$(date -u +%Y%m%dT%H%M%S)-${digest:7:12}-${config_id:0:12}
+  mkdir "$candidate"
+  cp "$config" "$candidate/app.env"
+  printf '%s\n' "$digest" >"$candidate/digest"
+  printf '%s\n' "$config_id" >"$candidate/config-id"
+  printf '%s\n' "$image" >"$candidate/image"
+  printf 'API_IMAGE=%s\nAPP_ENV=%s/app.env\nAPP_PORT=%s\n' "$image" "$candidate" "$port" >"$candidate/release.env"
+  compose "$candidate" config --quiet
+else
+  if [[ -L $base/pending ]]; then candidate=$(pair known-good) || fail 'No known-good pair to recover.'
+  else candidate=$(pair previous-good) || fail 'No previous-good pair to recover.'; fi
+  config_id=$(cat "$candidate/config-id")
+  python3 "$validator" config "$target" "$candidate/app.env" "$config_id"
+  docker pull "$(cat "$candidate/image")" >/dev/null
+fi
+maintenance
+if [[ -z $active && -n $(compose "$candidate" ps -q api) ]]; then fail 'Unrecorded running service: inspect before first deployment.'; fi
+if [[ -n $active ]] && ! ready "$active"; then
+  # Recovery remains possible for an unhealthy active process, but identity must be recorded.
+  echo 'Active service unhealthy; recovery will use its recorded image/config pair.' >&2
+fi
+printf '%s\n%s\n' "$active" "$candidate" >"$base/transaction"
+changed=false
+recover() {
+  local result=$?
+  trap - EXIT INT TERM
+  if [[ $changed == true ]]; then
+    echo 'Release failed; attempting recorded previous pair recovery.' >&2
+    compose "$candidate" stop api || true
+    if [[ -n $active ]] && compose "$active" up -d --no-deps --pull never api && wait_ready "$active"; then
+      point active "$active"
+      mv "$base/transaction" "$base/last-failed-transaction"
+      echo 'Previous pair restored; release still failed.' >&2
+    else echo 'Automatic recovery failed; transaction retained for console recovery.' >&2; fi
+  fi
+  exit "$result"
+}
+trap recover EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+changed=true
+[[ -z $active ]] || compose "$active" stop api
+compose "$candidate" up -d --no-deps --pull never api
+wait_ready "$candidate" || fail 'Candidate readiness/image/resource checks failed.'
+point active "$candidate"
+point pending "$candidate"
+rm "$base/transaction"
+changed=false
+trap - EXIT INT TERM
+echo 'Candidate ready locally. External gameplay verification is required before promotion.'

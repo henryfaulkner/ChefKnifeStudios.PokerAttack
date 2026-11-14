@@ -1,0 +1,4 @@
+interface:
+  display_name: "PokerAttack Database"
+  short_description: "Query PokerAttack games, rounds and database state"
+  default_prompt: "Use $pokerattack-db to inspect the PokerAttack database and explain the results."

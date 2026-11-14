@@ -19,6 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="appsettings.*.json" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\ChefKnifeStudios.PokerAttack.ServiceDefaults\ChefKnifeStudios.PokerAttack.ServiceDefaults.csproj" />
     <ProjectReference Include="..\ChefKnifeStudios.PokerAttack.Server.BL\ChefKnifeStudios.PokerAttack.Server.BL.csproj" />
     <ProjectReference Include="..\ChefKnifeStudios.PokerAttack.Server.Infrastructure\ChefKnifeStudios.PokerAttack.Server.Infrastructure.csproj" />

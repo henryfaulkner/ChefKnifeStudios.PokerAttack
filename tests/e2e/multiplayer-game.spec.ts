@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { createPlayerContext, navigateToHome, cleanupPlayers, cleanupServerData, wait, PlayerContext } from '../helpers/setup';
 import * as actions from '../helpers/actions';
+import { resolveTargets } from '../helpers/targets';
 
 /**
  * E2E Multiplayer Test - 4 Players, 3 Consecutive Games
@@ -14,16 +15,12 @@ test.describe('4-Player Multiplayer Game - 3 Consecutive Games', () => {
     // Get URLs from environment variables
     // CLIENT_URL: Where the browser navigates (frontend)
     // API_URL_CLEANUP: Where the cleanup endpoint is (backend API)
-    // For backward compatibility, fall back to API_URL for local dev
-    const clientUrl = process.env.CLIENT_URL || process.env.API_URL || 'https://localhost:7150';
-    const apiUrl = process.env.API_URL_CLEANUP; // Optional - for production
+    const targets = resolveTargets();
+    const clientUrl = targets.clientUrl;
+    const apiUrl = targets.cleanupApiUrl;
 
     console.log(`Client URL (browser navigation): ${clientUrl}`);
-    if (apiUrl) {
-      console.log(`API URL (cleanup endpoint): ${apiUrl}`);
-    } else {
-      console.log('API URL: Deriving from client URL (local dev mode)');
-    }
+    console.log(`API URL (cleanup endpoint): ${apiUrl}`);
 
     // ============================================================================
     // ARRANGE - Setup Phase (handled for you)

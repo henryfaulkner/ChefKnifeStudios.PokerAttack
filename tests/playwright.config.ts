@@ -1,4 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
+import { resolveTargets } from './helpers/targets';
+
+const targets = resolveTargets();
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -31,7 +34,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: process.env.API_URL || 'https://localhost:7150',
+    baseURL: targets.clientUrl,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -43,7 +46,7 @@ export default defineConfig({
     video: 'retain-on-failure',
 
     /* Ignore HTTPS errors (for local development with self-signed certs) */
-    ignoreHTTPSErrors: true,
+    ignoreHTTPSErrors: targets.ignoreHttpsErrors,
   },
 
   /* Configure projects for different test types */

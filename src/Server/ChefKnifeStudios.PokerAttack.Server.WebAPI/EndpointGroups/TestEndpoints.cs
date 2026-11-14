@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
+using ChefKnifeStudios.PokerAttack.Server.WebAPI.Hosting;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Tests;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
@@ -14,6 +15,10 @@ public static class TestEndpoints
 {
     public static IEndpointRouteBuilder MapTestEndpoints(this IEndpointRouteBuilder builder)
     {
+        if (!PokerAttackHosting.TestEndpointsEnabled(
+            builder.ServiceProvider.GetRequiredService<IHostEnvironment>(),
+            builder.ServiceProvider.GetRequiredService<IConfiguration>())) return builder;
+
         var group = builder
             .MapGroup(string.Empty)
             .WithName("Test")

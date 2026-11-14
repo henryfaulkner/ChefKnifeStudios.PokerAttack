@@ -1,0 +1,57 @@
+name: Migration build and test
+
+on:
+  pull_request:
+  push:
+    branches: [main, migration/linode-server-hosting]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Test isolated business logic
+        run: dotnet test src/Server/ChefKnifeStudios.PokerAttack.Server.BL.Tests -c Release
+      - name: Build API
+        run: dotnet build src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI -c Release
+      - name: Test hosting against disposable PostgreSQL
+        run: dotnet test src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI.Tests -c Release
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tests/package-lock.json
+      - name: Validate isolated E2E target guards
+        working-directory: tests
+        run: |
+          npm ci
+          npm run test:guards
+      - name: Validate isolated client artifact preparation
+        run: node --test deploy/prepare-client-artifact.test.mjs
+      - name: Install browser build tools
+        run: dotnet workload install wasm-tools
+      - name: Publish client artifact without production deployment
+        run: dotnet publish src/Client/ChefKnifeStudios.PokerAttack.Client.WebApp -c Release -o artifacts/client-wp04
+      - name: Build local API and migration images
+        run: |
+          docker build --platform linux/amd64 -f src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Dockerfile -t pokerattack-api:wp05-local .
+          docker build --platform linux/amd64 -f src/Server/ChefKnifeStudios.PokerAttack.Server.Data/Dockerfile -t pokerattack-migrations:wp05-local .
+      - name: Test release failure paths without a Docker socket
+        run: docker run --rm -v "$PWD:/work:ro" python:3.13-bookworm python /work/deploy/linode/test_release.py
+      - name: Install isolated browser test runtime
+        working-directory: tests
+        run: npx playwright install --with-deps chromium
+      - name: Verify disposable containers and browser smoke
+        run: python deploy/linode/check-local-containers.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: client-${{ github.sha }}
+          path: artifacts/client-wp04
+          if-no-files-found: error
