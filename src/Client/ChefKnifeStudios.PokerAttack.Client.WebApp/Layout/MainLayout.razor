@@ -16,12 +16,18 @@
 
 <div class="page bgclr-surface1">
     <MatThemeProvider Theme="@_theme">
-        <div class="session-content" inert="@SignalRService.RequiresReload">
+        <div class="session-content" inert="@(SignalRService.RequiresReload || SignalRService.ConnectionStatus != ConnectionRecoveryState.Connected)">
             @Body
             <SettingsBlade />
             <ModalController />
             <MatToastContainer />
         </div>
+        @if (!SignalRService.RequiresReload && SignalRService.ConnectionStatus != ConnectionRecoveryState.Connected)
+        {
+            <div class="connection-recovery" role="status" aria-live="polite">
+                <div class="connection-recovery-card">Connecting to PokerAttack…</div>
+            </div>
+        }
         @if (SignalRService.RequiresReload)
         {
             <div class="connection-recovery" role="alertdialog" aria-modal="true" aria-labelledby="connection-recovery-title">

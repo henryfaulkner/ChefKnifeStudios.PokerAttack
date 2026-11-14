@@ -58,8 +58,7 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
     readonly IToastService _toastService;
     readonly ILogger<LobbyViewModel> _logger;
 
-    private CancellationTokenSource? _pollCancellation;
-    private const int POLL_INTERVAL_MS = 2000; // Poll every 2 seconds
+    readonly List<PokerAttackNotification> _pendingLobbyNotifications = [];
 
     [ObservableProperty]
     ObservableCollection<LobbyListItem> _lobbies = [];
@@ -81,18 +80,41 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
         _logger = logger;
 
         _signalRNotificationService.HandleNotificationReceived += HandleSignalRNotificationReceived;
+        _signalRNotificationService.ConnectionStateChanged += HandleConnectionStateChanged;
     }
 
     public void Dispose()
     {
         _signalRNotificationService.HandleNotificationReceived -= HandleSignalRNotificationReceived;
+        _signalRNotificationService.ConnectionStateChanged -= HandleConnectionStateChanged;
+    }
+
+    void HandleConnectionStateChanged()
+    {
+        if (_signalRNotificationService.ConnectionStatus == ConnectionRecoveryState.Connected)
+            _ = LoadLobbiesAsync();
     }
 
     public async Task LoadLobbiesAsync(CancellationToken cancellationToken = default)
     {
+        // Subscribe to broadcasts before fetching a snapshot; otherwise an initial
+        // request can finish before the hub connects and permanently miss a lobby.
+        if (IsLoadingLobbies || _signalRNotificationService.ConnectionStatus != ConnectionRecoveryState.Connected)
+            return;
         IsLoadingLobbies = true;
-        await RefreshLobbiesFromServerAsync(cancellationToken);
-        IsLoadingLobbies = false;
+        try
+        {
+            await RefreshLobbiesFromServerAsync(cancellationToken);
+        }
+        finally
+        {
+            IsLoadingLobbies = false;
+            // Replay updates received during the request over its possibly older snapshot.
+            var pending = _pendingLobbyNotifications.ToArray();
+            _pendingLobbyNotifications.Clear();
+            foreach (var notification in pending)
+                await HandleSignalRNotificationReceived(notification);
+        }
     }
 
     public async Task CreateLobbyAsync(PlayerDTO player, CancellationToken cancellationToken = default)
@@ -151,14 +173,17 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
 
     Task HandleSignalRNotificationReceived(PokerAttackNotification notification)
     {
+        if (IsLoadingLobbies && notification.NotificationType is
+            PokerAttackNotificationType.LobbyCreated or PokerAttackNotificationType.PlayerJoined or
+            PokerAttackNotificationType.PlayerLeft or PokerAttackNotificationType.PlayerUpdated or
+            PokerAttackNotificationType.LobbiesChanged or PokerAttackNotificationType.LobbyShutdown)
+        {
+            _pendingLobbyNotifications.Add(notification);
+            return Task.CompletedTask;
+        }
         switch (notification.NotificationType)
         {
             case PokerAttackNotificationType.LobbyCreated:
-                {
-                    var args = JsonSerializer.Deserialize<LobbyEventArgs>(notification.Payload!, JsonOptions.Get());
-                    Lobbies.Add(new LobbyListItem(args!.Lobby));
-                    break;
-                }
             case PokerAttackNotificationType.PlayerJoined:
             case PokerAttackNotificationType.PlayerLeft:
             case PokerAttackNotificationType.PlayerUpdated:
@@ -175,6 +200,7 @@ public partial class LobbyViewModel : BaseViewModel, ILobbyViewModel, IDisposabl
                         {
                             Lobbies[index] = new LobbyListItem(args.Lobby);
                         }
+                        else Lobbies.Add(new LobbyListItem(args.Lobby));
                     }
                     break;
                 }

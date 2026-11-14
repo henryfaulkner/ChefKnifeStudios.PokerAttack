@@ -19,7 +19,7 @@ The migration includes hosting configuration, health checks, production test-rou
 
 **Availability constraint:** active lobbies, hands, timers, connection tracking, and game state are process-local. Stopping the process loses them. PostgreSQL history survives, but does not reconstruct a live match. Plan maintenance and require players to start fresh after a server restart; do not promise seamless reconnection or zero-downtime deployment.
 
-Proposed operating targets, to confirm before execution: at most 15 minutes for a routine maintenance cutover or application rollback; pilot soak of at least 24 hours; production observation of 7–14 days before retiring ACA. Database disaster-recovery targets must be selected separately from measured backup/restore times.
+Proposed operating targets, to confirm before execution: at most 15 minutes for a routine maintenance cutover or application rollback; pilot observation of 30 minutes after gameplay and rollback checks pass (owner decision 2026-11-14); production observation of 7–14 days before retiring ACA. Database disaster-recovery targets must be selected separately from measured backup/restore times.
 
 ## 2. Evidence and confidence
 
@@ -199,7 +199,7 @@ The checklist supplies per-step evidence. The following are proposed release gat
 | SignalR | Real negotiated WebSocket connection, expected notification method, private messages only to intended players, lobby/game groups and multi-tab behavior verified |
 | Gameplay | At least one full multiplayer game with round persistence, power/shop actions, plus solo game; pilot DB only for automated tests |
 | Recovery | Network interruption and container restart produce an understandable fresh-session path; no false claim that old matches resumed |
-| Runtime stability | 24-hour pilot soak at 0.25 CPU / 512 MiB; no OOM/restart loop or observed co-tenant regression; existing host capacity assumed sufficient |
+| Runtime stability | Owner-approved 30-minute pilot observation after gameplay and rollback checks pass at 0.25 CPU / 512 MiB; no OOM/restart loop or observed co-tenant regression; existing host capacity assumed sufficient |
 | Performance | Record baseline first; proposed 20 concurrent clients, at least two multiplayer games, API p95 <500ms and notifications <1s; use larger actual production peak if known |
 | Recovery time | Candidate ready within 5 minutes in rehearsal; application rollback within 15 minutes; DB restore time measured separately |
 | Operations | External uptime/readiness alert, certificate expiry monitoring, Sentry/telemetry, log rotation, disk/CPU/memory checks and recurring off-host backup with restore proof |

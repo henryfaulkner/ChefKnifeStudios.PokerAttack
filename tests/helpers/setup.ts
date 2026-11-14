@@ -32,6 +32,9 @@ export async function createPlayerContext(
     permissions: [],
   });
 
+  // Skip first-visit onboarding so the suite can exercise gameplay.
+  await context.addInitScript(() => localStorage.setItem('HasSeenTour', 'true'));
+
   // Create a new page in this context
   const page = await context.newPage();
 

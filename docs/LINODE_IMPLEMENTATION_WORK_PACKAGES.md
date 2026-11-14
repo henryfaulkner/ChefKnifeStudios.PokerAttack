@@ -1,6 +1,6 @@
 # PokerAttack Linode implementation work packages
 
-**Status:** WP01 inventory, WP02 local pipeline isolation/baseline and WP03 hosting COMPLETE with documented deployment findings; WP04/WP05 local implementation COMPLETE; WP06 operational preparation IN PROGRESS (fresh encrypted backup and isolated restore verified). Owner confirmed LISH access and accepted recovery defaults. No publication or deployment.
+**Status:** WP01-WP05 complete. WP06 core pilot prerequisites verified (encrypted shared backups/restores, restricted roles, registry access and protected host tooling); shared-credential replacement remains a production gate. WP07 public isolated pilot is running and verification is in progress. Production remains on ACA. Owner confirmed LISH, maintenance anytime and a 30-minute pilot observation after gameplay and rollback checks pass.
 
 **Owner direction, 2026-11-14:** Use production `api.playpokerattack.com` and pilot `pilot-api.playpokerattack.com`. Use GitHub Actions for future CI/CD, superseding Azure Pipelines delivery below; legacy Azure definitions 39/40/41 are disabled. WP09 must implement equivalent GitHub environment protections, branch controls, credentials and deployment concurrency. Original Azure-specific details are historical until translated in WP09.
 **Design:** [Migration design](LINODE_SERVER_MIGRATION_DESIGN_DOCUMENT.md)
@@ -174,7 +174,7 @@ For every package, record: source SHA, changed files or resource IDs, verificati
 
 1. Install validated app/proxy definitions; add the pilot virtual host to existing Caddy during a coordinated reload, preserving other sites/certificates. Verify existing TransitJazz connections after reload. Restrict API/test exposure as designed.
 2. Start the pilot on isolated data; publish isolated client. Complete D01/D02 through valid HTTPS, including CORS negative cases, real negotiated WebSocket notifications, private-player delivery, full multiplayer/solo gameplay and persistent round records.
-3. Verify exact resource settings and perform D03's 24-hour runtime soak. Observe behavior at 0.25 CPU / 512 MiB without introducing a host-sizing gate.
+3. Verify exact resource settings and perform D03's owner-approved 30-minute observation after gameplay and rollback checks pass. Observe behavior at 0.25 CPU / 512 MiB without introducing a host-sizing gate.
 4. Install and exercise the release command. Rehearse failed pull/start/health/public delivery, malformed input, lock contention, rollback failure and interrupted execution. Rehearse ACA/client rollback against isolated targets. Perform coordinated reboot/recovery checks after backups.
 5. Configure recurring off-host backup/retention, external availability/certificate/resource/error monitoring and verify alert receipt and scheduled backup recovery.
 
