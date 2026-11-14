@@ -13,3 +13,7 @@ Concrete maintenance scope if coordinated rotation is selected:
 5. Take and transfer another encrypted globals/config backup after completion. Confirm old credential rejection without logging either credential. Preserve a protected recovery route; never restore an old leaked password merely to make an application green.
 
 This affects services beyond PokerAttack. The alternative owner decision is to defer global shared-password rotation, continue PokerAttack using its new restricted roles, and explicitly carry the legacy incident as unresolved. Deferral must not be described as completed credential remediation. No host reboot is implied by either choice; coordinated reboot recovery remains separately unverified.
+
+## Owner decision
+
+2026-11-14: owner explicitly chose **defer rotation**, then directed production migration to Linode and removal of ACA production. Continue PokerAttack with its new restricted roles; leave ExpenseTracker/TransitJazz credentials and processes unchanged. Shared credential incident remains unresolved, accepted as a recorded follow-up rather than a cutover gate. This does not authorize later shared rotation without coordinating its consumers.
