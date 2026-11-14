@@ -45,3 +45,7 @@ Post-cutover shared backup **20261114T174700Z** completed with service Result=su
 ## Final running-state check
 
 At **17:51:54Z**, production and TransitJazz public readiness both 200. Production running as UID 1654 with read-only root, exact resource limits, zero restarts/OOM, active pair equals known-good with no pending candidate. Pilot stopped. Docker sample: 0.06% CPU, 114.4 MiB / 512 MiB. Private session snapshot: zero active multiplayer games/lobbies, one solo entry retained after the controlled run; no global cleanup was performed. Off-host latest remains fresh `20261114T174700Z`. Root-only aggregate report `/etc/pokerattack/production/cutover-final-check.json`.
+
+## Azure cleanup limitation
+
+At approximately **18:02Z**, the production ACA app remains absent from fresh resource inventory. Environment deletion was accepted at **17:46:11Z** and remains `ScheduledForDelete` after about 15 minutes; its original CLI request is still polling. There are no remaining environment apps/jobs and its VNet/infrastructure-resource-group properties are null, so no associated VNet cleanup applies. No further network/resource-group deletion was attempted. This Azure control-plane cleanup is pending; do not mark F03 complete or claim the environment is absent until a later inventory proves it. Production migration and ACA application removal are independently verified and complete. Private/local status snapshot: `artifacts/aca-retirement-status.json`.
