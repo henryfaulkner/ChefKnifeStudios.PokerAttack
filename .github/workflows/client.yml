@@ -1,0 +1,123 @@
+name: PokerAttack Client CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/Client/**'
+      - 'src/ChefKnifeStudios.PokerAttack.Shared/**'
+      - 'deploy/prepare-production-client.mjs'
+      - '.github/workflows/client.yml'
+      - 'Directory.Build.props'
+      - 'Directory.Build.targets'
+      - 'global.json'
+      - 'NuGet.config'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pokerattack-client-production
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install WebAssembly tools
+        run: dotnet workload install wasm-tools
+
+      - name: Publish Blazor client
+        run: >-
+          dotnet publish
+          src/Client/ChefKnifeStudios.PokerAttack.Client.WebApp/ChefKnifeStudios.PokerAttack.Client.WebApp.csproj
+          --configuration Release
+          --output artifacts/client-publish
+          /p:BlazorEnableCompression=false
+
+      - name: Prepare production client artifact
+        run: |
+          mkdir -p artifacts
+          node deploy/prepare-production-client.mjs \
+            artifacts/client-publish/wwwroot \
+            artifacts/client-production
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pokerattack-client-${{ github.sha }}
+          path: artifacts/client-production
+          if-no-files-found: error
+          retention-days: 3
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    environment: production
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: pokerattack-client-${{ github.sha }}
+          path: ./client
+
+      - name: Check Static Web Apps deployment token
+        env:
+          SWA_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+        run: test -n "$SWA_TOKEN"
+
+      - name: Deploy to PokerAttack Static Web App
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: upload
+          app_location: ./client
+          api_location: ''
+          output_location: ''
+          skip_app_build: true
+          skip_api_build: true
+
+      - name: Verify deployed production settings
+        env:
+          RELEASE_SHA: ${{ github.sha }}
+        run: |
+          node --input-type=module <<'NODE'
+          const expectedApi = 'https://api.playpokerattack.com/';
+          const origins = [
+            'https://playpokerattack.com',
+            'https://www.playpokerattack.com',
+          ];
+
+          for (const origin of origins) {
+            const url = new URL('/appsettings.json', origin);
+            url.searchParams.set('release', process.env.RELEASE_SHA);
+            const response = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } });
+            if (!response.ok) throw new Error(`${origin}: appsettings returned HTTP ${response.status}`);
+            if (response.headers.get('blazor-environment') !== 'prod')
+              throw new Error(`${origin}: missing production Blazor environment header`);
+
+            const settings = await response.json();
+            const apis = settings.AppSettings?.ExternalApis ?? [];
+            for (const name of ['PokerAttackAPI', 'PokerAttackSignalR']) {
+              const matches = apis.filter(api => api.Name === name);
+              if (matches.length !== 1 || matches[0].BaseUri !== expectedApi)
+                throw new Error(`${origin}: ${name} is not configured for ${expectedApi}`);
+            }
+            if (apis.length !== 2) throw new Error(`${origin}: unexpected API configuration entries`);
+            console.log(`${origin}: production header and API endpoints verified`);
+          }
+          NODE
