@@ -1,6 +1,7 @@
 using Blazored.LocalStorage;
 using ChefKnifeStudios.PokerAttack.Client.Core.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Constants;
+using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs;
 using ChefKnifeStudios.PokerAttack.Client.Shared.EventArgs.ModalEvents;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services;
 using ChefKnifeStudios.PokerAttack.Client.Shared.Services.JsInterop;
@@ -27,8 +28,12 @@ public partial class Lobbies : ComponentBase, IDisposable
     [Inject] ISettingsService SettingsService { get; set; } = null!;
     [Inject] ISyncLocalStorageService LocalStorage { get; set; } = null!;
 
+    bool _isDark;
+
     protected override void OnInitialized()
     {
+        _isDark = SettingsService.GetSettings().IsDarkModeEnabled;
+        EventService.EventReceived += HandleEventReceived;
         SoloGameDataStore.PropertyChanged += SoloGameDataStore_PropertyChanged;
     }
 
@@ -113,7 +118,17 @@ public partial class Lobbies : ComponentBase, IDisposable
 
     public void Dispose()
     {
+        EventService.EventReceived -= HandleEventReceived;
         SoloGameDataStore.PropertyChanged -= SoloGameDataStore_PropertyChanged;
+    }
+
+    async Task HandleEventReceived(object sender, IEventArgs e)
+    {
+        if (e is ThemeChangedEventArgs themeArgs)
+        {
+            _isDark = themeArgs.IsDarkMode;
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     void SoloGameDataStore_PropertyChanged(object? sender, PropertyChangedEventArgs e)

@@ -11,15 +11,35 @@
 @inject ISettingsService SettingsService
 @inject ICommonJsInterop CommonJsInterop
 @inject IEventNotificationService EventNotificationService
+@inject ISignalRNotificationService SignalRService
+@inject NavigationManager Navigation
 
 <div class="page bgclr-surface1">
     <MatThemeProvider Theme="@_theme">
-        @Body
-
-        <SettingsBlade />
-        <ModalController />
-
-        <MatToastContainer />
+        <div class="session-content" inert="@(SignalRService.RequiresReload || SignalRService.ConnectionStatus != ConnectionRecoveryState.Connected)">
+            @Body
+            <SettingsBlade />
+            <ModalController />
+            <MatToastContainer />
+        </div>
+        @if (!SignalRService.RequiresReload && SignalRService.ConnectionStatus != ConnectionRecoveryState.Connected)
+        {
+            <div class="connection-recovery" role="status" aria-live="polite">
+                <div class="connection-recovery-card">Connecting to PokerAttack…</div>
+            </div>
+        }
+        @if (SignalRService.RequiresReload)
+        {
+            <div class="connection-recovery" role="alertdialog" aria-modal="true" aria-labelledby="connection-recovery-title">
+                <div class="connection-recovery-card">
+                    <h2 id="connection-recovery-title">Connection interrupted</h2>
+                    <p>@(SignalRService.ConnectionStatus == ConnectionRecoveryState.Reconnecting
+                        ? "Trying to reconnect. Your current match may have ended."
+                        : "Reload to reconnect and start or join a new lobby. Your previous match cannot be restored from this page.")</p>
+                    <button type="button" @onclick="ReloadHome">Reload and return home</button>
+                </div>
+            </div>
+        }
     </MatThemeProvider>
 </div>
 
@@ -55,6 +75,7 @@
         _theme = settings.IsDarkModeEnabled ? DarkTheme : LightTheme;
 
         EventNotificationService.EventReceived += HandleEventReceived;
+        SignalRService.ConnectionStateChanged += HandleConnectionStateChanged;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -79,5 +100,9 @@
     public void Dispose()
     {
         EventNotificationService.EventReceived -= HandleEventReceived;
+        SignalRService.ConnectionStateChanged -= HandleConnectionStateChanged;
     }
+
+    void HandleConnectionStateChanged() => _ = InvokeAsync(StateHasChanged);
+    void ReloadHome() => Navigation.NavigateTo(Navigation.BaseUri, forceLoad: true);
 }

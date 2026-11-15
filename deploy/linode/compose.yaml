@@ -1,0 +1,25 @@
+services:
+  api:
+    image: ${API_IMAGE:?immutable API_IMAGE required}
+    network_mode: host
+    env_file:
+      - ${APP_ENV:?protected APP_ENV path required}
+    environment:
+      ASPNETCORE_URLS: http://127.0.0.1:${APP_PORT:?APP_PORT required}
+      DOTNET_EnableDiagnostics: '0'
+      HOME: /tmp
+    cpus: 0.25
+    mem_limit: 512m
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 40s
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'

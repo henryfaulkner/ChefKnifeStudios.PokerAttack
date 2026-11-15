@@ -12,6 +12,25 @@
     display: none; /* Older Safari and Chromium */
 }
 
+.session-content { display: contents; }
+.connection-recovery {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.72);
+}
+.connection-recovery-card {
+    max-width: 28rem;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    background: var(--mdc-theme-surface, white);
+    color: var(--mdc-theme-on-surface, #222);
+}
+.connection-recovery-card button { padding: 0.75rem 1rem; cursor: pointer; }
+
 @media (max-width: 500px) {
     .page {
         overflow: auto;

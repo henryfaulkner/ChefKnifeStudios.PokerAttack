@@ -1,6 +1,11 @@
-﻿using ChefKnifeStudios.PokerAttack.Server.BL.Services;
+using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces;
-using ChefKnifeStudios.PokerAttack.Server.Core.Interfaces.Repos;
+using Ardalis.Result;
+using ChefKnifeStudios.PokerAttack.Server.Data.Models;
+using ChefKnifeStudios.PokerAttack.Server.Data.Repos;
+using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
+using ChefKnifeStudios.PokerAttack.Shared.Enums;
+using Microsoft.Extensions.Logging.Abstractions;
 using ChefKnifeStudios.PokerAttack.Server.Core.Models;
 using Moq;
 
@@ -9,7 +14,7 @@ namespace ChefKnifeStudios.PokerAttack.Server.Tests.UnitTests;
 [TestFixture]
 public class LobbyServiceTests
 {
-    private Mock<ILobbyRepository> _mockRepo;
+    private Mock<IKeyValueRepository<Lobby>> _mockRepo;
     private Mock<IPokerAttackNotificationHelper> _mockHelper;
     private LobbyService _service;
     private CancellationToken _cancellationToken;
@@ -17,9 +22,21 @@ public class LobbyServiceTests
     [SetUp]
     public void Setup()
     {
-        _mockRepo = new Mock<ILobbyRepository>();
+        _mockRepo = new Mock<IKeyValueRepository<Lobby>>();
         _mockHelper = new Mock<IPokerAttackNotificationHelper>();
-        _service = new LobbyService(_mockRepo.Object, _mockHelper.Object);
+        _mockRepo.Setup(r => r.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result<Lobby?>.NotFound());
+        _mockRepo.Setup(r => r.AddAsync(It.IsAny<string>(), It.IsAny<Lobby>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success());
+        _mockRepo.Setup(r => r.UpdateAsync(It.IsAny<string>(), It.IsAny<Lobby>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success());
+        _mockRepo.Setup(r => r.DeleteAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success());
+        _service = new LobbyService(_mockRepo.Object, _mockHelper.Object,
+            Mock.Of<IRepository<Game>>(), Mock.Of<IKeyValueRepository<GameStates>>(),
+            Mock.Of<IKeyValueRepository<GameModes>>(), Mock.Of<IKeyValueRepository<ActiveGame>>(),
+            Mock.Of<IKeyValueRepository<GamePlayer>>(), Mock.Of<IGameStateMachineService>(),
+            NullLogger<LobbyService>.Instance);
         _cancellationToken = CancellationToken.None;
     }
 
@@ -29,16 +46,16 @@ public class LobbyServiceTests
     public async Task CreateLobbyAsync_AddsHostToNewLobby()
     {
         // Arrange
-        _mockRepo.Setup(r => r.GetAllLobbiesAsync(_cancellationToken))
-                 .ReturnsAsync(new Dictionary<string, Lobby>());
+        _mockRepo.Setup(r => r.GetAllAsync(_cancellationToken))
+                 .ReturnsAsync(Result<IReadOnlyDictionary<string, Lobby>>.Success(new Dictionary<string, Lobby>()));
 
         // Act
-        var result = await _service.CreateLobbyAsync("player1", _cancellationToken);
+        var result = await _service.CreateLobbyAsync(MakeDto("player1"), _cancellationToken);
 
         // Assert
-        Assert.That(result.PlayerIds, Contains.Item("player1"));
-        Assert.That(result.HostPlayerId, Is.EqualTo("player1"));
-        _mockRepo.Verify(r => r.AddLobbyAsync(It.IsAny<string>(), It.IsAny<Lobby>(), _cancellationToken), Times.Once);
+        Assert.That(result.Value.Players.Select(p => p.Id), Contains.Item("player1"));
+        Assert.That(result.Value.HostPlayer.Id, Is.EqualTo("player1"));
+        _mockRepo.Verify(r => r.AddAsync(It.IsAny<string>(), It.IsAny<Lobby>(), _cancellationToken), Times.Once);
     }
 
     [Test]
@@ -47,21 +64,22 @@ public class LobbyServiceTests
         // Arrange - player1 is the HOST of the existing lobby
         var existingLobby = new Lobby
         {
-            HostPlayerId = "player1", // player1 is the host, so lobby should be shut down
-            PlayerIds = new HashSet<string> { "player1", "otherPlayer" }
+            Id = "existing",
+            HostPlayer = MakePlayer("player1"), // player1 is the host, so lobby should be shut down
+            Players = new HashSet<Player> { MakePlayer("player1"), MakePlayer("otherPlayer") }
         };
-        _mockRepo.Setup(r => r.GetAllLobbiesAsync(_cancellationToken))
-                 .ReturnsAsync(new Dictionary<string, Lobby> { { "oldLobby", existingLobby } });
-        _mockRepo.Setup(r => r.GetLobbyAsync("oldLobby", _cancellationToken))
-                 .ReturnsAsync(existingLobby);
+        _mockRepo.Setup(r => r.GetAllAsync(_cancellationToken))
+                 .ReturnsAsync(Result<IReadOnlyDictionary<string, Lobby>>.Success(new Dictionary<string, Lobby> { { "oldLobby", existingLobby } }));
+        _mockRepo.Setup(r => r.GetAsync("oldLobby", _cancellationToken))
+                 .ReturnsAsync(Result<Lobby?>.Success(existingLobby));
 
         // Act
-        var newLobby = await _service.CreateLobbyAsync("player1", _cancellationToken);
+        var newLobby = await _service.CreateLobbyAsync(MakeDto("player1"), _cancellationToken);
 
         // Assert
-        // Since player1 is the host of the old lobby, it should be shut down (RemoveLobbyAsync called)
-        _mockRepo.Verify(r => r.RemoveLobbyAsync("oldLobby", _cancellationToken), Times.Once);
-        Assert.That(newLobby.PlayerIds, Contains.Item("player1"));
+        // Since player1 is the host of the old lobby, it should be shut down (DeleteAsync called)
+        _mockRepo.Verify(r => r.DeleteAsync("oldLobby", _cancellationToken), Times.Once);
+        Assert.That(newLobby.Value.Players.Select(p => p.Id), Contains.Item("player1"));
     }
 
     [Test]
@@ -70,22 +88,23 @@ public class LobbyServiceTests
         // Arrange - player1 is NOT the host of the existing lobby
         var existingLobby = new Lobby
         {
-            HostPlayerId = "oldHost",
-            PlayerIds = new HashSet<string> { "oldHost", "player1", "otherPlayer" }
+            Id = "existing",
+            HostPlayer = MakePlayer("oldHost"),
+            Players = new HashSet<Player> { MakePlayer("oldHost"), MakePlayer("player1"), MakePlayer("otherPlayer") }
         };
-        _mockRepo.Setup(r => r.GetAllLobbiesAsync(_cancellationToken))
-                 .ReturnsAsync(new Dictionary<string, Lobby> { { "oldLobby", existingLobby } });
+        _mockRepo.Setup(r => r.GetAllAsync(_cancellationToken))
+                 .ReturnsAsync(Result<IReadOnlyDictionary<string, Lobby>>.Success(new Dictionary<string, Lobby> { { "oldLobby", existingLobby } }));
 
         // Act
-        var newLobby = await _service.CreateLobbyAsync("player1", _cancellationToken);
+        var newLobby = await _service.CreateLobbyAsync(MakeDto("player1"), _cancellationToken);
 
         // Assert
-        // Since player1 is not the host, it should call UpdateLobbyAsync, not RemoveLobbyAsync
-        _mockRepo.Verify(r => r.UpdateLobbyAsync("oldLobby", existingLobby, _cancellationToken), Times.Once);
-        _mockRepo.Verify(r => r.RemoveLobbyAsync(It.IsAny<string>(), _cancellationToken), Times.Never);
-        Assert.That(newLobby.PlayerIds, Contains.Item("player1"));
+        // Since player1 is not the host, it should call UpdateAsync, not DeleteAsync
+        _mockRepo.Verify(r => r.UpdateAsync("oldLobby", existingLobby, _cancellationToken), Times.Once);
+        _mockRepo.Verify(r => r.DeleteAsync(It.IsAny<string>(), _cancellationToken), Times.Never);
+        Assert.That(newLobby.Value.Players.Select(p => p.Id), Contains.Item("player1"));
         // Verify that player1 was removed from the old lobby
-        Assert.That(existingLobby.PlayerIds.Contains("player1"), Is.False);
+        Assert.That(existingLobby.Players.Select(p => p.Id).Contains("player1"), Is.False);
     }
 
     [Test]
@@ -94,21 +113,22 @@ public class LobbyServiceTests
         // Arrange
         var existingLobby = new Lobby
         {
-            HostPlayerId = "player1", // player1 is the host of existing lobby
-            PlayerIds = new HashSet<string> { "player1", "otherPlayer" }
+            Id = "existing",
+            HostPlayer = MakePlayer("player1"), // player1 is the host of existing lobby
+            Players = new HashSet<Player> { MakePlayer("player1"), MakePlayer("otherPlayer") }
         };
-        _mockRepo.Setup(r => r.GetAllLobbiesAsync(_cancellationToken))
-                 .ReturnsAsync(new Dictionary<string, Lobby> { { "oldLobby", existingLobby } });
-        _mockRepo.Setup(r => r.GetLobbyAsync("oldLobby", _cancellationToken))
-                 .ReturnsAsync(existingLobby);
+        _mockRepo.Setup(r => r.GetAllAsync(_cancellationToken))
+                 .ReturnsAsync(Result<IReadOnlyDictionary<string, Lobby>>.Success(new Dictionary<string, Lobby> { { "oldLobby", existingLobby } }));
+        _mockRepo.Setup(r => r.GetAsync("oldLobby", _cancellationToken))
+                 .ReturnsAsync(Result<Lobby?>.Success(existingLobby));
 
         // Act
-        var newLobby = await _service.CreateLobbyAsync("player1", _cancellationToken);
+        var newLobby = await _service.CreateLobbyAsync(MakeDto("player1"), _cancellationToken);
 
         // Assert
         // Since player1 is the host, it should shut down the old lobby
-        _mockRepo.Verify(r => r.RemoveLobbyAsync("oldLobby", _cancellationToken), Times.Once);
-        Assert.That(newLobby.PlayerIds, Contains.Item("player1"));
+        _mockRepo.Verify(r => r.DeleteAsync("oldLobby", _cancellationToken), Times.Once);
+        Assert.That(newLobby.Value.Players.Select(p => p.Id), Contains.Item("player1"));
     }
 
     #endregion
@@ -121,28 +141,30 @@ public class LobbyServiceTests
         // Arrange: player1 is a member, but not host
         var previousLobby = new Lobby
         {
-            HostPlayerId = "otherHost",
-            PlayerIds = new HashSet<string> { "otherHost", "player1" }
+            Id = "existing",
+            HostPlayer = MakePlayer("otherHost"),
+            Players = new HashSet<Player> { MakePlayer("otherHost"), MakePlayer("player1") }
         };
         var targetLobby = new Lobby
         {
-            HostPlayerId = "newHost",
-            PlayerIds = new HashSet<string>() { "newHost" }
+            Id = "existing",
+            HostPlayer = MakePlayer("newHost"),
+            Players = new HashSet<Player> { MakePlayer("newHost") }
         };
 
-        _mockRepo.Setup(r => r.GetAllLobbiesAsync(_cancellationToken))
-                 .ReturnsAsync(new Dictionary<string, Lobby> { { "prevLobby", previousLobby }, { "targetLobby", targetLobby } });
-        _mockRepo.Setup(r => r.GetLobbyAsync("targetLobby", _cancellationToken))
-                 .ReturnsAsync(targetLobby);
+        _mockRepo.Setup(r => r.GetAllAsync(_cancellationToken))
+                 .ReturnsAsync(Result<IReadOnlyDictionary<string, Lobby>>.Success(new Dictionary<string, Lobby> { { "prevLobby", previousLobby }, { "targetLobby", targetLobby } }));
+        _mockRepo.Setup(r => r.GetAsync("targetLobby", _cancellationToken))
+                 .ReturnsAsync(Result<Lobby?>.Success(targetLobby));
 
         // Act
-        await _service.JoinLobbyAsync("targetLobby", "player1", _cancellationToken);
+        await _service.JoinLobbyAsync("targetLobby", MakeDto("player1"), _cancellationToken);
 
         // Assert
-        // Non-host should trigger UpdateLobbyAsync
-        _mockRepo.Verify(r => r.UpdateLobbyAsync("prevLobby", previousLobby, _cancellationToken), Times.Once);
-        _mockRepo.Verify(r => r.RemoveLobbyAsync(It.IsAny<string>(), _cancellationToken), Times.Never);
-        Assert.That(targetLobby.PlayerIds, Contains.Item("player1"));
+        // Non-host should trigger UpdateAsync
+        _mockRepo.Verify(r => r.UpdateAsync("prevLobby", previousLobby, _cancellationToken), Times.Once);
+        _mockRepo.Verify(r => r.DeleteAsync(It.IsAny<string>(), _cancellationToken), Times.Never);
+        Assert.That(targetLobby.Players.Select(p => p.Id), Contains.Item("player1"));
     }
 
     [Test]
@@ -151,45 +173,47 @@ public class LobbyServiceTests
         // Arrange: player1 is the host of previous lobby
         var previousLobby = new Lobby
         {
-            HostPlayerId = "player1",
-            PlayerIds = new HashSet<string> { "player1", "otherPlayer" }
+            Id = "existing",
+            HostPlayer = MakePlayer("player1"),
+            Players = new HashSet<Player> { MakePlayer("player1"), MakePlayer("otherPlayer") }
         };
         var targetLobby = new Lobby
         {
-            HostPlayerId = "newHost",
-            PlayerIds = new HashSet<string>() { "newHost" }
+            Id = "existing",
+            HostPlayer = MakePlayer("newHost"),
+            Players = new HashSet<Player> { MakePlayer("newHost") }
         };
 
-        _mockRepo.Setup(r => r.GetAllLobbiesAsync(_cancellationToken))
-                 .ReturnsAsync(new Dictionary<string, Lobby> { { "prevLobby", previousLobby }, { "targetLobby", targetLobby } });
-        _mockRepo.Setup(r => r.GetLobbyAsync("targetLobby", _cancellationToken))
-                 .ReturnsAsync(targetLobby);
-        _mockRepo.Setup(r => r.GetLobbyAsync("prevLobby", _cancellationToken))
-                 .ReturnsAsync(previousLobby);
+        _mockRepo.Setup(r => r.GetAllAsync(_cancellationToken))
+                 .ReturnsAsync(Result<IReadOnlyDictionary<string, Lobby>>.Success(new Dictionary<string, Lobby> { { "prevLobby", previousLobby }, { "targetLobby", targetLobby } }));
+        _mockRepo.Setup(r => r.GetAsync("targetLobby", _cancellationToken))
+                 .ReturnsAsync(Result<Lobby?>.Success(targetLobby));
+        _mockRepo.Setup(r => r.GetAsync("prevLobby", _cancellationToken))
+                 .ReturnsAsync(Result<Lobby?>.Success(previousLobby));
 
         // Act
-        await _service.JoinLobbyAsync("targetLobby", "player1", _cancellationToken);
+        await _service.JoinLobbyAsync("targetLobby", MakeDto("player1"), _cancellationToken);
 
         // Assert
-        // Host leaving should trigger RemoveLobbyAsync (shut down previous lobby)
-        // Note: ShutDownLobbyAsync calls GetLobbyAsync first, then RemoveLobbyAsync
-        _mockRepo.Verify(r => r.GetLobbyAsync("prevLobby", _cancellationToken), Times.Once);
-        _mockRepo.Verify(r => r.RemoveLobbyAsync("prevLobby", _cancellationToken), Times.Once);
-        _mockRepo.Verify(r => r.UpdateLobbyAsync("targetLobby", targetLobby, _cancellationToken), Times.Once); // for target lobby
-        Assert.That(targetLobby.PlayerIds, Contains.Item("player1"));
+        // Host leaving should trigger DeleteAsync (shut down previous lobby)
+        // Removing the host deletes the previous lobby before updating the target.
+        _mockRepo.Verify(r => r.DeleteAsync("prevLobby", _cancellationToken), Times.Once);
+        _mockRepo.Verify(r => r.UpdateAsync("targetLobby", targetLobby, _cancellationToken), Times.Once); // for target lobby
+        Assert.That(targetLobby.Players.Select(p => p.Id), Contains.Item("player1"));
     }
 
 
     [Test]
-    public void JoinLobbyAsync_ThrowsIfLobbyDoesNotExist()
+    public async Task JoinLobbyAsync_ReturnsNotFoundIfLobbyDoesNotExist()
     {
         // Arrange
-        _mockRepo.Setup(r => r.GetLobbyAsync("nonexistent", _cancellationToken))
-                 .ReturnsAsync((Lobby?)null);
+        _mockRepo.Setup(r => r.GetAsync("nonexistent", _cancellationToken))
+                 .ReturnsAsync(Result<Lobby?>.NotFound());
 
         // Act & Assert
-        Assert.ThrowsAsync<KeyNotFoundException>(async () =>
-            await _service.JoinLobbyAsync("nonexistent", "player1", _cancellationToken));
+        var result = await _service.JoinLobbyAsync("nonexistent", MakeDto("player1"), _cancellationToken);
+        Assert.That(result.Status, Is.EqualTo(ResultStatus.NotFound));
+        _mockRepo.Verify(r => r.UpdateAsync(It.IsAny<string>(), It.IsAny<Lobby>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     #endregion
@@ -202,18 +226,19 @@ public class LobbyServiceTests
         // Arrange
         var lobby = new Lobby
         {
-            HostPlayerId = "host",
-            PlayerIds = new HashSet<string> { "host", "player1", "player2" }
+            Id = "existing",
+            HostPlayer = MakePlayer("host"),
+            Players = new HashSet<Player> { MakePlayer("host"), MakePlayer("player1"), MakePlayer("player2") }
         };
-        _mockRepo.Setup(r => r.GetLobbyAsync("lobby1", _cancellationToken))
-                 .ReturnsAsync(lobby);
+        _mockRepo.Setup(r => r.GetAsync("lobby1", _cancellationToken))
+                 .ReturnsAsync(Result<Lobby?>.Success(lobby));
 
         // Act
-        await _service.LeaveLobbyAsync("lobby1", "player1", _cancellationToken);
+        await _service.LeaveLobbyAsync("lobby1", MakeDto("player1"), _cancellationToken);
 
         // Assert
-        Assert.That(lobby.PlayerIds.Contains("player1"), Is.False);
-        _mockRepo.Verify(r => r.UpdateLobbyAsync("lobby1", lobby, _cancellationToken), Times.Once);
+        Assert.That(lobby.Players.Select(p => p.Id).Contains("player1"), Is.False);
+        _mockRepo.Verify(r => r.UpdateAsync("lobby1", lobby, _cancellationToken), Times.Once);
     }
 
     [Test]
@@ -222,17 +247,18 @@ public class LobbyServiceTests
         // Arrange
         var lobby = new Lobby
         {
-            HostPlayerId = "host",
-            PlayerIds = new HashSet<string> { "host", "player1" }
+            Id = "existing",
+            HostPlayer = MakePlayer("host"),
+            Players = new HashSet<Player> { MakePlayer("host"), MakePlayer("player1") }
         };
-        _mockRepo.Setup(r => r.GetLobbyAsync("lobby1", _cancellationToken))
-                 .ReturnsAsync(lobby);
+        _mockRepo.Setup(r => r.GetAsync("lobby1", _cancellationToken))
+                 .ReturnsAsync(Result<Lobby?>.Success(lobby));
 
         // Act
-        await _service.LeaveLobbyAsync("lobby1", "host", _cancellationToken);
+        await _service.LeaveLobbyAsync("lobby1", MakeDto("host"), _cancellationToken);
 
         // Assert
-        _mockRepo.Verify(r => r.RemoveLobbyAsync("lobby1", _cancellationToken), Times.Once);
+        _mockRepo.Verify(r => r.DeleteAsync("lobby1", _cancellationToken), Times.Once);
     }
 
     #endregion
@@ -245,18 +271,19 @@ public class LobbyServiceTests
         // Arrange
         var lobby = new Lobby
         {
-            HostPlayerId = "host",
-            PlayerIds = new HashSet<string> { "host", "player1" }
+            Id = "existing",
+            HostPlayer = MakePlayer("host"),
+            Players = new HashSet<Player> { MakePlayer("host"), MakePlayer("player1") }
         };
-        _mockRepo.Setup(r => r.GetLobbyAsync("lobby1", _cancellationToken))
-                 .ReturnsAsync(lobby);
+        _mockRepo.Setup(r => r.GetAsync("lobby1", _cancellationToken))
+                 .ReturnsAsync(Result<Lobby?>.Success(lobby));
 
         // Act
         var players = await _service.ShutDownLobbyAsync("lobby1", _cancellationToken);
 
         // Assert
-        Assert.That(players.Count(), Is.EqualTo(2));
-        _mockRepo.Verify(r => r.RemoveLobbyAsync("lobby1", _cancellationToken), Times.Once);
+        Assert.That(players.Value.Count(), Is.EqualTo(2));
+        _mockRepo.Verify(r => r.DeleteAsync("lobby1", _cancellationToken), Times.Once);
     }
 
     #endregion
@@ -269,19 +296,23 @@ public class LobbyServiceTests
         // Arrange
         var lobby = new Lobby
         {
-            HostPlayerId = "host",
-            PlayerIds = new HashSet<string> { "host", "player1" }
+            Id = "existing",
+            HostPlayer = MakePlayer("host"),
+            Players = new HashSet<Player> { MakePlayer("host"), MakePlayer("player1") }
         };
-        _mockRepo.Setup(r => r.GetLobbyAsync("lobby1", _cancellationToken))
-                 .ReturnsAsync(lobby);
+        _mockRepo.Setup(r => r.GetAsync("lobby1", _cancellationToken))
+                 .ReturnsAsync(Result<Lobby?>.Success(lobby));
 
         // Act
         var players = await _service.GetPlayersAsync("lobby1", _cancellationToken);
 
         // Assert
-        Assert.That(players.Count(), Is.EqualTo(2));
-        Assert.That(players, Contains.Item("player1"));
+        Assert.That(players.Value.Count(), Is.EqualTo(2));
+        Assert.That(players.Value.Select(p => p.Id), Contains.Item("player1"));
     }
 
     #endregion
+
+    static Player MakePlayer(string id) => new() { Id = id, Name = id };
+    static PlayerDTO MakeDto(string id) => new() { Id = id, Name = id };
 }

@@ -9,8 +9,14 @@
 .container .content {
     width: 100dvw;
     flex: 1 1 auto;
+    box-sizing: border-box;
+    padding-bottom: calc(3rem + env(safe-area-inset-bottom));
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+}
+
+.main ::deep .fab-list--bottom-right {
+    bottom: calc(4rem + env(safe-area-inset-bottom));
 }
 
 .lobby-actions {
