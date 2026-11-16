@@ -1,0 +1,70 @@
+{
+  "task": "I05",
+  "state": "INSTALLED / SCHEDULE ACTIVE / DATASOURCE INGESTION PENDING",
+  "production_API_restart": false,
+  "installed_sha256": {
+    "/opt/linode-docker-metrics/docker_snapshot.py": "fec057423002787de8a232a32da7af6c04280da9628bd256c6402c830fa8faba",
+    "/opt/linode-docker-metrics/alloy_textfile.py": "a90188ae6a74650824142dab15bbf80ab156154f0a0386f9861ef0bed09f9972",
+    "/etc/systemd/system/linode-docker-snapshot.service": "43995f91d791628c2fd1f96c30936e9dcd585888544163557ca883515aa24e4a",
+    "/etc/systemd/system/linode-docker-snapshot.timer": "f69cba2726bbd03f310bbfda56b030a101c6c3474151c914465729ce269e2bb2"
+  },
+  "before_containers": {
+    "/pokerattack-production-api-1": {
+      "id": "45befa1de68526ca5b0686fc5fad7d9e4226b25d65aaa88cdca5665a05724dcb",
+      "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "state": "running"
+    },
+    "/pokerattack-pilot-api-1": {
+      "id": "fbe3c939907d8df6e91997d51a8535637b1e279087e6a6a02ab61f383bd86ff6",
+      "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "state": "exited"
+    },
+    "/transitjazz-app-server-1": {
+      "id": "1fac1e872bc54e40b1c89230be9f72e94e3e8f2533a46d4799a7e11df5abeb80",
+      "image_id": "sha256:e0e6a30cb55b1ac7987a0cd2ca4843d0b56377a5bc1448436517480900ad22f0",
+      "state": "running"
+    },
+    "/transitjazz-app-proxy-1": {
+      "id": "d9fc0b5afced651b8fde45487b91a517e52316c221527b7393364d9f39089995",
+      "image_id": "sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03",
+      "state": "running"
+    }
+  },
+  "alloy_before_sha256": "89e7b9197b7a0fa66f69c1d482429e2ee6c9102665be3ac25715ecf9dcdf2bbf",
+  "alloy_version": "alloy, version v1.21.3 (branch: HEAD, revision: f2108cd)\n  build user:       root@eb0633faf47d\n  build date:       2026-10-28T16:58:58Z\n  go version:       go1.27.3\n  platform:         linux/amd64\n  tags:             gore2regex,netgo,embedalloyui,promtail_journal_enabled",
+  "protected_backup": "/etc/alloy/pokerattack-docker-backups/before-89e7b9197b7a0fa66f69c1d482429e2ee6c9102665be3ac25715ecf9dcdf2bbf.alloy",
+  "first_collection_wall_seconds": 1.291,
+  "metrics_file_sha256": "9872045d9c8bf8686064f8dba7b5acbc664f8bfce9dd66bb042905bd66f958e0",
+  "metrics_lines": 135,
+  "service_limits_and_result": "Result=success\nMemoryPeak=[not set]\nCPUUsageNSec=[not set]\nCPUQuotaPerSecUSec=100ms\nMemoryMax=67108864",
+  "alloy_after_sha256": "86e64a5324396c1a3b88822fa9088d743f10ad6d1b4d9e13188375104696a447",
+  "alloy_apply_method": "reload",
+  "after_containers": {
+    "/pokerattack-production-api-1": {
+      "id": "45befa1de68526ca5b0686fc5fad7d9e4226b25d65aaa88cdca5665a05724dcb",
+      "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "state": "running"
+    },
+    "/pokerattack-pilot-api-1": {
+      "id": "fbe3c939907d8df6e91997d51a8535637b1e279087e6a6a02ab61f383bd86ff6",
+      "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "state": "exited"
+    },
+    "/transitjazz-app-server-1": {
+      "id": "1fac1e872bc54e40b1c89230be9f72e94e3e8f2533a46d4799a7e11df5abeb80",
+      "image_id": "sha256:e0e6a30cb55b1ac7987a0cd2ca4843d0b56377a5bc1448436517480900ad22f0",
+      "state": "running"
+    },
+    "/transitjazz-app-proxy-1": {
+      "id": "d9fc0b5afced651b8fde45487b91a517e52316c221527b7393364d9f39089995",
+      "image_id": "sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03",
+      "state": "running"
+    }
+  },
+  "shared_services_preserved": true,
+  "alloy_active": true,
+  "timer_active": true,
+  "rollback": "Stop only new timer; prepare alloy_textfile.rollback(current), validate, atomically replace and reload/restart Alloy. Protected backup is root-only; never overwrite subsequent unrelated changes.",
+  "recorded_utc": "2026-11-16T13:33:18.503878+00:00",
+  "installer_sha256": "2689eed9dd3a157f365b5db29121f16519345c227293563d0e69cf12af516b7a"
+}

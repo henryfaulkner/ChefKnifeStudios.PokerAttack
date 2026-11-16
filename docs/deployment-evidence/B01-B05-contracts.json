@@ -1,0 +1,17 @@
+{
+  "verified_utc": "2026-11-15T15:11:03.312487+00:00",
+  "source_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "files": {
+    "deploy/release/client-manifest.example.json": "cfe9e4900976f5628e60dba49def538b66ccda2904d577a05142bf80049686ec",
+    "deploy/release/client-manifest.schema.json": "0fe88dd1bf149f0d32fa2a1f14e729bbdb3d941b071bfe60788c1b1ecbf699b2",
+    "deploy/release/CONTRACT.md": "226873ed3c1a68f3d65b82036fa017bd3b2202b223d4efad9a60438b92a5ac2b",
+    "deploy/release/evidence.example.json": "e7c2c7d901b35ca52b9f36b4f14a0803a14d7cb9ef9b3f0701f1cfc4ffb80177",
+    "deploy/release/evidence.schema.json": "ce73ad3a47533b11165ab43286872364af606be17ee637b4a9137b0737e615df",
+    "deploy/release/manifests.py": "a91d7cf7552fbe4fee7b2875181d39e7101e44eb333e97575b613f47d52514d8",
+    "deploy/release/requirements-validation.txt": "44ff0dc2f1e40311b8239e83146749ab9d9cee2a650e699f5464755d552ee20d",
+    "deploy/release/server-manifest.example.json": "f12e7b6c8607cf0993ba818e157f651dd598616683d2af4eb4eec72f4f8cf7f1",
+    "deploy/release/server-manifest.schema.json": "f44eadda5f986ee3f066642d8ca6ed9f2f8d655bf3ab344c8133957414d9df5f",
+    "deploy/release/test_manifests.py": "3e330023fb0f6bb924fe349efe8fde475ad50aab22687d513677bc5baab56e28"
+  },
+  "validation": "Six schema/semantic boundary tests passed; contract review completed; not installed/rehearsed"
+}

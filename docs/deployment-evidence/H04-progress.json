@@ -1,0 +1,10 @@
+{
+  "task": "H04",
+  "timestamp_utc": "2026-11-16T06:10:37.567625+00:00",
+  "state": "IN_PROGRESS",
+  "first_attempt": "FAILED fixture expectation: official registry image includes a valid OCI source revision, so expecting Not provided was wrong; collector accurately reported existing source",
+  "production_mutation": false,
+  "correction": "Anonymous local filesystem import and container configured by local ID; no tag/registry identity asserted. Original failed native reports retained; explicit attempt3 underway.",
+  "next": "Repeat actual native lifecycle checks with explicit fixture-fix option; H04 remains unchecked",
+  "second_attempt": "FAILED fixture assumption: containerd assigns a RepoDigest to a named local import, accurately reported by collector; no collector bug found"
+}

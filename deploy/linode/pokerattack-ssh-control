@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+export PATH=/usr/bin:/bin
+[[ $# == 1 ]] || exit 1
+exec /usr/bin/python3 -I /opt/pokerattack/ssh-control.py "$1"

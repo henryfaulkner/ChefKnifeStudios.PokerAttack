@@ -1,0 +1,19 @@
+{
+  "verified_utc": "2026-11-15T15:18:02.527502+00:00",
+  "source_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "files": {
+    "deploy/linode/release_commands.py": "94ed6aea4bf10699fb018f1e65e09fb3b67dff913bd63139ae3d167096fdb993",
+    "deploy/linode/ssh-control.py": "cd9c102b6edd6c5dcf97a552b92f9dd71b8969b82e55b71b0f2b22a38de0bcd0",
+    "deploy/linode/release-control.py": "d6fecce4aef41a23946ec9ed6bccda018a7cf979e7e31f7b08568244ebe95940",
+    "deploy/linode/test_commands.py": "dd38ea82d1d978eec9360841a8ef9d04988cd251337e28b24c8d8c51ae37c757",
+    "deploy/linode/pokerattack-ssh-control": "68fc1708d88e96ce5738bc284dc6da6424858172499770d6376cb80a1d0ee018",
+    "deploy/linode/control.sudoers": "20ebf8662fd88be45ad71fd10863a201b8ffe9663856ea01ba0c1fa0d406d471",
+    "deploy/linode/pokerattack-deployment": "abd9230fd57300605624581ace2c9a215a3b2d0b57e00375e68153a3bc7429d5",
+    "deploy/linode/pokerattack-evidence": "da0b54cc9ad9978986a2959e939588e35886d14b3084b40e2dd98e4d79c9dfbe",
+    "deploy/linode/pokerattack-promotion": "e706ef50505f39cd5d3b504ca943ec787a60083528031029ae109dbd9ec251d3",
+    "deploy/linode/pokerattack-client-lease": "137c7899885a95e79d9567d4198962c50991860ab349a7c80de74d3b59f88d18"
+  },
+  "tests": "5 capability tests pass, exhaustive role/action matrix at SSH and root boundaries; control and status sudoers visudo parsed OK in disposable Linux",
+  "mutation_handlers": "Not activated until C03-C06; unimplemented actions reject",
+  "installed": false
+}

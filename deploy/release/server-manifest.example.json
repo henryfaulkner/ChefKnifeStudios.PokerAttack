@@ -1,0 +1,35 @@
+{
+  "format": "pokerattack-server-v1",
+  "source_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "workflow": {
+    "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+    "run_id": 1,
+    "run_attempt": 1,
+    "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/1"
+  },
+  "api": {
+    "repository": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi",
+    "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "local_image_id": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "tag": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "source_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "platform": "linux/amd64"
+  },
+  "migration": {
+    "repository": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.data",
+    "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "local_image_id": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "tag": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "source_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "platform": "linux/amd64"
+  },
+  "config_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "schema": {
+    "required_migrations": [],
+    "compatible_with_known_good": true,
+    "review_reference": "EXAMPLE ONLY - schema review required"
+  },
+  "verification_references": [
+    "EXAMPLE ONLY - isolated CI evidence required"
+  ]
+}

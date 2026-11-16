@@ -1,0 +1,314 @@
+{
+  "all_H03_cases_complete": false,
+  "cases": [
+    {
+      "api_unchanged": true,
+      "diagnostics_available": true,
+      "name": "real-host-lock-contention",
+      "passed": true
+    },
+    {
+      "api_unchanged": true,
+      "failed_attempt_stays_failed": true,
+      "maintenance_retained": true,
+      "name": "real-missing-registry-manifest-before-stop",
+      "passed": true,
+      "status": {
+        "capabilities": [
+          "structured-status-v1"
+        ],
+        "consistent": true,
+        "errors": [],
+        "lease": {
+          "approved_unix": 1794806178,
+          "config_sha256": "88bea9d61075abf7b3e8b8452ba1538011df76c9058a90898a3e70c586e536c0",
+          "digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "expires_unix": 1794807978,
+          "kind": "server",
+          "manifest_sha256": "b70611df56a0c4b5597dcb87e447c697017e082903d1b13985d18216e3671fc5",
+          "phase": "failed",
+          "run_attempt": 6,
+          "run_id": 42424242424242,
+          "source_sha": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+          "verifier_issued": false,
+          "verifier_revoked": false
+        },
+        "maintenance": {
+          "active": true,
+          "config_sha256": "88bea9d61075abf7b3e8b8452ba1538011df76c9058a90898a3e70c586e536c0",
+          "digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "run_attempt": 6,
+          "run_id": 42424242424242,
+          "source_sha": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+          "supported": true
+        },
+        "pairs": {
+          "active": {
+            "config_sha256": "88bea9d61075abf7b3e8b8452ba1538011df76c9058a90898a3e70c586e536c0",
+            "digest": "sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+            "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+            "snapshot_config_matches": true
+          },
+          "known-good": {
+            "config_sha256": "88bea9d61075abf7b3e8b8452ba1538011df76c9058a90898a3e70c586e536c0",
+            "digest": "sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+            "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+            "snapshot_config_matches": true
+          },
+          "pending": null,
+          "previous-good": {
+            "config_sha256": "3532e150a6cbd2819f601352e709d644d58c4913f5894888ab16223934e8d02d",
+            "digest": "sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+            "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+            "snapshot_config_matches": true
+          }
+        },
+        "protocol_version": 1,
+        "readiness": {
+          "config_matches": true,
+          "identity_matches": true,
+          "limits_match": true,
+          "ready": true
+        },
+        "runtime": {
+          "container_id": "5045eb0666c66a728026262158acdc85007a803329bb772fbe86a97c0abd2b0f",
+          "docker_health": "not-configured",
+          "image_id": "sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+          "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+          "memory_bytes": 536870912,
+          "nano_cpus": 250000000,
+          "source_revision": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+          "state": "running"
+        },
+        "sampled_utc": "2026-11-16T05:16:21.891811+00:00",
+        "sessions": {
+          "activeGames": 0,
+          "lobbies": 0,
+          "soloGames": 0
+        },
+        "target": "production",
+        "transaction": false
+      }
+    }
+  ],
+  "diagnostic_status": {
+    "capabilities": [
+      "structured-status-v1"
+    ],
+    "consistent": true,
+    "errors": [],
+    "lease": null,
+    "maintenance": {
+      "active": false,
+      "supported": true
+    },
+    "pairs": {
+      "active": {
+        "config_sha256": "88bea9d61075abf7b3e8b8452ba1538011df76c9058a90898a3e70c586e536c0",
+        "digest": "sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+        "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+        "snapshot_config_matches": true
+      },
+      "known-good": {
+        "config_sha256": "88bea9d61075abf7b3e8b8452ba1538011df76c9058a90898a3e70c586e536c0",
+        "digest": "sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+        "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+        "snapshot_config_matches": true
+      },
+      "pending": null,
+      "previous-good": {
+        "config_sha256": "88bea9d61075abf7b3e8b8452ba1538011df76c9058a90898a3e70c586e536c0",
+        "digest": "sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+        "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+        "snapshot_config_matches": true
+      }
+    },
+    "protocol_version": 1,
+    "readiness": {
+      "config_matches": true,
+      "identity_matches": true,
+      "limits_match": true,
+      "ready": true
+    },
+    "runtime": {
+      "container_id": "5045eb0666c66a728026262158acdc85007a803329bb772fbe86a97c0abd2b0f",
+      "docker_health": "not-configured",
+      "image_id": "sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+      "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+      "memory_bytes": 536870912,
+      "nano_cpus": 250000000,
+      "source_revision": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+      "state": "running"
+    },
+    "sampled_utc": "2026-11-16T05:18:39.275933+00:00",
+    "sessions": {
+      "activeGames": 0,
+      "lobbies": 0,
+      "soloGames": 0
+    },
+    "target": "production",
+    "transaction": false
+  },
+  "error_type": "ValueError",
+  "failure": "previous-good rotated to a duplicate pair",
+  "final_status": {
+    "capabilities": [
+      "structured-status-v1"
+    ],
+    "consistent": true,
+    "errors": [],
+    "lease": null,
+    "maintenance": {
+      "active": false,
+      "supported": true
+    },
+    "pairs": {
+      "active": {
+        "config_sha256": "88bea9d61075abf7b3e8b8452ba1538011df76c9058a90898a3e70c586e536c0",
+        "digest": "sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+        "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+        "snapshot_config_matches": true
+      },
+      "known-good": {
+        "config_sha256": "88bea9d61075abf7b3e8b8452ba1538011df76c9058a90898a3e70c586e536c0",
+        "digest": "sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+        "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+        "snapshot_config_matches": true
+      },
+      "pending": null,
+      "previous-good": {
+        "config_sha256": "88bea9d61075abf7b3e8b8452ba1538011df76c9058a90898a3e70c586e536c0",
+        "digest": "sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+        "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+        "snapshot_config_matches": true
+      }
+    },
+    "protocol_version": 1,
+    "readiness": {
+      "config_matches": true,
+      "identity_matches": true,
+      "limits_match": true,
+      "ready": true
+    },
+    "runtime": {
+      "container_id": "5045eb0666c66a728026262158acdc85007a803329bb772fbe86a97c0abd2b0f",
+      "docker_health": "not-configured",
+      "image_id": "sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+      "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+      "memory_bytes": 536870912,
+      "nano_cpus": 250000000,
+      "source_revision": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+      "state": "running"
+    },
+    "sampled_utc": "2026-11-16T05:18:38.662210+00:00",
+    "sessions": {
+      "activeGames": 0,
+      "lobbies": 0,
+      "soloGames": 0
+    },
+    "target": "production",
+    "transaction": false
+  },
+  "fixture_only": true,
+  "github_reviews_simulated": true,
+  "phase": "failed-or-incomplete",
+  "previous_good_preserved": false,
+  "production_mutation": false,
+  "recovery": {
+    "completion": {
+      "client_archive_sha256": "b337a115b8ac6b6898ed0d1682ae5aa991783b0ce409573a2f23e31d54f2cbc2",
+      "client_source_sha": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+      "completed_utc": "2026-11-16T05:18:38.265841+00:00",
+      "config_sha256": "88bea9d61075abf7b3e8b8452ba1538011df76c9058a90898a3e70c586e536c0",
+      "dashboard_url": null,
+      "digest": "sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+      "evidence_sha256": "4f675235d4d31c83e9f8862d2f76f6882b4183c5867f12ce1a8c4474dad787a0",
+      "format": "pokerattack-promotion-v1",
+      "known_good": {
+        "config_sha256": "88bea9d61075abf7b3e8b8452ba1538011df76c9058a90898a3e70c586e536c0",
+        "digest": "sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+        "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+        "snapshot_config_matches": true
+      },
+      "migration_digest": "sha256:9560e3c4387a2d224290ca1c65d5a5ee1d27cd6ae3a8b17df45f1b8d0ca38223",
+      "overall_release_complete": true,
+      "phase": "complete",
+      "promotion_complete": true,
+      "public_verification": {
+        "checks": {
+          "assets": true,
+          "browser": true,
+          "header": true,
+          "https": true,
+          "served_client": true,
+          "settings": true,
+          "signalr": true
+        },
+        "client_archive_sha256": "b337a115b8ac6b6898ed0d1682ae5aa991783b0ce409573a2f23e31d54f2cbc2",
+        "client_source_sha": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+        "verified_unix": 1794806317
+      },
+      "review": {
+        "comment": "PROMOTE 4f675235d4d31c83e9f8862d2f76f6882b4183c5867f12ce1a8c4474dad787a0 42424242424242/7",
+        "decision_timestamp": null,
+        "environment": "server-promotion",
+        "reviewer": "isolated-rehearsal",
+        "timestamp_note": "GitHub review API does not expose decision time; immutable packet validity anchor is used conservatively."
+      },
+      "runtime": {
+        "container_id": "5045eb0666c66a728026262158acdc85007a803329bb772fbe86a97c0abd2b0f",
+        "docker_health": "not-configured",
+        "image_id": "sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+        "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+        "memory_bytes": 536870912,
+        "nano_cpus": 250000000,
+        "source_revision": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+        "state": "running"
+      },
+      "source_sha": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+      "workflow": {
+        "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+        "run_attempt": 7,
+        "run_id": 42424242424242,
+        "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/42424242424242"
+      }
+    },
+    "delivery": {
+      "config_sha256": "88bea9d61075abf7b3e8b8452ba1538011df76c9058a90898a3e70c586e536c0",
+      "digest": "sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+      "expires_unix": 1794807982,
+      "format": "pokerattack-delivery-v1",
+      "manifest_sha256": "44161f23176676c8cf38e9f54dd86700b133db584dafda8e49da25d8c41e1f02",
+      "operation": "rollback",
+      "overall_release_complete": false,
+      "phase": "pending",
+      "reset_packet_sha256": "e45343397452e52b4b73f8182e722993ae5b6509454c94256fb2ecbe43edb8f8",
+      "review": {
+        "comment": "ACK_RESET e45343397452e52b4b73f8182e722993ae5b6509454c94256fb2ecbe43edb8f8 42424242424242/7",
+        "decision_timestamp": null,
+        "environment": "server-linode",
+        "reviewer": "isolated-rehearsal",
+        "timestamp_note": "GitHub review API does not expose decision time; immutable packet validity anchor is used conservatively."
+      },
+      "source_sha": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+      "validity_anchor_unix": 1794806182,
+      "workflow": {
+        "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+        "run_attempt": 7,
+        "run_id": 42424242424242,
+        "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/42424242424242"
+      }
+    },
+    "fresh_reset": true,
+    "new_real_evidence_sha256": "4f675235d4d31c83e9f8862d2f76f6882b4183c5867f12ce1a8c4474dad787a0",
+    "recorded_target": {
+      "config_sha256": "88bea9d61075abf7b3e8b8452ba1538011df76c9058a90898a3e70c586e536c0",
+      "digest": "sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+      "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+      "snapshot_config_matches": true
+    },
+    "separate_promotion": true
+  },
+  "started_utc": "2026-11-16T05:16:13.828617+00:00",
+  "task": "H03"
+}

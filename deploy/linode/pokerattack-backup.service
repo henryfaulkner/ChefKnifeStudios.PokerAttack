@@ -1,0 +1,11 @@
+[Unit]
+Description=Protected shared-host PokerAttack migration backup
+After=postgresql.service docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/pokerattack-backup
+Nice=15
+IOSchedulingClass=idle
+UMask=0077
+TimeoutStartSec=30min

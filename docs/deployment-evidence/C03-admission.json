@@ -1,0 +1,39 @@
+{
+  "verified_utc": "2026-11-15T15:27:48.854493+00:00",
+  "source_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "files": {
+    "deploy/linode/check-local-containers.py": "53276e4cf42639d585a830a0e2a9521570bd015cd9f7f51c18f337db45ae32bc",
+    "deploy/linode/compose.yaml": "caf46144bfe411ef73728ccb59091848c49b4554a6968db3a12365e8fe8a4736",
+    "deploy/linode/pokerattack-deploy": "1568ff8ed008fce75a0ebe823b32c24bd6b5b1e5f93e577fe9999105419b2650",
+    "deploy/linode/release.env.example": "7be0ef90d27e9ae238c039d48ae122b499640f72550f70c3d20f202b58d174e6",
+    "tests/tools/maintenance-browser.cjs": "34b9341148ec68e3e4f9706f81899fa0b91cdafb553ce8cca3ec70b4f70178f2",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Hosting/ReleaseAdmission.cs": "de9207d80660398e5b76ad0e8bbf04ab422d68308ee0e2a4ba800cd2dddd7d26",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Hosting/PokerAttackHosting.cs": "ff32e91a5adfc122c4b56833af830dd37a4c31c7bbcace0a35900c7ad3f8b43f",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/EndpointGroups/LobbyEndpoints.cs": "423659126157d6f6c9f5765ceef8b74ab6e4a285d95e4e49257299eb0b2dc069",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/EndpointGroups/SoloGameplayEndpoints.cs": "9ef40961f5519a412f8cb930e76af75a79e983726a1f237c2bca2aa486ca73b4",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Program.cs": "d80522762cc0c68cc218e6702ec15f1edece13dc4a5670dd9146d6675cb21268",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI.Tests/ReleaseAdmissionTests.cs": "72c941d78b80600c1d0df0d461fef8d5c73f53b4b1def312478537c45f144c2a",
+    "src/Client/ChefKnifeStudios.PokerAttack.Client.WebApp/Layout/MainLayout.razor": "1333f3f530377b0cc2ceb066683646aa237d316092ad15bb2e2fce578d1e9df3",
+    "src/Client/ChefKnifeStudios.PokerAttack.Client.WebApp/Layout/MainLayout.razor.css": "3c1d40ec64f079eb6d8f07b142a8a71d077beee9cd3b0fd8ebad17844c9bc779"
+  },
+  "logs": {
+    "artifacts\\C03-admission.log": "2f5645a5588f17dd9709b4427cd19738fe944cd1de895324095738858572622a",
+    "artifacts\\C03-api-image.log": "9230e93a42d548afcbe8ab6e2b2d638922cf6759e5018cce5691e9ea3e1968fc",
+    "artifacts\\C03-client-publish.log": "5893bd4c3b1d6e03b7491ea84b63bb277acc1dd28ab0f7c2f48ff6cf4e20c43d",
+    "artifacts\\C03-container-browser-attempt1.log": "d4692ef6eb0e7a0ee6353063b1c0cd6ba5a72f90fa9c02e76a5782f7d906957a",
+    "artifacts\\C03-container-browser.log": "5e6cd3a38a5639a1ede460f0826f8790e0db606059a1d5ac35881bc224b6c883",
+    "artifacts\\C03-hosting.log": "5734112e7eaf0cf817ce5b605cb2bdd417dcbc69a2a9fad2d82392f7495b5b5e",
+    "artifacts\\C03-release-tests.log": "b4e28687f42d561eabe5eef6099789bc9016da017477d07c8a983b382ab09570"
+  },
+  "api_image_id": "sha256:99761664a413bb601fc51b4aa90648a5bb645971ea208a7c9a65a0921619ebb2",
+  "installed": false,
+  "checks": {
+    "admission_fixtures": 8,
+    "full_webapi": 36,
+    "release_tests": 8,
+    "disposable_browser_smokes": 5,
+    "maintenance_browser": true,
+    "mount_write_denied": true,
+    "maintenance_survives_replacement": true
+  }
+}

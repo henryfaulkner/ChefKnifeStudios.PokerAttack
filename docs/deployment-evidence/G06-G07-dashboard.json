@@ -1,0 +1,106 @@
+{
+  "timestamp_utc": "2026-11-16T03:54:25.048527+00:00",
+  "base_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "scope": "LOCAL dashboard JSON and real isolated PromQL evaluation; no Grafana import/host installation",
+  "source_sha256": {
+    "deploy/monitoring/dashboard.py": "043796004fc65275fef4f430862c9c9264f565a292d5c693992df49125fede58",
+    "deploy/monitoring/linode-docker-dashboard.json": "7dd8125e560fbcd9a4c3a2b39916c005b9b4438142c1d038725ae26e75b2ecb0",
+    "deploy/monitoring/test_dashboard.py": "249fad6d6972a933ed3a674a8cc4ee56b2f35b2e56f7ae4ed29fd592517dc358",
+    "deploy/monitoring/check-dashboard.py": "e94cc30bf497b7608a9531b2874bb72409f99a3bb531cd99ef06dff2a1e77c93",
+    "deploy/monitoring/check-monitoring.py": "c05ed09ec10ff3426550e9eba34d6756b6eb1d2a24208abd873bd41e64a4923d",
+    ".github/workflows/server.yml": "867602f54942d8ccb4eff5364fa5e8106a1421f267a11b99366222b8333dcdc5"
+  },
+  "dashboard": {
+    "uid": "linode-docker-containers",
+    "title": "Linode Docker Containers",
+    "panels": 14,
+    "default_range": "1h",
+    "refresh": "30s",
+    "host_default": "expense-tracker-vm",
+    "datasource": "import input for existing Prometheus datasource",
+    "dropdowns": [
+      "Host multi/All",
+      "Container discovered multi/All including stopped"
+    ]
+  },
+  "checks": {
+    "timestamp_utc": "2026-11-16T03:53:38.559316+00:00",
+    "scope": "Local disposable validators only; no installed/live claim",
+    "checks": [
+      {
+        "name": "monitoring-unit-tests",
+        "exit_code": 0,
+        "log": "artifacts/monitoring-unit-tests.log",
+        "log_sha256": "b0b76e1bc5e83d47028eb8990ea03dded2520059b16a0bc3375864a27d57294a"
+      },
+      {
+        "name": "monitoring-validator-build",
+        "exit_code": 0,
+        "log": "artifacts/monitoring-validator-build.log",
+        "log_sha256": "ff6bbd1f00ea31c65ad1024e63f8d3d565d6cbb056d9561f1b15aba4a5e82f9a"
+      },
+      {
+        "name": "monitoring-unit-validation",
+        "exit_code": 0,
+        "log": "artifacts/monitoring-unit-validation.log",
+        "log_sha256": "cf7dc29fdb4b56cfd2f816bef4e11c0ac1834630ce29aa4b75b00ae9ac1b1a76"
+      },
+      {
+        "name": "monitoring-alloy-version",
+        "exit_code": 0,
+        "log": "artifacts/monitoring-alloy-version.log",
+        "log_sha256": "d4cb031f401aa3cb90bdfd73bdec5ec4bbfed8537034d671c9e4c710f66a851c"
+      },
+      {
+        "name": "monitoring-alloy-validation",
+        "exit_code": 0,
+        "log": "artifacts/monitoring-alloy-validation.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "monitoring-dashboard-queries",
+        "exit_code": 0,
+        "log": "artifacts/monitoring-dashboard-queries.log",
+        "log_sha256": "9e7e8d289a8dcf26f6e322dc710c7fc39fd55d97cb1a1af0b6d7a924ed05ee59"
+      }
+    ]
+  },
+  "promql": {
+    "timestamp_utc": "2026-11-16T03:53:38.521334+00:00",
+    "cases": [
+      "fresh",
+      "stale",
+      "daemon",
+      "removed",
+      "partial",
+      "metadata",
+      "unlimited",
+      "recreated",
+      "single",
+      "multiple"
+    ],
+    "promtool": "prom/prometheus@sha256:49214755b6153f90a597adcbff0252cc61069f8ab69ce8411285cd4a560e8038",
+    "behavioral_assertions": 60,
+    "all_dashboard_targets_evaluated": true,
+    "exit_code": 0
+  },
+  "verification": [
+    "23 Linux behavior/definition tests pass",
+    "60 behavioral assertions across fresh/stale/daemon/removed/partial/metadata/unlimited/recreated/single/multiple fixtures pass",
+    "Every shipped target parsed and evaluated by real promtool 3.7.3",
+    "Old metadata and removed incarnations excluded despite retained backend series",
+    "Stale/failed current health becomes Unknown rather than green",
+    "CPU seconds/rate/positive quota percentage and memory bytes verified; unlimited denominator omitted",
+    "Full copyable distinct image identities and source labels, no collapse of container IDs, host network explicitly shared/unavailable",
+    "Installed-version Alloy 1.21.3 and systemd units revalidated; source workflow includes these blocking checks"
+  ],
+  "failures_retained": [
+    "G07 attempt1: exact rate 0.1 differed by one last mantissa bit; documented promtool fuzzy_compare allows only that bit.",
+    "G07 attempt2: daemon inventory fallback lost metadata labels and returned no rows; fixed set matching to retain per-container identity and show Unknown. All ten cases now pass."
+  ],
+  "limitations": [
+    "Actual rendered table/dropdown inspection remains H04/J; no visual/live claim",
+    "Cloud ingestion/UID and Grafana editing/import remain I/J",
+    "No collector or dashboard acts as a deployment or observation gate"
+  ]
+}

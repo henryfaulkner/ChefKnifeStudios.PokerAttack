@@ -1,0 +1,77 @@
+{
+  "timestamp_utc": "2026-11-15T21:31:59.381639+00:00",
+  "base_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "scope": "LOCAL ONLY; no ACR publication, source publication, provisioning or production mutation",
+  "source_sha256": {
+    ".github/workflows/server.yml": "623c10eb4aaca7d27bfbc01f5734a3215db12c5b150e13a9c21fe01482678b35",
+    "deploy/release/server_images.py": "5a32f8120a1a70e43e51972b95dfe31e85a9350a0dbe3610d92a4ec3b9c9392c",
+    "deploy/release/test_server_images.py": "fef29a08a296089e6fe1ff48e1e30c1787be2c7e23ed139aa31a254e56c0cd8b",
+    "deploy/release/test_workflows.py": "ef6b47052e60b5c2f25329e2fc145c74c88220fc32c5e61a58c0bbb8803bbbc0",
+    "deploy/linode/check-image-publication.py": "11d02684ade8ffdfdd31aa0a0e49fb2d5cc8b8c9631f887e4efe3a2d332574cf"
+  },
+  "checks": {
+    "release_tests": 50,
+    "client_server_actionlint": "pass",
+    "actual_local_registry": {
+      "fixture_only": true,
+      "source_identity": "SYNTHETIC cccc...; not published Git provenance",
+      "archive_sha256": "ab08247c0e841bb95bda47cd38447e98c97665cf17ca66611d429a8c593849ac",
+      "exact_image_archive_loaded": true,
+      "https_browser_and_disposable_migration_passed": true,
+      "conflicting_sha_rejected_before_api_push": true,
+      "repeated_identical_sha_did_not_push": true,
+      "registry_digests_and_image_ids_match": true,
+      "registry_transport": "Isolated crane client with plain HTTP loopback registry; production ACR Docker transport not exercised",
+      "acr_locks_live_verified": false,
+      "images": {
+        "api": {
+          "repository": "127.0.0.1:61166/accepted/chefknifestudios.pokerattack.server.webapi",
+          "digest": "sha256:07e0954e5d040bfd7fe17555d339caf283514c5c1a650cddffb613a8a8136bc4",
+          "local_image_id": "sha256:07e0954e5d040bfd7fe17555d339caf283514c5c1a650cddffb613a8a8136bc4",
+          "tag": "cccccccccccccccccccccccccccccccccccccccc",
+          "source_revision": "cccccccccccccccccccccccccccccccccccccccc",
+          "platform": "linux/amd64"
+        },
+        "migration": {
+          "repository": "127.0.0.1:61166/accepted/chefknifestudios.pokerattack.server.data",
+          "digest": "sha256:68622d0fb6f0e38f683a17942c9f8f3c04f62db80c391a7e0f5d08fdf9b54a3c",
+          "local_image_id": "sha256:68622d0fb6f0e38f683a17942c9f8f3c04f62db80c391a7e0f5d08fdf9b54a3c",
+          "tag": "cccccccccccccccccccccccccccccccccccccccc",
+          "source_revision": "cccccccccccccccccccccccccccccccccccccccc",
+          "platform": "linux/amd64"
+        }
+      }
+    }
+  },
+  "logs_sha256": {
+    "artifacts\\F02-local-publication-attempt1.log": "6896024e5de03be7e910336d83557032fe1fde4f13a96c321d88a5c0215ac349",
+    "artifacts\\F02-local-publication-attempt2.log": "3e90e096e59619be41663161fe56599e529a061357ce86e332fdb2d0045d7ae9",
+    "artifacts\\F02-local-publication-attempt3.log": "c39874dd7f513dbe9895fde4cd6ec84fc85d78249c7b2767ca24eb929487107d",
+    "artifacts\\F02-local-publication-attempt4.log": "986eff6e08ce62ceae988c25d5b0a9ac47cecda26b1073978dfa7ea05f55cac5",
+    "artifacts\\F02-local-publication-attempt5.log": "e4dd0572686cc08a0dd6b6f8d97749e7b4622fe943c321cecfa80a5dfe321e68",
+    "artifacts\\F02-local-publication-attempt6.log": "e540eb8976da987ea004c5704ec85fa1954706b8ada5459a05866699842e50d2",
+    "artifacts\\F02-local-registry-pull.log": "868cdb52e29919f427a8b3d9a9731fadd2d1d3e5a6d8fada25c2eb4eb5b06bef",
+    "artifacts\\F02-migration-build.log": "a03cefa9a9e192a5c34f04f31055608091bf8aacd69a676df18bfe715170c433",
+    "artifacts\\F02-release-final.log": "713f02892aed68b3fb011109b210f7b852a8778197fe23334babe4f4d75b4f61",
+    "artifacts\\F02-release-initial.log": "a7b301c79bfbbaf40d6716d1981d4e421a89bc584d531c4a646d31b26a56e5fa",
+    "artifacts\\F02-workflow-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "artifacts\\F02-workflow-initial.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "failures_and_corrections": [
+    "Attempt 1/2: Docker Desktop outbound daemon proxy could not reach the loopback registry; no shared Docker settings/restart changed. Moved fixture-only HTTP client into the UUID registry network namespace. Production retains Docker ACR transport.",
+    "Attempt 3/4: legacy tar adapter stripped the OCI index, exposing Docker containerd index ID versus classic config ID distinction. Preserve exact original OCI index.",
+    "Attempt 5: crane OCI pull produces a layout directory, not a Docker-loadable tar. Registry verification now checks exact manifest digest plus actual platform/revision config; initial Docker save/load separately proves archive.",
+    "Attempt 6: exact API/migration index identities and registry digests agree; actual conflicting migration SHA prevents any API push; repeat publication does not push. Registry removed by exact UUID name."
+  ],
+  "live_readonly_check": {
+    "acr_current_api_digest": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+    "existing_current_tag_attributes": "write/delete enabled, unchanged; no lock operation performed"
+  },
+  "primary_references": [
+    "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-image-lock"
+  ],
+  "remaining": [
+    "ACR OIDC/roles and actual tag+manifest locks need I/K verification; local registry does not implement ACR locks",
+    "Full integrated CI/host rehearsal remains H; source remains unpublished"
+  ]
+}

@@ -1,0 +1,509 @@
+{
+  "timestamp_utc": "2026-11-16T04:04:50.052480+00:00",
+  "base_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "scope": "LOCAL integrated checks and disposable baseline only",
+  "source_sha256": {
+    ".github/workflows/server.yml": "867602f54942d8ccb4eff5364fa5e8106a1421f267a11b99366222b8333dcdc5",
+    "deploy/check-isolated-baseline.py": "6ca5a836af7e97b714b4a8955a9006546c17612382da20741efb33a94f24ac38",
+    "deploy/linode/check-generated-evidence.py": "ff3d88d2ef9093274eeec3807ee63c4b6c03828df45dc2a83bee2aa57949a3aa",
+    "deploy/linode/check-image-publication.py": "11d02684ade8ffdfdd31aa0a0e49fb2d5cc8b8c9631f887e4efe3a2d332574cf",
+    "deploy/linode/check-release-gameplay.py": "5c56ee3ea81bee9f7b76b83d5e7f2aa13f3fa2ad1f114adabc81573025c3ed35",
+    "deploy/linode/client_lease.py": "f285ffcc8b7c4d83920d611a8ad931bdff9ed00f98aeefc78293e430bebecb22",
+    "deploy/linode/control.sudoers": "20ebf8662fd88be45ad71fd10863a201b8ffe9663856ea01ba0c1fa0d406d471",
+    "deploy/linode/fixture_tls.py": "00c43b83cbe4e963ecb136fc6114e0eb3931e567dac5116efee664c4034aabc0",
+    "deploy/linode/host_manifests.py": "89d5d9984a311488dc266944c3e812fa34d6ac0b50df20cda7479af4be977964",
+    "deploy/linode/inspect-release-state.py": "454e92238cc93db3741221b093060a1f261049a511bf604a059ad16b4761c75b",
+    "deploy/linode/local_docker.py": "73ea0d944b1dae0d45d15de84982a7a50e388b0b879cde75f3716ea07d7bb24e",
+    "deploy/linode/pokerattack-client-lease": "137c7899885a95e79d9567d4198962c50991860ab349a7c80de74d3b59f88d18",
+    "deploy/linode/pokerattack-deployment": "abd9230fd57300605624581ace2c9a215a3b2d0b57e00375e68153a3bc7429d5",
+    "deploy/linode/pokerattack-evidence": "da0b54cc9ad9978986a2959e939588e35886d14b3084b40e2dd98e4d79c9dfbe",
+    "deploy/linode/pokerattack-promotion": "e706ef50505f39cd5d3b504ca943ec787a60083528031029ae109dbd9ec251d3",
+    "deploy/linode/pokerattack-rollback-target": "b8760e766890b74451ad45f9993740d9c494299e14def2890b16984ee8e566ff",
+    "deploy/linode/pokerattack-ssh-control": "68fc1708d88e96ce5738bc284dc6da6424858172499770d6376cb80a1d0ee018",
+    "deploy/linode/pokerattack-ssh-status": "0eea09b4a24f5df5e2eece1782f6a54c2ade2ccae07a502ba775d16c6d7d8371",
+    "deploy/linode/pokerattack-status": "6024aa941518cbb01eaace38500571cf81734bba2e4ab8a272ad003626de3264",
+    "deploy/linode/release-control.py": "21ddc9e07f01b43bbbb56ef75e7019468310552ae6f48cbdc7430193a9b39e8e",
+    "deploy/linode/release-legacy-guard.py": "977a1031382f98af72f10cddade1cd001e85c202b8cd7e5e9bc8bfd9219eb562",
+    "deploy/linode/release-recovery.py": "6418b9931b1beb467c3ff8657aeff21c1e1a7663d7e0fc3c5c6cb47906767848",
+    "deploy/linode/release-status.py": "abf30ba1fcbde9c675addc4ce11b4addbda4741010d0dd9887bdba050cc9e9dd",
+    "deploy/linode/release_commands.py": "3d8560baa8e6e103d6010aabce804bebe36f805588ab5918686bcd26e991eb03",
+    "deploy/linode/release_evidence.py": "aa64ba62cf1436cc87842db3c28dbc6e8fb0f490b37f76fcfa26fa5d085ab7b3",
+    "deploy/linode/release_lease.py": "e08fa89106b4378fe9f3f413b69dd21c81503d90f28f87cbe83243838dea5666",
+    "deploy/linode/release_verifier.py": "85750dada3172f1fc89e9f9190e2712b0ee136a92bcfb76bc4d72b94d3936edc",
+    "deploy/linode/secure_state.py": "30673de3a3fef7e9e3551bef25d0e0453349642d0d9a73c46796448af939eb86",
+    "deploy/linode/ssh-control.py": "dd6fedd0aaab1d0b10a5b7fb3447fa8063ce841e967ee965a0e2943e536831e1",
+    "deploy/linode/status.sudoers": "9bf65a0ef8ad0ccee2a7afeb1840560493e3522296cd34b79247c47926770f37",
+    "deploy/linode/test_client_lease.py": "3eb8c883ae94cd645958510950714c23d2e6a9fc9ca9881bef62a1c47fb3c522",
+    "deploy/linode/test_commands.py": "9181aa6bd3d5bf882addd1bbc6e19b3116d59323345892f901de2df2797f3b3f",
+    "deploy/linode/test_evidence.py": "0e56a081def481fd91db4add3b7f9f865b523f5b1ae996cd5fda3895e195dcaa",
+    "deploy/linode/test_host_manifests.py": "838c1710fc6f9155b3d2227d98546df7b52d23e51668bbc4a55d969bd4b8016e",
+    "deploy/linode/test_lease.py": "a70a70d42c2df1aa0d0d6c55ef84d09975e54329f29ca0a2a08094605be147e9",
+    "deploy/linode/test_local_docker.py": "6fcc4329b2a3c25d9d336ca6d53ae51f5ab42c335536f5813c7d8e88eea2526a",
+    "deploy/linode/test_recovery.py": "112ed9e12efc49b3ee2eae2c639bc53031adc3e80f80b45566ae60c341e8d6f0",
+    "deploy/linode/test_status.py": "07bc6407f21e1c79362445e7206eed27a5680de2e3292e332dfa2b2712790e8e",
+    "deploy/linode/test_verifier.py": "95a2b9202e179e1af003772c9a7dfe98aa34107b008ac4b09f483d3e2f42f2db",
+    "deploy/monitoring/METRICS.md": "9788e9a705663789973b53b49b727cd1c5d4ef55e2785f997c3ab741fd7eba6c",
+    "deploy/monitoring/README.md": "f81660abdce144b7f3b1b34876183c30fcc1dcbe3112d8608d80ac17d3228ea6",
+    "deploy/monitoring/alloy_textfile.py": "a90188ae6a74650824142dab15bbf80ab156154f0a0386f9861ef0bed09f9972",
+    "deploy/monitoring/check-dashboard.py": "e94cc30bf497b7608a9531b2874bb72409f99a3bb531cd99ef06dff2a1e77c93",
+    "deploy/monitoring/check-monitoring.py": "c05ed09ec10ff3426550e9eba34d6756b6eb1d2a24208abd873bd41e64a4923d",
+    "deploy/monitoring/dashboard.py": "043796004fc65275fef4f430862c9c9264f565a292d5c693992df49125fede58",
+    "deploy/monitoring/docker_snapshot.py": "fec057423002787de8a232a32da7af6c04280da9628bd256c6402c830fa8faba",
+    "deploy/monitoring/inspect-monitoring.py": "9f0e189717e8ea1a41f5d015296898f0d738260fee1c5697ec4bee27c4f8edd0",
+    "deploy/monitoring/linode-docker-dashboard.json": "7dd8125e560fbcd9a4c3a2b39916c005b9b4438142c1d038725ae26e75b2ecb0",
+    "deploy/monitoring/linode-docker-snapshot.service": "43995f91d791628c2fd1f96c30936e9dcd585888544163557ca883515aa24e4a",
+    "deploy/monitoring/linode-docker-snapshot.timer": "f69cba2726bbd03f310bbfda56b030a101c6c3474151c914465729ce269e2bb2",
+    "deploy/monitoring/test_alloy_textfile.py": "ccf0c349edf440a35d30f8d4f3a26bcd93c2083a5873730691b11ff18cdd9b2c",
+    "deploy/monitoring/test_dashboard.py": "249fad6d6972a933ed3a674a8cc4ee56b2f35b2e56f7ae4ed29fd592517dc358",
+    "deploy/monitoring/test_docker_snapshot.py": "f330543bf4ab324dcee3f0f55d1ead06decccd5c833159a07eebc4b39edd854f",
+    "deploy/monitoring/validation.Dockerfile": "14098d23ca866cc909e3639814dbeca446a5f8d28640d7b6fc6de54f713964b5",
+    "deploy/prepare-production-client.test.mjs": "89b6143bb812451199370f7b20b44a13ff347573f08ad7ec7a3a1f75b06a7ce3",
+    "docs/DEPLOYMENT_AUTOMATION_CHECKLIST.md": "1a79ec30b5eb2ab603e3dafb173650b7b2738740cd1bb20f8a840bc1fe961655",
+    "docs/DEPLOYMENT_AUTOMATION_PLAN.md": "10a37128a9cfa49b92a5bed38887a17f5aec512eb54086642530bee4865df69c",
+    "docs/deployment-evidence/A01-workspace.md": "85488ee882ce21298a05dca31e2323f3831edd64a30f60bdbf52037e8b209f09",
+    "docs/deployment-evidence/A02-github.md": "7063990ad8a8f702056f77edf4a15d337edb68d569268aedeac811cbe7abed4f",
+    "docs/deployment-evidence/A03-azure.md": "3bcb9cca6897c17809d936d744a0351d5d0e8189ec8a9ecef90b98faac4a1a6e",
+    "docs/deployment-evidence/A04-host.json": "4400c3e6845954da59cdf217e8fd319d74785a8adb5c3faa02ebe4c66c8d2bdf",
+    "docs/deployment-evidence/A04-host.md": "1fe0f36d3bce10abee80088370a541ef703ab89bf776aa8d3c0f14eb70975187",
+    "docs/deployment-evidence/A04-source-hashes.json": "c9d75862abd7eea7e81f128b4906629686450064b990de8fa6fc71dd074cbbcc",
+    "docs/deployment-evidence/A05-monitoring.md": "474b6425cd7c86df46c51f4540ed8a23abc53dfa8c14cd5e30ebe84188b2a351",
+    "docs/deployment-evidence/A05-queries.json": "a083d9b27d7a6b80d67c1cc2e34839fc4ea5a803d206bdabd79a676f4be45041",
+    "docs/deployment-evidence/A06-baseline.md": "1abef7931184acad55aaf4563631999f4521be69aef7662948cd39bd97ad4a8d",
+    "docs/deployment-evidence/A06-interrupted-attempt.json": "044bb6b695f96326edd0d16fcbfa92d8f8afd8acdf4be5b7656246a316b47b95",
+    "docs/deployment-evidence/A06-results.json": "2c122d1f3bd310e3cfcac6eaed42d2e8ba267c6166151353b549da046e8a6a9c",
+    "docs/deployment-evidence/B01-B05-contracts.json": "c8fdac07312938b1376be6631c194ed09b37b8931d2a8c6a9a8beccd9c1940d8",
+    "docs/deployment-evidence/B01-B05-contracts.md": "667875bb6e26ef2992c320f9fde012158fb79a8a190f9a59825c3b75a6d2c3a8",
+    "docs/deployment-evidence/C01-status.json": "988055a8842d80d89c8e7f1d61f6a8fe276ce8a7deb671ab25cfdc1ed1e75284",
+    "docs/deployment-evidence/C02-capabilities.json": "edddc8c033cb404a17f99072c84eb753b62a3237a74225bca23bbbe2ee23a3a3",
+    "docs/deployment-evidence/C03-admission.json": "f68792822495bb9e2adfefb2965114f0b8c555a16a1eca7f49c563a95bb4c8f7",
+    "docs/deployment-evidence/C03-admission.md": "56efb685370fc9ad771a7ca5eaf87e6e3561cbb5abb84df0cb76511eaba85191",
+    "docs/deployment-evidence/C04-verifier.json": "42ac151d59d05bcbe16a8cc1ddf93f39010b5c8b8cc4299dd31da6c947a2f6a9",
+    "docs/deployment-evidence/C04-verifier.md": "8477ed0fd8dd87f8d4b855c6075bfa4e3271d30fa266b7e73e3ef3baec031e18",
+    "docs/deployment-evidence/C05-acceptance.json": "dccb7e94d1aa8564f56ad03646455765f2cb523001e0790452ea44235066cde6",
+    "docs/deployment-evidence/C05-acceptance.md": "853e0e66b7f4608cbdce3caf0e151fe3d47f8c97593029048f71416ff36b9e5d",
+    "docs/deployment-evidence/C05-final-host.json": "2f09e87c1130bab739dc36dffeb5ea3535afbaf07abd580cce0fe84474220a78",
+    "docs/deployment-evidence/C05-progress.json": "e4466ff2a29f1cc0ea8e2f282c48c4414ede193e3761f1b877aafa5297c8afd6",
+    "docs/deployment-evidence/C05-session-host.json": "f42c4aec658629940768440c9a50bbbdde9d78560ff4df6e53f5b0d8c2288b26",
+    "docs/deployment-evidence/C06-C07-acceptance.json": "617a1b93dd0b02237eb523aa34ee9364097650268e6ec0bc73f13db4bd2c11aa",
+    "docs/deployment-evidence/C06-C07-acceptance.md": "9a5e7462a4c4ae0cb57d2010013b35ddaa5642df239c61aab413eeee186fb7b6",
+    "docs/deployment-evidence/C06-session-host.json": "822b7e3a85498aa5b8f6d43e9376546f9abfad08e21f955881c8ce36fb8922af",
+    "docs/deployment-evidence/D01-safety.json": "85bb1b01d7183905e31fb16f98d75866b71a4ba1743ac47948a1c8ca16fff6df",
+    "docs/deployment-evidence/D02-D04-acceptance.json": "97badb486cda4a9c19708114fb653886c17f17a2c7f194f1f4f150a8ed25d088",
+    "docs/deployment-evidence/D02-D04-acceptance.md": "10398259d7963f05ffe272b15cd24f06161fbc7c552d9ca16f591cc941cc8c72",
+    "docs/deployment-evidence/E01-preparation.json": "adcb3199bcda9f615b4d3f18fc7415056ccf15bfb10b3b2536be41332abd6f55",
+    "docs/deployment-evidence/E02-full-artifact.json": "42d91f65dd05c3ad9c3e87d46cedbca89b5446357f229212fd90e22ed5ee8fe8",
+    "docs/deployment-evidence/E03-action-pins.json": "156064a1ad08e23723e4aa75eea472273d65105685eca188e239db8ee7030066",
+    "docs/deployment-evidence/E03-workflow.json": "83d72f7949fbdedf5cad11f72fcdf54f4578881ff404c8f6127c3cebf8e70325",
+    "docs/deployment-evidence/E04-client-delivery.json": "b7263d7a750e3f94e68111d69ff764c2a765e1049fb51559181a68cff2dc409a",
+    "docs/deployment-evidence/E04-client-delivery.md": "1e72f25861dc7ad5cb8781cd389a75f7b8c78398f932008419191178fde4e68c",
+    "docs/deployment-evidence/E05-client-restoration.json": "ee49db1f6dd8dbe9044cf26c3ce83ae49a57cc48afbfd71070f2e5d949741e6e",
+    "docs/deployment-evidence/F01-server-validation.json": "43f3829e7a2e48be11851f1f6a62e75947d6b150f4029f78effb674fbdc49552",
+    "docs/deployment-evidence/F02-exact-images.json": "bb40a5ebf4ed91ebfdc2cba366b503ec4896fecb9e0d60fe47596c377ef043c4",
+    "docs/deployment-evidence/F03-manifest-schema.json": "7704f3dbf124367a8570a8c2fa3c1884c312e2962fc41a9098916bdf9a25a63a",
+    "docs/deployment-evidence/F04-reset-delivery.json": "b5282b1d6732c6ebc62ec6095972041fde0d5996dc0dcd68f5c92981485d6bc9",
+    "docs/deployment-evidence/F04-resume-host.json": "86fb9ccba9a03ac7bf8c1c8929662fb472ce10c195e5dc1f1e5dd3cdf095e4d3",
+    "docs/deployment-evidence/F05-host-image-store.json": "a050c3c678d2b98eda9dc90b2433b50a1e5be199bf6a38533eed312984057892",
+    "docs/deployment-evidence/F05-verification-promotion.json": "96dbe4fc959c684387db26c21e12ac268467e4db17f35fd4a828d16ee9c1b17c",
+    "docs/deployment-evidence/F06-reopening-rollback.json": "a98f82c89075b38070d639c20d157da2ce36cc49aeff488dba398111ecfa098d",
+    "docs/deployment-evidence/G01-live-monitoring-shape.json": "d897b19afdd06c1b9cc952277d1403cb7a4a3105239a87832329495e2fda1c5b",
+    "docs/deployment-evidence/G01-metric-contract.json": "99ee18cfff70ba174da649f6f84a0daef81a106d5fac38cc2620dff7a0346b74",
+    "docs/deployment-evidence/G02-G05-collector.json": "e2122cebe2add10271c1ac8cb39ed0da7f95ffb6d640da5a3144b11f42984c6d",
+    "docs/deployment-evidence/G06-G07-dashboard.json": "3b25f42935592db34e24e4667a291169cc3a4cd6c2382f38c8ea7582bd3524fd",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI.Tests/ReleaseAdmissionTests.cs": "620640a1b87b3087e48324cd8460dbb5128d58aee9b136bff3b19a7a26575398",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI.Tests/ReleaseProtocolTests.cs": "6eb3a6b2732e413fcd0f26abb6f027c292d7e7a6facfb3a972a25350723a3803",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Hosting/ReleaseAdmission.cs": "4b914ee4d9d627c349a5264a87581282443cc1a19532ac11be7fa28acb498356",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Hosting/ReleaseOwnedSessions.cs": "c0798618906370b56b84dfd480d15af6109c4cdd89c0cf6bd7838b00dc9df03d",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Hosting/ReleaseTelemetry.cs": "b01d0c9696f46fa3a375480618bd7b4d37e23b7ece27632258cf2a74a7ba63b3",
+    "tests/playwright.release.config.ts": "25bcfb248d610f16066dc828f69053b13af2f2fb1e69a20b4fb81effd15c98bf",
+    "tests/release/README.md": "ed239682a2275ac0c0e263c38debf850c0bec20743ecf3a59db9618d9a7f982c",
+    "tests/release/client.cjs": "641f52eab67d47d3ba7e08d69f8467068a25afd4802705125d2eeca887db23f5",
+    "tests/release/context.cjs": "6602d9fd3e3743f2365201919a1263c45efbfcd7e626d90defc936a5777df2ee",
+    "tests/release/evidence.cjs": "a7ea88bee1a6004810cce8a4604c2c947f7666f9c2766dcfafdf873ce0452098",
+    "tests/release/evidence.test.cjs": "112e8d4e7e49bdbd5ffc7a3d17db722c9aec250f7513b34dfcf9d4a955cc6ad7",
+    "tests/release/gameplay.cjs": "44e3abbb9266bb3a3eb9c0fb2ea3984da0923bd3c5f8cb5820c61968919ba0e9",
+    "tests/release/gameplay.spec.ts": "d1e289c8d1bcd98d7ee538b7a552855ab6e00fb6dfd1f43751ec27a638249842",
+    "tests/release/isolation.cjs": "3b3eadf11fe86bd749ade2e306897fdb362cd6d7dcd320a8538fb35ed8f04cbd",
+    "tests/release/isolation.test.cjs": "6a8249b70b6ce5953fdde6c2d4c5be67429d1f5e46252def9d5d1a4b5ee3c87f",
+    "tests/release/owned.cjs": "f2b2552cb59cc8d33ac84191d17201ce8e0d898d32d9d52062bba37459a0b5f9",
+    "tests/release/owned.test.cjs": "a2e75d7e9e88051dcf55182ee3cf0d8ea3677a987e2afdbb7253c70397fa895d",
+    "tests/release/revoked.cjs": "07bf32221e0a7cc9541c80bd3c3ea79e9bab629b043fd4ff41a746663b259317",
+    "tests/release/run.cjs": "3500cf0ee0a4b4c833810d92d17111eee8503f2f6a03c33f7d65bb423ace9036",
+    "tests/release/safety.cjs": "e714bb0b98ccd801719251e1993e95d9973d879e36d90b22a5fa3bab2bac69d6",
+    "tests/release/safety.test.cjs": "230a5b15d233b3c43c961252a33d277cad0a12007c9016225db4469d6638a9fa",
+    "tests/release/seed-crashed-fixture.cjs": "9e987f11394c8287e8b4349ed9e892afe76f23dc6adef2a3fe06dd19dee0f7c2",
+    "tests/tools/maintenance-browser.cjs": "34b9341148ec68e3e4f9706f81899fa0b91cdafb553ce8cca3ec70b4f70178f2",
+    ".github/workflows/client.yml": "6ba1fe9e2488f5153529bbb3df6a71b5680f4764c121eb654619edebdafacc91",
+    ".gitignore": "4dee14809db8ae1d3a0010b155e3ba822e88a6e06522604d2874c4290b3a9c06",
+    "deploy/linode/README.md": "b3600db131b94b0323d3e84952b50b71d24684a015fba623cab73ded7121bc67",
+    "deploy/linode/check-local-containers.py": "d1af671dd88d243004571d826049f5668a3fff77d5c049546bd0fd9a21f52c76",
+    "deploy/linode/compose.yaml": "f592e28a9ef4966336fe36a6154daa8fac9aba40b254be761b31ce172da22d86",
+    "deploy/linode/pokerattack-deploy": "10d23a351d6c2a8ff24631e64b5b8e721e2e7ddd87efb7c78cfc60750b567554",
+    "deploy/linode/pokerattack-ssh-deploy": "011f34aa44a15d3e42f928013af56395934cd506228f529bee2c88e9bbe8c4e6",
+    "deploy/linode/release.env.example": "7be0ef90d27e9ae238c039d48ae122b499640f72550f70c3d20f202b58d174e6",
+    "deploy/linode/test_release.py": "52c7091240f43d4863c95fb00e992696f2cf01b4dd2a08a537b18db074075f31",
+    "deploy/linode/validate-config.py": "6e82562554625de299a73341f068826a90067ba66852ca9862faf32f164f40ab",
+    "deploy/prepare-production-client.mjs": "6f5d42b4724ba2f37c5edc259f9eadcd48a123337e9ad4a52ca5a787aa6e147d",
+    "src/ChefKnifeStudios.PokerAttack.Shared/DTOs/SoloGameplay/SoloGameplayDTOs.cs": "3926d0a00d8ce880f4c1dd463c47aa0e65977fc9f116e250389d8c19d86af65d",
+    "src/ChefKnifeStudios.PokerAttack.Shared/PokerAttackApiEndpoints.cs": "ba0623a3843ac18e9053724d5f1266e20db562c73423d66e79256d7493c2d8ae",
+    "src/Client/ChefKnifeStudios.PokerAttack.Client.Core/Services/EndpointServices/SoloGameplayEndpointsService.cs": "80706ddaf59decab3f9f6d5ed568fbc3aab35296ef001b8935515cfd00f9fa58",
+    "src/Client/ChefKnifeStudios.PokerAttack.Client.WebApp/Layout/MainLayout.razor": "1333f3f530377b0cc2ceb066683646aa237d316092ad15bb2e2fce578d1e9df3",
+    "src/Client/ChefKnifeStudios.PokerAttack.Client.WebApp/Layout/MainLayout.razor.css": "3c1d40ec64f079eb6d8f07b142a8a71d077beee9cd3b0fd8ebad17844c9bc779",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.BL/Services/LobbyService.cs": "346afe06683197ee319c84b1085536fdc6328f439fef7347cc5ff91bec2ed868",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.BL/Services/SoloGameplayService.cs": "599e1576c270e220a73559a792dbb93f950a99b9d828f763b0cf71c39ccb8371",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Dockerfile": "1c83393a0e56cb5e13d8f7897f0165cb1ded55886e1244ef992a48968511e556",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/EndpointGroups/LobbyEndpoints.cs": "4338b6514dbf37d0994d53a57215f2374ec81946855960c2a6a7f080cd1e43ab",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/EndpointGroups/SoloGameplayEndpoints.cs": "acc849483a329d39cd29e69b6123f9efc0cb560e8fcf2373232f3f9984e90a67",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Hosting/PokerAttackHosting.cs": "68422f7a51b3ffd65a38052e0dcfb04a80add4366f20d7a92f0ecde7f9409875",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Program.cs": "91b25d38e776327204677b339f0d6e9c3caf5609904d30bd2ff85e6179bfd929",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/SignalR/SignalRNotificationHub.cs": "e58eede943ea46579a0af800f38469a545d641ef4901ad62802b274bb1239148"
+  },
+  "baseline": {
+    "started_utc": "2026-11-16T03:55:39.161539+00:00",
+    "source_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+    "runner_sha256": "6ca5a836af7e97b714b4a8955a9006546c17612382da20741efb33a94f24ac38",
+    "steps": [
+      {
+        "name": "business-logic",
+        "command": [
+          "dotnet",
+          "test",
+          "src/Server/ChefKnifeStudios.PokerAttack.Server.BL.Tests",
+          "-c",
+          "Release"
+        ],
+        "exit_code": 0,
+        "finished_utc": "2026-11-16T03:55:44.303080+00:00"
+      },
+      {
+        "name": "api-build",
+        "command": [
+          "dotnet",
+          "build",
+          "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI",
+          "-c",
+          "Release"
+        ],
+        "exit_code": 0,
+        "finished_utc": "2026-11-16T03:55:47.349900+00:00"
+      },
+      {
+        "name": "hosting",
+        "command": [
+          "dotnet",
+          "test",
+          "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI.Tests",
+          "-c",
+          "Release"
+        ],
+        "exit_code": 0,
+        "finished_utc": "2026-11-16T03:56:03.785055+00:00"
+      },
+      {
+        "name": "npm-ci",
+        "command": [
+          "C:\\Program Files\\nodejs\\npm.cmd",
+          "ci",
+          "--prefix",
+          "tests"
+        ],
+        "exit_code": 0,
+        "finished_utc": "2026-11-16T03:56:25.153145+00:00"
+      },
+      {
+        "name": "guards",
+        "command": [
+          "C:\\Program Files\\nodejs\\npm.cmd",
+          "--prefix",
+          "tests",
+          "run",
+          "test:guards"
+        ],
+        "exit_code": 0,
+        "finished_utc": "2026-11-16T03:56:28.202116+00:00"
+      },
+      {
+        "name": "pilot-artifact",
+        "command": [
+          "node",
+          "--test",
+          "deploy/prepare-client-artifact.test.mjs"
+        ],
+        "exit_code": 0,
+        "finished_utc": "2026-11-16T03:56:28.334554+00:00"
+      },
+      {
+        "name": "wasm-tools",
+        "command": [
+          "dotnet",
+          "workload",
+          "list"
+        ],
+        "exit_code": 0,
+        "finished_utc": "2026-11-16T03:56:28.565326+00:00"
+      },
+      {
+        "name": "client-publish",
+        "command": [
+          "dotnet",
+          "publish",
+          "src/Client/ChefKnifeStudios.PokerAttack.Client.WebApp",
+          "-c",
+          "Release",
+          "-o",
+          "artifacts/client-wp04"
+        ],
+        "exit_code": 0,
+        "finished_utc": "2026-11-16T03:57:00.120665+00:00"
+      },
+      {
+        "name": "api-image",
+        "command": [
+          "docker",
+          "build",
+          "--platform",
+          "linux/amd64",
+          "-f",
+          "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Dockerfile",
+          "-t",
+          "pokerattack-api:wp05-local",
+          "."
+        ],
+        "exit_code": 0,
+        "finished_utc": "2026-11-16T03:57:01.686721+00:00"
+      },
+      {
+        "name": "migration-image",
+        "command": [
+          "docker",
+          "build",
+          "--platform",
+          "linux/amd64",
+          "-f",
+          "src/Server/ChefKnifeStudios.PokerAttack.Server.Data/Dockerfile",
+          "-t",
+          "pokerattack-migrations:wp05-local",
+          "."
+        ],
+        "exit_code": 0,
+        "finished_utc": "2026-11-16T03:57:29.849776+00:00"
+      },
+      {
+        "name": "release-tests",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Projects\\ChefKnifeStudios.PokerAttack:/work:ro",
+          "python:3.13-bookworm",
+          "python",
+          "/work/deploy/linode/test_release.py"
+        ],
+        "exit_code": 0,
+        "finished_utc": "2026-11-16T03:57:48.375157+00:00"
+      },
+      {
+        "name": "browser-install",
+        "command": [
+          "C:\\Program Files\\nodejs\\npm.cmd",
+          "exec",
+          "--prefix",
+          "tests",
+          "--",
+          "playwright",
+          "install",
+          "chromium"
+        ],
+        "exit_code": 0,
+        "finished_utc": "2026-11-16T03:57:50.207501+00:00"
+      },
+      {
+        "name": "container-browser",
+        "command": [
+          "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\deployment-tools\\Scripts\\python.exe",
+          "deploy/linode/check-local-containers.py"
+        ],
+        "exit_code": 0,
+        "finished_utc": "2026-11-16T03:58:32.379555+00:00"
+      }
+    ]
+  },
+  "focused": {
+    "timestamp_utc": "2026-11-16T03:56:12.912230+00:00",
+    "checks": [
+      {
+        "name": "release-unit",
+        "command": [
+          "artifacts/deployment-tools/Scripts/python.exe",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "deploy/release",
+          "-p",
+          "test_*.py",
+          "-v"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "host-unit",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "--network",
+          "none",
+          "-v",
+          "C:\\Projects\\ChefKnifeStudios.PokerAttack:/work:ro",
+          "-w",
+          "/work/deploy/linode",
+          "python:3.13-bookworm",
+          "python",
+          "-m",
+          "unittest",
+          "discover",
+          "-p",
+          "test_*.py",
+          "-v"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "node-release",
+        "command": [
+          "node",
+          "--test",
+          "tests\\release\\evidence.test.cjs",
+          "tests\\release\\isolation.test.cjs",
+          "tests\\release\\owned.test.cjs",
+          "tests\\release\\safety.test.cjs"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "node-preparation",
+        "command": [
+          "node",
+          "--test",
+          "deploy/prepare-client-artifact.test.mjs",
+          "deploy/prepare-production-client.test.mjs"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "actionlint",
+        "command": [
+          "artifacts/deployment-tools/actionlint/actionlint.exe",
+          ".github/workflows/client.yml",
+          ".github/workflows/server.yml"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "monitoring",
+        "command": [
+          "artifacts/deployment-tools/Scripts/python.exe",
+          "deploy/monitoring/check-monitoring.py"
+        ],
+        "exit_code": 0
+      }
+    ],
+    "python_syntax": "pass"
+  },
+  "node22": {
+    "timestamp_utc": "2026-11-16T04:03:46.702917+00:00",
+    "node_version": "v22.23.5",
+    "checks": [
+      {
+        "name": "node22-release",
+        "command": [
+          "C:\\Users\\hfaul\\AppData\\Local\\npm-cache\\_npx\\52027bd8fc0022aa\\node_modules\\node\\bin\\node.exe",
+          "--test",
+          "tests\\release\\evidence.test.cjs",
+          "tests\\release\\isolation.test.cjs",
+          "tests\\release\\owned.test.cjs",
+          "tests\\release\\safety.test.cjs"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "node22-preparation",
+        "command": [
+          "C:\\Users\\hfaul\\AppData\\Local\\npm-cache\\_npx\\52027bd8fc0022aa\\node_modules\\node\\bin\\node.exe",
+          "--test",
+          "deploy/prepare-client-artifact.test.mjs",
+          "deploy/prepare-production-client.test.mjs"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "node22-guards",
+        "command": [
+          "C:\\Program Files\\nodejs\\npm.cmd",
+          "--prefix",
+          "tests",
+          "run",
+          "test:guards"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "node22-browser",
+        "command": [
+          "python",
+          "deploy/linode/check-local-containers.py"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "node22-https-client",
+        "command": [
+          "python",
+          "deploy/linode/check-release-gameplay.py",
+          "--client-only"
+        ],
+        "exit_code": 0
+      }
+    ]
+  },
+  "versions": {
+    "timestamp_utc": "2026-11-16T04:01:17.996168+00:00",
+    "versions": {
+      "dotnet": "10.0.401",
+      "node": "v20.9.0",
+      "python": "Python 3.12.10",
+      "validation_python": "Python 3.13.3",
+      "docker": "27.4.0 / 27.4.0",
+      "actionlint": "1.7.7\ninstalled by downloading from release page\nbuilt with go1.23.4 compiler for windows/amd64"
+    },
+    "shell_syntax_exit": 0,
+    "files": [
+      "deploy/linode/pokerattack-backup",
+      "deploy/linode/pokerattack-backup.service",
+      "deploy/linode/pokerattack-backup.timer",
+      "deploy/linode/pokerattack-client-lease",
+      "deploy/linode/pokerattack-deploy",
+      "deploy/linode/pokerattack-deployment",
+      "deploy/linode/pokerattack-evidence",
+      "deploy/linode/pokerattack-promotion",
+      "deploy/linode/pokerattack-rollback-target",
+      "deploy/linode/pokerattack-ssh-control",
+      "deploy/linode/pokerattack-ssh-deploy",
+      "deploy/linode/pokerattack-ssh-status",
+      "deploy/linode/pokerattack-status"
+    ]
+  },
+  "verification": [
+    "All 13 retained baseline stages passed after integration; 60 API/11 BL, real scoped PostgreSQL runtime, .25 CPU/512 MiB non-root/read-only API and 5 browser smokes",
+    "93 release/workflow, 84 host, 11 release Node, 7 preparation and 21 target guard tests pass; actionlint, Python AST, shell syntax and monitoring source checks pass",
+    "Node 22.23.5 rerun passes release/preparation/guards, 5 real browser smokes and full HTTPS served-client/browser/SignalR checks",
+    "Original baseline logs preserved; new --output directory stays under artifacts and cannot overwrite unrelated paths"
+  ],
+  "limitations": [
+    "Local Windows baseline initially used Node 20.9; all affected checks were rerun with actual Node 22.23.5 and retained logs",
+    "Actual complete Linux/SSH/controller/browser candidate release remains H02; bootstrap/concurrency H05",
+    "Local image labels uncommitted/synthetic are not claimed as published Git provenance; exact hashes and image IDs retained",
+    "No source publication, host installation, production restart, promotion or client upload"
+  ]
+}

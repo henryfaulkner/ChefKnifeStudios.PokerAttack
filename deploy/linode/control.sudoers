@@ -1,0 +1,7 @@
+# Dedicated accounts, root-owned scripts; validate visudo -cf before I03 install.
+# Each helper hard-codes its role and revalidates every argument before dispatch.
+# No SETENV, shell, Docker group or generic interpreter permission.
+pa-deploy ALL=(root) NOPASSWD: /usr/local/sbin/pokerattack-deployment *, /usr/local/sbin/pokerattack-status ""
+pa-evidence ALL=(root) NOPASSWD: /usr/local/sbin/pokerattack-evidence *, /usr/local/sbin/pokerattack-status ""
+pa-promote ALL=(root) NOPASSWD: /usr/local/sbin/pokerattack-promotion *, /usr/local/sbin/pokerattack-status ""
+pa-client ALL=(root) NOPASSWD: /usr/local/sbin/pokerattack-client-lease *, /usr/local/sbin/pokerattack-status ""

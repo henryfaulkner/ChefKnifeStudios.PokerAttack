@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+export PATH=/usr/bin:/bin
+[[ $EUID == 0 && $# == 0 ]] || { echo 'Use the fixed privileged recovery status interface.' >&2; exit 1; }
+exec /usr/bin/python3 -I /opt/pokerattack/release-recovery.py

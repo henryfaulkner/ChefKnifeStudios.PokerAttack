@@ -1,0 +1,9 @@
+deploy/linode/* text eol=lf
+deploy/release/* text eol=lf
+deploy/monitoring/* text eol=lf
+deploy/rehearsal/* text eol=lf
+deploy/provision/* text eol=lf
+deploy/release/workflow-templates/*.yml text eol=lf
+.github/workflows/*.yml text eol=lf
+**/Dockerfile text eol=lf
+.dockerignore text eol=lf

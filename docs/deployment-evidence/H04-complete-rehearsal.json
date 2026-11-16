@@ -1,0 +1,17 @@
+{
+  "task": "H04",
+  "completed_utc": "2026-11-16T06:13:05.045440+00:00",
+  "result": "PASS",
+  "source_sha": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+  "collector_sha256": "fec057423002787de8a232a32da7af6c04280da9628bd256c6402c830fa8faba",
+  "harness_sha256": "6b751881308515ac771228e319884bf753ad6a8720a98b44b3bbda2361fda984",
+  "actual_report": "H04-lifecycle-attempt3.json",
+  "failed_reports_retained": [
+    "H04-lifecycle-attempt1.json",
+    "H04-lifecycle-attempt2.json"
+  ],
+  "production_mutation": false,
+  "native_unit": "5 runs passed with actual10%CPU/64MiB limits,0.129-0.209sec collection; transient cgroup resource counters unavailable after exit, honestly retained as not set",
+  "process_measurement": "3 direct installed-script runs:0.09CPU seconds/~20.4MiB maxRSS,0.2sec wall. This is~0.3%ofonecore amortized at30sec, separate from hard unit quota",
+  "live_ingestion_and_dashboard_rendering": "J remains; not claimed"
+}

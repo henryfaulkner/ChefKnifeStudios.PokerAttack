@@ -1,0 +1,227 @@
+{
+  "task": "H05/K01 recovery prerequisite",
+  "timestamp_utc": "2026-11-16T06:36:26.456823+00:00",
+  "read_only": true,
+  "local_artifact": "artifacts/production-release-linode",
+  "historical_source_sha_declared_by_WP08": "86c63ee501fd5a6fd60f2fdeb3ea4ee609114b1c",
+  "source_provenance_limit": "Historical declaration; this fresh check compares bytes, not a new build/source attestation",
+  "all_selected_bytes_match": true,
+  "checks": [
+    {
+      "origin": "https://playpokerattack.com",
+      "file": "index.html",
+      "expected_sha256": "db5221106219ad021c33aef5e662d301605e880182f78e3e2b1bcbe0df16bc47",
+      "actual_sha256": "db5221106219ad021c33aef5e662d301605e880182f78e3e2b1bcbe0df16bc47",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://playpokerattack.com",
+      "file": "appsettings.json",
+      "expected_sha256": "f77fb941dc56040d7eddbfd8bbeb21d5a625998c813dcdb387381d394f06a0ba",
+      "actual_sha256": "f77fb941dc56040d7eddbfd8bbeb21d5a625998c813dcdb387381d394f06a0ba",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://playpokerattack.com",
+      "file": "appsettings.Development.json",
+      "expected_sha256": "af2308290b32b68e9ad4aed9b9408e09b4e6e5691b83211fbd625195de5fc3c7",
+      "actual_sha256": "af2308290b32b68e9ad4aed9b9408e09b4e6e5691b83211fbd625195de5fc3c7",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://playpokerattack.com",
+      "file": "_framework/blazor.webassembly.js",
+      "expected_sha256": "de5096ae4a37cf0b29578d1a421b364bf20c91149aae71d12887641e1b972010",
+      "actual_sha256": "de5096ae4a37cf0b29578d1a421b364bf20c91149aae71d12887641e1b972010",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://playpokerattack.com",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Client.Core.bzgtgxkg01.wasm",
+      "expected_sha256": "c9908cab3930d3d9ca42ed8997dfe5ca7249c75c8015e82695655f09dd940bbf",
+      "actual_sha256": "c9908cab3930d3d9ca42ed8997dfe5ca7249c75c8015e82695655f09dd940bbf",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://playpokerattack.com",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Client.Shared.pzh0lddr5o.wasm",
+      "expected_sha256": "15740e3f6eb3924c68198a036cbfb15c12a7c455e17fd43bc4ad22157d20a6dc",
+      "actual_sha256": "15740e3f6eb3924c68198a036cbfb15c12a7c455e17fd43bc4ad22157d20a6dc",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://playpokerattack.com",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Client.WebApp.lk4l9hi095.wasm",
+      "expected_sha256": "9b4899efae5f527a856457aa9fa1f5e0a5f6af932abaf3b66250d7cd57b07b65",
+      "actual_sha256": "9b4899efae5f527a856457aa9fa1f5e0a5f6af932abaf3b66250d7cd57b07b65",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://playpokerattack.com",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Shared.zqm5yrp0mz.wasm",
+      "expected_sha256": "6b4075f17ea1392d478372199afe4a340c82617b05a17a288a9c8f5dbf74c8ce",
+      "actual_sha256": "6b4075f17ea1392d478372199afe4a340c82617b05a17a288a9c8f5dbf74c8ce",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://www.playpokerattack.com",
+      "file": "index.html",
+      "expected_sha256": "db5221106219ad021c33aef5e662d301605e880182f78e3e2b1bcbe0df16bc47",
+      "actual_sha256": "db5221106219ad021c33aef5e662d301605e880182f78e3e2b1bcbe0df16bc47",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://www.playpokerattack.com",
+      "file": "appsettings.json",
+      "expected_sha256": "f77fb941dc56040d7eddbfd8bbeb21d5a625998c813dcdb387381d394f06a0ba",
+      "actual_sha256": "f77fb941dc56040d7eddbfd8bbeb21d5a625998c813dcdb387381d394f06a0ba",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://www.playpokerattack.com",
+      "file": "appsettings.Development.json",
+      "expected_sha256": "af2308290b32b68e9ad4aed9b9408e09b4e6e5691b83211fbd625195de5fc3c7",
+      "actual_sha256": "af2308290b32b68e9ad4aed9b9408e09b4e6e5691b83211fbd625195de5fc3c7",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://www.playpokerattack.com",
+      "file": "_framework/blazor.webassembly.js",
+      "expected_sha256": "de5096ae4a37cf0b29578d1a421b364bf20c91149aae71d12887641e1b972010",
+      "actual_sha256": "de5096ae4a37cf0b29578d1a421b364bf20c91149aae71d12887641e1b972010",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://www.playpokerattack.com",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Client.Core.bzgtgxkg01.wasm",
+      "expected_sha256": "c9908cab3930d3d9ca42ed8997dfe5ca7249c75c8015e82695655f09dd940bbf",
+      "actual_sha256": "c9908cab3930d3d9ca42ed8997dfe5ca7249c75c8015e82695655f09dd940bbf",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://www.playpokerattack.com",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Client.Shared.pzh0lddr5o.wasm",
+      "expected_sha256": "15740e3f6eb3924c68198a036cbfb15c12a7c455e17fd43bc4ad22157d20a6dc",
+      "actual_sha256": "15740e3f6eb3924c68198a036cbfb15c12a7c455e17fd43bc4ad22157d20a6dc",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://www.playpokerattack.com",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Client.WebApp.lk4l9hi095.wasm",
+      "expected_sha256": "9b4899efae5f527a856457aa9fa1f5e0a5f6af932abaf3b66250d7cd57b07b65",
+      "actual_sha256": "9b4899efae5f527a856457aa9fa1f5e0a5f6af932abaf3b66250d7cd57b07b65",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://www.playpokerattack.com",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Shared.zqm5yrp0mz.wasm",
+      "expected_sha256": "6b4075f17ea1392d478372199afe4a340c82617b05a17a288a9c8f5dbf74c8ce",
+      "actual_sha256": "6b4075f17ea1392d478372199afe4a340c82617b05a17a288a9c8f5dbf74c8ce",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://salmon-hill-0056eb60f.2.azurestaticapps.net",
+      "file": "index.html",
+      "expected_sha256": "db5221106219ad021c33aef5e662d301605e880182f78e3e2b1bcbe0df16bc47",
+      "actual_sha256": "db5221106219ad021c33aef5e662d301605e880182f78e3e2b1bcbe0df16bc47",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://salmon-hill-0056eb60f.2.azurestaticapps.net",
+      "file": "appsettings.json",
+      "expected_sha256": "f77fb941dc56040d7eddbfd8bbeb21d5a625998c813dcdb387381d394f06a0ba",
+      "actual_sha256": "f77fb941dc56040d7eddbfd8bbeb21d5a625998c813dcdb387381d394f06a0ba",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://salmon-hill-0056eb60f.2.azurestaticapps.net",
+      "file": "appsettings.Development.json",
+      "expected_sha256": "af2308290b32b68e9ad4aed9b9408e09b4e6e5691b83211fbd625195de5fc3c7",
+      "actual_sha256": "af2308290b32b68e9ad4aed9b9408e09b4e6e5691b83211fbd625195de5fc3c7",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://salmon-hill-0056eb60f.2.azurestaticapps.net",
+      "file": "_framework/blazor.webassembly.js",
+      "expected_sha256": "de5096ae4a37cf0b29578d1a421b364bf20c91149aae71d12887641e1b972010",
+      "actual_sha256": "de5096ae4a37cf0b29578d1a421b364bf20c91149aae71d12887641e1b972010",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://salmon-hill-0056eb60f.2.azurestaticapps.net",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Client.Core.bzgtgxkg01.wasm",
+      "expected_sha256": "c9908cab3930d3d9ca42ed8997dfe5ca7249c75c8015e82695655f09dd940bbf",
+      "actual_sha256": "c9908cab3930d3d9ca42ed8997dfe5ca7249c75c8015e82695655f09dd940bbf",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://salmon-hill-0056eb60f.2.azurestaticapps.net",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Client.Shared.pzh0lddr5o.wasm",
+      "expected_sha256": "15740e3f6eb3924c68198a036cbfb15c12a7c455e17fd43bc4ad22157d20a6dc",
+      "actual_sha256": "15740e3f6eb3924c68198a036cbfb15c12a7c455e17fd43bc4ad22157d20a6dc",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://salmon-hill-0056eb60f.2.azurestaticapps.net",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Client.WebApp.lk4l9hi095.wasm",
+      "expected_sha256": "9b4899efae5f527a856457aa9fa1f5e0a5f6af932abaf3b66250d7cd57b07b65",
+      "actual_sha256": "9b4899efae5f527a856457aa9fa1f5e0a5f6af932abaf3b66250d7cd57b07b65",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    },
+    {
+      "origin": "https://salmon-hill-0056eb60f.2.azurestaticapps.net",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Shared.zqm5yrp0mz.wasm",
+      "expected_sha256": "6b4075f17ea1392d478372199afe4a340c82617b05a17a288a9c8f5dbf74c8ce",
+      "actual_sha256": "6b4075f17ea1392d478372199afe4a340c82617b05a17a288a9c8f5dbf74c8ce",
+      "matches": true,
+      "status": 200,
+      "Blazor-Environment": "prod"
+    }
+  ]
+}

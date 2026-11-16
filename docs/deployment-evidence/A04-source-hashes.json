@@ -1,0 +1,14 @@
+{
+  "source_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "files": {
+    "deploy/linode/inspect-release-state.py": "454e92238cc93db3741221b093060a1f261049a511bf604a059ad16b4761c75b",
+    "deploy/check-isolated-baseline.py": "229fbf7e09b8b7f8b8987ca08f9996ae7a64fe3a82f35b8792123d1faae63661",
+    ".github/workflows/migration-ci.yml": "dd18c9c37fe0bc76e06b2bda65f197bd9fe7a418c0f6b113a83129282678ab5f",
+    ".github/workflows/client.yml": "ab3d2e1b8f607ab02ccff12c094343d12aae4d9e64fa1e78abe5c18d19360dda",
+    "deploy/linode/compose.yaml": "1dd98b8e257abdca0269ea07491d27078ad93022243e073ea17ea4446749bfae",
+    "deploy/linode/validate-config.py": "c2669986b6536986751d2cb26a9b15c83a28e76241a2c6a8f15207ebe02b1b9c",
+    "deploy/linode/pokerattack-deploy": "d02481a9a9fa29ed6b15772a24053431774a305d8333b7e3f8b0b7cea934ca97",
+    "deploy/linode/pokerattack-ssh-deploy": "46984a1694c9eb354b4bb86d2708577c515865c7e8e6c42630b36c3a76fdf1f4",
+    "docs/DEPLOYMENT_AUTOMATION_PLAN.md": "10a37128a9cfa49b92a5bed38887a17f5aec512eb54086642530bee4865df69c"
+  }
+}

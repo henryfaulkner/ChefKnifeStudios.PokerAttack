@@ -233,7 +233,10 @@ export async function getCurrentScore(player: PlayerContext): Promise<number> {
  * Get available play hands remaining
  */
 export async function getAvailablePlayHands(player: PlayerContext): Promise<number> {
-  const handsText = await player.page.locator('text=Hands Available:').textContent();
+  const counter = player.page.locator('text=Hands Available:');
+  // Elimination navigates back home while the round loop is still running.
+  if (!await counter.isVisible()) return 0;
+  const handsText = await counter.textContent({ timeout: 5000 });
   const hands = parseInt(handsText?.replace('Hands Available: ', '') || '0');
   return hands;
 }
@@ -292,9 +295,7 @@ export async function isInEliminationPhase(player: PlayerContext): Promise<boole
  */
 export async function isGameComplete(player: PlayerContext): Promise<boolean> {
   // Game complete when we see the result modal on the lobby page
-  const wonModal = await player.page.locator('.multi-game-result-modal:has-text("You are a winner")').isVisible();
-  const lostModal = await player.page.locator('.multi-game-result-modal:has-text("You are a loser")').isVisible();
-  return wonModal || lostModal;
+  return player.page.getByRole('alertdialog').filter({ hasText: 'Game Result' }).isVisible();
 }
 
 /**
@@ -303,7 +304,8 @@ export async function isGameComplete(player: PlayerContext): Promise<boolean> {
 export async function closeGameResultModal(player: PlayerContext): Promise<void> {
   console.log(`[${player.playerName}] Closing game result modal...`);
 
-  const closeButton = player.page.locator('.multi-game-result-modal button:has-text("CLOSE")');
+  const closeButton = player.page.getByRole('alertdialog').filter({ hasText: 'Game Result' })
+    .getByRole('button', { name: 'Close', exact: true });
   await closeButton.click();
 
   // Wait for modal to close

@@ -1,0 +1,14 @@
+# Add these sites to the existing TransitJazz-owned Caddyfile. Do not replace it.
+# Validate with that owner's Compose project before an intentional reload.
+api.playpokerattack.com {
+    @private path_regexp private (?i)^/(test|_ops)(/|$)
+    respond @private 404
+    reverse_proxy 127.0.0.1:8081
+}
+
+pilot-api.playpokerattack.com {
+    @private path_regexp private (?i)^/(test|_ops)(/|$)
+    respond @private 404
+    reverse_proxy 127.0.0.1:8082
+}
+# Caddy forwards WebSocket upgrade and original query strings automatically.

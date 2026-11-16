@@ -1,4 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
+import { resolveTargets } from './helpers/targets';
+
+const targets = resolveTargets();
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -8,6 +11,8 @@ export default defineConfig({
 
   /* Timeout for each test */
   timeout: 540000, // 9 minutes per test (multiplayer games take time)
+  // Cold WebAssembly startup and public pilot round trips exceed the default 5s.
+  expect: { timeout: 30000 },
 
   /* Run tests in files in parallel */
   fullyParallel: false, // We want sequential execution for multiplayer coordination
@@ -31,7 +36,9 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: process.env.API_URL || 'https://localhost:7150',
+    baseURL: targets.clientUrl,
+    actionTimeout: 15000,
+    navigationTimeout: 45000,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -43,7 +50,7 @@ export default defineConfig({
     video: 'retain-on-failure',
 
     /* Ignore HTTPS errors (for local development with self-signed certs) */
-    ignoreHTTPSErrors: true,
+    ignoreHTTPSErrors: targets.ignoreHttpsErrors,
   },
 
   /* Configure projects for different test types */

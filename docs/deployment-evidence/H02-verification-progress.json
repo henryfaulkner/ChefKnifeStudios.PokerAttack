@@ -1,0 +1,20 @@
+{
+  "timestamp_utc": "2026-11-16T04:42:21.435663+00:00",
+  "task": "H02",
+  "state": "IN_PROGRESS / first gameplay failed; not promoted",
+  "first_result": "H02-release-attempt1.json",
+  "observed_outcome": "Real SSH denials, packet, schema/config preflight and exact digest delivery pass. API ready pending, maintenance closed, verifier issued then revoked, sessions zero; no promotion or automatic rollback/reopen.",
+  "next": "Explicit evidence-only attempt-2 resume on the SAME installed pair, no rebuild or replacement; collect allowlisted failure stage.",
+  "diagnostic_source_sha256": {
+    "deploy/release/server_verify.py": "b91c19b6125a196cd686a6f140b0105e883051d3ba4f9ba5702340df5cdefca0",
+    "deploy/release/test_verification_diagnostics.py": "eafbcbc5dd20801c863b99947f9fde77d404cad89b0c14757c111c77eb782eec",
+    "deploy/rehearsal/run_release.py": "9e3e0e56695e509fe953a485b2100bebb3b09d4dfb7a9468aed66ba43918bd6a"
+  },
+  "revalidation": {
+    "release_tests": 97,
+    "exit_code": 0,
+    "log": "artifacts/H02-replica/verification-diagnostics-tests.log",
+    "scope": "F05 only safe failure-stage reporting changed; Node entry point, API image and evidence semantics unchanged"
+  },
+  "production": "H02-production-unchanged.json at 04:28:23Z remains ready unchanged; temporary replica only"
+}

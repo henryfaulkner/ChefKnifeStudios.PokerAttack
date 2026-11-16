@@ -1,0 +1,43 @@
+{
+  "timestamp_utc": "2026-11-15T21:09:34.732039+00:00",
+  "base_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "scope": "LOCAL ONLY: no publication, installation, API restart or provisioning",
+  "source_sha256": {
+    ".github/workflows/client.yml": "6ba1fe9e2488f5153529bbb3df6a71b5680f4764c121eb654619edebdafacc91",
+    "deploy/release/client_publish.py": "aee8df30d43067a9dda1e6c8a4db4d5bd74d160ba7e222e1f0b015a720f68434",
+    "deploy/release/client_archive.py": "654e5310cfca8c6c99ea0c4f3f258b966de8b69bcc6887b58b232b9d4ea4a47c",
+    "deploy/release/test_client_publish.py": "ebbcd99e236271903060e69a484543f3a75f5b75dfd12e53dbba023c8b927e3c",
+    "deploy/release/test_workflows.py": "c70fbe9b286e0a2daa03f6cfe525fd15393969fa7763e10d828aa5d00acf7932",
+    "deploy/release/CONTRACT.md": "f2aa39d352fb8a2f8c2aff6f151853a5579d99d0744577f5359810909b9e22d9",
+    "deploy/linode/client_lease.py": "f285ffcc8b7c4d83920d611a8ad931bdff9ed00f98aeefc78293e430bebecb22",
+    "deploy/linode/release_commands.py": "da6360beb6878dcd89861b5e330b938d6cf453c1884aea3e2f86d595d404877a",
+    "deploy/linode/release-control.py": "a71647e3b25d41a1f97856e7c2ab85c8a46c3faffda0b0d744beee3ff6a508fd",
+    "deploy/linode/test_client_lease.py": "3eb8c883ae94cd645958510950714c23d2e6a9fc9ca9881bef62a1c47fb3c522"
+  },
+  "checks": {
+    "host_tests": 74,
+    "release_tests": 39,
+    "actionlint": "pass"
+  },
+  "logs_sha256": {
+    "artifacts/E05-host-final.log": "a14369cf4322652f7edf16f867f6e65e79e49c9b11d043b365e15c97e5aadca1",
+    "artifacts/E05-release-final.log": "3f06ceb52c8349878313551d3fec5163943be9387f9aafe6aafb06478e903958",
+    "artifacts/E05-workflow-final.log": "3f06ceb52c8349878313551d3fec5163943be9387f9aafe6aafb06478e903958",
+    "artifacts/E05-release-retry.log": "092e1c3174ff104a39c16919f642926bf9a28fbdd9d1d45d95217af5c73347b8",
+    "artifacts/E05-workflow-retry.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "failed_attempts": [
+    "First local orchestration used slash-separated Windows executable paths through cmd; two checks could not start. Retried argument arrays without shell; both pass. Host suite passed on first invocation."
+  ],
+  "coverage": [
+    "Accepted selection only; wrong checksum, missing predecessor and arbitrary selection rejected",
+    "Failed verification restoration uses reserved exact bytes and retains failed overall result",
+    "Unknown or mixed provider outcomes block uploads; no unconditional mutation finalizer",
+    "Explicit recovery handoff only reserved prior client predecessor; no server lease authority",
+    "Frozen server identity checked before acceptance CAS; lost finish response reconciled read-only without mutation retry"
+  ],
+  "remaining": [
+    "Actual Azure archive/OIDC and all three production origin delivery remain I/K",
+    "Whole release interruption/CI rehearsal remains H"
+  ]
+}

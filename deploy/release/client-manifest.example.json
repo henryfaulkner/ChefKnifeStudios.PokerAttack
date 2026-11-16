@@ -1,0 +1,21 @@
+{
+  "format": "pokerattack-client-v1",
+  "source_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "workflow": {
+    "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+    "run_id": 1,
+    "run_attempt": 1,
+    "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/1"
+  },
+  "artifact_id": 1,
+  "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "settings_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "files": {
+    "index.html": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "release.json": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "minimum_server_capability": 1,
+  "verification_references": [
+    "EXAMPLE ONLY - no actual artifact"
+  ]
+}

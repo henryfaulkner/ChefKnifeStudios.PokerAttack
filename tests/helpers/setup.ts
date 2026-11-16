@@ -1,4 +1,5 @@
-import { Browser, BrowserContext, Page } from '@playwright/test';
+import { Browser, BrowserContext, Page, request } from '@playwright/test';
+import { resolveTargets, validateServedApis } from './targets';
 
 /**
  * Setup helper for creating isolated browser contexts for each player
@@ -24,11 +25,15 @@ export async function createPlayerContext(
   const context = await browser.newContext({
     // Each player gets their own storage state
     storageState: undefined,
+    ignoreHTTPSErrors: resolveTargets().ignoreHttpsErrors,
     // Viewport settings (optional - adjust as needed)
     viewport: { width: 1280, height: 720 },
     // Each context is completely isolated
     permissions: [],
   });
+
+  // Skip first-visit onboarding so the suite can exercise gameplay.
+  await context.addInitScript(() => localStorage.setItem('HasSeenTour', 'true'));
 
   // Create a new page in this context
   const page = await context.newPage();
@@ -84,57 +89,24 @@ export async function wait(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-/**
- * Cleanup helper - clears all repository data on the server
- * Call this before tests to ensure a clean state
- *
- * @param clientUrl - The client URL (where the browser navigates)
- * @param apiUrl - Optional API URL (for production). If not provided, derives from clientUrl
- */
+/** Clean only an explicitly selected isolated server after checking served client settings. */
 export async function cleanupServerData(clientUrl: string, apiUrl?: string) {
-  console.log('Calling server cleanup endpoint to clear all data...');
-
-  // Determine cleanup URL
-  let cleanupUrl: string;
-  if (apiUrl) {
-    // Production: Use provided API URL
-    cleanupUrl = `${apiUrl}/test/cleanup`;
-  } else {
-    // Local dev: Derive from client URL (port 7150 → 7333)
-    const derivedApiUrl = clientUrl.replace('7150', '7333');
-    cleanupUrl = `${derivedApiUrl}/test/cleanup`;
-  }
-
-  console.log(`Cleanup endpoint: ${cleanupUrl}`);
-
+  const targets = resolveTargets({ ...process.env, CLIENT_URL: clientUrl, API_URL_CLEANUP: apiUrl });
+  const context = await request.newContext({ ignoreHTTPSErrors: targets.ignoreHttpsErrors });
   try {
-    // Temporarily disable SSL verification for self-signed certificates
-    const originalValue = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-
-    try {
-      const response = await fetch(cleanupUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Cleanup failed with status: ${response.status}`);
-      }
-
-      console.log('✓ Server data cleanup complete');
-    } finally {
-      // Restore original value
-      if (originalValue !== undefined) {
-        process.env.NODE_TLS_REJECT_UNAUTHORIZED = originalValue;
-      } else {
-        delete process.env.NODE_TLS_REJECT_UNAUTHORIZED;
-      }
-    }
-  } catch (error) {
-    console.error('Failed to cleanup server data:', error);
-    throw error;
+    const settings = await context.get(`${targets.clientUrl}/appsettings.json`, { maxRedirects: 0 });
+    if (!settings.ok()) throw new Error('Cannot verify served client settings; cleanup refused.');
+    const base = await settings.json();
+    const environment = settings.headers()['blazor-environment'] || 'Production';
+    if (!/^[A-Za-z0-9_.-]{1,64}$/.test(environment)) throw new Error('Invalid served environment header; cleanup refused.');
+    const override = await context.get(`${targets.clientUrl}/appsettings.${environment}.json`, { maxRedirects: 0 });
+    const overrideSettings = override.ok() && (override.headers()['content-type'] || '').includes('application/json')
+      ? await override.json() : null;
+    validateServedApis(base, overrideSettings, targets);
+    const response = await context.post(`${targets.cleanupApiUrl}/test/cleanup`, { maxRedirects: 0 });
+    if (!response.ok()) throw new Error(`Isolated cleanup failed: HTTP ${response.status()}`);
+    console.log('Isolated server cleanup complete.');
+  } finally {
+    await context.dispose();
   }
 }

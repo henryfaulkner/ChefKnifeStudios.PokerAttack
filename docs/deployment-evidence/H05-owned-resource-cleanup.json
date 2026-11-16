@@ -1,0 +1,9 @@
+{
+  "task": "H05 cleanup",
+  "checked_utc": "2026-11-16T13:23:24.885041+00:00",
+  "group": "rg-pa-release-rehearsal-ee04fd29796c",
+  "group_exists": false,
+  "delete_requested_utc": "2026-11-16T13:18:27.179763+00:00",
+  "production_resources_touched": false,
+  "generated_keypair_removed": true
+}

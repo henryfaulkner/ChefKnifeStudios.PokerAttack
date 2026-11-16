@@ -12,12 +12,13 @@ namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
 
 public interface ISoloGameplayService
 {
-    Task<Result<StartSoloGameResDTO>> StartGameAsync(StartSoloGameReqDTO request, CancellationToken ct = default);
+    Task<Result<StartSoloGameResDTO>> StartGameAsync(StartSoloGameReqDTO request, CancellationToken ct = default, Action<string, string>? onSessionAllocated = null);
     Task<Result<PlayHandResDTO>> PlayHandAsync(string gameId, PlayHandReqDTO request, CancellationToken ct = default);
     Task<Result<DiscardResDTO>> DiscardAsync(string gameId, DiscardReqDTO request, CancellationToken ct = default);
     Task<Result<SoloGameStateDTO>> GetGameStateAsync(string gameId, CancellationToken ct = default);
     Task<Result<PurchaseItemResDTO>> PurchaseShopItemAsync(string gameId, string shopItemId, CancellationToken ct = default);
     Task<Result<AdvancePhaseResDTO>> AdvancePhaseAsync(string gameId, CancellationToken ct = default);
+    Task<Result<LeaveSoloGameResDTO>> LeaveGameAsync(string gameId, LeaveSoloGameReqDTO request, CancellationToken ct = default);
 }
 
 public class SoloGameplayService(
@@ -32,7 +33,20 @@ public class SoloGameplayService(
     const int BaseHandsAvailable = 5;
     const int BaseDiscardsAvailable = 5;
 
-    public async Task<Result<StartSoloGameResDTO>> StartGameAsync(StartSoloGameReqDTO request, CancellationToken ct = default)
+    public async Task<Result<LeaveSoloGameResDTO>> LeaveGameAsync(string gameId, LeaveSoloGameReqDTO request, CancellationToken ct = default)
+    {
+        if (!Guid.TryParse(gameId, out _) || !Guid.TryParse(request.PlayerId, out _))
+            return Result.Invalid(new ValidationError("Invalid solo session identity."));
+        var result = await soloGameRepository.GetAsync(gameId, ct);
+        if (!result.IsSuccess) return Result.Error("Unable to read solo session.");
+        if (result.Value is null) return Result.Success(new LeaveSoloGameResDTO(true));
+        if (result.Value.PlayerId != request.PlayerId)
+            return Result.Invalid(new ValidationError("Solo session owner differs."));
+        var deleted = await soloGameRepository.DeleteAsync(gameId, ct);
+        return deleted.IsSuccess ? Result.Success(new LeaveSoloGameResDTO(true)) : Result.Error("Unable to leave solo session.");
+    }
+
+    public async Task<Result<StartSoloGameResDTO>> StartGameAsync(StartSoloGameReqDTO request, CancellationToken ct = default, Action<string, string>? onSessionAllocated = null)
     {
         var gameId = Guid.NewGuid().ToString();
         var playerId = Guid.NewGuid().ToString();
@@ -58,6 +72,7 @@ public class SoloGameplayService(
             soloGame.CardsInHand.Add(deck.PullCard());
         }
 
+        onSessionAllocated?.Invoke(gameId, playerId);
         var addResult = await soloGameRepository.AddAsync(gameId, soloGame, ct);
         if (!addResult.IsSuccess)
             return Result.Error("Failed to create solo game.");

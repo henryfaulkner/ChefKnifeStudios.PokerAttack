@@ -1,3 +1,4 @@
+using ChefKnifeStudios.PokerAttack.Server.WebAPI.Hosting;
 using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.SoloGameplay;
 
@@ -16,14 +17,24 @@ public static class SoloGameplayEndpoints
             .WithName("SoloGameplay")
             .WithTags("SoloGameplay");
 
+        group.MapPost(Endpoints.LeaveGame, async (string gameId, LeaveSoloGameReqDTO request,
+            ISoloGameplayService soloGameplayService, CancellationToken cancellationToken = default) =>
+                await soloGameplayService.LeaveGameAsync(gameId, request, cancellationToken))
+            .WithName($"{Prefix}{nameof(Endpoints.LeaveGame)}")
+            .Accepts<LeaveSoloGameReqDTO>("application/json")
+            .Produces<LeaveSoloGameResDTO>(StatusCodes.Status200OK);
+
         group.MapPost(Endpoints.StartGame, async (
             StartSoloGameReqDTO reqBody,
             ISoloGameplayService soloGameplayService,
+            HttpContext context, ReleaseAdmission admission,
             CancellationToken cancellationToken = default) =>
         {
-            return await soloGameplayService.StartGameAsync(reqBody, cancellationToken);
+            return await soloGameplayService.StartGameAsync(reqBody, cancellationToken,
+                (id, player) => admission.RememberSession(context, "solo", id, player));
         })
         .WithName($"{Prefix}{nameof(Endpoints.StartGame)}")
+        .WithMetadata(new RequiresNewSessionAdmission())
         .Accepts<StartSoloGameReqDTO>("application/json")
         .Produces<StartSoloGameResDTO>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)

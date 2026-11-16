@@ -1,0 +1,280 @@
+{
+  "task": "I03",
+  "state": "INSTALLED / REMOTE CAPABILITIES VERIFIED",
+  "negative_checks": [
+    {
+      "role": "status",
+      "command": "id",
+      "exit_code": 1
+    },
+    {
+      "role": "status",
+      "command": "status pilot",
+      "exit_code": 1
+    },
+    {
+      "role": "status",
+      "command": "status production extra",
+      "exit_code": 1
+    },
+    {
+      "role": "status",
+      "command": "status production; id",
+      "exit_code": 1
+    },
+    {
+      "role": "status",
+      "command": "operator-bootstrap client-status production 1 1",
+      "exit_code": 1
+    },
+    {
+      "role": "status",
+      "command": "deploy production sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 1 1",
+      "exit_code": 1
+    },
+    {
+      "role": "client-lease",
+      "command": "id",
+      "exit_code": 1
+    },
+    {
+      "role": "client-lease",
+      "command": "status pilot",
+      "exit_code": 1
+    },
+    {
+      "role": "client-lease",
+      "command": "status production extra",
+      "exit_code": 1
+    },
+    {
+      "role": "client-lease",
+      "command": "status production; id",
+      "exit_code": 1
+    },
+    {
+      "role": "client-lease",
+      "command": "operator-bootstrap client-status production 1 1",
+      "exit_code": 1
+    },
+    {
+      "role": "client-lease",
+      "command": "begin-release production 1 1",
+      "exit_code": 1
+    },
+    {
+      "role": "deployment",
+      "command": "id",
+      "exit_code": 1
+    },
+    {
+      "role": "deployment",
+      "command": "status pilot",
+      "exit_code": 1
+    },
+    {
+      "role": "deployment",
+      "command": "status production extra",
+      "exit_code": 1
+    },
+    {
+      "role": "deployment",
+      "command": "status production; id",
+      "exit_code": 1
+    },
+    {
+      "role": "deployment",
+      "command": "operator-bootstrap client-status production 1 1",
+      "exit_code": 1
+    },
+    {
+      "role": "deployment",
+      "command": "promote production sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 1 1",
+      "exit_code": 1
+    },
+    {
+      "role": "evidence",
+      "command": "id",
+      "exit_code": 1
+    },
+    {
+      "role": "evidence",
+      "command": "status pilot",
+      "exit_code": 1
+    },
+    {
+      "role": "evidence",
+      "command": "status production extra",
+      "exit_code": 1
+    },
+    {
+      "role": "evidence",
+      "command": "status production; id",
+      "exit_code": 1
+    },
+    {
+      "role": "evidence",
+      "command": "operator-bootstrap client-status production 1 1",
+      "exit_code": 1
+    },
+    {
+      "role": "evidence",
+      "command": "deploy production sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 1 1",
+      "exit_code": 1
+    },
+    {
+      "role": "promotion",
+      "command": "id",
+      "exit_code": 1
+    },
+    {
+      "role": "promotion",
+      "command": "status pilot",
+      "exit_code": 1
+    },
+    {
+      "role": "promotion",
+      "command": "status production extra",
+      "exit_code": 1
+    },
+    {
+      "role": "promotion",
+      "command": "status production; id",
+      "exit_code": 1
+    },
+    {
+      "role": "promotion",
+      "command": "operator-bootstrap client-status production 1 1",
+      "exit_code": 1
+    },
+    {
+      "role": "promotion",
+      "command": "import-evidence production 1 1",
+      "exit_code": 1
+    }
+  ],
+  "installed_secret_names": [
+    "client-swa/LINODE_STATUS_PRIVATE_KEY",
+    "server-status/LINODE_STATUS_PRIVATE_KEY",
+    "server-linode/LINODE_STATUS_PRIVATE_KEY",
+    "server-verification/LINODE_STATUS_PRIVATE_KEY",
+    "server-promotion/LINODE_STATUS_PRIVATE_KEY",
+    "client-swa/LINODE_CLIENT_LEASE_PRIVATE_KEY",
+    "server-linode/LINODE_DEPLOY_PRIVATE_KEY",
+    "server-verification/LINODE_EVIDENCE_PRIVATE_KEY",
+    "server-promotion/LINODE_PROMOTION_PRIVATE_KEY"
+  ],
+  "source_bundle_sha256": "ce56a0e1e18b9519d4035378db5aceb9f150cbf3f68f4d0e92642b3f409b1617",
+  "production_restart": false,
+  "before_status": {
+    "protocol_version": 1,
+    "target": "production",
+    "sampled_utc": "2026-11-16T13:27:45.336492+00:00",
+    "capabilities": [
+      "structured-status-v1"
+    ],
+    "consistent": true,
+    "errors": [],
+    "pairs": {
+      "active": {
+        "digest": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+        "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+        "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+        "snapshot_config_matches": true
+      },
+      "pending": null,
+      "known-good": {
+        "digest": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+        "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+        "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+        "snapshot_config_matches": true
+      },
+      "previous-good": null
+    },
+    "transaction": false,
+    "lease": null,
+    "maintenance": {
+      "supported": true,
+      "active": false
+    },
+    "runtime": {
+      "container_id": "45befa1de68526ca5b0686fc5fad7d9e4226b25d65aaa88cdca5665a05724dcb",
+      "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "source_revision": "250b03496c69e33a206e294cbad861a94fa6844a",
+      "state": "running",
+      "docker_health": "not-configured",
+      "nano_cpus": 250000000,
+      "memory_bytes": 536870912
+    },
+    "sessions": {
+      "activeGames": 0,
+      "lobbies": 0,
+      "soloGames": 5
+    },
+    "readiness": {
+      "ready": true,
+      "identity_matches": true,
+      "limits_match": true,
+      "config_matches": true
+    }
+  },
+  "after_status": {
+    "protocol_version": 1,
+    "target": "production",
+    "sampled_utc": "2026-11-16T13:28:06.220267+00:00",
+    "capabilities": [
+      "structured-status-v1"
+    ],
+    "consistent": true,
+    "errors": [],
+    "pairs": {
+      "active": {
+        "digest": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+        "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+        "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+        "snapshot_config_matches": true
+      },
+      "pending": null,
+      "known-good": {
+        "digest": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+        "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+        "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+        "snapshot_config_matches": true
+      },
+      "previous-good": null
+    },
+    "transaction": false,
+    "lease": null,
+    "maintenance": {
+      "supported": true,
+      "active": false
+    },
+    "runtime": {
+      "container_id": "45befa1de68526ca5b0686fc5fad7d9e4226b25d65aaa88cdca5665a05724dcb",
+      "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "source_revision": "250b03496c69e33a206e294cbad861a94fa6844a",
+      "state": "running",
+      "docker_health": "not-configured",
+      "nano_cpus": 250000000,
+      "memory_bytes": 536870912
+    },
+    "sessions": {
+      "activeGames": 0,
+      "lobbies": 0,
+      "soloGames": 5
+    },
+    "readiness": {
+      "ready": true,
+      "identity_matches": true,
+      "limits_match": true,
+      "config_matches": true
+    }
+  },
+  "known_hosts_sha256": "442cdfba455aa9c7dd3d8d58f7eb536eb65703090fee9d8d272915c3b722333c",
+  "private_keys_storage": "Dedicated operator SSH files outside repository; scoped GitHub environment secrets.",
+  "legacy_recovery_reference": "I03-host-installation.json saved_legacy_tooling; established root access preserved",
+  "recorded_utc": "2026-11-16T13:28:14.193238+00:00",
+  "verifier_source_sha256": "42bbb67e50f1c20a9c04a1159eddd722c60d26d1faeb0e74c95d06f406fde4e8"
+}

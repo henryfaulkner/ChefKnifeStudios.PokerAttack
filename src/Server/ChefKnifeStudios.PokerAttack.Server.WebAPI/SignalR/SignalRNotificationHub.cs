@@ -15,6 +15,7 @@ namespace ChefKnifeStudios.PokerAttack.Server.WebAPI.SignalR;
 public interface ISignalRNotificationClient
 {
     Task ReceivePokerAttackNotification(PokerAttackNotification notification, CancellationToken cancellationToken = default);
+    Task DeliveryAcknowledged(string nonce);
 }
 
 [AllowAnonymous]
@@ -92,6 +93,15 @@ public class SignalRNotificationHub(
     }
 
     // Server-wide notifications
+    // A caller can fence its own ordered outbound stream after an awaited game
+    // operation. No target/group/payload can be supplied or broadcast here.
+    public async Task AcknowledgeDelivery(string nonce)
+    {
+        if (string.IsNullOrEmpty(Context.UserIdentifier) || string.IsNullOrEmpty(nonce) || nonce.Length != 32 || nonce.Any(c => !char.IsAsciiHexDigitLower(c)))
+            throw new HubException("Invalid delivery acknowledgment.");
+        await Clients.Caller.DeliveryAcknowledged(nonce);
+    }
+
     public async Task BroadcastServerNotification(PokerAttackNotification notification)
     {
         await notificationHelper.BroadcastToAllAsync(notification);

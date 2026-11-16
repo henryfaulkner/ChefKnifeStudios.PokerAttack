@@ -1,0 +1,9 @@
+{
+  "required_migrations": [
+    "20251008022524_Init_Data",
+    "20251008234907_NoUsers",
+    "20251015221621_Update_Game_HostPlayerClientId"
+  ],
+  "compatible_with_known_good": true,
+  "review_reference": "Reviewed release source: deploy/release/schema-prerequisite.json. Existing migration set unchanged; H must rehearse candidate and recovery against it. No production migration execution."
+}

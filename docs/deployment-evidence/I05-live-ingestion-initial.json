@@ -1,0 +1,64 @@
+{
+  "queried_utc": "2026-11-16T13:34:52.954878+00:00",
+  "datasource": "grafanacloud-prom",
+  "context": "transitjazz",
+  "queries": [
+    {
+      "expression": "linode_docker_collection_success{instance=\"expense-tracker-vm\"}",
+      "result": {
+        "status": "success",
+        "data": {
+          "resultType": "vector",
+          "result": [
+            {
+              "metric": {
+                "__name__": "linode_docker_collection_success",
+                "host": "localhost",
+                "host_id": "6709ead6be084579bf69e4dd35cadbed",
+                "instance": "expense-tracker-vm",
+                "job": "integrations/node_exporter"
+              },
+              "value": [
+                1794836090.448,
+                "1"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "expression": "linode_docker_inventory_timestamp_seconds{instance=\"expense-tracker-vm\"}",
+      "result": {
+        "status": "success",
+        "data": {
+          "resultType": "vector",
+          "result": []
+        }
+      }
+    },
+    {
+      "expression": "up{instance=\"expense-tracker-vm\",job=\"integrations/node_exporter\"}",
+      "result": {
+        "status": "success",
+        "data": {
+          "resultType": "vector",
+          "result": [
+            {
+              "metric": {
+                "__name__": "up",
+                "host_id": "6709ead6be084579bf69e4dd35cadbed",
+                "instance": "expense-tracker-vm",
+                "job": "integrations/node_exporter"
+              },
+              "value": [
+                1794836091.945,
+                "1"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

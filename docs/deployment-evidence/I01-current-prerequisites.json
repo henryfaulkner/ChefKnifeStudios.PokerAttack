@@ -1,0 +1,40 @@
+{
+  "repository": {
+    "full_name": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+    "default_branch": "main",
+    "private": false,
+    "permissions": {
+      "admin": true,
+      "maintain": true,
+      "push": true,
+      "triage": true,
+      "pull": true
+    }
+  },
+  "environments": {
+    "total_count": 0,
+    "environments": []
+  },
+  "workflows": [
+    {
+      "name": "Migration build and test",
+      "path": ".github/workflows/migration-ci.yml",
+      "state": "active"
+    }
+  ],
+  "variables": {
+    "variables": [],
+    "total_count": 0
+  },
+  "main": {
+    "sha": "b6a4d17d8eb42e9f9bee8214021406ff8be22659",
+    "protected": false
+  },
+  "PR12": {
+    "state": "open",
+    "head_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+    "base": "main",
+    "draft": true
+  },
+  "inspected_utc": "2026-11-16T13:04:55.278849+00:00"
+}

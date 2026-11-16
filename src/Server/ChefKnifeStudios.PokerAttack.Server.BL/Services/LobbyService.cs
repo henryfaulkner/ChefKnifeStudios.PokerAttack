@@ -17,7 +17,7 @@ namespace ChefKnifeStudios.PokerAttack.Server.BL.Services;
 
 public interface ILobbyService
 {
-    Task<Result<LobbyDTO>> CreateLobbyAsync(PlayerDTO hostPlayer, CancellationToken cancellationToken = default);
+    Task<Result<LobbyDTO>> CreateLobbyAsync(PlayerDTO hostPlayer, CancellationToken cancellationToken = default, Action<string>? onSessionAllocated = null);
     Task<Result<LobbyDTO>> GetLobbyAsync(string lobbyId, CancellationToken cancellationToken = default);
     Task<Result<IEnumerable<LobbyDTO>>> GetLobbiesAsync(CancellationToken cancellationToken = default);
     Task<Result> JoinLobbyAsync(string lobbyId, PlayerDTO player, CancellationToken cancellationToken = default);
@@ -26,7 +26,7 @@ public interface ILobbyService
     Task<Result<IEnumerable<PlayerDTO>>> ShutDownLobbyAsync(string lobbyId, CancellationToken cancellationToken = default);
     Task<Result<IEnumerable<PlayerDTO>>> GetPlayersAsync(string lobbyId, CancellationToken cancellationToken = default);
     Task<Result> UpdatePlayerAsync(PlayerDTO player, CancellationToken cancellationToken = default);
-    Task<Result<string>> StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default);
+    Task<Result<string>> StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default, Action<string>? onSessionAllocated = null);
 }
 
 public class LobbyService(
@@ -42,7 +42,7 @@ public class LobbyService(
 {
     const int NumCardsInHand = 8;
 
-    public async Task<Result<LobbyDTO>> CreateLobbyAsync(PlayerDTO hostPlayer, CancellationToken cancellationToken = default)
+    public async Task<Result<LobbyDTO>> CreateLobbyAsync(PlayerDTO hostPlayer, CancellationToken cancellationToken = default, Action<string>? onSessionAllocated = null)
     {
         // Step 1: Ensure the host isn't already in another lobby
         var removeResult = await RemovePlayerFromAllLobbiesAsync(hostPlayer.Id, cancellationToken);
@@ -69,6 +69,7 @@ public class LobbyService(
             Players = new() { hostPlayerModel },
         };
 
+        onSessionAllocated?.Invoke(lobbyId);
         var addResult = await lobbyRepository.AddAsync(lobbyId, lobby, cancellationToken);
         if (!addResult.IsSuccess)
             return Result.Error("Failed to create lobby.");
@@ -373,7 +374,7 @@ public class LobbyService(
         return Result.Success();
     }
 
-    public async Task<Result<string>> StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default)
+    public async Task<Result<string>> StartGameAsync(string lobbyId, GameModes gameMode, CancellationToken cancellationToken = default, Action<string>? onSessionAllocated = null)
     {
         var lobbyResult = await GetLobbyAsync(lobbyId, cancellationToken);
         if (!lobbyResult.IsSuccess || lobbyResult.Value is null)
@@ -401,6 +402,7 @@ public class LobbyService(
         }
 
         string activeGameId = Guid.NewGuid().ToString();
+        onSessionAllocated?.Invoke(activeGameId);
         lobbyDTO.GameId = activeGameId;
 
         var updateResult = await lobbyRepository.UpdateAsync(lobbyId, lobbyDTO.MapToModel(), cancellationToken);

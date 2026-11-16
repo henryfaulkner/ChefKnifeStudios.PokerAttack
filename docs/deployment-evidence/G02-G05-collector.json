@@ -1,0 +1,56 @@
+{
+  "timestamp_utc": "2026-11-16T03:47:19.611620+00:00",
+  "base_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "scope": "LOCAL source, socket and disposable validators only; no host installation or Grafana mutation",
+  "source_sha256": {
+    "deploy/monitoring/alloy_textfile.py": "a90188ae6a74650824142dab15bbf80ab156154f0a0386f9861ef0bed09f9972",
+    "deploy/monitoring/docker_snapshot.py": "fec057423002787de8a232a32da7af6c04280da9628bd256c6402c830fa8faba",
+    "deploy/monitoring/inspect-monitoring.py": "9f0e189717e8ea1a41f5d015296898f0d738260fee1c5697ec4bee27c4f8edd0",
+    "deploy/monitoring/test_alloy_textfile.py": "ccf0c349edf440a35d30f8d4f3a26bcd93c2083a5873730691b11ff18cdd9b2c",
+    "deploy/monitoring/test_docker_snapshot.py": "f330543bf4ab324dcee3f0f55d1ead06decccd5c833159a07eebc4b39edd854f",
+    "deploy/monitoring/METRICS.md": "9788e9a705663789973b53b49b727cd1c5d4ef55e2785f997c3ab741fd7eba6c",
+    "deploy/monitoring/README.md": "f81660abdce144b7f3b1b34876183c30fcc1dcbe3112d8608d80ac17d3228ea6",
+    "deploy/monitoring/linode-docker-snapshot.service": "43995f91d791628c2fd1f96c30936e9dcd585888544163557ca883515aa24e4a",
+    "deploy/monitoring/linode-docker-snapshot.timer": "f69cba2726bbd03f310bbfda56b030a101c6c3474151c914465729ce269e2bb2",
+    "deploy/monitoring/validation.Dockerfile": "14098d23ca866cc909e3639814dbeca446a5f8d28640d7b6fc6de54f713964b5"
+  },
+  "checks": {
+    "unit_tests": {
+      "passed": 20,
+      "exit_code": 0,
+      "log": "artifacts/G02-G05-tests.log"
+    },
+    "service_timer": {
+      "systemd": "255.4-1ubuntu8.18",
+      "exit_code": 0,
+      "log": "artifacts/G04-unit-validation-installed-modes.log",
+      "image_id": "sha256:9b1661ac4901bc968a21df83f601bab4dc146828507b48f51643f789b96fac8f"
+    },
+    "alloy": {
+      "version": "1.21.3",
+      "image": "grafana/alloy@sha256:8ab871206bd2d8f89277f53abffee5f452a293980788d52f85fa183a87a505a4",
+      "exit_code": 0,
+      "fixture_sha256": "8703fdf7e768f14c4f42b8bd1b5db49d23d651f5cfd1e883617818ed82f3d4c2",
+      "log": "artifacts/G05-alloy-validation.log"
+    }
+  },
+  "verification": [
+    "GET-only Unix transport and real timeout",
+    "bounded inventory, strict JSON, label escaping, metadata cache by immutable image ID",
+    "running/stopped/paused/healthy/unhealthy/absent metadata and unrelated digest fixtures",
+    "per-container partial failure, daemon failure, last-success preservation, removal and current-sample matching",
+    "atomic interruption preserves complete prior bytes; symlink refused",
+    "root-only fixed service/timer, no app/Alloy/deployment Docker permissions",
+    "fixed loopback-only optional readiness distinct from Docker health",
+    "additive Alloy transform and exact inverse preserve forwarding/cadence/other config bytes"
+  ],
+  "failed_attempts": [
+    "Experimental debug exporter in first synthetic Alloy fixture rejected; replaced with supported prometheus exporter and validated at default stability. Original log retained.",
+    "Windows bind mount unit files expose executable/world-write mode; validator warned. Copied exact bytes with installed 0644 mode inside Linux and reran cleanly."
+  ],
+  "limitations": [
+    "No installed/live collector claim; service execution, real lifecycle/overhead and ingestion remain H04/I/J",
+    "Dashboard queries/visual behavior remain G06/G07/H04/J",
+    "G01 amended with explicit per-container/metadata timestamps to reject backend lookback ghosts; revalidated in current contract/source hashes"
+  ]
+}

@@ -1,0 +1,66 @@
+[
+  {
+    "command": [
+      "gcx",
+      "metrics",
+      "query",
+      "--context",
+      "transitjazz",
+      "-d",
+      "grafanacloud-prom",
+      "--expr",
+      "up{instance=\"expense-tracker-vm\",job=\"integrations/node_exporter\"}",
+      "-o",
+      "json",
+      "--from",
+      "2026-11-15T14:28:54+00:00",
+      "--to",
+      "2026-11-15T14:58:54+00:00",
+      "--step",
+      "60s"
+    ],
+    "exit_code": 0,
+    "output": "{\n  \"status\": \"success\",\n  \"data\": {\n    \"resultType\": \"matrix\",\n    \"result\": [\n      {\n        \"metric\": {\n          \"__name__\": \"up\",\n          \"host_id\": \"6709ead6be084579bf69e4dd35cadbed\",\n          \"instance\": \"expense-tracker-vm\",\n          \"job\": \"integrations/node_exporter\"\n        },\n        \"values\": [\n          [\n            1794752880,\n            \"1\"\n          ],\n          [\n            1794752940,\n            \"1\"\n          ],\n          [\n            1794753000,\n            \"1\"\n          ],\n          [\n            1794753060,\n            \"1\"\n          ],\n          [\n            1794753120,\n            \"1\"\n          ],\n          [\n            1794753180,\n            \"1\"\n          ],\n          [\n            1794753240,\n            \"1\"\n          ],\n          [\n            1794753300,\n            \"1\"\n          ],\n          [\n            1794753360,\n            \"1\"\n          ],\n          [\n            1794753420,\n            \"1\"\n          ],\n          [\n            1794753480,\n            \"1\"\n          ],\n          [\n            1794753540,\n            \"1\"\n          ],\n          [\n            1794753600,\n            \"1\"\n          ],\n          [\n            1794753660,\n            \"1\"\n          ],\n          [\n            1794753720,\n            \"1\"\n          ],\n          [\n            1794753780,\n            \"1\"\n          ],\n          [\n            1794753840,\n            \"1\"\n          ],\n          [\n            1794753900,\n            \"1\"\n          ],\n          [\n            1794753960,\n            \"1\"\n          ],\n          [\n            1794754020,\n            \"1\"\n          ],\n          [\n            1794754080,\n            \"1\"\n          ],\n          [\n            1794754140,\n            \"1\"\n          ],\n          [\n            1794754200,\n            \"1\"\n          ],\n          [\n            1794754260,\n            \"1\"\n          ],\n          [\n            1794754320,\n            \"1\"\n          ],\n          [\n            1794754380,\n            \"1\"\n          ],\n          [\n            1794754440,\n            \"1\"\n          ],\n          [\n            1794754500,\n            \"1\"\n          ],\n          [\n            1794754560,\n            \"1\"\n          ],\n          [\n            1794754620,\n            \"1\"\n          ],\n          [\n            1794754680,\n            \"1\"\n          ]\n        ]\n      }\n    ]\n  }\n}\n",
+    "error": ""
+  },
+  {
+    "command": [
+      "gcx",
+      "metrics",
+      "query",
+      "--context",
+      "transitjazz",
+      "-d",
+      "grafanacloud-prom",
+      "--expr",
+      "count by (__name__) ({instance=\"expense-tracker-vm\",__name__=~\"linode_docker_.*|container_.*|engine_daemon_.*\"})",
+      "-o",
+      "json",
+      "--time",
+      "2026-11-15T14:58:54+00:00"
+    ],
+    "exit_code": 0,
+    "output": "{\n  \"status\": \"success\",\n  \"data\": {\n    \"resultType\": \"vector\",\n    \"result\": []\n  }\n}\n",
+    "error": ""
+  },
+  {
+    "command": [
+      "gcx",
+      "metrics",
+      "query",
+      "--context",
+      "transitjazz",
+      "-d",
+      "grafanacloud-prom",
+      "--expr",
+      "time() - timestamp(node_uname_info{instance=\"expense-tracker-vm\",job=\"integrations/node_exporter\"})",
+      "-o",
+      "json",
+      "--time",
+      "2026-11-15T14:58:54+00:00"
+    ],
+    "exit_code": 0,
+    "output": "{\n  \"status\": \"success\",\n  \"data\": {\n    \"resultType\": \"vector\",\n    \"result\": [\n      {\n        \"metric\": {\n          \"domainname\": \"(none)\",\n          \"host_id\": \"6709ead6be084579bf69e4dd35cadbed\",\n          \"instance\": \"expense-tracker-vm\",\n          \"job\": \"integrations/node_exporter\",\n          \"machine\": \"x86_64\",\n          \"nodename\": \"localhost\",\n          \"release\": \"6.8.0-149-generic\",\n          \"sysname\": \"Linux\",\n          \"version\": \"#149-Ubuntu SMP PREEMPT_DYNAMIC Fri Oct 23 13:21:10 UTC 2026\"\n        },\n        \"value\": [\n          1794754734,\n          \"53.39400005340576\"\n        ]\n      }\n    ]\n  }\n}\n",
+    "error": ""
+  }
+]

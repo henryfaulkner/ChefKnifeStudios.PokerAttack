@@ -1,0 +1,179 @@
+{
+  "timestamp_utc": "2026-11-15T19:09:42.462421+00:00",
+  "base_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "scope": "LOCAL ONLY; synthetic fixture metadata, not published Git/image provenance",
+  "source_sha256": {
+    ".gitignore": "4dee14809db8ae1d3a0010b155e3ba822e88a6e06522604d2874c4290b3a9c06",
+    "deploy/linode/check-generated-evidence.py": "ff3d88d2ef9093274eeec3807ee63c4b6c03828df45dc2a83bee2aa57949a3aa",
+    "deploy/linode/check-release-gameplay.py": "44509d2c18e1107e52bebce698357482e1fdca3edcac7b32a77298f936fb4c50",
+    "src/ChefKnifeStudios.PokerAttack.Shared/DTOs/SoloGameplay/SoloGameplayDTOs.cs": "3926d0a00d8ce880f4c1dd463c47aa0e65977fc9f116e250389d8c19d86af65d",
+    "src/ChefKnifeStudios.PokerAttack.Shared/PokerAttackApiEndpoints.cs": "b0627fc79f9f2080642f6135d9b6f0de997d43b5a251fdd520212af46daa6a22",
+    "src/Client/ChefKnifeStudios.PokerAttack.Client.Core/Services/EndpointServices/SoloGameplayEndpointsService.cs": "80706ddaf59decab3f9f6d5ed568fbc3aab35296ef001b8935515cfd00f9fa58",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.BL/Services/SoloGameplayService.cs": "03235a06dc820d52c8299545809214136efc32a2ee08cb879042bcd09eb5c9ec",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/EndpointGroups/LobbyEndpoints.cs": "423659126157d6f6c9f5765ceef8b74ab6e4a285d95e4e49257299eb0b2dc069",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/EndpointGroups/SoloGameplayEndpoints.cs": "4087248d8997d08bb9bbf1d5cc9611b0c903665ca51a9784783dcdf6bf570b7b",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Hosting/PokerAttackHosting.cs": "5b2877b3027f708be46bddd803ec9de96d0503ec40293d8a85147b53e1ca7615",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Hosting/ReleaseAdmission.cs": "b28a21886eef128dbbc750242bbec6b32276fa1ead062ca7e51339826dd41da5",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Hosting/ReleaseTelemetry.cs": "b01d0c9696f46fa3a375480618bd7b4d37e23b7ece27632258cf2a74a7ba63b3",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Program.cs": "91b25d38e776327204677b339f0d6e9c3caf5609904d30bd2ff85e6179bfd929",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/SignalR/SignalRNotificationHub.cs": "e58eede943ea46579a0af800f38469a545d641ef4901ad62802b274bb1239148",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI.Tests/ReleaseAdmissionTests.cs": "254d5722780159147035e7c97cf7c2df23d22d66a9a72b662f9ae6e11827dca3",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI.Tests/ReleaseProtocolTests.cs": "e83431b1cb22ca03d558f27b9cdd6b4e0fadb5a2f5a007d625c7b3e568f7ee21",
+    "tests/playwright.release.config.ts": "25bcfb248d610f16066dc828f69053b13af2f2fb1e69a20b4fb81effd15c98bf",
+    "tests/release/context.cjs": "6602d9fd3e3743f2365201919a1263c45efbfcd7e626d90defc936a5777df2ee",
+    "tests/release/evidence.cjs": "a7ea88bee1a6004810cce8a4604c2c947f7666f9c2766dcfafdf873ce0452098",
+    "tests/release/evidence.test.cjs": "112e8d4e7e49bdbd5ffc7a3d17db722c9aec250f7513b34dfcf9d4a955cc6ad7",
+    "tests/release/gameplay.cjs": "4f6e653acba3aa72d0b23d5eac4e6b4e0760437b58303b7078258ae7faacad28",
+    "tests/release/gameplay.spec.ts": "d1e289c8d1bcd98d7ee538b7a552855ab6e00fb6dfd1f43751ec27a638249842",
+    "tests/release/isolation.cjs": "3b3eadf11fe86bd749ade2e306897fdb362cd6d7dcd320a8538fb35ed8f04cbd",
+    "tests/release/isolation.test.cjs": "6a8249b70b6ce5953fdde6c2d4c5be67429d1f5e46252def9d5d1a4b5ee3c87f",
+    "tests/release/revoked.cjs": "07bf32221e0a7cc9541c80bd3c3ea79e9bab629b043fd4ff41a746663b259317",
+    "tests/release/run.cjs": "3500cf0ee0a4b4c833810d92d17111eee8503f2f6a03c33f7d65bb423ace9036",
+    "tests/release/safety.cjs": "e714bb0b98ccd801719251e1993e95d9973d879e36d90b22a5fa3bab2bac69d6",
+    "tests/release/safety.test.cjs": "230a5b15d233b3c43c961252a33d277cad0a12007c9016225db4469d6638a9fa"
+  },
+  "logs_sha256": {
+    "artifacts/D02-gameplay-attempt1.log": "8681fc3881cb15d8a934a5f9e121179de4f244e2b5656398384ae021153ed05e",
+    "artifacts/D02-gameplay-attempt2.log": "473901983b503524e591778f3d79c98388b4a5cd06556dfe090b485fa74f6997",
+    "artifacts/D02-gameplay-attempt3.log": "76038f022a91caf52a53d6d2861ec4baf0271a50ddb394fdef782077f360c02f",
+    "artifacts/D02-gameplay-attempt4.log": "5d28722f3563135ae99d899775d4a1cc04f756c817385fa36be909f7f2194ede",
+    "artifacts/D02-gameplay-attempt5.log": "ad0cc8c2c3fd82d55b77fee4e7f1847e38d3c5eae391af103799f5452c37cb47",
+    "artifacts/D02-gameplay-attempt6.log": "763b60a7f08e6f1cef8544a79e69eed477e2d2d7bcc0f70fb6dfb6a56b85e159",
+    "artifacts/D02-D03-webapi-tests-attempt1-failed.log": "e00059d2be3c01b83f06ba6431c019fe8115d155f8d8d811f07575d612566554",
+    "artifacts/D02-D03-webapi-final.log": "e8c3cb81cacaa4d7e5c1488312c05c5aa088b565afa62175022b366e40098f46",
+    "artifacts/D02-D04-node-final.log": "6e67a3a203102ad2b18a0dd2f0d3ce147a640d725f460636e486943e61348ca9",
+    "artifacts/D03-misroute-gameplay.log": "935764c6a28527135f1d5b3b0637211b11ca2e0c9f4532527383223d82493c2c",
+    "artifacts/D03-misroute-build.log": "36058692eee848b872e1057836a701b00d61e944eb51d81bf5424673974becfa",
+    "artifacts/D04-generated-evidence-host.log": "55b788024486e152fa1954964a4d10075c5f0b45f93b9f69f991a69f998de4c3",
+    "artifacts/D02-BL-tests.log": "3f8d84c1e7e0e500c6f7bb8d73fef74f2f6e7b6a35699e8586a106f12b651ddf"
+  },
+  "gameplay": {
+    "fixture_only": true,
+    "image_id": "sha256:07e0954e5d040bfd7fe17555d339caf283514c5c1a650cddffb613a8a8136bc4",
+    "image_revision": "cccccccccccccccccccccccccccccccccccccccc",
+    "synthetic_admission_source": "cccccccccccccccccccccccccccccccccccccccc",
+    "test_endpoints_enabled": false,
+    "tls_verification": true,
+    "trusted_certificate_installed_by_test": false,
+    "verifier_revoked": true,
+    "revoked_credential_connection_rejected": true,
+    "post_cleanup_private_counts": {
+      "activeGames": 0,
+      "lobbies": 0,
+      "soloGames": 0
+    },
+    "server_manifest": {
+      "format": "pokerattack-server-v1",
+      "source_sha": "cccccccccccccccccccccccccccccccccccccccc",
+      "workflow": {
+        "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+        "run_id": 1,
+        "run_attempt": 1,
+        "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/1"
+      },
+      "api": {
+        "repository": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi",
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "local_image_id": "sha256:07e0954e5d040bfd7fe17555d339caf283514c5c1a650cddffb613a8a8136bc4",
+        "tag": "cccccccccccccccccccccccccccccccccccccccc",
+        "source_revision": "cccccccccccccccccccccccccccccccccccccccc",
+        "platform": "linux/amd64"
+      },
+      "migration": {
+        "repository": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.data",
+        "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "local_image_id": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "tag": "cccccccccccccccccccccccccccccccccccccccc",
+        "source_revision": "cccccccccccccccccccccccccccccccccccccccc",
+        "platform": "linux/amd64"
+      },
+      "config_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "schema": {
+        "required_migrations": [],
+        "compatible_with_known_good": true,
+        "review_reference": "EXAMPLE ONLY - schema review required"
+      },
+      "verification_references": [
+        "EXAMPLE ONLY - isolated CI evidence required"
+      ]
+    },
+    "verifier_window": {
+      "id": "dddddddddddddddddddddddddddddddd",
+      "issued_unix": 1794769442,
+      "expires_unix": 1794770342
+    },
+    "result": {
+      "passed": true,
+      "checks": {
+        "https": true,
+        "served_client": true,
+        "signalr": true,
+        "private_message_isolation": true,
+        "multiplayer": true,
+        "solo": true
+      },
+      "verified_unix": 1794769552,
+      "client_source_sha": "cccccccccccccccccccccccccccccccccccccccc",
+      "client_archive_sha256": "0ddb481c0b53e1e4d6045e69a37c2e936d986dc6ee1970996967ed51e5a93d03",
+      "evidence": {
+        "format": "pokerattack-evidence-v1",
+        "source_sha": "cccccccccccccccccccccccccccccccccccccccc",
+        "workflow": {
+          "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+          "run_id": 1,
+          "run_attempt": 1,
+          "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/1"
+        },
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "migration_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "config_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "client_source_sha": "cccccccccccccccccccccccccccccccccccccccc",
+        "client_archive_sha256": "0ddb481c0b53e1e4d6045e69a37c2e936d986dc6ee1970996967ed51e5a93d03",
+        "verifier_id": "dddddddddddddddddddddddddddddddd",
+        "verified_unix": 1794769552,
+        "checks": {
+          "https": true,
+          "served_client": true,
+          "signalr": true,
+          "private_message_isolation": true,
+          "multiplayer": true,
+          "solo": true
+        },
+        "artifact_references": [
+          "fixture-only:pokerattack-release-fixture-e25f43f0005b"
+        ]
+      }
+    }
+  },
+  "misroute": {
+    "timestamp_utc": "2026-11-15T19:04:35.563294+00:00",
+    "fixture_only": true,
+    "deliberately_misrouted_real_notifications": true,
+    "expected_failure": "Release verification failed at private-message-isolation; no promotable evidence emitted",
+    "return_code": 1,
+    "promotable_result_emitted": false,
+    "repository_notification_source_modified": false
+  },
+  "production_mutations": false,
+  "infrastructure_provisioned": false,
+  "checks": {
+    "webapi": 56,
+    "business_logic": 11,
+    "node": 9,
+    "isolated_target_guards": 21,
+    "manifest": 6,
+    "generated_host_import_exit": 0
+  },
+  "failures_and_corrections": [
+    "Initial new test compile CS7036: supplied required notification record arguments.",
+    "Initial 55-test WebAPI run: recursive Moq verification required explicit verification of private-client invocation; corrected, final 56 tests pass.",
+    "Gameplay attempt 1 assumed appsettings.prod.json exists; now verifies exact shipped settings variants.",
+    "Gameplay attempt 2 assumed GUID lobby ID; now checks six uppercase letters/digits.",
+    "Gameplay attempt 3 stopped only its verified disposable Node child after idle zero-score rounds were found to tie forever; verifier now continues normal play each round.",
+    "Gameplay attempt 4 passed real scenario and host import.",
+    "Gameplay attempt 5 passed gameplay and zero owned-session counts; revocation probe wrongly equated transport handshake with admission. Now requires rejection of self-scoped invocation.",
+    "Gameplay attempt 6 passed gameplay, zero sessions, and revoked access check.",
+    "Runtime inspection attempted after successful fixture teardown found no remaining container; no resource-inspection evidence claimed from that attempt.",
+    "Misroute fixture expected failure at private-message-isolation; no promotable output."
+  ]
+}

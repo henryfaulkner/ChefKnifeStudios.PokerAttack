@@ -1,0 +1,24 @@
+{
+  "users": {
+    "pa-status": null,
+    "pa-client": null,
+    "pa-deploy": null,
+    "pa-evidence": null,
+    "pa-promote": null
+  },
+  "paths": {
+    "/opt/pokerattack/staging": null,
+    "/opt/pokerattack/recovery": null,
+    "/opt/pokerattack/install-backups": null,
+    "/var/lib/pokerattack/production/admission": null,
+    "/var/lib/pokerattack/production/interrupted": null,
+    "/etc/pokerattack/production/verification": {
+      "mode": "0o700",
+      "uid": 0,
+      "symlink": false
+    }
+  },
+  "postgres_units": [
+    "  postgresql@16-main.service loaded active running PostgreSQL Cluster 16-main"
+  ]
+}

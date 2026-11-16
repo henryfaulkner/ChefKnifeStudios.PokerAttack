@@ -1,0 +1,157 @@
+﻿{
+  "inspected_utc": "2026-11-15T18:32:45.160773+00:00",
+  "versions": {
+    "docker": "Docker version 29.9.3, build 5457199",
+    "compose": "Docker Compose version v5.7.1",
+    "python": "Python 3.12.3",
+    "alloy": "alloy, version v1.21.3 (branch: HEAD, revision: f2108cd)\n  build user:       root@eb0633faf47d\n  build date:       2026-10-28T16:58:58Z\n  go version:       go1.27.3\n  platform:         linux/amd64\n  tags:             gore2regex,netgo,embedalloyui,promtail_journal_enabled"
+  },
+  "pairs": {
+    "active": {
+      "path": "/var/lib/pokerattack/production/releases/20261114T173507-693d3d6a1938-7c830479833d",
+      "image": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "digest": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "config-id": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+      "snapshot_config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f"
+    },
+    "pending": null,
+    "known-good": {
+      "path": "/var/lib/pokerattack/production/releases/20261114T173507-693d3d6a1938-7c830479833d",
+      "image": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "digest": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "config-id": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+      "snapshot_config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f"
+    },
+    "previous-good": null
+  },
+  "files": [
+    {
+      "path": "/opt/pokerattack",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o755"
+    },
+    {
+      "path": "/opt/pokerattack/compose.yaml",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o644",
+      "sha256": "1dd98b8e257abdca0269ea07491d27078ad93022243e073ea17ea4446749bfae"
+    },
+    {
+      "path": "/opt/pokerattack/validate-config.py",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o755",
+      "sha256": "c2669986b6536986751d2cb26a9b15c83a28e76241a2c6a8f15207ebe02b1b9c"
+    },
+    {
+      "path": "/usr/local/sbin/pokerattack-deploy",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o755",
+      "sha256": "d02481a9a9fa29ed6b15772a24053431774a305d8333b7e3f8b0b7cea934ca97"
+    },
+    {
+      "path": "/usr/local/sbin/pokerattack-ssh-deploy",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o755",
+      "sha256": "46984a1694c9eb354b4bb86d2708577c515865c7e8e6c42630b36c3a76fdf1f4"
+    },
+    {
+      "path": "/etc/pokerattack/registry",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o700"
+    },
+    {
+      "path": "/etc/pokerattack/registry/config.json",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o600"
+    },
+    {
+      "path": "/etc/pokerattack/production/maintenance",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o600"
+    },
+    {
+      "path": "/etc/alloy/config.alloy",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o644",
+      "sha256": "89e7b9197b7a0fa66f69c1d482429e2ee6c9102665be3ac25715ecf9dcdf2bbf"
+    }
+  ],
+  "containers": [
+    {
+      "id": "45befa1de68526ca5b0686fc5fad7d9e4226b25d65aaa88cdca5665a05724dcb",
+      "name": "/pokerattack-production-api-1",
+      "configured_image": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "state": "running",
+      "health": "not-configured",
+      "network_mode": "host",
+      "nano_cpus": 250000000,
+      "memory_bytes": 536870912,
+      "user": "1654",
+      "repo_digests": [
+        "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588"
+      ],
+      "source_revision": "250b03496c69e33a206e294cbad861a94fa6844a",
+      "urls": [
+        "ASPNETCORE_URLS=http://127.0.0.1:8081"
+      ]
+    },
+    {
+      "id": "fbe3c939907d8df6e91997d51a8535637b1e279087e6a6a02ab61f383bd86ff6",
+      "name": "/pokerattack-pilot-api-1",
+      "configured_image": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "state": "exited",
+      "health": "not-configured",
+      "network_mode": "host",
+      "nano_cpus": 250000000,
+      "memory_bytes": 536870912,
+      "user": "1654"
+    },
+    {
+      "id": "1fac1e872bc54e40b1c89230be9f72e94e3e8f2533a46d4799a7e11df5abeb80",
+      "name": "/transitjazz-app-server-1",
+      "configured_image": "chefknife.azurecr.io/chefknifestudios.martajazz.server.webapi@sha256:e0e6a30cb55b1ac7987a0cd2ca4843d0b56377a5bc1448436517480900ad22f0",
+      "image_id": "sha256:e0e6a30cb55b1ac7987a0cd2ca4843d0b56377a5bc1448436517480900ad22f0",
+      "state": "running",
+      "health": "not-configured",
+      "network_mode": "host",
+      "nano_cpus": 250000000,
+      "memory_bytes": 536870912,
+      "user": ""
+    },
+    {
+      "id": "d9fc0b5afced651b8fde45487b91a517e52316c221527b7393364d9f39089995",
+      "name": "/transitjazz-app-proxy-1",
+      "configured_image": "caddy@sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03",
+      "image_id": "sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03",
+      "state": "running",
+      "health": "not-configured",
+      "network_mode": "host",
+      "nano_cpus": 0,
+      "memory_bytes": 268435456,
+      "user": ""
+    }
+  ],
+  "state": {
+    "transaction": false,
+    "lease": false
+  },
+  "backup_reference": "20261115T150144Z",
+  "backup_service": "Result=success\nExecMainStatus=0",
+  "alloy_service": "User=alloy\nGroup=\nActiveState=active",
+  "config_validation_exit": 0,
+  "ready": true,
+  "registry_allowed_manifest_exit": 0,
+  "registry_unrelated_manifest_exit": 1,
+  "registry_denial_recognized": true
+}

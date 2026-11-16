@@ -1,0 +1,15 @@
+{
+  "task": "I02",
+  "state": "IN_PROGRESS",
+  "identities": {},
+  "assignments": [],
+  "production_restart": false,
+  "registry_mode_changed": false,
+  "started_utc": "2026-11-16T13:21:56.807789+00:00",
+  "registry": {
+    "id": "/subscriptions/d2f70759-7eeb-4ca5-9046-f7c8d562ef8f/resourceGroups/general/providers/Microsoft.ContainerRegistry/registries/chefknife",
+    "roleAssignmentMode": "LegacyRegistryPermissions"
+  },
+  "error_type": "ValueError",
+  "recorded_utc": "2026-11-16T13:22:25.168350+00:00"
+}

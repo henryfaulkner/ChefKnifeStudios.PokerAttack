@@ -1,0 +1,10 @@
+{
+  "task": "I05/G02/G06 revalidation",
+  "fixed_logical_host": "expense-tracker-vm",
+  "OS_hostname_unchanged": true,
+  "installed_sha256": "341adef7a6e5a80cd71553dba1bec47ee66507f5e926f36628925bbba54505dc",
+  "prior_sha256": "fec057423002787de8a232a32da7af6c04280da9628bd256c6402c830fa8faba",
+  "native_sample_success": true,
+  "API_unchanged": true,
+  "recorded_utc": "2026-11-16T13:36:38.118752+00:00"
+}

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+export PATH=/usr/bin:/bin
+# Install as the forced command for a dedicated key, with no PTY/forwarding/user rc.
+# The one sudoers permission is this exact deploy executable; no shell/docker access.
+command=${SSH_ORIGINAL_COMMAND:-}
+if [[ $command == *' production'* ]]; then
+  echo 'Production requires the capability-separated release keys.' >&2
+  exit 1
+fi
+if [[ $command =~ ^(deploy|promote)\ (pilot|production)\ sha256:[a-f0-9]{64}\ [a-f0-9]{64}$ ||
+      $command =~ ^(rollback|status)\ (pilot|production)$ ]]; then
+  read -r -a arguments <<<"$command"
+  exec sudo -n /usr/local/sbin/pokerattack-deploy "${arguments[@]}"
+fi
+echo 'Only the documented PokerAttack release interface is allowed.' >&2
+exit 1

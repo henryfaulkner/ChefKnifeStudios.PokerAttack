@@ -1,6 +1,7 @@
 {
   "globalHeaders": {
-    "Blazor-Environment": "Development"
+    "Blazor-Environment": "prod",
+    "Cache-Control": "no-cache"
   },
   "navigationFallback": {
     "rewrite": "/index.html"

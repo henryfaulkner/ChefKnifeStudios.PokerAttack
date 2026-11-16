@@ -1,0 +1,15 @@
+{
+  "task": "I02/F02 build-only source review",
+  "recorded_utc": "2026-11-16T13:50:55.024947+00:00",
+  "release_tests": 108,
+  "actionlint_exit": 0,
+  "routine_CD_published": false,
+  "production_delivery_enabled": false,
+  "source_sha256": {
+    "deploy\\release\\server_images.py": "f4b6a8782e6f74ddd07fbcc8265e7675f6b020359c849f223474d8bc59c60d03",
+    "deploy\\release\\test_server_images.py": "25db5e844a33e5524fa5b765c6ace4b40f567acd8eeb91764d70eb21745df5fb",
+    "deploy\\release\\test_workflows.py": "3952bff2e1db3ee7dfc2b6c1686e16a42a85fb529422b902b7e10d4813c4b266",
+    "deploy\\provision\\bootstrap_source.py": "443fe4ed317b027ee9cbfdfed63608345584ee19f2107f8a8c4b60751e4b6562"
+  },
+  "source_publication_scan": "720 candidates; no private-key, Azure AccountKey or GitHub token patterns found. Original untracked skill directories excluded."
+}
