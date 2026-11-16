@@ -24,24 +24,9 @@ from manifests import load_document, validate_document
 from review import canonical
 from server_images import execution
 from ssh_client import transport, PROFILES
+from verification_stages import FAILURE_STAGES, failed_stage
 
 ROOT = Path(__file__).resolve().parents[2]
-FAILURE_STAGES = frozenset(('private-context','browser-launch','gameplay','context-validation','tls-client-identity',
-    'served-release-identity','served-client-settings','served-client-assets','public-api-readiness','browser-signalr',
-    'previous-attempt-owned-session-leave','lobby-create','lobby-join','game-start','game-groups','initial-private-hand',
-    'private-message-isolation','multiplayer-completion','solo-completion','owned-session-leave'))
-
-
-def failed_stage(raw):
-    # Only hard-coded stage names survive, never provider exceptions, browser
-    # output, URLs, headers or credentials. This is release diagnosis, not proof.
-    if len(raw)>4096:return 'unknown'
-    for line in raw.decode('utf-8',errors='replace').splitlines():
-        match=re.fullmatch(r'Release verification failed at ([a-z-]+); no promotable evidence emitted',line)
-        if match and match[1] in FAILURE_STAGES:return match[1]
-    return 'unknown'
-
-
 def pending(status, manifest, run, attempt=None, resume_attempt=None):
     sampled = datetime.datetime.fromisoformat(status['sampled_utc'].replace('Z', '+00:00')).timestamp()
     if (not -5 <= time.time() - sampled <= 120 or status.get('protocol_version') != 1 or status.get('target') != 'production'
@@ -80,8 +65,8 @@ def gameplay(context, output, env):
         raise ValueError('Protected gameplay failed at '+failed_stage(result.stderr)+'; no evidence may be imported')
 
 
-def verify(manifest, env, status_host, evidence_host, archive, output, runner=gameplay):
-    trusted_context(env)
+def verify(manifest, env, status_host, evidence_host, archive, output, runner=gameplay, *, context_validator=trusted_context):
+    context_validator(env)
     source, workflow = execution(env)
     validate_document('server-manifest', manifest)
     if manifest['source_sha'] != source and env.get('SERVER_OPERATION', 'release') != 'rollback':

@@ -15,7 +15,7 @@ from manifests import load_document
 from review import canonical
 
 ROOT=Path(__file__).resolve().parents[2]
-OPERATOR_ACTIONS={'client-authorize','client-published','client-status','client-acceptance'}
+OPERATOR_ACTIONS={'client-authorize','client-published','client-status','client-acceptance','begin-release','drain-release'}
 
 
 class UnknownPublication(RuntimeError):pass
@@ -30,7 +30,7 @@ def operator(action,run,attempt,packet=None):
              '-o','BatchMode=yes','-o','IdentitiesOnly=yes','-o','IdentityAgent=none','-o','StrictHostKeyChecking=yes',
              '-o','ClearAllForwardings=yes','-o','ConnectTimeout=15','root@170.187.142.115',
              f'python3 -I /opt/pokerattack/release-control.py operator-bootstrap {action} production {run} {attempt}']
-    try:result=subprocess.run(command,input=raw,capture_output=True,timeout=90)
+    try:result=subprocess.run(command,input=raw,capture_output=True,timeout=390 if action=='drain-release' else 90)
     except subprocess.TimeoutExpired:raise UnknownPublication('Inspect root publication state; never repeat the upload automatically') from None
     if result.returncode==255:raise UnknownPublication('Root response uncertain; reconcile exact served bytes')
     if result.returncode:raise ValueError('Root bootstrap operation rejected')

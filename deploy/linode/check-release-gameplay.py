@@ -35,7 +35,10 @@ if CLIENT_ONLY and RESUME:
 
 REPO = Path(__file__).resolve().parents[2]
 PREFIX = 'pokerattack-release-fixture-' + uuid.uuid4().hex[:12]
-PRIVATE = Path(tempfile.mkdtemp(prefix=PREFIX))
+# GitHub exports RUNNER_TEMP independently of Python's /tmp default. The
+# production-safe loader correctly refuses a context outside that private root.
+PRIVATE_ROOT = Path(os.environ.get('RUNNER_TEMP') or tempfile.gettempdir()).resolve(strict=True)
+PRIVATE = Path(tempfile.mkdtemp(prefix=PREFIX, dir=PRIVATE_ROOT))
 NETWORK, PG, API = (PREFIX + suffix for suffix in ('-net', '-pg', '-api'))
 created = []
 server = thread = None
@@ -46,6 +49,12 @@ def run(*arguments, **kwargs):
     if result.returncode:
         # Provider errors can contain env values: keep only private diagnostics.
         (PRIVATE / 'failure.txt').write_text(result.stdout + result.stderr, encoding='utf-8')
+        if arguments[0] == 'node':
+            # Only allowlisted stage names enter CI output; private raw browser
+            # and provider diagnostics stay outside repository/artifact uploads.
+            sys.path.insert(0, str(REPO / 'deploy/release'))
+            from verification_stages import failed_stage
+            print('Disposable release failure stage: ' + failed_stage(result.stderr.encode()))
         raise RuntimeError('Disposable fixture command failed; private diagnostics retained')
     return result.stdout.strip()
 
@@ -286,7 +295,7 @@ finally:
     if tls_material:
         tls_material.__exit__(None, None, None)
     if passed:
-        assert not PRIVATE.is_symlink() and PRIVATE.resolve().parent == Path(tempfile.gettempdir()).resolve() and PRIVATE.name.startswith(PREFIX)
+        assert not PRIVATE.is_symlink() and PRIVATE.resolve().parent == PRIVATE_ROOT and PRIVATE.name.startswith(PREFIX)
         shutil.rmtree(PRIVATE)
     else:
         print('Fixture failed; private diagnostics retained outside repository at ' + str(PRIVATE))

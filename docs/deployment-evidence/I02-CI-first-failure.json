@@ -1,0 +1,28 @@
+{
+  "task": "I02 actual CI / root operator preparation",
+  "recorded_utc": "2026-11-16T14:04:58.785617+00:00",
+  "PR": 13,
+  "failed_run": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/43879929408",
+  "failed_source_sha": "2ea24fdee2a018a95775f2197086bae8d346275e",
+  "failed_step": "Verify HTTPS gameplay, private isolation, cleanup and revocation",
+  "actual_private_browser_stage": "Unavailable in original failure; private fixture log was not uploaded. Do not claim an observed underlying stage.",
+  "inspection_and_fix": "Python tempfile used /tmp while GHA RUNNER_TEMP differs; production-safe context loader refuses outside-root context. Fixture now creates its owned directory beneath actual RUNNER_TEMP. Added bounded allowlisted failure stages only, no raw provider logs.",
+  "local_release_tests": 111,
+  "root_context": "Real successful main build and root-authenticated publication required with delivery=false; no fabricated GitHub review or main ref. Distinct fresh decision receipts required by root operator.",
+  "test_fixture_failures_retained": [
+    "artifacts/I02-bootstrap-context-tests.log (wrong fixture attribute)",
+    "artifacts/I02-bootstrap-context-tests-attempt2.log (test mutated config to its existing value)"
+  ],
+  "source_sha256": {
+    "deploy/linode/check-release-gameplay.py": "9fe1d55da8bbadae75c6b13e873b70c818af707898e25080d7c113229c592dc2",
+    "deploy/release/verification_stages.py": "acc0140ef49ab554c2708406218dd8425c70788f6847ba49b48d46bc61b78a51",
+    "deploy/release/server_manifest.py": "97744123e7265656cb00afa9242b5f4ba27b13eea00f4f3de986116ac1f6a50d",
+    "deploy/release/server_verify.py": "cf65cd85db2edfdb41db62b1372fe1dd84b3bffcf1226a01dd9e3ff04e3c747a",
+    "deploy/release/server_finish.py": "7ae03a6f1c53dde7d4aa69e6be3879a897ea6fd6903ab22bf77186ffefd1793a",
+    "deploy/release/bootstrap_publish.py": "65b03cfe32bd4c4910bbb51b10294a361e89e72d40f87aba7b702293bbeaaa37",
+    "deploy/release/bootstrap_context.py": "0f482bf2ee11973ca7aa90ac3a1624d6ea56410dd0036cec6865f6075134f489",
+    "deploy/release/test_bootstrap_context.py": "4db472a9e1c0e35f8b2f995917912043272503a18d4a965ce654988953d119d8",
+    "deploy/release/bootstrap_operator.py": "c724db25e123d048e27786db5caa8726504d0b10b560a0cc375d626af353efb4"
+  },
+  "production_API_restarted": false
+}

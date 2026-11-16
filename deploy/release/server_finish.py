@@ -44,8 +44,8 @@ def reopened(live, manifest):
         raise ValueError('Reopened runtime differs from the promoted pair')
 
 
-def finish(manifest, promotion, env, status_host, promotion_host, catalog, output, runner=public_browser):
-    trusted_context(env);_,workflow=execution(env)
+def finish(manifest, promotion, env, status_host, promotion_host, catalog, output, runner=public_browser, *, context_validator=trusted_context):
+    context_validator(env);_,workflow=execution(env)
     validate_document('server-manifest',manifest)
     expected={'phase':'promoted','workflow':workflow,'source_sha':manifest['source_sha'],
               'digest':manifest['api']['digest'],'config_sha256':manifest['config_sha256']}

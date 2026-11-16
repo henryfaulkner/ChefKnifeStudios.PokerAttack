@@ -20,8 +20,8 @@ from ssh_client import transport
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def resolve(published, schema, live, config, env=os.environ, source_root=ROOT):
-    trusted_context(env)
+def resolve(published, schema, live, config, env=os.environ, source_root=ROOT, *, context_validator=trusted_context):
+    context_validator(env)
     source, workflow = execution(env)
     validate_status(live)
     if live['lease'] is not None:
