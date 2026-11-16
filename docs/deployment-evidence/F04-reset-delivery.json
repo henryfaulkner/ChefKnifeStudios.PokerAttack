@@ -1,0 +1,47 @@
+{
+  "timestamp_utc": "2026-11-16T02:25:31.311737+00:00",
+  "base_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "scope": "LOCAL SOURCE ONLY; no production mutation, approval, reset, source publication or provisioning",
+  "source_sha256": {
+    ".github/workflows/server.yml": "c7c1ca31b9dd2b5217c6eb5800fde41175f1b48d50a91b9055dd83e4cddb503e",
+    "deploy/release/server_manifest.py": "5b9765dbad8188d055ad0b222e668753823f28820c73fc369e87bbed3b94a0c5",
+    "deploy/release/review.py": "4c55a1bc2b85027f33ebbdec565a6b1d57fe0ad330c8600e5d8f12723cdc8329",
+    "deploy/release/server_deliver.py": "4ffd7ffb8092de33f6056690832448eb78d02673607474fa93730eeaac6fbe48",
+    "deploy/release/test_server_deliver.py": "871919d7294d9269901afe2de7516c572ae4f1adc2b46a43eedc09d1efac5aea",
+    "deploy/release/test_workflows.py": "71a9d845caa8dbc0b5a08beb6e64b0c7d42e690a1d7e8b14512e01f88b913d59"
+  },
+  "checks": {
+    "release_tests": 64,
+    "workflow_lint": "client/server pass",
+    "unchanged_host_source_suite": "77 passed F03"
+  },
+  "logs_sha256": {
+    "artifacts\\F04-release-final.log": "1446503ba801be6528269d119af81db27131a53a1cf76aa53d00b13b18f88bf1",
+    "artifacts\\F04-release-initial.log": "7dffee7f61cf65d64c768730d41a58c5fb2c76fa94320262dbec25cb83b664c2",
+    "artifacts\\F04-workflow-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "artifacts\\F04-workflow-initial.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "verified": [
+    "Exact server-linode review comment binds immutable packet hash and run/attempt",
+    "Fixed earlier packet validity anchor conservatively bounds actual approval freshness; no claimed decision timestamp or runner-start refresh",
+    "Before mutation: exact main, current/recovery pair, config, healthy state and no lease; after drain: same owner/source/window/decision",
+    "Only fixed begin/deploy digest grammar is emitted. Delivery cannot access evidence/promotion keys",
+    "Unknown begin/deploy responses stop without retry, promotion, reopening or rollback",
+    "Pending response requires exact tested runtime/source/pair and closed own lease; workflow explicitly fails incomplete release until F05/F06 exist"
+  ],
+  "timeout_bounds": {
+    "begin_ssh_seconds": 390,
+    "drain_max_seconds": 300,
+    "root_legacy_timeout_seconds": 900,
+    "deployment_ssh_seconds": 1040,
+    "job_minutes": 30,
+    "real_replica_recovery_timing": "Required H; configured headroom is not claimed as live measured performance"
+  },
+  "live_readonly": "F04-resume-host.json: production ready; no tooling installed or images/client changed",
+  "primary_reference": "https://docs.github.com/en/rest/actions/workflow-runs#get-the-review-history-for-a-workflow-run",
+  "remaining": [
+    "Complete F05/F06 and integrated H before installing I",
+    "Root bootstrap reset and later promotion require separate actual K decisions",
+    "Repository progress UTF-8 punctuation repaired after detecting a default-Windows-code-page read; plan unchanged"
+  ]
+}

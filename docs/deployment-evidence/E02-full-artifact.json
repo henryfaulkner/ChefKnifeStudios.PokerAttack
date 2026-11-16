@@ -1,0 +1,22 @@
+{
+  "timestamp_utc": "2026-11-15T19:32:50.526528+00:00",
+  "scope": "LOCAL ONLY; synthetic run/artifact/source metadata; no Azure/SWA writes",
+  "artifact_directory": "artifacts/E02-full-artifact-64e63a90318d",
+  "archive_sha256": "62d14cd64c8eca7296734ed539ad49d3d5f53dac90407925dad4488033acd6e2",
+  "archive_bytes": 31357292,
+  "manifest_bytes": 87017,
+  "host_summary_bytes": 706,
+  "file_count": 677,
+  "all_files_restored_byte_for_byte": true,
+  "source_sha256": {
+    "deploy/release/client_artifacts.py": "6c91d73b4092484d2103b395811ea6009416bc8d865dba237f8917b3248638ca",
+    "deploy/release/client_archive.py": "fdea5572c4cff87dd7b6123bb0b6b1435577596b8d046a982d778f32453e4538",
+    "deploy/release/blob_store.py": "dd4ebcb4fe46b06e8f2fb27d74244e6b314d25af3acb528a6faf45510c490a98",
+    "deploy/release/manifests.py": "6fbf8a952538bd8d5f01e31bd6fcc7f88ea881832ae49929cb02b157a9659153",
+    "deploy/release/test_client_artifacts.py": "05f391274b3c8b41164ca1b29f74505b67521c09592199035ae9e6bbb3609d51"
+  },
+  "archive_test_count": 9,
+  "retained_manifest_tests": 6,
+  "test_log_sha256": "36a779ff02a5dc8307e3d7ee8b545adc9e36b6e7d81aa3b3c07795ab0f30e56d",
+  "azure_adapter_status": "Source/argv tested only; dedicated account/OIDC and live restore remain I02/K04"
+}

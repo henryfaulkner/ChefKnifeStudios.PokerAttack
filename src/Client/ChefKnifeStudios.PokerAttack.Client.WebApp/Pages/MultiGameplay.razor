@@ -85,12 +85,12 @@
                     };
 
                     <span class="mat-body1">@viewText</span>
-                    <ScoreboardList />
+                    <MultiScoreboardList />
                     break;
                 }
             case GameStates.Freebie:
                 {
-                    <PlayerPowerList />
+                    <MultiPlayerPowerList />
                     <span class="mat-body1 upgrade-message">WAITING ON OTHER PLAYERS' SELECTION</span>
                     break;
                 }
@@ -98,7 +98,7 @@
                 {
                     <span class="mat-body1">SHOP</span>
                     <span class="mat-body1">Wallet: @(MultiGameDataStore.IsLoadingWallet ? "LOADING" : MultiGameDataStore.Wallet.ToString("C2"))</span>
-                    <Shop />
+                    <MultiShop />
                     break;
                 }
             case GameStates.GameStart:

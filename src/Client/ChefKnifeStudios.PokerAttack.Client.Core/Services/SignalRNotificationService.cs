@@ -12,9 +12,14 @@ namespace ChefKnifeStudios.PokerAttack.Client.Core.Services;
 
 public delegate Task PokerAttackNotificationHandler(PokerAttackNotification notification);
 
+public enum ConnectionRecoveryState { NotStarted, Connecting, Connected, Reconnecting, ReloadRequired, Disconnected }
+
 public interface ISignalRNotificationService
 {
     event PokerAttackNotificationHandler? HandleNotificationReceived;
+    event Action? ConnectionStateChanged;
+    ConnectionRecoveryState ConnectionStatus { get; }
+    bool RequiresReload { get; }
 
     Task InitAsync(string playerId);
     Task JoinLobbyGroupAsync(string lobbyId);
@@ -42,6 +47,9 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
     private readonly ILogger<SignalRNotificationService> _logger;
 
     public event PokerAttackNotificationHandler? HandleNotificationReceived;
+    public event Action? ConnectionStateChanged;
+    public ConnectionRecoveryState ConnectionStatus { get; private set; }
+    public bool RequiresReload { get; private set; }
 
     public SignalRNotificationService(
         IConfiguration configuration,
@@ -61,6 +69,7 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
         try
         {
             CloseConnection();
+            SetConnectionStatus(ConnectionRecoveryState.Connecting);
 
             var apis = _configuration.GetSection("AppSettings:ExternalApis");
             var itemArray = apis.GetChildren();
@@ -71,7 +80,7 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
             if (setting != null)
             {
                 var baseUrl = setting.GetValue("BaseUri", string.Empty)?.TrimEnd('/');
-                if (baseUrl is null)
+                if (string.IsNullOrWhiteSpace(baseUrl))
                 {
                     string errMsg = "BaseUrl for PokerAttackSignalR API config is null.";
                     _logger.LogCritical(errMsg);
@@ -90,7 +99,7 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
                     baseUri = new Uri(hostUri, relativeUri);
                 }
 
-                var url = $"{baseUri.ToString().TrimEnd('/')}/cks-notification?playerId={playerId}";
+                var url = $"{baseUri.ToString().TrimEnd('/')}/cks-notification?playerId={Uri.EscapeDataString(playerId)}";
 
                 _hubConnection = new HubConnectionBuilder()
                     .WithUrl(url)
@@ -100,6 +109,24 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
                     })
                     .Build();
 
+                var connection = _hubConnection;
+                connection.Reconnecting += _ =>
+                {
+                    if (ReferenceEquals(_hubConnection, connection)) SetConnectionStatus(ConnectionRecoveryState.Reconnecting, requiresReload: true);
+                    return Task.CompletedTask;
+                };
+                connection.Reconnected += _ =>
+                {
+                    // A restored transport cannot prove that the server still has this match or group membership.
+                    if (ReferenceEquals(_hubConnection, connection)) SetConnectionStatus(ConnectionRecoveryState.ReloadRequired, requiresReload: true);
+                    return Task.CompletedTask;
+                };
+                connection.Closed += _ =>
+                {
+                    if (ReferenceEquals(_hubConnection, connection)) SetConnectionStatus(ConnectionRecoveryState.Disconnected, requiresReload: true);
+                    return Task.CompletedTask;
+                };
+
                 _logger.LogInformation("Connecting to SignalR hub: {host}", baseUri.Host);
 
                 _hubConnection.On<PokerAttackNotification>("ReceivePokerAttackNotification", notification =>
@@ -108,12 +135,15 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
                 });
 
                 await _hubConnection.StartAsync();
+                SetConnectionStatus(ConnectionRecoveryState.Connected);
             }
+            else throw new InvalidOperationException("PokerAttackSignalR endpoint is not configured.");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error initializing SignalR Notification Hub");
-            _hubConnection = null;
+            CloseConnection();
+            SetConnectionStatus(ConnectionRecoveryState.Disconnected, requiresReload: true);
         }
     }
 
@@ -132,26 +162,31 @@ public class SignalRNotificationService : ISignalRNotificationService, IDisposab
 
     private void CloseConnection()
     {
-        try
-        {
-            if (_hubConnection == null) return;
-            _ = _hubConnection.StopAsync();
-            _hubConnection = null;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error closing SignalR connection");
-            throw;
-        }
+        var previous = _hubConnection;
+        _hubConnection = null; // Stale connection callbacks must not change the current connection's state.
+        if (previous is not null) _ = DisposeConnectionAsync(previous);
+    }
+
+    async Task DisposeConnectionAsync(HubConnection connection)
+    {
+        try { await connection.DisposeAsync(); }
+        catch (Exception ex) { _logger.LogWarning(ex, "Error disposing a previous SignalR connection"); }
+    }
+
+    void SetConnectionStatus(ConnectionRecoveryState status, bool requiresReload = false)
+    {
+        ConnectionStatus = status;
+        RequiresReload |= requiresReload;
+        ConnectionStateChanged?.Invoke();
     }
 
     private Task<bool> EnsureConnectedAsync(string operationName)
     {
-        if (_hubConnection != null && _hubConnection.State == HubConnectionState.Connected)
+        if (!RequiresReload && _hubConnection != null && _hubConnection.State == HubConnectionState.Connected)
             return Task.FromResult(true);
 
         _logger.LogWarning(
-            "SignalR operation '{operation}' attempted but connection not established. State: {state}. Automatic reconnect will handle this.",
+            "SignalR operation '{operation}' blocked until a fresh session is available. State: {state}.",
             operationName,
             _hubConnection?.State.ToString() ?? "null");
 

@@ -1,0 +1,71 @@
+{
+  "timestamp_utc": "2026-11-16T04:28:23.239101+00:00",
+  "state": "H01 REVALIDATED COMPLETE (LOCAL)",
+  "base_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "immutable_test_source": {
+    "timestamp_utc": "2026-11-16T04:15:51.796087+00:00",
+    "source_sha": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+    "tree": "ff0767986cf48976bfadb218431680f5d01ec03e",
+    "base_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+    "local_ref": "refs/pokerattack-rehearsal/020ae70e334e42e7b463ef171edc817a",
+    "source_directory": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\H02-replica\\source-4ce18ec6cd76",
+    "published": false,
+    "active_branch": "migration/linode-server-hosting",
+    "active_branch_and_index_unchanged": true,
+    "scope": "Immutable isolated rehearsal source only; no push/merge or planning/user skill changes"
+  },
+  "source_sha256": {
+    ".gitignore": "b45fee4b9752374382c248a75d41261918e2f31f3ed5852ce92ff05deb9277ee",
+    ".gitattributes": "6b056fc2b65bbae5ca368cd83192f5fd52144340a8f3a5f2550d2277983b8ece",
+    "deploy/release/test_source_inputs.py": "b53ca0ee9bf55ee9af541120bc6fb514ac7df062e0ef7f2e4cf757e1e3cdc457",
+    "deploy/rehearsal/source_snapshot.py": "cc71bde8822109fe6a3f4320e8865aaf9ed668664bb847c69229182376df534d"
+  },
+  "image_builds": [
+    {
+      "image": "api",
+      "source_sha": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+      "exit_code": 0
+    },
+    {
+      "image": "migration",
+      "source_sha": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+      "exit_code": 0
+    }
+  ],
+  "exact_image_checks": {
+    "source_sha": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+    "exit_code": 0,
+    "node": "22.23.5"
+  },
+  "images": [
+    {
+      "reference": "pokerattack-api:rehearsal-4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+      "image_id": "sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055",
+      "source_revision": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+      "repo_digests": [
+        "pokerattack-api@sha256:c787bd2e51334690eb8fa5a25a14e78033621d61618c4867470fcd0251b90055"
+      ]
+    },
+    {
+      "reference": "pokerattack-migrations:rehearsal-4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+      "image_id": "sha256:9560e3c4387a2d224290ca1c65d5a5ee1d27cd6ae3a8b17df45f1b8d0ca38223",
+      "source_revision": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+      "repo_digests": [
+        "pokerattack-migrations@sha256:9560e3c4387a2d224290ca1c65d5a5ee1d27cd6ae3a8b17df45f1b8d0ca38223"
+      ]
+    }
+  ],
+  "release_unit_tests": {
+    "passed": 94,
+    "exit_code": 0,
+    "log": "artifacts/H02-replica/clean-source-release-tests.log"
+  },
+  "prior_H01_evidence": "H01-integrated-checks.json retained; application inputs unchanged except source tracking fix",
+  "failed_attempts": [
+    "First unpublished snapshot f6bdd1 omitted ignored deploy/release and shared DTO. Failed clean build retained as attempt1-f6bdd1-build-api.log; original source snapshot/ref/worktree retained.",
+    "First successful exact-image check wrapper failed printing a Unicode tick through cp1252; original log retained. Repeated affected check writes exit-code result before ASCII output and completed exit 0.",
+    "Unused fixture workflow/artifact IDs originally exceeded JavaScript safe integers. Corrected to explicit fictional safe IDs in a separately preserved v2 client archive before any replica baseline/client acceptance. No production artifacts affected."
+  ],
+  "verification": "Fresh immutable source contains all required release modules/DTO/test inputs; clean API and migration builds, client publish, 94 tests, exact source/IDs and 5 non-root/read-only/.25 CPU/512 MiB browser smokes pass. Active branch and real index remain unchanged. No push/merge.",
+  "production_mutation": false
+}

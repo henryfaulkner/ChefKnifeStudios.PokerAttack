@@ -16,6 +16,7 @@ public interface ISoloGameplayEndpointsService
     Task<Result<SoloGameStateDTO?>> GetGameStateAsync(string gameId, CancellationToken cancellationToken = default);
     Task<Result<PurchaseItemResDTO?>> PurchaseShopItemAsync(string gameId, string shopItemId, CancellationToken cancellationToken = default);
     Task<Result<AdvancePhaseResDTO?>> AdvancePhaseAsync(string gameId, CancellationToken cancellationToken = default);
+    Task<Result<LeaveSoloGameResDTO?>> LeaveGameAsync(string gameId, LeaveSoloGameReqDTO request, CancellationToken cancellationToken = default);
 }
 
 public class SoloGameplayEndpointsService : ISoloGameplayEndpointsService
@@ -45,6 +46,21 @@ public class SoloGameplayEndpointsService : ISoloGameplayEndpointsService
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occured.");
+            return Result.Error();
+        }
+    }
+
+    public async Task<Result<LeaveSoloGameResDTO?>> LeaveGameAsync(string gameId, LeaveSoloGameReqDTO request, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var result = await _httpService.PostAsync<LeaveSoloGameReqDTO, LeaveSoloGameResDTO?>(
+                Endpoints.LeaveGame.FormatRoute(gameId), request, cancellationToken);
+            return result.LogErrors(_logger, "SoloGameplay LeaveGameAsync call");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred leaving the solo session.");
             return Result.Error();
         }
     }

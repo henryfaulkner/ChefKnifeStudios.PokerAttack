@@ -1,0 +1,39 @@
+{
+  "timestamp_utc": "2026-11-15T21:17:06.322779+00:00",
+  "base_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "scope": "LOCAL SOURCE ONLY; unpublished, rollout off; not a successful GitHub run",
+  "source_sha256": {
+    ".github/workflows/server.yml": "ec873e5b1d55431b4ab33953229924a48252c2f04fcc3d9754aeffdd14964671",
+    "deploy/release/test_workflows.py": "4df06ba33ed2657856f6ff8cc63e1df6bc9878cbec25234c854ffda2bf737eed",
+    "deploy/release/CI_COVERAGE.md": "fbeed05b455a36c6f6c41ba6f9d65d1cf28dfece5663e1e85d841f26f28310ef",
+    "deploy/linode/fixture_tls.py": "00c43b83cbe4e963ecb136fc6114e0eb3931e567dac5116efee664c4034aabc0",
+    "deploy/linode/check-local-containers.py": "d1af671dd88d243004571d826049f5668a3fff77d5c049546bd0fd9a21f52c76",
+    "deploy/linode/check-release-gameplay.py": "6c8bf6130e3716ea987b24f95fcec966ed2bba8cc7d49201f9979c65291d55aa",
+    "artifacts/F01-linux-tls-probe.py": "73ef8651bfe413f0bf8759ed80c6ad3a4d920b5908b7dc2a4db4dd038f626477"
+  },
+  "checks": {
+    "release_tests": 40,
+    "actionlint": "client and server pass",
+    "windows_https_client": "pass",
+    "linux_chromium_trust": "actual browser pass; new browser rejects after exact fixture CA removal",
+    "baseline_ownership": "deploy/release/CI_COVERAGE.md"
+  },
+  "failed_attempts": [
+    "Linux first two probes failed. Trust used only the new M146 NSS location while pinned Playwright Chromium predates it. Corrected to uniquely import/remove the fixture CA in both NSS locations; third real browser test passes. No TLS bypass."
+  ],
+  "logs_sha256": {
+    "artifacts\\F01-linux-tls-attempt2.log": "f01c5ad9e2be00795077431ddcfe367743d6c08dffd13e53146686e4db278f0c",
+    "artifacts\\F01-linux-tls-attempt3.log": "e0b389d4652ad280aab0bc6f8dbb7564e058629c454d3c7185730b3c94757fb2",
+    "artifacts\\F01-linux-tls-image.log": "c13ee9759941f741bc4f3022d4a5ccfbc34c6ecfe4d87149014f9bb79edcb5a3",
+    "artifacts\\F01-linux-tls.log": "ad3801fb86e4b18b85de5fab361d0f3f2e5f3ff140cd1fded68d97478406dd1a",
+    "artifacts\\F01-release-final.log": "4ebe13f039761cf7a74a64a46a629f019da3b2318e78b42de911855d1d085b74",
+    "artifacts\\F01-release.log": "ae18b0c7a990c5d733720f64cc8affc75448a956822360bcbb4945f27fa2be8a",
+    "artifacts\\F01-windows-https.log": "48036bc2e75f9369fabe2a48e20abfb45e2cfc8a1b280928df061f525adc5447",
+    "artifacts\\F01-workflow-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "limitations": [
+    "Full hosted-runner end-to-end rehearsal remains H; published main validation K03",
+    "No production mutation handler enabled; F02-F06 remain incomplete",
+    "New fixture TLS and image inputs require full integrated H revalidation of D evidence"
+  ]
+}

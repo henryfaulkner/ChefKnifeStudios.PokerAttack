@@ -1,0 +1,201 @@
+{
+  "timestamp_utc": "2026-11-16T03:11:45.807328+00:00",
+  "base_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "scope": "LOCAL SOURCE AND DISPOSABLE FIXTURES ONLY; no deployment/promotion/provisioning/source publication",
+  "source_sha256": {
+    ".github/workflows/server.yml": "4aded1b11ae69723effc356a7aaa093d53f039eadd3d977ef4c0c8d0bb900461",
+    "deploy/release/server_verify.py": "573a22e4ee4cb511fbc7f11a343093208a78e704e3ab24441d0d960a1c53305c",
+    "deploy/release/server_promote.py": "c993c20e23962d8d2e63ac0b2f437c5bfe980e9de7863f8f363f38f25e527566",
+    "deploy/release/ci_docker_store.py": "667fa53ed02f31fcb53e503a4247b876df974af40647cca537b9c067146c9009",
+    "deploy/release/test_ci_docker_store.py": "6f04ff17106f5919c659e8d4ecdd5d85f8f4e2a1e207a97768c165c96b86afc4",
+    "deploy/release/server_images.py": "057902218d79fa91a3c7df29f4dcf06734f074f5c97f2a0f72d5e73bf32fbc08",
+    "deploy/release/test_server_verify.py": "525e6856666c387b8c61d701a21a5b496adaa2af3548b749de83639637060f61",
+    "deploy/release/test_server_promote.py": "e6e596c42a2c5043303f6e6ee74c50a8533eca890058f446572e594fc92710c0",
+    "deploy/release/test_workflows.py": "cbe2e6dee002b738dd6c43d83d2e9945806fe5634e298c1d139777b7483a3810",
+    "deploy/release/CONTRACT.md": "7aa5c36008393c87c3475c0dd475afb2d938757557c4fa2dcfd6faaafd7c41ab",
+    "deploy/linode/release_commands.py": "8d659160c4d2d4b3e93d3385ef1e2792de75d47739db042c2695e02adddbaa3b",
+    "deploy/linode/release-control.py": "21ddc9e07f01b43bbbb56ef75e7019468310552ae6f48cbdc7430193a9b39e8e",
+    "deploy/linode/release-status.py": "abf30ba1fcbde9c675addc4ce11b4addbda4741010d0dd9887bdba050cc9e9dd",
+    "deploy/linode/release_lease.py": "f7a5a7c2a031a6de92cca4210f19fd98d377ee8d5ae51cfcda32fa63c45b8ab3",
+    "deploy/linode/test_lease.py": "4ace1922923bff26299f72973256182d716fd968b4818c5b52c21afdee76885d",
+    "deploy/linode/test_commands.py": "0b3271fe4dcb16571b9a607e7f931f1e31b8d5b661800cca88f73c53da29521c",
+    "deploy/linode/check-release-gameplay.py": "5c56ee3ea81bee9f7b76b83d5e7f2aa13f3fa2ad1f114adabc81573025c3ed35",
+    "tests/release/gameplay.cjs": "44e3abbb9266bb3a3eb9c0fb2ea3984da0923bd3c5f8cb5820c61968919ba0e9",
+    "tests/release/owned.cjs": "f2b2552cb59cc8d33ac84191d17201ce8e0d898d32d9d52062bba37459a0b5f9",
+    "tests/release/owned.test.cjs": "a2e75d7e9e88051dcf55182ee3cf0d8ea3677a987e2afdbb7253c70397fa895d",
+    "tests/release/seed-crashed-fixture.cjs": "9e987f11394c8287e8b4349ed9e892afe76f23dc6adef2a3fe06dd19dee0f7c2",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Hosting/ReleaseAdmission.cs": "4b914ee4d9d627c349a5264a87581282443cc1a19532ac11be7fa28acb498356",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Hosting/ReleaseOwnedSessions.cs": "c0798618906370b56b84dfd480d15af6109c4cdd89c0cf6bd7838b00dc9df03d",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Hosting/PokerAttackHosting.cs": "68422f7a51b3ffd65a38052e0dcfb04a80add4366f20d7a92f0ecde7f9409875",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/EndpointGroups/LobbyEndpoints.cs": "4338b6514dbf37d0994d53a57215f2374ec81946855960c2a6a7f080cd1e43ab",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/EndpointGroups/SoloGameplayEndpoints.cs": "acc849483a329d39cd29e69b6123f9efc0cb560e8fcf2373232f3f9984e90a67",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.BL/Services/LobbyService.cs": "346afe06683197ee319c84b1085536fdc6328f439fef7347cc5ff91bec2ed868",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.BL/Services/SoloGameplayService.cs": "599e1576c270e220a73559a792dbb93f950a99b9d828f763b0cf71c39ccb8371",
+    "src/ChefKnifeStudios.PokerAttack.Shared/PokerAttackApiEndpoints.cs": "ba0623a3843ac18e9053724d5f1266e20db562c73423d66e79256d7493c2d8ae",
+    "src/ChefKnifeStudios.PokerAttack.Shared/DTOs/Release/OwnedReleaseSessionsDTO.cs": "1df0d35e18dd2295ad93b89812ce5f562e75bd17c4708ac13a1af52bff4e35cb",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI.Tests/ReleaseAdmissionTests.cs": "620640a1b87b3087e48324cd8460dbb5128d58aee9b136bff3b19a7a26575398",
+    "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI.Tests/ReleaseProtocolTests.cs": "6eb3a6b2732e413fcd0f26abb6f027c292d7e7a6facfb3a972a25350723a3803",
+    "artifacts/D03-misroute-fixture.Dockerfile": "8cf7d36992b89348816b639467620c6e735a70a64604b6166f3b4c19fb4b8cff"
+  },
+  "checks": {
+    "host_tests": 78,
+    "release_workflow_tests": 83,
+    "api_tests": 60,
+    "business_logic_tests": 11,
+    "node_release_tests": 11,
+    "retained_browser_smokes": 5,
+    "client_server_actionlint": "pass"
+  },
+  "logs_sha256": {
+    "artifacts\\F05-api-build.log": "6e24eb480a236f9139aca7424639a0d75e93bad3f4fa22196a7444a2990fdfe3",
+    "artifacts\\F05-api-initial.log": "9e4edc2a841f22b1b8b425a143ddc4cdcd074d0de7c43c52af926243390cb3e4",
+    "artifacts\\F05-api-ownership.log": "a54a561e26c1f8a7c0b274269e8a9de4968b5336cffbda8eea7994132c2bb577",
+    "artifacts\\F05-api-revalidation.log": "8ad8494d721ffb407653a425994eaad952afbbec5683c999b918cd14b1f18855",
+    "artifacts\\F05-bl-revalidation.log": "74660d69c33804515e1ca0766c3695100c411a561319e6315a1276b1c6f42b93",
+    "artifacts\\F05-container-browser-revalidation.log": "e13ae71632667644a2d2aab0f131f0292d97572b7960ad6591254a86d16ab742",
+    "artifacts\\F05-crash-resume-attempt1.log": "763b60a7f08e6f1cef8544a79e69eed477e2d2d7bcc0f70fb6dfb6a56b85e159",
+    "artifacts\\F05-generated-proof.log": "800b0a4bbfaae2726b37a7d50e9b3df31524d077d322c67fa975b8d208235795",
+    "artifacts\\F05-host-initial.log": "290033cbdb0c2b64323275177d2faba81497914df719fe124a621745b6baeb97",
+    "artifacts\\F05-misroute-attempt1.log": "75de1d3a5a1311ccfe9e5f5f7cef233708df3a4bb3d721db5c5d9e3df8c26f04",
+    "artifacts\\F05-misroute-build.log": "39d84f1f981bb8b2aaadaadbdc096601621f98715f8395e7b8821aecfd0fc49a",
+    "artifacts\\F05-node-ownership.log": "ede0b8ea2ca64911f5775da8aacc97fe8c5d2b88725f8aefffec82452adf30b5",
+    "artifacts\\F05-node-revalidation.log": "5aab12ca5b60e0953031ae42a7aa233bcd49a8e8df0f662614aba165a3022db8",
+    "artifacts\\F05-release-final.log": "32438243d6ec57145009b2c7c6b2345bf1a2460ff296a0182f59f5f510c3b6bf",
+    "artifacts\\F05-release-initial.log": "d05f458abef8d59c9dc437eb3e456b1e4aa0ece91cc6013a4d9444aca0fed269",
+    "artifacts\\F05-release-profile-final.log": "74e332dfb81b722918fc61b91e552234300eb39d69c4055247c8db08f827efdc",
+    "artifacts\\F05-release-retry1.log": "2fbfe6fdf22e24e76bae8f1e38bc3d9e61e9e026d8ac3b78b89008c303bf368b",
+    "artifacts\\F05-workflow-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "artifacts\\F05-workflow-initial.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "artifacts\\F05-workflow-profile-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "actual_browser": {
+    "fixture_only": true,
+    "image_id": "sha256:adcaff75c412bc26ce05076715e696e701302bf8976a7a01ed40016a51cb0094",
+    "image_revision": "cccccccccccccccccccccccccccccccccccccccc",
+    "synthetic_admission_source": "cccccccccccccccccccccccccccccccccccccccc",
+    "test_endpoints_enabled": false,
+    "tls_verification": true,
+    "ephemeral_runner_nss_trust": false,
+    "verifier_revoked": true,
+    "revoked_credential_connection_rejected": true,
+    "post_cleanup_private_counts": {
+      "activeGames": 0,
+      "lobbies": 0,
+      "soloGames": 0
+    },
+    "crashed_runner_recovered": true,
+    "prior_crashed_runner_counts": {
+      "activeGames": 1,
+      "lobbies": 1,
+      "soloGames": 1
+    },
+    "server_manifest": {
+      "format": "pokerattack-server-v1",
+      "source_sha": "cccccccccccccccccccccccccccccccccccccccc",
+      "workflow": {
+        "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+        "run_id": 1,
+        "run_attempt": 1,
+        "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/1"
+      },
+      "api": {
+        "repository": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi",
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "local_image_id": "sha256:adcaff75c412bc26ce05076715e696e701302bf8976a7a01ed40016a51cb0094",
+        "tag": "cccccccccccccccccccccccccccccccccccccccc",
+        "source_revision": "cccccccccccccccccccccccccccccccccccccccc",
+        "platform": "linux/amd64"
+      },
+      "migration": {
+        "repository": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.data",
+        "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "local_image_id": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "tag": "cccccccccccccccccccccccccccccccccccccccc",
+        "source_revision": "cccccccccccccccccccccccccccccccccccccccc",
+        "platform": "linux/amd64"
+      },
+      "config_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "schema": {
+        "required_migrations": [],
+        "compatible_with_known_good": true,
+        "review_reference": "EXAMPLE ONLY - schema review required"
+      },
+      "verification_references": [
+        "EXAMPLE ONLY - isolated CI evidence required"
+      ]
+    },
+    "verifier_window": {
+      "id": "f488580d48dec5d4d8eae1c7e7cd9a20",
+      "issued_unix": 1794796951,
+      "expires_unix": 1794797851
+    },
+    "result": {
+      "passed": true,
+      "checks": {
+        "https": true,
+        "served_client": true,
+        "signalr": true,
+        "private_message_isolation": true,
+        "multiplayer": true,
+        "solo": true
+      },
+      "verified_unix": 1794797023,
+      "client_source_sha": "cccccccccccccccccccccccccccccccccccccccc",
+      "client_archive_sha256": "b2f9144dec28a2026d7dfa98dea5bd07c57aa9ce05782963b1ddb625b7087fc4",
+      "evidence": {
+        "format": "pokerattack-evidence-v1",
+        "source_sha": "cccccccccccccccccccccccccccccccccccccccc",
+        "workflow": {
+          "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+          "run_id": 1,
+          "run_attempt": 2,
+          "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/1"
+        },
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "migration_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "config_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "client_source_sha": "cccccccccccccccccccccccccccccccccccccccc",
+        "client_archive_sha256": "b2f9144dec28a2026d7dfa98dea5bd07c57aa9ce05782963b1ddb625b7087fc4",
+        "verifier_id": "f488580d48dec5d4d8eae1c7e7cd9a20",
+        "verified_unix": 1794797023,
+        "checks": {
+          "https": true,
+          "served_client": true,
+          "signalr": true,
+          "private_message_isolation": true,
+          "multiplayer": true,
+          "solo": true
+        },
+        "artifact_references": [
+          "fixture-only:pokerattack-release-fixture-6b95e87a87b5"
+        ]
+      }
+    }
+  },
+  "actual_negative": {
+    "timestamp_utc": "2026-11-16T03:04:38.446875+00:00",
+    "fixture_only": true,
+    "exit": 1,
+    "expected_private_isolation_failure": true,
+    "previous_promotable_report_unchanged": true,
+    "repository_notification_helper_unmodified": true
+  },
+  "generated_proof_import": "F05-generated-proof.log: exact actual attempt-2 browser proof accepted mode 0600; revoked/maintenance retained",
+  "failures": [
+    "Initial orchestration fixtures omitted staticwebapp.config.json; 14 unit fixture setup errors. Added required prepared config; full 83 tests pass. No production operation attempted."
+  ],
+  "verified": [
+    "Exact allocated session IDs recorded before persistence/response; no global enumeration, deletion or display-name ownership inference",
+    "Killed local runner left one lobby/game/solo; fresh attempt/player IDs reclaimed only that run/pair through normal leave, completed actual gameplay and ended with zero sessions",
+    "Old tokens and reused player IDs rejected; in-flight creation not misreported as zero; credential/private material removed",
+    "Evidence-only resume cannot deploy/restart/promote; both host locks prevent racing legacy replacement/promotion",
+    "Gameplay worker rechecks accepted client and exact pending manifest/runtime, revokes own credential, imports exact bytes; ambiguous responses never retried",
+    "Separate explicit promotion decision binds imported bytes and original verification timestamp; missing/stale/wrong evidence or changed runtime cannot promote",
+    "Local and live Linode read-only probes show containerd store. CI-only profile pins both disposable build/publish runners to the same store without changing any shared daemon"
+  ],
+  "remaining": [
+    "Full Linux CI/SSH/bootstrap/recovery timing and end-to-end controller rehearsal H",
+    "Actual environment/keys/OIDC/archive provisioning and live proof I/K",
+    "F06 reopening/public post-checks and rollback dispatch; G single dashboard still outstanding"
+  ]
+}

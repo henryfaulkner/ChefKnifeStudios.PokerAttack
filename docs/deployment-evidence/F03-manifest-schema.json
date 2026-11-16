@@ -1,0 +1,38 @@
+{
+  "timestamp_utc": "2026-11-15T21:38:59.906934+00:00",
+  "base_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "scope": "LOCAL SOURCE ONLY; no live schema/config mutation or migration execution",
+  "source_sha256": {
+    ".github/workflows/server.yml": "e0c62114c0658a5721615bf42c4e526ce8ec9a8e372af969660cd523905b22cd",
+    "deploy/release/server_manifest.py": "cdecb48c5602115b2ae942dc7ab3d9392a442c3ece36b0a032e0fa196f196dcd",
+    "deploy/release/test_server_manifest.py": "e5f39569a2951822a01e4eaddd26fc92ba39c7863777191ad58c4cbfe127aa8f",
+    "deploy/release/schema-prerequisite.json": "6bbd1b16bca63c19f2b04a83563bd2a7766e19a68223d76fd1cd1ea3d96afa6f",
+    "deploy/linode/release_lease.py": "9f626c99e0ef2d932392b17a49292689821f2cdb55ec3de4a1e5c7587538fe74",
+    "deploy/linode/release-status.py": "9d1af45a88e91dc5e52168a8a2738f36ec7a5ce64783721a545eb2095e862182",
+    "deploy/linode/test_lease.py": "ada5baf27a8aa613a3d0efae09411db2d2defa8d9776c56a4c69259ec8632a85",
+    "deploy/linode/test_status.py": "07bc6407f21e1c79362445e7206eed27a5680de2e3292e332dfa2b2712790e8e"
+  },
+  "checks": {
+    "host_tests": 77,
+    "release_tests": 55,
+    "client_server_actionlint": "pass"
+  },
+  "logs_sha256": {
+    "artifacts\\F03-host-initial.log": "2e14c13c1deb484f7d2555b9a08dcae6215fb5f27f30abb7d78a5f748e4cc6e7",
+    "artifacts\\F03-release-initial.log": "bb06bb279366731fea4313ec18ba804d0fd6fa4f7535860f4070fa78d87d4d39",
+    "artifacts\\F03-workflow-initial.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "verified": [
+    "Exact source/run/image repository/platform/revision and protected config hash bind manifest",
+    "Reviewed prerequisite must match all source migration IDs; missing/new/unapproved prerequisites rejected",
+    "Host constant bounded READ ONLY query covers candidate plus retained known-good manifest migration union",
+    "Wrong config/schema fail before lease/maintenance/stop; legacy recovery uses existing readiness without fabricated manifest",
+    "Only three aggregate counts in status; unrelated fields discarded, unavailable or invalid observations remain null rather than zero",
+    "No config bytes, database credentials, migration operation or mutation key on resolver runner"
+  ],
+  "remaining": [
+    "Candidate/recovery whole-stack schema rehearsal H",
+    "Protected approved config hash and server-status key/environment provisioning I",
+    "Live delivery and reset/promotion decisions K"
+  ]
+}

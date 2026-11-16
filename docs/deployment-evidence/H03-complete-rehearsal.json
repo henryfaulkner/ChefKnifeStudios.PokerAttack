@@ -1,0 +1,46 @@
+{
+  "task": "H03",
+  "completed_utc": "2026-11-16T06:04:29.559164+00:00",
+  "scope": "disposable native Linux replica; GitHub approvals/metadata and SWA file-service publication explicitly simulated; real role SSH/root/Docker/TLS/browser/controller behavior",
+  "application_source_sha": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+  "result": "PASS",
+  "production_mutation": false,
+  "required_cases": {
+    "malformed_commands": "H03-command-rejection.json",
+    "stale_wrong_evidence_and_promotion_reopening": "H03-readiness-evidence-finalization.json",
+    "failed_pull_lock": "H03-pull-lock-recovery-attempt2.json",
+    "failed_readiness": "H03-readiness-evidence-finalization.json",
+    "failed_restoration_and_SSH": "H03-restoration-SSH-reconciled.json",
+    "client_restoration_and_failed_restoration": "H03-client-restoration.json"
+  },
+  "limitations": [
+    "No real GitHub review or SWA ARM upload authentication claimed. Those remain I/K.",
+    "Original fixture failures retained. The reconciled SSH report retains historical error_type/diagnostic_status fields from its first failed attempt; phase/final_status and explicit recovery results describe reconciliation."
+  ],
+  "source_hashes": {
+    "deploy\\rehearsal\\azure_replica.py": "31c0c0c70e813186fc4b7beaa8e979bd137b907aeabf0c580552a55f014874fe",
+    "deploy\\rehearsal\\blob_transfer.py": "69916dfe578ccec1489bb322d9033f0abfb024df20a16817b4208002d623cc5b",
+    "deploy\\rehearsal\\capture_legacy.py": "929ad32e25f562f03343b369989e2c784075fe9b5d5253210485656a76c7333c",
+    "deploy\\rehearsal\\execute_fixture.py": "3c2d7a70dded97aad05d33110bae630f096d308009eb6abc0690a15c4c061993",
+    "deploy\\rehearsal\\initialize_replica.py": "d2023402060586ad66805fe58f8058f44cc0bf305d786507f7bf64cbdfa1cfb5",
+    "deploy\\rehearsal\\package_inputs.py": "130031a94da84208898eaeca9242a3793240cb7b088b32f7971f39b7ab7aecc3",
+    "deploy\\rehearsal\\replica_rpc.py": "dfcb3bcb6c162803da717ea22e5edb5d9f27c2bb95992a88d019cefca4a4d22f",
+    "deploy\\rehearsal\\resume_interruption_faults.py": "4be550a0924e722e71c5337c9ed1ffdc0a2cd9981973da62722ad11f731efc11",
+    "deploy\\rehearsal\\run_client_recovery.py": "b8f7b18c7946e77d0d0b21d7e7c7cb3ca1e3e90d5c4021d6fa56186620aed159",
+    "deploy\\rehearsal\\run_faults.py": "31431c0edf326445034d6a23ae88188fb97cafd6de1385a6c8a297aab91a5647",
+    "deploy\\rehearsal\\run_interruption_faults.py": "7add7b228807c3bfc41de66474ec8328be2e82e4f2ca75b4f7933c51172451cc",
+    "deploy\\rehearsal\\run_monitoring_lifecycle.py": "81496520c99965683793a9d1377e39efbe3edd0f0a893641e6dd7ebf278e86e2",
+    "deploy\\rehearsal\\run_more_faults.py": "3568d0bfbbb96610838216678acaa9d286cb00f7e68065a4fb37203e0599b741",
+    "deploy\\rehearsal\\run_release.py": "cdca99fdde37b3538bed31f2e4403905f842a4576b7ffa6fa43004abb5db44dd",
+    "deploy\\rehearsal\\source_snapshot.py": "cc71bde8822109fe6a3f4320e8865aaf9ed668664bb847c69229182376df534d",
+    "deploy\\rehearsal\\stage_inputs.py": "14864032c6da39bf92c5dcba28bcd3d4118aad20aaee907c7fae46398765cc13"
+  },
+  "failed_attempts_remain_failed": true,
+  "reports_sha256": {
+    "H03-command-rejection.json": "5baed81f3887297e90eadbf3011a6819e90c877a8677d2f6856c28ac614aacfc",
+    "H03-pull-lock-recovery-attempt2.json": "100db7f0cdc03fbf59a3d0771a37a443219d5761ee64017b37e497b386ba0aed",
+    "H03-readiness-evidence-finalization.json": "4836396f074f0241e912d785b874908a83d1bf8877d520b1f56b749a3743812e",
+    "H03-restoration-SSH-reconciled.json": "a21cc84e91f92a626d32a7323eb178a5ab531c38edd19984df4f399bda98b4f5",
+    "H03-client-restoration.json": "ad9e525d37b20976081ac5ed140443ab09aaa9e83a29a0e5650542ebf5b5b08c"
+  }
+}

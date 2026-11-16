@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { createPlayerContext, navigateToHome, cleanupPlayers, cleanupServerData, wait, PlayerContext } from '../helpers/setup';
 import * as actions from '../helpers/actions';
+import { resolveTargets } from '../helpers/targets';
 
 /**
  * E2E Multiplayer Test - 4 Players, 3 Consecutive Games
@@ -14,16 +15,12 @@ test.describe('4-Player Multiplayer Game - 3 Consecutive Games', () => {
     // Get URLs from environment variables
     // CLIENT_URL: Where the browser navigates (frontend)
     // API_URL_CLEANUP: Where the cleanup endpoint is (backend API)
-    // For backward compatibility, fall back to API_URL for local dev
-    const clientUrl = process.env.CLIENT_URL || process.env.API_URL || 'https://localhost:7150';
-    const apiUrl = process.env.API_URL_CLEANUP; // Optional - for production
+    const targets = resolveTargets();
+    const clientUrl = targets.clientUrl;
+    const apiUrl = targets.cleanupApiUrl;
 
     console.log(`Client URL (browser navigation): ${clientUrl}`);
-    if (apiUrl) {
-      console.log(`API URL (cleanup endpoint): ${apiUrl}`);
-    } else {
-      console.log('API URL: Deriving from client URL (local dev mode)');
-    }
+    console.log(`API URL (cleanup endpoint): ${apiUrl}`);
 
     // ============================================================================
     // ARRANGE - Setup Phase (handled for you)
@@ -141,9 +138,7 @@ test.describe('4-Player Multiplayer Game - 3 Consecutive Games', () => {
           roundNumber++;
         }
 
-        if (!gameComplete) {
-          console.log(`  ⚠ Warning: Reached max rounds (${MAX_ROUNDS}) without game completion`);
-        }
+        expect(gameComplete, `Game ${gameNumber} must finish within ${MAX_ROUNDS} rounds`).toBe(true);
 
         // --------------------------------------------------------------------
         // Phase 4: Game End
@@ -326,6 +321,10 @@ async function playGameRound(players: PlayerContext[], roundNumber: number): Pro
  */
 async function viewScoreboard(players: PlayerContext[]): Promise<void> {
   console.log('  Viewing scoreboard...');
+  if (await actions.isGameComplete(players[0])) {
+    console.log('  Host has a game result; checking remaining players.');
+    return;
+  }
 
   // Wait for scoreboard to appear (rounds have time limits, so we need to wait)
   // Timeout should be longer than the round duration
@@ -409,6 +408,7 @@ async function handleEliminationOrShop(players: PlayerContext[], roundNumber: nu
  */
 async function assertGameComplete(players: PlayerContext[], gameNumber: number): Promise<void> {
   console.log(`Asserting game ${gameNumber} complete...`);
+  let winners = 0;
 
   // Handle result modals and ensure all players are back on lobby page
   for (const player of players) {
@@ -428,15 +428,11 @@ async function assertGameComplete(players: PlayerContext[], gameNumber: number):
       // Give UI time to render modal if present
       await wait(1000);
 
-      // Check for result modal and close it
-      const hasModal = await actions.isGameComplete(player);
-      if (hasModal) {
-        console.log(`  [${player.playerName}] Closing result modal...`);
-        await actions.closeGameResultModal(player);
-        console.log(`  ✓ [${player.playerName}] Modal closed`);
-      } else {
-        console.log(`  [${player.playerName}] No modal found`);
-      }
+      const dialog = player.page.getByRole('alertdialog').filter({ hasText: 'Game Result' });
+      await expect(dialog).toBeVisible();
+      if (await dialog.getByText('You are a winner', { exact: true }).isVisible()) winners++;
+      else await expect(dialog.getByText('You are a loser', { exact: true })).toBeVisible();
+      await actions.closeGameResultModal(player);
 
       // Verify on lobby page
       await actions.assertOnLobbyPage(player);
@@ -449,7 +445,8 @@ async function assertGameComplete(players: PlayerContext[], gameNumber: number):
     }
   }
 
-  console.log('  ✓ All players back on lobby page');
+  expect(winners, `Game ${gameNumber} must have exactly one winner`).toBe(1);
+  console.log('  ✓ All players back on lobby page with one winner and three losers');
 
   // Wait for lobby to update (GameId cleared) before starting next game
   console.log('  Waiting for lobby state to update...');

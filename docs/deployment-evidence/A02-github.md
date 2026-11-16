@@ -1,0 +1,11 @@
+# A02 delivery settings
+
+Read-only inspection 2026-11-15T14:54–14:58Z, source `55c3a413151fc9dfae0e8a7cad4c0230cab13e46`.
+
+GitHub REST via authenticated `gh api`, repository `henryfaulkner/ChefKnifeStudios.PokerAttack`: public; default branch main at `b6a4d17d8eb42e9f9bee8214021406ff8be22659`; caller has admin. Zero environments, zero rulesets; main protection returns HTTP 404 “Branch not protected.” Actions enabled, allowed actions all, SHA pinning not required; default workflow token read; Actions cannot approve PR reviews. Zero Actions variables. Secret names only: `POKERATTACKAPI_AZURE_CLIENT_ID`, `POKERATTACKAPI_AZURE_SUBSCRIPTION_ID`, `POKERATTACKAPI_AZURE_TENANT_ID`, `POKERATTACKAPI_REGISTRY_PASSWORD`, `POKERATTACKAPI_REGISTRY_USERNAME`. Values were not requested; usability/scope not proven.
+
+Workflow API lists only active `Migration build and test`, ID 418417105. Latest passing source run: [43723672616](https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/43723672616), SHA `55c3a4…`. This validates historical CI, not today's baseline or production CD. Local client.yml is not on main; it has a main push/non-main build dispatch and an unprovisioned `production` environment. If merged as written, a client main push could upload before new controls exist. It has separate concurrency, no host lease check and no rollout switch. Preserve it unpublished until replaced/gated. No server.yml exists.
+
+Azure DevOps verified at actual organization `https://dev.azure.com/henryfaulkner`, project `ChefKnifeStudios.DevOps`: definitions 39 (server), 40 (client), 41 (E2E) all `queueStatus=disabled`. Earlier attempted ChefKnifeStudios organization returned 404; corrected using repository WP02 reference. Other applications' pipelines untouched.
+
+Read TransitJazz server/client YAML directly: useful two-image full-SHA publication and restricted SSH pattern, but its migration branch exception, martajazz names, shared registry password and lack of PokerAttack promotion controls must not be copied. Missing configuration: all four intended environments, main restrictions/reviewers, validation protection, OIDC publisher, SWA/status keys, separate deploy/evidence/promotion keys, trusted host entries and rollout switch. No settings changed.

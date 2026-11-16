@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+export PATH=/usr/bin:/bin
+[[ $EUID == 0 && $# == 0 ]] || { echo 'Use the fixed privileged status interface.' >&2; exit 1; }
+exec /usr/bin/python3 /opt/pokerattack/release-status.py production

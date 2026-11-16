@@ -1,0 +1,26 @@
+{
+  "timestamp_utc": "2026-11-16T05:34:51.159715+00:00",
+  "state": "C07 REVALIDATED (LOCAL AND DISPOSABLE REPLICA); H03 PARTIAL",
+  "api_source_sha": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+  "source_sha256": {
+    "deploy/linode/pokerattack-deploy": "2a639953e3faf741f28dd8e7b4397a685cd5e9195bcc8805b57ecb2a930d2fab",
+    "deploy/linode/test_release.py": "7109330d967159c7ea921a8acea3742f3af2ce0feeb9f957d6ec4cadfb9dc600",
+    "deploy/rehearsal/run_faults.py": "31431c0edf326445034d6a23ae88188fb97cafd6de1385a6c8a297aab91a5647"
+  },
+  "verification": {
+    "host_tests": 86,
+    "exit_code": 0,
+    "log": "artifacts/H02-replica/distinct-recovery-tests.log",
+    "actual_recovery": "H03-pull-lock-recovery-attempt2.json"
+  },
+  "change": "Promotion of a fresh snapshot with the SAME digest/config no longer rotates previous-good to a duplicate; older distinct pair retained.",
+  "replica_repair": "Restored the inspected older snapshot pointer under control/deploy locks after matching digest and exact app.env hash, without API restart. No production pointers changed.",
+  "failed_attempt_retained": "H03-pull-lock-recovery-attempt1.json",
+  "remaining_H03": [
+    "real readiness/evidence/promotion/reopening faults in progress",
+    "failed-restoration transaction recovery",
+    "runner/SSH interruption",
+    "client artifact restoration/failure"
+  ],
+  "production_mutation": false
+}

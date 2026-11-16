@@ -1,0 +1,16 @@
+{
+  "task": "H04",
+  "fixture_only": true,
+  "production_mutation": false,
+  "phase": "failed-or-incomplete",
+  "cases": [],
+  "error_type": "ValueError",
+  "fixture_container_cleanup": [
+    "24eccfe8373c247984abae4f50e08b9b6cc7359653d069c31a5e8c40d293c3db",
+    "ff84020861a5ac23d4aa3dee4c9c72bd08f50a007b915c23bfd9233ea8de3ff7",
+    "b389c00a8817531c68c8d3a2ec2b8c585f710ed17668453b4cf4baad2cafc3d7",
+    "0ebfd69458196eb86b03b09a539f8bd7d1f675978dafa2ef1d16de37b0d9edba",
+    "2d931b32f4182fb107bb6b3b4ad6cf65069592e528077c46af271be2b93029ad",
+    "c1317a92b114339688ec45948cc187fb2717ed2a13b25d84ce6ea22e1eccaffc"
+  ]
+}

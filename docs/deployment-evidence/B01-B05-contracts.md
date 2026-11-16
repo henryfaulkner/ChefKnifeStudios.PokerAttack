@@ -1,0 +1,11 @@
+# B01–B05 local contract evidence
+
+Completed contract validation 2026-11-15 (exact UTC and source-file SHA256 values in [ledger](B01-B05-contracts.json)). Base source `55c3a413151fc9dfae0e8a7cad4c0230cab13e46`; all contract files uncommitted. These are source contracts, not installed controls or successful releases.
+
+[Contract](../../deploy/release/CONTRACT.md) specifies immutable client/server manifests, private Blob archive protecting the last two accepted artifacts and 30-day history, command/authority matrix, lease and lock rules, exact reset/evidence bindings and idempotent resume, event/compatibility matrix, and bootstrap from the actual A04 capabilities. JSON schemas and fictional examples under deploy/release were validated with Draft202012Validator/jsonschema 4.25.1 in ignored local venv `artifacts/deployment-tools`.
+
+Command `artifacts/deployment-tools/Scripts/python.exe deploy/release/test_manifests.py`: 6 tests pass, covering valid examples, digest/platform/repository/source substitution, false/non-boolean evidence, archive path injection/ambiguous artifact names, wrong run references, missing known-good schema compatibility, unknown fields/duplicate JSON keys/oversize and NaN.
+
+Contract review found two dependency/race issues and resolved them before completing B: client status alone cannot serialize publication with manual server operations, so a separate minimal publication-lease capability is specified; bootstrap client publication during a server lease cannot use the ordinary client-begin path, so only a recorded root bootstrap operation can do so. Rerun handoff is explicit, invalidates old verifier/evidence and cannot refresh reset approval or restart a candidate.
+
+B02 command rejection/role rules are a specification; implementation/negative tests belong to C02. B03 freshness must be enforced again on host import/promotion. B04 event fixtures/workflow validation remain E/F. B05 has no live or replica rehearsal yet; H05 must prove its transition, and K01 still needs exact built artifacts plus fresh release acknowledgment. No account/container, identity, host script, secret, dashboard or workflow was provisioned/published by these tasks. README/WP09 operational handover remains L02; old ACA recovery is explicitly invalid in this contract.

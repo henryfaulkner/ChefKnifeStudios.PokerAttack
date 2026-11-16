@@ -1,0 +1,21 @@
+{
+  "timestamp_utc": "2026-11-16T04:11:55.072519+00:00",
+  "task": "H02",
+  "state": "IN_PROGRESS; provisioning is not rehearsal completion",
+  "temporary_resource_group": "rg-pa-release-rehearsal-ee04fd29796c",
+  "vm_id": "/subscriptions/d2f70759-7eeb-4ca5-9046-f7c8d562ef8f/resourceGroups/rg-pa-release-rehearsal-ee04fd29796c/providers/Microsoft.Compute/virtualMachines/pa-rehearsal",
+  "storage_account": "parehearsalee04fd29796c",
+  "created_utc": "2026-11-16T04:06:23.734523+00:00",
+  "expires_utc": "2026-11-17T04:06:23.734523+00:00",
+  "phase": "provisioned",
+  "cleanup_state_reference": "artifacts/H02-replica/azure-state.json; subscription/nonce/owned-resource guard in deploy/rehearsal/azure_replica.py",
+  "production_mutation": false,
+  "purpose": "Disposable Ubuntu production-equivalent Linux/SSH/PostgreSQL/Docker release rehearsal",
+  "scope": "Dedicated H02-H05 resources only; GitHub/ACR/SWA/Linode production configuration unchanged",
+  "source_sha256": {
+    "deploy/rehearsal/azure_replica.py": "31c0c0c70e813186fc4b7beaa8e979bd137b907aeabf0c580552a55f014874fe",
+    "deploy/rehearsal/replica_rpc.py": "dfcb3bcb6c162803da717ea22e5edb5d9f27c2bb95992a88d019cefca4a4d22f",
+    "deploy/rehearsal/setup-replica.sh": "ce91eca9fd643b4f0806e57541ee58365bcb8e4d7164b24e1f27f3b02a927722"
+  },
+  "next": "Finish isolated machine setup, exact source/image artifact snapshot, controller/SSH/browser release and fault rehearsals; delete owned resources and verify absence when finished."
+}

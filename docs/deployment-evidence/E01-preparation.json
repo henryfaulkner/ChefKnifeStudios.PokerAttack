@@ -1,0 +1,38 @@
+{
+  "timestamp_utc": "2026-11-15T19:15:03.267955+00:00",
+  "base_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "scope": "LOCAL ONLY; prepared existing isolated publish, not deployed",
+  "source_sha256": {
+    "deploy/prepare-production-client.mjs": "6f5d42b4724ba2f37c5edc259f9eadcd48a123337e9ad4a52ca5a787aa6e147d",
+    "deploy/prepare-production-client.test.mjs": "89b6143bb812451199370f7b20b44a13ff347573f08ad7ec7a3a1f75b06a7ce3"
+  },
+  "checks": [
+    {
+      "command": [
+        "node",
+        "--test",
+        "deploy/prepare-production-client.test.mjs",
+        "deploy/prepare-client-artifact.test.mjs"
+      ],
+      "exit_code": 0,
+      "log_sha256": "57f8260419947a22d9abae152ce2c785ab232e880d2204a1714e830e3212631c"
+    },
+    {
+      "command": [
+        "node",
+        "deploy/prepare-production-client.mjs",
+        "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\client-wp04\\wwwroot",
+        "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\E01-production-d22fed22904f"
+      ],
+      "exit_code": 0,
+      "log_sha256": "a19bcc93839b1543d536e7c2d165d6ba25b04f8745ab0b3b4a9215536a7a05de"
+    }
+  ],
+  "production_helper_tests": 5,
+  "retained_pilot_tests": 2,
+  "prepared_artifact": "artifacts/E01-production-d22fed22904f",
+  "input_settings_sha256": "a4bf5cb123666ff10955d16d4ded3b94e6c15fa13a2c2896dfc6974286a534d3",
+  "prepared_settings_sha256": "f77fb941dc56040d7eddbfd8bbeb21d5a625998c813dcdb387381d394f06a0ba",
+  "files": 676,
+  "production_requests": false
+}

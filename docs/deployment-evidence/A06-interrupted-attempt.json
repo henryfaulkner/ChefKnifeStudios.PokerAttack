@@ -1,0 +1,87 @@
+{
+  "started_utc": "2026-11-15T14:56:50.129102+00:00",
+  "source_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "runner_sha256": "229fbf7e09b8b7f8b8987ca08f9996ae7a64fe3a82f35b8792123d1faae63661",
+  "steps": [
+    {
+      "name": "business-logic",
+      "command": [
+        "dotnet",
+        "test",
+        "src/Server/ChefKnifeStudios.PokerAttack.Server.BL.Tests",
+        "-c",
+        "Release"
+      ],
+      "exit_code": 0,
+      "finished_utc": "2026-11-15T14:57:00.171396+00:00"
+    },
+    {
+      "name": "api-build",
+      "command": [
+        "dotnet",
+        "build",
+        "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI",
+        "-c",
+        "Release"
+      ],
+      "exit_code": 0,
+      "finished_utc": "2026-11-15T14:57:07.467572+00:00"
+    },
+    {
+      "name": "hosting",
+      "command": [
+        "dotnet",
+        "test",
+        "src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI.Tests",
+        "-c",
+        "Release"
+      ],
+      "exit_code": 0,
+      "finished_utc": "2026-11-15T14:57:25.431154+00:00"
+    },
+    {
+      "name": "npm-ci",
+      "command": [
+        "C:\\Program Files\\nodejs\\npm.cmd",
+        "ci",
+        "--prefix",
+        "tests"
+      ],
+      "exit_code": 0,
+      "finished_utc": "2026-11-15T14:57:47.098578+00:00"
+    },
+    {
+      "name": "guards",
+      "command": [
+        "C:\\Program Files\\nodejs\\npm.cmd",
+        "--prefix",
+        "tests",
+        "run",
+        "test:guards"
+      ],
+      "exit_code": 0,
+      "finished_utc": "2026-11-15T14:57:50.159922+00:00"
+    },
+    {
+      "name": "pilot-artifact",
+      "command": [
+        "node",
+        "--test",
+        "deploy/prepare-client-artifact.test.mjs"
+      ],
+      "exit_code": 0,
+      "finished_utc": "2026-11-15T14:57:50.388299+00:00"
+    },
+    {
+      "name": "wasm-tools",
+      "command": [
+        "dotnet",
+        "workload",
+        "install",
+        "wasm-tools"
+      ],
+      "exit_code": 4294967295,
+      "finished_utc": "2026-11-15T15:02:47.349112+00:00"
+    }
+  ]
+}

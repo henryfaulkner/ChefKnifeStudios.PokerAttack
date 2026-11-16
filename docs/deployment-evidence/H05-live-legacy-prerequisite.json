@@ -1,0 +1,67 @@
+{
+  "inspected_utc": "2026-11-16T13:14:22.013191+00:00",
+  "read_only": true,
+  "tools": {
+    "/opt/pokerattack/compose.yaml": {
+      "sha256": "1dd98b8e257abdca0269ea07491d27078ad93022243e073ea17ea4446749bfae",
+      "mode": "0o644"
+    },
+    "/opt/pokerattack/validate-config.py": {
+      "sha256": "c2669986b6536986751d2cb26a9b15c83a28e76241a2c6a8f15207ebe02b1b9c",
+      "mode": "0o755"
+    },
+    "/usr/local/sbin/pokerattack-deploy": {
+      "sha256": "d02481a9a9fa29ed6b15772a24053431774a305d8333b7e3f8b0b7cea934ca97",
+      "mode": "0o755"
+    },
+    "/usr/local/sbin/pokerattack-ssh-deploy": {
+      "sha256": "46984a1694c9eb354b4bb86d2708577c515865c7e8e6c42630b36c3a76fdf1f4",
+      "mode": "0o755"
+    }
+  },
+  "pairs": {
+    "active": {
+      "digest": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+      "snapshot_config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f"
+    },
+    "known-good": {
+      "digest": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+      "snapshot_config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f"
+    },
+    "pending": null,
+    "previous-good": null
+  },
+  "state": {
+    "lease": false,
+    "transaction": false
+  },
+  "ready": true,
+  "containers": [
+    {
+      "container_id": "45befa1de68526ca5b0686fc5fad7d9e4226b25d65aaa88cdca5665a05724dcb",
+      "name": "/pokerattack-production-api-1",
+      "state": "running",
+      "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588"
+    },
+    {
+      "container_id": "fbe3c939907d8df6e91997d51a8535637b1e279087e6a6a02ab61f383bd86ff6",
+      "name": "/pokerattack-pilot-api-1",
+      "state": "exited",
+      "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588"
+    },
+    {
+      "container_id": "1fac1e872bc54e40b1c89230be9f72e94e3e8f2533a46d4799a7e11df5abeb80",
+      "name": "/transitjazz-app-server-1",
+      "state": "running",
+      "image_id": "sha256:e0e6a30cb55b1ac7987a0cd2ca4843d0b56377a5bc1448436517480900ad22f0"
+    },
+    {
+      "container_id": "d9fc0b5afced651b8fde45487b91a517e52316c221527b7393364d9f39089995",
+      "name": "/transitjazz-app-proxy-1",
+      "state": "running",
+      "image_id": "sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03"
+    }
+  ]
+}

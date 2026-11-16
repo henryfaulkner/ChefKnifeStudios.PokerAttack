@@ -1,0 +1,68 @@
+{
+  "timestamp_utc": "2026-11-16T05:13:42.836028+00:00",
+  "task": "H02",
+  "state": "COMPLETE (DISPOSABLE REPLICA ONLY)",
+  "production_mutation": false,
+  "source_sha": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+  "active_branch_head_unchanged": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "source_sha256": {
+    "deploy/rehearsal/azure_replica.py": "31c0c0c70e813186fc4b7beaa8e979bd137b907aeabf0c580552a55f014874fe",
+    "deploy/rehearsal/blob_transfer.py": "69916dfe578ccec1489bb322d9033f0abfb024df20a16817b4208002d623cc5b",
+    "deploy/rehearsal/initialize_replica.py": "d2023402060586ad66805fe58f8058f44cc0bf305d786507f7bf64cbdfa1cfb5",
+    "deploy/rehearsal/package_inputs.py": "130031a94da84208898eaeca9242a3793240cb7b088b32f7971f39b7ab7aecc3",
+    "deploy/rehearsal/replica_rpc.py": "dfcb3bcb6c162803da717ea22e5edb5d9f27c2bb95992a88d019cefca4a4d22f",
+    "deploy/rehearsal/run_release.py": "cdca99fdde37b3538bed31f2e4403905f842a4576b7ffa6fa43004abb5db44dd",
+    "deploy/rehearsal/source_snapshot.py": "cc71bde8822109fe6a3f4320e8865aaf9ed668664bb847c69229182376df534d",
+    "deploy/rehearsal/stage_inputs.py": "14864032c6da39bf92c5dcba28bcd3d4118aad20aaee907c7fae46398765cc13",
+    "deploy/rehearsal/setup-replica.sh": "12278c8b12ff9023e46bcbc7294a4033e84c8548d549beda83ac297fa1885e96",
+    "deploy/release/server_verify.py": "b91c19b6125a196cd686a6f140b0105e883051d3ba4f9ba5702340df5cdefca0",
+    "deploy/release/test_verification_diagnostics.py": "eafbcbc5dd20801c863b99947f9fde77d404cad89b0c14757c111c77eb782eec",
+    "deploy/linode/release_lease.py": "0d24b6dc1de3fc3406ecad9ec4f021aef0320d162eaf14791d79fa09e0f7339b",
+    "deploy/linode/test_lease.py": "e94f09218e45fa3b5633eebd856c882cffedb5106e54782132545835e6cfadac"
+  },
+  "complete_transition": "H02-release-attempt5.json",
+  "repaired_previous_attempt": "H02-release-attempt4.json",
+  "failed_attempts": [
+    "H02-release-attempt1.json",
+    "H02-release-attempt2.json",
+    "H02-release-attempt3.json"
+  ],
+  "fixture_repairs": [
+    "Directory umask077 made mode0755 mkdir become0700; explicit chmod0755 and real UID1654 read check repair. Added API-observed open-gate preflight; 85 host tests pass.",
+    "Azure RunCommand leaves HOME unset; Chromium did not find NSS trust, despite Node using /root. Read-only strict-TLS diagnostic failed ERR_CERT_AUTHORITY_INVALID; passing the actual user home (not redirecting it) succeeds. No TLS bypass.",
+    "Allowlisted failure-stage diagnostics added; 97 release tests pass and no raw provider output/credentials can be exposed."
+  ],
+  "verification": [
+    "Fresh, open repaired baseline -> immutable reset packet -> acknowledged drain -> exact digest/config replacement -> ready pending closed gate",
+    "Actual role-separated SSH denials and status/deploy/evidence/promotion commands with pinned host key; no production credentials",
+    "Real strict-HTTPS production-safe suite against all three production-shaped origins on VM loopback completes multiplayer/solo, private-message isolation and owned cleanup",
+    "Actual generated proof bound to source/image/config/client/run/attempt, verifier revoked, exact import hash and separate matching simulated promotion review",
+    "Known-good promotion -> matching lease finish -> seven real public browser/asset/SignalR checks -> ordinary owned lobby creation/leave -> zero live sessions",
+    "Caddy/registry IDs and independent database canary42 unchanged; no schema downgrade/production migration",
+    "Failed attempts remain failed; explicit verification-only resume never redeployed. After repairs a separate complete fresh transition (attempt5) passed from an actually open capable baseline."
+  ],
+  "measured_seconds": {
+    "restricted-SSH-denials": 2.36,
+    "fresh-structured-status": 0.589,
+    "immutable-review-packet": 0.004,
+    "acknowledged-drain-digest-delivery": 23.996,
+    "real-HTTPS-gameplay-and-evidence-import": 64.747,
+    "explicit-matching-promotion": 3.448,
+    "reopening-and-real-public-browser-checks": 13.199,
+    "ordinary-owned-lobby-after-reopening": 0.05
+  },
+  "runtime_versions": {
+    "compose": "Docker Compose version 2.40.3+ds1-0ubuntu1~24.04.1",
+    "docker": "Docker version 29.1.3, build 29.1.3-0ubuntu3~24.04.2",
+    "node": "v22.23.5"
+  },
+  "limitations": [
+    "GitHub approval/repository context and numeric artifact identities are explicitly fictional fixtures; real environment protections/hosted runs remain I/K",
+    "Registry is a private TLS loopback fixture named chefknife.azurecr.io on the VM only, not real ACR; ACR auth/locks remain I/K",
+    "API image built from immutable Git4ce18ec; host/runner diagnostic and preflight changes are separately hashed above, no application code changed",
+    "Replica Docker29.1.3/Compose2.40.3 differs from inspected Linode29.9.3/5.7.1; containerd image store and exact pulled IDs agree. Native host Python3.12 matches deployment support.",
+    "Replica starts with a seeded capable baseline; actual legacy bootstrap/concurrency remains H05",
+    "Private temporary Azure group rg-pa-release-rehearsal-ee04fd29796c remains for H03-H05; cleanup/absence read-back required before session completion; shutdown safeguard08:00UTC.",
+    "No real production restart/promotion/source publication/SWA upload, and no dashboard availability gate"
+  ]
+}

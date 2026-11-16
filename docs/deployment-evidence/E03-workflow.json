@@ -1,0 +1,44 @@
+{
+  "timestamp_utc": "2026-11-15T19:44:24.939790+00:00",
+  "base_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "scope": "LOCAL SOURCE; workflow not published or run in GitHub",
+  "source_sha256": {
+    ".github/workflows/client.yml": "6fc25f82c273fb4bcac5d41de832af8c6b21754a85da558b7c9b2eb7eeb49e7f",
+    "deploy/release/changes.py": "816c8d856099bb8d7baa1e2cde180ca9f0ee03f804a34789fb331c882a10c21b",
+    "deploy/release/test_changes.py": "52d1a3cb8b6ad5d0b911ffe66e2fc7c8e3481553fd4f1f75b9a25ce738f92fa7",
+    "deploy/release/test_workflows.py": "030fb5bd034fc92e8dc356f78554a86f54f4e8cc826c91c8571c22422ad671c1",
+    "deploy/release/requirements-validation.txt": "03dbf78a0725c942c1c4a861910f76ca2ccad623e1979e25e40fced5920331c8"
+  },
+  "checks": [
+    {
+      "command": [
+        "artifacts/deployment-tools/actionlint/actionlint.exe",
+        ".github/workflows/client.yml"
+      ],
+      "exit_code": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "artifacts/deployment-tools/Scripts/python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "deploy/release",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "log_sha256": "10e49cd93a680f949a5e711431f5cb73dab9b64047f83858a18a0708787c4eee"
+    }
+  ],
+  "release_test_count": 21,
+  "rollout_default": "off",
+  "production_job": "explicit fail-closed E04/E05 placeholder; no SWA upload exists yet",
+  "actionlint_version": "1.7.7",
+  "actionlint_binary_sha256": "6d470a52039a433bccdf57bd65170885a5b23e511155d0de587c2c3ce0eb1c24",
+  "action_metadata": "E03-action-pins.json",
+  "production_mutations": false
+}

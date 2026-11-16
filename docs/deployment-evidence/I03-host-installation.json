@@ -1,0 +1,104 @@
+{
+  "task": "I03/I04",
+  "state": "INSTALLED / NO APPLICATION RESTART",
+  "installed_sha256": {
+    "/opt/pokerattack/client_lease.py": "f285ffcc8b7c4d83920d611a8ad931bdff9ed00f98aeefc78293e430bebecb22",
+    "/opt/pokerattack/host_manifests.py": "89d5d9984a311488dc266944c3e812fa34d6ac0b50df20cda7479af4be977964",
+    "/opt/pokerattack/release-control.py": "0fc67b173842a9e33d242737404e3012a5d3f7b29e085d18485363118949c7e6",
+    "/opt/pokerattack/release-legacy-guard.py": "977a1031382f98af72f10cddade1cd001e85c202b8cd7e5e9bc8bfd9219eb562",
+    "/opt/pokerattack/release-recovery.py": "6418b9931b1beb467c3ff8657aeff21c1e1a7663d7e0fc3c5c6cb47906767848",
+    "/opt/pokerattack/release-status.py": "abf30ba1fcbde9c675addc4ce11b4addbda4741010d0dd9887bdba050cc9e9dd",
+    "/opt/pokerattack/release_commands.py": "3d8560baa8e6e103d6010aabce804bebe36f805588ab5918686bcd26e991eb03",
+    "/opt/pokerattack/release_evidence.py": "396b6f34a9e84995937d92c84847a99c9e54882149dff7a02f0bd116c594e8e0",
+    "/opt/pokerattack/release_lease.py": "be5566c3db4c236667f2af606447a66135469a208da15eb4e029da0f2c1b4558",
+    "/opt/pokerattack/release_verifier.py": "1709d81c8525ac3f98335948d7318552eaa19c714380dfcf74202ab094f2f213",
+    "/opt/pokerattack/secure_state.py": "30673de3a3fef7e9e3551bef25d0e0453349642d0d9a73c46796448af939eb86",
+    "/opt/pokerattack/ssh-control.py": "dd6fedd0aaab1d0b10a5b7fb3447fa8063ce841e967ee965a0e2943e536831e1",
+    "/opt/pokerattack/validate-config.py": "6e82562554625de299a73341f068826a90067ba66852ca9862faf32f164f40ab",
+    "/opt/pokerattack/compose.yaml": "f592e28a9ef4966336fe36a6154daa8fac9aba40b254be761b31ce172da22d86",
+    "/opt/pokerattack/bootstrap_control.py": "a0d3e2d165a6f27e3f162d091a581f196dfb83d44023977ffdee68fa6dc57809",
+    "/opt/pokerattack/bootstrap_recovery.py": "7382cf10a20100f361932a92c6665f99c19edfdc15aaa9c04fac0d2030be4cc6",
+    "/usr/local/sbin/pokerattack-backup": "a3a2020bab1229b5666631111d28dc0dc4a86aea1eaf7ec074bc2e562b4376b5",
+    "/usr/local/sbin/pokerattack-backup.service": "56b0de3e9afc0cbfdc5e48e149e4dccbae64a18d145e8fad1306720257f7a2f0",
+    "/usr/local/sbin/pokerattack-backup.timer": "2aa30b4651bc29a805b554e70b37818664a362867238a1e5c5bbc82bc4bcdb73",
+    "/usr/local/sbin/pokerattack-client-lease": "137c7899885a95e79d9567d4198962c50991860ab349a7c80de74d3b59f88d18",
+    "/usr/local/sbin/pokerattack-deploy": "2a639953e3faf741f28dd8e7b4397a685cd5e9195bcc8805b57ecb2a930d2fab",
+    "/usr/local/sbin/pokerattack-deployment": "abd9230fd57300605624581ace2c9a215a3b2d0b57e00375e68153a3bc7429d5",
+    "/usr/local/sbin/pokerattack-evidence": "da0b54cc9ad9978986a2959e939588e35886d14b3084b40e2dd98e4d79c9dfbe",
+    "/usr/local/sbin/pokerattack-promotion": "e706ef50505f39cd5d3b504ca943ec787a60083528031029ae109dbd9ec251d3",
+    "/usr/local/sbin/pokerattack-rollback-target": "b8760e766890b74451ad45f9993740d9c494299e14def2890b16984ee8e566ff",
+    "/usr/local/sbin/pokerattack-ssh-control": "68fc1708d88e96ce5738bc284dc6da6424858172499770d6376cb80a1d0ee018",
+    "/usr/local/sbin/pokerattack-ssh-deploy": "011f34aa44a15d3e42f928013af56395934cd506228f529bee2c88e9bbe8c4e6",
+    "/usr/local/sbin/pokerattack-ssh-status": "0eea09b4a24f5df5e2eece1782f6a54c2ade2ccae07a502ba775d16c6d7d8371",
+    "/usr/local/sbin/pokerattack-status": "6024aa941518cbb01eaace38500571cf81734bba2e4ab8a272ad003626de3264",
+    "/etc/sudoers.d/pokerattack-control": "20ebf8662fd88be45ad71fd10863a201b8ffe9663856ea01ba0c1fa0d406d471",
+    "/etc/sudoers.d/pokerattack-status": "9bf65a0ef8ad0ccee2a7afeb1840560493e3522296cd34b79247c47926770f37"
+  },
+  "production_restart": false,
+  "before": {
+    "/pokerattack-production-api-1": {
+      "id": "45befa1de68526ca5b0686fc5fad7d9e4226b25d65aaa88cdca5665a05724dcb",
+      "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "state": "running"
+    },
+    "/pokerattack-pilot-api-1": {
+      "id": "fbe3c939907d8df6e91997d51a8535637b1e279087e6a6a02ab61f383bd86ff6",
+      "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "state": "exited"
+    },
+    "/transitjazz-app-server-1": {
+      "id": "1fac1e872bc54e40b1c89230be9f72e94e3e8f2533a46d4799a7e11df5abeb80",
+      "image_id": "sha256:e0e6a30cb55b1ac7987a0cd2ca4843d0b56377a5bc1448436517480900ad22f0",
+      "state": "running"
+    },
+    "/transitjazz-app-proxy-1": {
+      "id": "d9fc0b5afced651b8fde45487b91a517e52316c221527b7393364d9f39089995",
+      "image_id": "sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03",
+      "state": "running"
+    }
+  },
+  "active_pair": {
+    "digest": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+    "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f"
+  },
+  "saved_legacy_tooling": {
+    "bundle_sha256": "2886fdf1e5220e6f31083a8395afee7a101c59ff23f295499512e14d2b20218d",
+    "files": {
+      "compose.yaml": "1dd98b8e257abdca0269ea07491d27078ad93022243e073ea17ea4446749bfae",
+      "validate-config.py": "c2669986b6536986751d2cb26a9b15c83a28e76241a2c6a8f15207ebe02b1b9c",
+      "pokerattack-deploy": "5ede6bd8fa2a7669478675b49e3cea45133493559aba47d719e688ada92df7c8",
+      "pokerattack-ssh-deploy": "46984a1694c9eb354b4bb86d2708577c515865c7e8e6c42630b36c3a76fdf1f4",
+      "original-pokerattack-deploy": "d02481a9a9fa29ed6b15772a24053431774a305d8333b7e3f8b0b7cea934ca97"
+    }
+  },
+  "after": {
+    "/pokerattack-production-api-1": {
+      "id": "45befa1de68526ca5b0686fc5fad7d9e4226b25d65aaa88cdca5665a05724dcb",
+      "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "state": "running"
+    },
+    "/pokerattack-pilot-api-1": {
+      "id": "fbe3c939907d8df6e91997d51a8535637b1e279087e6a6a02ab61f383bd86ff6",
+      "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+      "state": "exited"
+    },
+    "/transitjazz-app-server-1": {
+      "id": "1fac1e872bc54e40b1c89230be9f72e94e3e8f2533a46d4799a7e11df5abeb80",
+      "image_id": "sha256:e0e6a30cb55b1ac7987a0cd2ca4843d0b56377a5bc1448436517480900ad22f0",
+      "state": "running"
+    },
+    "/transitjazz-app-proxy-1": {
+      "id": "d9fc0b5afced651b8fde45487b91a517e52316c221527b7393364d9f39089995",
+      "image_id": "sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03",
+      "state": "running"
+    }
+  },
+  "shared_services_preserved": true,
+  "backup_directory": "/opt/pokerattack/install-backups/ce56a0e1e18b9519d4035378db5aceb9f150cbf3f68f4d0e92642b3f409b1617",
+  "source_stage": "/opt/pokerattack/staging/ce56a0e1e18b9519d4035378db5aceb9f150cbf3f68f4d0e92642b3f409b1617",
+  "admission_directory_mode": "0o755",
+  "admission_file_mode": "0o644",
+  "recorded_utc": "2026-11-16T13:26:34.263774+00:00",
+  "source_bundle_sha256": "ce56a0e1e18b9519d4035378db5aceb9f150cbf3f68f4d0e92642b3f409b1617",
+  "installer_sha256": "91ae9defdc0c0f080521e82a6cd997cb9d53ddde119cd88fa3bc0ab1cbad2da0"
+}

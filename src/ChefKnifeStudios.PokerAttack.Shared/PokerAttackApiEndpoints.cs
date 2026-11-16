@@ -2,6 +2,12 @@
 
 public class PokerAttackApiEndpoints
 {
+    public class Release
+    {
+        public const string Status = "/release/status";
+        public const string OwnedSessions = "/release/owned-sessions";
+    }
+
     public class Test
     {
         public const string SignalR = "/test/signal-r";
@@ -64,6 +70,7 @@ public class PokerAttackApiEndpoints
         public const string GetGameState = $"{EndpointGroup}/game-state/{{gameId}}";
         public const string PurchaseShopItem = $"{EndpointGroup}/purchase/{{gameId}}/{{shopItemId}}";
         public const string AdvancePhase = $"{EndpointGroup}/advance-phase/{{gameId}}";
+        public const string LeaveGame = $"{EndpointGroup}/leave-game/{{gameId}}";
     }
 
     public class Settings

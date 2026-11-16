@@ -1,3 +1,4 @@
+using ChefKnifeStudios.PokerAttack.Server.WebAPI.Hosting;
 ﻿using Ardalis.Result;
 using ChefKnifeStudios.PokerAttack.Server.BL.Services;
 using ChefKnifeStudios.PokerAttack.Shared.DTOs.Lobby;
@@ -41,11 +42,14 @@ public static class LobbyEndpoints
         group.MapPost(Endpoints.CreateLobby, async (
             CreateLobbyReqDTO reqBody,
             ILobbyService lobbyService,
+            HttpContext context, ReleaseAdmission admission,
             CancellationToken cancellationToken = default) =>
         {
-            return await lobbyService.CreateLobbyAsync(reqBody.HostPlayer, cancellationToken);
+            return await lobbyService.CreateLobbyAsync(reqBody.HostPlayer, cancellationToken,
+                id => admission.RememberSession(context, "lobby", id));
         })
         .WithName(nameof(Endpoints.CreateLobby))
+        .WithMetadata(new RequiresNewSessionAdmission())
         .Accepts<CreateLobbyReqDTO>("application/json")
         .Produces<LobbyDTO>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
@@ -59,6 +63,7 @@ public static class LobbyEndpoints
             return await lobbyService.JoinLobbyAsync(reqBody.LobbyId, reqBody.Player, cancellationToken);
         })
         .WithName(nameof(Endpoints.AddPlayer))
+        .WithMetadata(new RequiresNewSessionAdmission())
         .Accepts<AddPlayerReqDTO>("application/json")
         .Produces(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
@@ -112,11 +117,14 @@ public static class LobbyEndpoints
         group.MapPost(Endpoints.StartGame, async (
             StartGameDTO dto,
             ILobbyService lobbyService,
+            HttpContext context, ReleaseAdmission admission,
             CancellationToken cancellationToken = default) =>
         {
-            return await lobbyService.StartGameAsync(dto.LobbyId, dto.GameMode, cancellationToken);
+            return await lobbyService.StartGameAsync(dto.LobbyId, dto.GameMode, cancellationToken,
+                id => admission.RememberSession(context, "game", id));
         })
         .WithName(nameof(Endpoints.StartGame))
+        .WithMetadata(new RequiresNewSessionAdmission())
         .Produces<string>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError);

@@ -1,0 +1,35 @@
+services:
+  api:
+    image: ${API_IMAGE:?immutable API_IMAGE required}
+    network_mode: host
+    env_file:
+      - ${APP_ENV:?protected APP_ENV path required}
+    environment:
+      ASPNETCORE_URLS: http://127.0.0.1:${APP_PORT:?APP_PORT required}
+      DOTNET_EnableDiagnostics: '0'
+      HOME: /tmp
+      Hosting__MaintenanceStatePath: /run/pokerattack-admission/state.json
+      Hosting__ReleaseImage: ${API_IMAGE}
+      Hosting__ReleaseConfigSha256: ${RELEASE_CONFIG_SHA256:-legacy}
+    volumes:
+      - type: bind
+        source: ${ADMISSION_STATE_DIRECTORY:?host-owned admission directory required}
+        target: /run/pokerattack-admission
+        read_only: true
+        bind:
+          create_host_path: false
+    cpus: 0.25
+    mem_limit: 512m
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 40s
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'

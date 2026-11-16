@@ -1,0 +1,41 @@
+{
+  "verified_utc": "2026-11-15T15:52:41.092589+00:00",
+  "source_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "state": "IN_PROGRESS - C05 remains unchecked",
+  "files": {
+    "deploy/linode/host_manifests.py": "e564dd108bb2d96b9d4f9d117c4ff8164364df14f39e9d31e6afe3dbf630e80e",
+    "deploy/linode/release_lease.py": "117ae3a8ee2cbf56278e9b50fbfeb63f34e298192c73e3fa73ad827e73797e33",
+    "deploy/linode/release-legacy-guard.py": "977a1031382f98af72f10cddade1cd001e85c202b8cd7e5e9bc8bfd9219eb562",
+    "deploy/linode/test_lease.py": "44f598f82974ced9806dbf734c3630791e8a066f7c9e233363efadc10da0b015",
+    "deploy/linode/test_host_manifests.py": "838c1710fc6f9155b3d2227d98546df7b52d23e51668bbc4a55d969bd4b8016e",
+    "deploy/linode/secure_state.py": "af61e4ff9f34932de73380d4c0101064808dda81a517784bfed7c63b990fe636",
+    "deploy/linode/release-control.py": "b25097fd3e07d305ce7782028831da8c235f6cd36f90a9a9a440674b478c0a53",
+    "deploy/linode/release_commands.py": "16d0fdc23a5d29065eaf5604b1dcae982edb125d1269cae988a0f5b081b3b7fe"
+  },
+  "host_tests_passed": 38,
+  "host_test_log_sha256": "d93ec7f07ce3dd38896c42081e8322cd81ead7d83308513e6ea68593d9b2d94a",
+  "activated_handlers": [
+    "status",
+    "verifier-credential",
+    "revoke-verifier"
+  ],
+  "not_activated": [
+    "begin-release",
+    "deploy",
+    "rollback",
+    "resume-release",
+    "promote",
+    "import-evidence",
+    "finish-release",
+    "begin-client",
+    "finish-client"
+  ],
+  "installed": false,
+  "remaining_C05": [
+    "fresh-acknowledged rollback/recovery handoff",
+    "legacy bootstrap compatibility",
+    "explicit resume and expired approval handling",
+    "finish failure injection and idempotence",
+    "legacy guard wiring and root handler activation after all acceptance tests"
+  ]
+}

@@ -1,0 +1,4 @@
+# Validate with visudo -cf before installing; create pa-status only at I03.
+# Empty argument string means this executable may receive NO arguments.
+pa-status ALL=(root) NOPASSWD: /usr/local/sbin/pokerattack-status ""
+pa-status ALL=(root) NOPASSWD: /usr/local/sbin/pokerattack-rollback-target ""

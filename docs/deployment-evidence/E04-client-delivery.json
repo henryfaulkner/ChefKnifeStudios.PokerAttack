@@ -1,0 +1,89 @@
+{
+  "timestamp_utc": "2026-11-15T20:26:48.412035+00:00",
+  "base_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "scope": "LOCAL SOURCE AND DISPOSABLE HTTPS FIXTURES ONLY; uninstalled/unpublished; no SWA upload",
+  "source_sha256": {
+    ".github/workflows/client.yml": "bdf3f1901f19bc877ade0f1ff6140294b8892b35b47e76f2a92b9ebec703033e",
+    "deploy/linode/client_lease.py": "bde6034e99d9d61701c03a52a956276dfabadd90ecc008320d344e789f5abd00",
+    "deploy/linode/host_manifests.py": "89d5d9984a311488dc266944c3e812fa34d6ac0b50df20cda7479af4be977964",
+    "deploy/linode/release-control.py": "f72f6c5566da9b5c27c6119d0d93e789c739b8c7a2949f53b42b9426972de6f9",
+    "deploy/linode/release_lease.py": "74c1b6c663c1d628cb5303057e74875257d4209207767f6c35fac787b7c1b237",
+    "deploy/linode/release_commands.py": "91fd9fbacbe9b701c121386fa2aa225c01dda6e5149a8fe343b2dcf4bc66f562",
+    "deploy/linode/release-status.py": "567d32ba5046785c842259e1c4c0606933036c3c7206c54efd8f0c270f1af809",
+    "deploy/linode/local_docker.py": "73ea0d944b1dae0d45d15de84982a7a50e388b0b879cde75f3716ea07d7bb24e",
+    "deploy/linode/test_client_lease.py": "120773b55d65f34b0466b900af64d5b93dd4671ba953ec592cb733eb60c512ff",
+    "deploy/linode/test_local_docker.py": "6fcc4329b2a3c25d9d336ca6d53ae51f5ab42c335536f5813c7d8e88eea2526a",
+    "deploy/release/client_publish.py": "e68e586ba35a9bbe8d34e074f0189142cd26e9d736fe4b45f6ae20bcfb4302b4",
+    "deploy/release/test_client_publish.py": "b08c41c17247af69f7b60c2273c71ada50ee2bf1ee0c43d7e55489ac70bf8e3f",
+    "deploy/release/ssh_client.py": "38597ac380bca4f98297ef5b4031fdb87602e730142a47852befbac6b628eccd",
+    "deploy/release/test_ssh_client.py": "46de57e67d9c539d94980bec6e1176c97654b19940bf5e46482ac0a6f1d1f113",
+    "deploy/release/test_workflows.py": "c619e758ffa2bc0b39a0007e09e78617a72884e3e78aaa328713b42de4c2b165",
+    "tests/release/client.cjs": "641f52eab67d47d3ba7e08d69f8467068a25afd4802705125d2eeca887db23f5",
+    "deploy/linode/check-release-gameplay.py": "9b10c29671478091247219a3faaddd7c33e39693423d7236028a2ee98ea72cbf"
+  },
+  "logs_sha256": {
+    "E04-host-final.log": "3f9c8470ef9612213b367a2fb95b2a3cb349b627dbdc6502dd53ad4b008a25e9",
+    "E04-release-final.log": "62df21e8b2c7dc806e7016bf91d9384a9420ce45342dad7e48327fe63d505c9c",
+    "E04-workflow-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "E04-client-browser-attempt1.log": "a0b406a29fe602542aa7dbe83902c2470bb4ced8e1c65038e545688932d436f5",
+    "E04-client-browser-attempt2.log": "6d9342fa4cf121673578df801f676a0e6471fc80fbff025aba06dbb699304820",
+    "E04-client-browser-attempt3.log": "a912a53ec7e1eb9d22ee880ecde959d03200b870ce9bb75f91521b1cdadedc4d",
+    "E04-client-browser-attempt4.log": "9f8c65c2b9dcb2ef9dbe81b3c649967b5512539b3405074ae1720bb9c8447343",
+    "E04-client-release-negative.log": "160c343f21d78ada82cd0ae0334f7e8fdb3b8a9dc4022c420de950d1d3ee2ada",
+    "E04-client-asset-negative.log": "084f206dd1b895bf9f2dc6da0b6b5b7379f9bc4f8c960e906dd830fc38699148"
+  },
+  "browser": {
+    "fixture_only": true,
+    "image_id": "sha256:07e0954e5d040bfd7fe17555d339caf283514c5c1a650cddffb613a8a8136bc4",
+    "tls_verification": true,
+    "normal_admission": true,
+    "test_endpoints_enabled": false,
+    "result": {
+      "checks": {
+        "https": true,
+        "served_client": true,
+        "settings": true,
+        "header": true,
+        "assets": true,
+        "browser": true,
+        "signalr": true
+      },
+      "verified_unix": 1794773492,
+      "client_source_sha": "cccccccccccccccccccccccccccccccccccccccc",
+      "client_archive_sha256": "74b4088a96d93b4b3b3ef316ca951e3fc6f303b322af71e2a1a6d6680c611c80"
+    }
+  },
+  "negative_fixtures": {
+    "timestamp_utc": "2026-11-15T20:16:50.267984+00:00",
+    "fixture_only": true,
+    "results": [
+      {
+        "fault": "release",
+        "expected_failure": "Client verification failed at served-identity",
+        "rejected": true,
+        "accepted_result_emitted": false
+      },
+      {
+        "fault": "asset",
+        "expected_failure": "Client verification failed at browser-asset-checksum",
+        "rejected": true,
+        "accepted_result_emitted": false
+      }
+    ]
+  },
+  "checks": {
+    "linux_host": 73,
+    "release_and_workflow": 30,
+    "actionlint": "1.7.7 passed"
+  },
+  "azure_archive_and_ssh_keys": "Not provisioned; live verification I/K remains",
+  "failures": [
+    "First three client-only HTTPS attempts rejected Chromium-decoded CSS body with missing UTF-8 BOM; exact archived-byte check retained via raw HTTPS read for only that proven representation difference. Fourth passes. Deliberate altered CSS still rejects."
+  ],
+  "actual_origins_tested": "One explicit localhost HTTPS fixture; all three production origins remain K04 acceptance.",
+  "readonly_live_observations": {
+    "swa_environment": "default Ready, lastUpdatedOn 2026-11-14T17:42:06.073817+00:00; not republished",
+    "github_artifact_metadata": "Artifact 14165981852 has workflow_run.id/head_sha/head_branch as expected; no artifact contents changed"
+  },
+  "production_mutations": false
+}

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+export PATH=/usr/bin:/bin
+[[ $# == 0 ]] || exit 1
+case ${SSH_ORIGINAL_COMMAND:-} in
+  'status production') exec /usr/bin/sudo -n /usr/local/sbin/pokerattack-status ;;
+  'rollback-target production') exec /usr/bin/sudo -n /usr/local/sbin/pokerattack-rollback-target ;;
+  *) echo 'Only fixed production diagnostic commands are allowed.' >&2; exit 1 ;;
+esac

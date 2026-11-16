@@ -1,0 +1,21 @@
+{
+  "task": "I02",
+  "tested_utc": "2026-11-16T13:29:40.530714+00:00",
+  "account": "pareleasearchive1f287758",
+  "auth": "Current authorized operator login; no key/SAS",
+  "GitHub_OIDC_tested": false,
+  "conditional_create_update_and_delete": "PASS; duplicate create and mismatched ETag refused; exact probe removed",
+  "legacy-recovery": {
+    "prefix": "bootstrap/legacy-recovery/8ea3af7cc81fa8a7e559adfa86deac8e4df9b79aa7d038461c093b85b4597831",
+    "archive_sha256": "8ea3af7cc81fa8a7e559adfa86deac8e4df9b79aa7d038461c093b85b4597831",
+    "readback_verified": true,
+    "accepted_history": false
+  },
+  "maintenance": {
+    "prefix": "bootstrap/maintenance/6ab5652661ec939acc03afde64d61741c866fd3500f7f9a977ba5bff62b42f42",
+    "archive_sha256": "6ab5652661ec939acc03afde64d61741c866fd3500f7f9a977ba5bff62b42f42",
+    "readback_verified": true,
+    "accepted_history": false
+  },
+  "state": "PASS"
+}

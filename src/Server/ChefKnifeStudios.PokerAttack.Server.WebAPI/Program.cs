@@ -6,6 +6,7 @@ using ChefKnifeStudios.PokerAttack.Server.Data;
 using ChefKnifeStudios.PokerAttack.Server.Infrastructure;
 using ChefKnifeStudios.PokerAttack.Server.Infrastructure.PlayerPowers;
 using ChefKnifeStudios.PokerAttack.Server.WebAPI.EndpointGroups;
+using ChefKnifeStudios.PokerAttack.Server.WebAPI.Hosting;
 using ChefKnifeStudios.PokerAttack.Server.WebAPI.SignalR;
 using ChefKnifeStudios.PokerAttack.Shared;
 using ChefKnifeStudios.PokerAttack.Shared.Enums;
@@ -36,6 +37,9 @@ builder.WebHost
         o.ProfilesSampleRate = 0.1;
         o.TracesSampleRate = 1.0;
         o.EnableLogs = true;
+        o.SendDefaultPii = false;
+        o.SetBeforeSend(value => { ReleaseTelemetry.Sanitize(value.Request); return value; });
+        o.SetBeforeSendTransaction(value => { ReleaseTelemetry.Sanitize(value.Request); return value; });
     })
     .ConfigureLogging((c, l) =>
     {
@@ -47,7 +51,7 @@ builder.WebHost
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddCors();
+builder.Services.AddPokerAttackHosting(builder.Configuration, builder.Environment);
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -59,7 +63,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 });
 
 // Register SignalR
-builder.Services.AddSignalR(); 
+builder.Services.AddSignalR(options => options.AddFilter<ReleaseAdmissionHubFilter>());
 builder.Services.AddSingleton<IUserIdProvider, PlayerIdProvider>();
 builder.Services.AddSingleton<IPokerAttackNotificationHelper, PokerAttackNotificationHelper>();
 builder.Services.AddSingleton<IPlayerConnectionTracker, PlayerConnectionTracker>();
@@ -99,7 +103,7 @@ builder.Services.AddHostedService<CleanupBackgroundService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.UseExceptionHandler();
+app.UsePokerAttackHosting();
 
 app.MapOpenApi()
     .AllowAnonymous();
@@ -117,17 +121,6 @@ app.MapScalarApiReference(options =>
         .WithDefaultHttpClient(ScalarTarget.JavaScript, ScalarClient.Axios);
 }).AllowAnonymous();
 
-app.UseCors(policy =>
-    policy.WithOrigins(
-            "https://localhost:7150",
-            "http://localhost:5186",
-            "https://localhost:7333", 
-            "https://www.henryfaulkner.xyz",
-            "https://henryfaulkner.xyz")
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .AllowCredentials());
-
 app.MapHub<SignalRNotificationHub>("/cks-notification");
 app.MapTestEndpoints()
    .MapLobbyEndpoints()
@@ -139,5 +132,6 @@ app.MapTestEndpoints()
    .MapSettingsEndpoints();
 
 app.MapDefaultEndpoints();
+app.MapPokerAttackHosting();
 
 app.Run();

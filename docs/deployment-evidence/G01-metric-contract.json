@@ -1,0 +1,12 @@
+{
+  "timestamp_utc": "2026-11-16T03:35:35.001097+00:00",
+  "base_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "scope": "LOCAL CONTRACT; fresh read-only live shape inspection; no installed collector",
+  "source_sha256": {
+    "deploy/monitoring/METRICS.md": "3da607694dd4790f10c729d4ea5351a6775f85262cabb17be55a940243b9cdc3",
+    "deploy/monitoring/inspect-monitoring.py": "9f0e189717e8ea1a41f5d015296898f0d738260fee1c5697ec4bee27c4f8edd0"
+  },
+  "verification": "Reviewed explicit units/types/label bounds, unavailable/unlimited semantics, distinct image identities, per-incarnation and freshness contracts against current Docker/Alloy shape and official API/exporter documentation.",
+  "live_reference": "G01-live-monitoring-shape.json",
+  "next": "G02 bounded collector behavioral checks"
+}

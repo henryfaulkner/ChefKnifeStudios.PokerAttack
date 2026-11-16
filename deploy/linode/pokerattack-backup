@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+umask 077
+[[ $EUID == 0 ]] || exit 1
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+base=/var/backups/pokerattack
+install -d -m 700 "$base"
+exec 9>/var/lib/pokerattack/deploy.lock
+flock -w 300 9
+stamp=$(date -u +%Y%m%dT%H%M%SZ)
+working=$base/$stamp.incomplete
+mkdir -m 700 "$working"
+for database in expensetrackerdb expensetrackerdb_dev personal_health_hub transitjazz; do
+  nice -n 15 sudo -u postgres pg_dump --format=custom --compress=3 --dbname="$database" >"$working/$database.dump"
+done
+sudo -u postgres pg_dumpall --globals-only >"$working/globals.sql"
+tar -czf "$working/host-config.tar.gz" /etc/postgresql /etc/ssh /etc/pokerattack /var/lib/pokerattack /etc/transitjazz /opt/pokerattack /opt/transitjazz/compose.yaml /opt/transitjazz/Caddyfile /var/lib/docker/volumes/transitjazz-app_caddy_data/_data /var/lib/docker/volumes/transitjazz-app_caddy_config/_data 2>"$working/tar-notes.txt"
+docker inspect transitjazz-app-server-1 transitjazz-app-proxy-1 >"$working/shared-containers.json"
+(cd "$working" && sha256sum *.dump globals.sql host-config.tar.gz shared-containers.json >SHA256SUMS)
+mv "$working" "$base/$stamp"
+printf '%s\n' "$stamp" >/var/lib/pokerattack/latest-backup
+# Delete only this tool's completed dated directories older than seven days.
+while IFS= read -r -d '' directory; do
+  name=${directory##*/}
+  [[ $name =~ ^[0-9]{8}T[0-9]{6}Z$ && ! -L $directory && $(realpath "$directory") == "$base/$name" ]] || continue
+  rm -rf -- "$directory"
+done < <(find "$base" -mindepth 1 -maxdepth 1 -type d -mtime +7 -print0)
+printf '%s\n' "$stamp"

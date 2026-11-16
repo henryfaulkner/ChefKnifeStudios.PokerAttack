@@ -1,0 +1,12 @@
+{
+  "task": "I02 build-only source prerequisite",
+  "branch": "deployment/bootstrap-validation",
+  "base_main_sha": "b6a4d17d8eb42e9f9bee8214021406ff8be22659",
+  "primary_worktree_preserved": true,
+  "routine_workflows": "Inert source templates; no client/server delivery workflow published",
+  "enabled_workflow": ".github/workflows/migration-ci.yml",
+  "production_delivery_authority": false,
+  "manual_main_artifact_only": true,
+  "workflow_sha256": "a2ea43a298215a2c9dbb05204cf576321ce02c99b71fb1c892f85b9ec9a3b7c9",
+  "completion": "Prepared only; must pass local checks, source review, PR CI and main build before claiming real provider authentication."
+}

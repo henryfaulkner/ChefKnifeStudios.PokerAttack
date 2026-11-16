@@ -1,0 +1,65 @@
+{
+  "timestamp_utc": "2026-11-16T03:33:28.836278+00:00",
+  "base_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "scope": "LOCAL ONLY; no publication, installation, provisioning, reset, promotion or SWA upload",
+  "source_sha256": {
+    ".github/workflows/server.yml": "f1dbddb6be9fdf2ac60c75c04a2af09334e163b187f0719d29ae41914f0d2bcb",
+    "deploy/release/server_finish.py": "512197bcaaec2ee5fe9ca455c7e7dc61f5300c1eba8f032ec5ad60153f298b4e",
+    "deploy/release/server_manifest.py": "0cba4b064d77982968a011197fabe3f250b7348e93db1f4324e91540e403c809",
+    "deploy/release/server_deliver.py": "713a42e46606a219b9c68b087a0f18cf5ca09856b54da3492571171fc70e026d",
+    "deploy/release/server_promote.py": "1c702d26300f068a0203965a45d48d6b91c427f98320e4568731cbad878d3bf0",
+    "deploy/release/review.py": "4d53a4e3da1021d8dbb423f3e311e395038311032bf663cb8556c26db8d1b8c3",
+    "deploy/release/CONTRACT.md": "92a09f2e851d4c7bbf17c5695ea4158c9678d788c4ce05893714484f6300aadd",
+    "deploy/release/test_server_finish.py": "ae5d4855fe965ccb3086bad7021750f535daf80036fcecf158bb8f21d62b2d14",
+    "deploy/release/test_server_rollback.py": "a8dbe3d267025789c2b33e01953fc986df43366c2880daea81831d9f9c9026e2",
+    "deploy/linode/release_lease.py": "e08fa89106b4378fe9f3f413b69dd21c81503d90f28f87cbe83243838dea5666",
+    "deploy/linode/release-recovery.py": "6418b9931b1beb467c3ff8657aeff21c1e1a7663d7e0fc3c5c6cb47906767848",
+    "deploy/linode/release_commands.py": "3d8560baa8e6e103d6010aabce804bebe36f805588ab5918686bcd26e991eb03",
+    "deploy/linode/ssh-control.py": "dd6fedd0aaab1d0b10a5b7fb3447fa8063ce841e967ee965a0e2943e536831e1",
+    "deploy/linode/pokerattack-ssh-status": "0eea09b4a24f5df5e2eece1782f6a54c2ade2ccae07a502ba775d16c6d7d8371",
+    "deploy/linode/pokerattack-rollback-target": "b8760e766890b74451ad45f9993740d9c494299e14def2890b16984ee8e566ff",
+    "deploy/linode/status.sudoers": "9bf65a0ef8ad0ccee2a7afeb1840560493e3522296cd34b79247c47926770f37",
+    "deploy/linode/test_lease.py": "a70a70d42c2df1aa0d0d6c55ef84d09975e54329f29ca0a2a08094605be147e9",
+    "deploy/linode/test_recovery.py": "112ed9e12efc49b3ee2eae2c639bc53031adc3e80f80b45566ae60c341e8d6f0",
+    "deploy/linode/test_commands.py": "9181aa6bd3d5bf882addd1bbc6e19b3116d59323345892f901de2df2797f3b3f"
+  },
+  "checks": {
+    "release_workflow_tests": {
+      "passed": 93,
+      "exit_code": 0,
+      "log": "artifacts/F06-release-tests.log"
+    },
+    "host_tests": {
+      "passed": 84,
+      "exit_code": 0,
+      "log": "artifacts/F06-host-tests.log"
+    },
+    "node_tests": {
+      "passed": 11,
+      "exit_code": 0,
+      "log": "artifacts/F06-node-tests.log"
+    },
+    "actionlint": {
+      "version": "1.7.7",
+      "exit_code": 0
+    }
+  },
+  "verification": [
+    "finish requires matching imported proof, revoked verifier and promoted exact pair",
+    "post-reopen seven public checks required; no automatic reset after public failure",
+    "lost finish response resolves by read-only status without a second mutation",
+    "recorded root-selected rollback target binds original image provenance and current execution separately",
+    "fresh reset review plus new verification/promotion remain mandatory; no arbitrary digest/config/path or database downgrade",
+    "private observer unavailable remains null and permits reset only for explicitly acknowledged already-unready rollback"
+  ],
+  "limitations": [
+    "Complete root/SSH/browser integration and measured timing remain H",
+    "Actual hosted workflow and production proof remain I/K",
+    "Dashboard URL intentionally absent until J; not an availability gate"
+  ],
+  "failed_attempts": [
+    "Initial PowerShell redirection reported nonzero despite unittest OK; repeated through Python subprocess returned exit 0 with byte-preserved output. No test failure hidden.",
+    "One documentation patch did not match and changed no bytes; exact append succeeded."
+  ],
+  "affected_prior_evidence": "C02/C05/F03/F04/F05 source changes revalidated by full host/release suites; prior reports retained. Application image unchanged since F05."
+}

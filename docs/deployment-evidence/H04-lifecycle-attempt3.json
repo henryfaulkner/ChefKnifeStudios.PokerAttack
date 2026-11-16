@@ -1,0 +1,118 @@
+{
+  "task": "H04",
+  "fixture_only": true,
+  "production_mutation": false,
+  "phase": "passed",
+  "cases": [
+    {
+      "name": "native-systemd-and-Docker-state-health-limits-exit-metadata-allowlist",
+      "passed": true,
+      "containers": 6,
+      "series_count": 169
+    },
+    {
+      "name": "real-Docker-resource-reference",
+      "passed": true,
+      "exact_resource_comparisons": 8,
+      "GET_only_calls": 21
+    },
+    {
+      "name": "actual-recreated-and-removed-current-inventory",
+      "passed": true,
+      "old_and_new_ids_distinct": true
+    },
+    {
+      "name": "unavailable-socket-and-killed-atomic-writer",
+      "passed": true,
+      "last_success_not_advanced_on_failure": true,
+      "previous_snapshot_unchanged_on_SIGKILL": true,
+      "current_snapshot_recovered": true
+    }
+  ],
+  "overhead": {
+    "unit_runs": [
+      {
+        "wall_seconds": 1.840885373000674,
+        "collection_seconds": 0.2080670410005041,
+        "Result": "success",
+        "MemoryPeak": "[not set]",
+        "CPUUsageNSec": "[not set]",
+        "CPUQuotaPerSecUSec": "100ms",
+        "MemoryMax": "67108864"
+      },
+      {
+        "wall_seconds": 1.8612249599991628,
+        "collection_seconds": 0.12935045300037018,
+        "Result": "success",
+        "MemoryPeak": "[not set]",
+        "CPUUsageNSec": "[not set]",
+        "CPUQuotaPerSecUSec": "100ms",
+        "MemoryMax": "67108864"
+      },
+      {
+        "wall_seconds": 1.8142231299998457,
+        "collection_seconds": 0.19583731500006252,
+        "Result": "success",
+        "MemoryPeak": "[not set]",
+        "CPUUsageNSec": "[not set]",
+        "CPUQuotaPerSecUSec": "100ms",
+        "MemoryMax": "67108864"
+      },
+      {
+        "wall_seconds": 1.7998479690004388,
+        "collection_seconds": 0.20891946599931543,
+        "Result": "success",
+        "MemoryPeak": "[not set]",
+        "CPUUsageNSec": "[not set]",
+        "CPUQuotaPerSecUSec": "100ms",
+        "MemoryMax": "67108864"
+      },
+      {
+        "wall_seconds": 1.6838190320004287,
+        "collection_seconds": 0.20346147300006123,
+        "Result": "success",
+        "MemoryPeak": "[not set]",
+        "CPUUsageNSec": "[not set]",
+        "CPUQuotaPerSecUSec": "100ms",
+        "MemoryMax": "67108864"
+      }
+    ],
+    "process_measurements": [
+      {
+        "user_seconds": 0.08,
+        "system_seconds": 0.01,
+        "max_rss_kib": 20744,
+        "elapsed_seconds": 0.2,
+        "average_core_percent_at_30s": 0.3
+      },
+      {
+        "user_seconds": 0.08,
+        "system_seconds": 0.01,
+        "max_rss_kib": 20720,
+        "elapsed_seconds": 0.2,
+        "average_core_percent_at_30s": 0.3
+      },
+      {
+        "user_seconds": 0.07,
+        "system_seconds": 0.02,
+        "max_rss_kib": 20872,
+        "elapsed_seconds": 0.2,
+        "average_core_percent_at_30s": 0.30000000000000004
+      }
+    ],
+    "timer_seconds": 30,
+    "CPU_quota_percent": 10,
+    "memory_max_bytes": 67108864,
+    "not_a_production_measurement": true
+  },
+  "monitored_canary_ids_unchanged": true,
+  "collector_source_sha256": "fec057423002787de8a232a32da7af6c04280da9628bd256c6402c830fa8faba",
+  "dashboard_rendering_and_live_ingestion": "not claimed; J remains",
+  "fixture_container_cleanup": [
+    "d84b439b728fc57d509d7373d368c0b00bb8889a2d3aba259289144cfcc1a755",
+    "c255671e7fa762604f432a39597c26a8af4bbb96998b13decd3dec3432a046fd",
+    "31e33339a85d06b678292063d77cf647ef78e4315da175eeec78be6e1e31c6d4",
+    "1112b9343e939e60117eb3f13c8ec3e1bc83395294aedfcab94702970026fc1e",
+    "d9f808fcd99f607f8192558005a0188d584ed3d363f01d47df1fb65274956320"
+  ]
+}

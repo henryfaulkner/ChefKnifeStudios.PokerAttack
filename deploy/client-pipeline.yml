@@ -1,10 +1,13 @@
 name: $(SourceBranchName)-chefknifestudios-pokerattack-client-$(Date:yyyyMMdd).$(Rev:r)
 
-trigger:
-  branches:
-    include:
-    - main
-    - deploy
+# Manual rollback/publication path only; keep disabled in Azure during preparation.
+trigger: none
+pr: none
+
+parameters:
+- name: publishProduction
+  type: boolean
+  default: false
 
 pool:
   vmImage: ubuntu-latest
@@ -49,6 +52,7 @@ stages:
         publishLocation: 'pipeline'
 
 - stage: DeployProd
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ${{ eq(parameters.publishProduction, true) }})
   displayName: Deploy Production
   jobs: 
   - deployment: DeployProd

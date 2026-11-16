@@ -1,0 +1,22 @@
+{
+  "verified_utc": "2026-11-15T15:15:19.463415+00:00",
+  "source_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "files": {
+    "deploy/linode/release-status.py": "132057341bd162ecfd9823543560f780c59bb4f3a9623f49419fdcc9ab126977",
+    "deploy/linode/test_status.py": "545039c5b0922ef8e3f81b39200b2f9a66c29cd53a50ab731ce32fc2fe405c5c",
+    "deploy/linode/pokerattack-deploy": "3e07c4a0b6eb1b353260261d0988d570009432a03be1292a0b913733a5715945",
+    "deploy/linode/test_release.py": "71cb4014f322b38ac4210812685f2a531e9718bf24b573f037ff736612711568",
+    "deploy/linode/pokerattack-status": "6024aa941518cbb01eaace38500571cf81734bba2e4ab8a272ad003626de3264",
+    "deploy/linode/pokerattack-ssh-status": "dc78a3cd830796bab2343f2d8f74ae0dea6acfe35f47eac550b07ff31072955d",
+    "deploy/linode/status.sudoers": "66f2845c51c29e5f5666a058c77d03a7d3d50e4bf98836f2bc9cebf107bc450e"
+  },
+  "tests": {
+    "test_status.py": {
+      "passed": 8
+    },
+    "test_release.py": {
+      "passed": 8
+    }
+  },
+  "installed": false
+}

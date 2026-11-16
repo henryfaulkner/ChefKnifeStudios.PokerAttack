@@ -1,0 +1,32 @@
+{
+  "timestamp_utc": "2026-11-16T04:48:36.689815+00:00",
+  "task": "H02",
+  "state": "IN_PROGRESS; not yet completed",
+  "failure": "browser-signalr; no evidence imported or promotion",
+  "observed_cause": {
+    "admission_directory_mode": "0700",
+    "state_file_mode": "0644",
+    "api_uid_1654_could_read": false,
+    "inspection": "artifacts/H02-replica/admission-access-inspection.json"
+  },
+  "repair": {
+    "admission_directory_mode": "0755",
+    "nonroot_readability_confirmed": true,
+    "api_restarted": false,
+    "result": "artifacts/H02-replica/repair-admission-directory-mode-control-response.json"
+  },
+  "source_sha256": {
+    "deploy/rehearsal/initialize_replica.py": "d2023402060586ad66805fe58f8058f44cc0bf305d786507f7bf64cbdfa1cfb5",
+    "deploy/rehearsal/run_release.py": "c1e9b18b92f062cc9c78cbc1d63c5939222c7ae7c6dad873559f5bc1e64c7dce",
+    "deploy/linode/release_lease.py": "0d24b6dc1de3fc3406ecad9ec4f021aef0320d162eaf14791d79fa09e0f7339b",
+    "deploy/linode/test_lease.py": "e94f09218e45fa3b5633eebd856c882cffedb5106e54782132545835e6cfadac"
+  },
+  "revalidation": {
+    "host_tests": 85,
+    "exit_code": 0,
+    "log": "artifacts/H02-replica/open-gate-preflight-tests.log",
+    "prior_tasks": "C05/F04 revalidated after API-observed open-gate preflight; F05 safe failure-stage tests97 already pass"
+  },
+  "next": "Explicit evidence-only attempt3 on same installed image/config, with original build manifest and no API replacement. Need complete fresh baseline-to-candidate proof after repair before H02 completion.",
+  "production_mutation": false
+}

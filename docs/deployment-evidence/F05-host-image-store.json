@@ -1,0 +1,9 @@
+{
+  "driver_status": [
+    [
+      "driver-type",
+      "io.containerd.snapshotter.v1"
+    ]
+  ],
+  "scope": "read-only; no Docker configuration change"
+}

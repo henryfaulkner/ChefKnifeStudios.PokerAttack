@@ -1,0 +1,35 @@
+{
+  "task": "I01/I03/I04/I05/J01",
+  "recorded_utc": "2026-11-16T13:39:55.627035+00:00",
+  "base_sha": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "source_sha256": {
+    "deploy/provision/azure.py": "455d94fca5c71feb31ae4e67debaefa8c1afaf38495f04ce7df1df263d43599b",
+    "deploy/provision/github.py": "8a6f2b07565c18a6d621842d126f73e98945c216292a34150cc2c79f5bc12485",
+    "deploy/provision/install_host.py": "91ae9defdc0c0f080521e82a6cd997cb9d53ddde119cd88fa3bc0ab1cbad2da0",
+    "deploy/provision/monitoring.py": "2689eed9dd3a157f365b5db29121f16519345c227293563d0e69cf12af516b7a",
+    "deploy/provision/runtime.py": "6fdda866e44d6936faac85f7ef01c14bbcdc9b58cc545d20d2a4e5e787847e33",
+    "deploy/provision/verify_host.py": "42bbb67e50f1c20a9c04a1159eddd722c60d26d1faeb0e74c95d06f406fde4e8",
+    "deploy/monitoring/alloy_textfile.py": "a90188ae6a74650824142dab15bbf80ab156154f0a0386f9861ef0bed09f9972",
+    "deploy/monitoring/check-dashboard.py": "e94cc30bf497b7608a9531b2874bb72409f99a3bb531cd99ef06dff2a1e77c93",
+    "deploy/monitoring/check-monitoring.py": "c05ed09ec10ff3426550e9eba34d6756b6eb1d2a24208abd873bd41e64a4923d",
+    "deploy/monitoring/dashboard.py": "043796004fc65275fef4f430862c9c9264f565a292d5c693992df49125fede58",
+    "deploy/monitoring/docker_snapshot.py": "341adef7a6e5a80cd71553dba1bec47ee66507f5e926f36628925bbba54505dc",
+    "deploy/monitoring/inspect-monitoring.py": "9f0e189717e8ea1a41f5d015296898f0d738260fee1c5697ec4bee27c4f8edd0",
+    "deploy/monitoring/linode-docker-dashboard.json": "7dd8125e560fbcd9a4c3a2b39916c005b9b4438142c1d038725ae26e75b2ecb0",
+    "deploy/monitoring/linode-docker-snapshot.service": "43995f91d791628c2fd1f96c30936e9dcd585888544163557ca883515aa24e4a",
+    "deploy/monitoring/linode-docker-snapshot.timer": "f69cba2726bbd03f310bbfda56b030a101c6c3474151c914465729ce269e2bb2",
+    "deploy/monitoring/METRICS.md": "33a3a5fa1331c1b8f3e6709ee2d0ce7b0eaa5eb34b17986d69845a3e6882917e",
+    "deploy/monitoring/README.md": "f81660abdce144b7f3b1b34876183c30fcc1dcbe3112d8608d80ac17d3228ea6",
+    "deploy/monitoring/test_alloy_textfile.py": "ccf0c349edf440a35d30f8d4f3a26bcd93c2083a5873730691b11ff18cdd9b2c",
+    "deploy/monitoring/test_dashboard.py": "249fad6d6972a933ed3a674a8cc4ee56b2f35b2e56f7ae4ed29fd592517dc358",
+    "deploy/monitoring/test_docker_snapshot.py": "f330543bf4ab324dcee3f0f55d1ead06decccd5c833159a07eebc4b39edd854f",
+    "deploy/monitoring/validation.Dockerfile": "14098d23ca866cc909e3639814dbeca446a5f8d28640d7b6fc6de54f713964b5"
+  },
+  "E02_backend_change": {
+    "path": "deploy/release/blob_store.py",
+    "sha256": "e29ddd98f9b525048de6fca4365730cab5deaa080ef2be94e3a948160baba78e",
+    "verification": "107release tests pass; actual authorized private Azure Blob conditional-write/readback/denial pass; no fake accepted pointer."
+  },
+  "production_API_restarted": false,
+  "next": "J02 authorized editing / I02 actual GitHub identity authentication; source unpublished and rollout off"
+}

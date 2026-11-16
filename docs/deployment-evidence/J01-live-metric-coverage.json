@@ -1,0 +1,555 @@
+{
+  "task": "J01 / I05",
+  "state": "LIVE METRIC COVERAGE VERIFIED; DASHBOARD NOT YET PUBLISHED",
+  "recorded_utc": "2026-11-16T13:39:25.192655+00:00",
+  "datasource": "grafanacloud-prom",
+  "expression": "{__name__=~\"linode_docker_(container_(info|state|health|cpu_limit_cores|memory_limit_bytes|sample_timestamp_seconds|collection_success)|collection_duration_seconds|snapshot_timestamp_seconds|last_success_timestamp_seconds)\",host=\"expense-tracker-vm\",instance=\"expense-tracker-vm\"}",
+  "queries": {
+    "status": "success",
+    "data": {
+      "resultType": "vector",
+      "result": [
+        {
+          "metric": {
+            "__name__": "linode_docker_collection_duration_seconds",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "0.18951469502644613"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_collection_success",
+            "container_id": "1fac1e872bc54e40b1c89230be9f72e94e3e8f2533a46d4799a7e11df5abeb80",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_collection_success",
+            "container_id": "45befa1de68526ca5b0686fc5fad7d9e4226b25d65aaa88cdca5665a05724dcb",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_collection_success",
+            "container_id": "d9fc0b5afced651b8fde45487b91a517e52316c221527b7393364d9f39089995",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_collection_success",
+            "container_id": "fbe3c939907d8df6e91997d51a8535637b1e279087e6a6a02ab61f383bd86ff6",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_cpu_limit_cores",
+            "container_id": "1fac1e872bc54e40b1c89230be9f72e94e3e8f2533a46d4799a7e11df5abeb80",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "0.25"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_cpu_limit_cores",
+            "container_id": "45befa1de68526ca5b0686fc5fad7d9e4226b25d65aaa88cdca5665a05724dcb",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "0.25"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_cpu_limit_cores",
+            "container_id": "d9fc0b5afced651b8fde45487b91a517e52316c221527b7393364d9f39089995",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "0"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_cpu_limit_cores",
+            "container_id": "fbe3c939907d8df6e91997d51a8535637b1e279087e6a6a02ab61f383bd86ff6",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "0.25"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_health",
+            "container_id": "1fac1e872bc54e40b1c89230be9f72e94e3e8f2533a46d4799a7e11df5abeb80",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "0"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_health",
+            "container_id": "45befa1de68526ca5b0686fc5fad7d9e4226b25d65aaa88cdca5665a05724dcb",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "0"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_health",
+            "container_id": "d9fc0b5afced651b8fde45487b91a517e52316c221527b7393364d9f39089995",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "0"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_health",
+            "container_id": "fbe3c939907d8df6e91997d51a8535637b1e279087e6a6a02ab61f383bd86ff6",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "0"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_info",
+            "compose_project": "pokerattack-pilot",
+            "compose_service": "api",
+            "configured_image": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+            "container": "pokerattack-pilot-api-1",
+            "container_id": "fbe3c939907d8df6e91997d51a8535637b1e279087e6a6a02ab61f383bd86ff6",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter",
+            "network_mode": "host",
+            "registry_digest": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+            "source_revision": "250b03496c69e33a206e294cbad861a94fa6844a"
+          },
+          "value": [
+            1794836363.758,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_info",
+            "compose_project": "pokerattack-production",
+            "compose_service": "api",
+            "configured_image": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+            "container": "pokerattack-production-api-1",
+            "container_id": "45befa1de68526ca5b0686fc5fad7d9e4226b25d65aaa88cdca5665a05724dcb",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter",
+            "network_mode": "host",
+            "registry_digest": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+            "source_revision": "250b03496c69e33a206e294cbad861a94fa6844a"
+          },
+          "value": [
+            1794836363.758,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_info",
+            "compose_project": "transitjazz-app",
+            "compose_service": "proxy",
+            "configured_image": "caddy@sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03",
+            "container": "transitjazz-app-proxy-1",
+            "container_id": "d9fc0b5afced651b8fde45487b91a517e52316c221527b7393364d9f39089995",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "image_id": "sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter",
+            "network_mode": "host",
+            "registry_digest": "caddy@sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03",
+            "source_revision": "Not provided"
+          },
+          "value": [
+            1794836363.758,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_info",
+            "compose_project": "transitjazz-app",
+            "compose_service": "server",
+            "configured_image": "chefknife.azurecr.io/chefknifestudios.martajazz.server.webapi@sha256:e0e6a30cb55b1ac7987a0cd2ca4843d0b56377a5bc1448436517480900ad22f0",
+            "container": "transitjazz-app-server-1",
+            "container_id": "1fac1e872bc54e40b1c89230be9f72e94e3e8f2533a46d4799a7e11df5abeb80",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "image_id": "sha256:e0e6a30cb55b1ac7987a0cd2ca4843d0b56377a5bc1448436517480900ad22f0",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter",
+            "network_mode": "host",
+            "registry_digest": "chefknife.azurecr.io/chefknifestudios.martajazz.server.webapi@sha256:e0e6a30cb55b1ac7987a0cd2ca4843d0b56377a5bc1448436517480900ad22f0",
+            "source_revision": "Not provided"
+          },
+          "value": [
+            1794836363.758,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_memory_limit_bytes",
+            "container_id": "1fac1e872bc54e40b1c89230be9f72e94e3e8f2533a46d4799a7e11df5abeb80",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "536870912"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_memory_limit_bytes",
+            "container_id": "45befa1de68526ca5b0686fc5fad7d9e4226b25d65aaa88cdca5665a05724dcb",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "536870912"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_memory_limit_bytes",
+            "container_id": "d9fc0b5afced651b8fde45487b91a517e52316c221527b7393364d9f39089995",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "268435456"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_memory_limit_bytes",
+            "container_id": "fbe3c939907d8df6e91997d51a8535637b1e279087e6a6a02ab61f383bd86ff6",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "536870912"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_sample_timestamp_seconds",
+            "container_id": "1fac1e872bc54e40b1c89230be9f72e94e3e8f2533a46d4799a7e11df5abeb80",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "1794836321.1760628"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_sample_timestamp_seconds",
+            "container_id": "45befa1de68526ca5b0686fc5fad7d9e4226b25d65aaa88cdca5665a05724dcb",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "1794836321.1760628"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_sample_timestamp_seconds",
+            "container_id": "d9fc0b5afced651b8fde45487b91a517e52316c221527b7393364d9f39089995",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "1794836321.1760628"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_sample_timestamp_seconds",
+            "container_id": "fbe3c939907d8df6e91997d51a8535637b1e279087e6a6a02ab61f383bd86ff6",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "1794836321.1760628"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_state",
+            "container_id": "1fac1e872bc54e40b1c89230be9f72e94e3e8f2533a46d4799a7e11df5abeb80",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "2"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_state",
+            "container_id": "45befa1de68526ca5b0686fc5fad7d9e4226b25d65aaa88cdca5665a05724dcb",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "2"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_state",
+            "container_id": "d9fc0b5afced651b8fde45487b91a517e52316c221527b7393364d9f39089995",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "2"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_state",
+            "container_id": "fbe3c939907d8df6e91997d51a8535637b1e279087e6a6a02ab61f383bd86ff6",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "6"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_last_success_timestamp_seconds",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "1794836321.1760628"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_snapshot_timestamp_seconds",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794836363.758,
+            "1794836321.1760628"
+          ]
+        }
+      ]
+    }
+  },
+  "Docker_read_only_comparison": {
+    "sampled_utc": "2026-11-16T13:39:25.080597+00:00",
+    "containers": [
+      {
+        "id": "45befa1de68526ca5b0686fc5fad7d9e4226b25d65aaa88cdca5665a05724dcb",
+        "name": "pokerattack-production-api-1",
+        "configured_image": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+        "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+        "state": "running",
+        "health": "none",
+        "nano_cpus": 250000000,
+        "memory_bytes": 536870912,
+        "network_mode": "host"
+      },
+      {
+        "id": "fbe3c939907d8df6e91997d51a8535637b1e279087e6a6a02ab61f383bd86ff6",
+        "name": "pokerattack-pilot-api-1",
+        "configured_image": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+        "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+        "state": "exited",
+        "health": "none",
+        "nano_cpus": 250000000,
+        "memory_bytes": 536870912,
+        "network_mode": "host"
+      },
+      {
+        "id": "1fac1e872bc54e40b1c89230be9f72e94e3e8f2533a46d4799a7e11df5abeb80",
+        "name": "transitjazz-app-server-1",
+        "configured_image": "chefknife.azurecr.io/chefknifestudios.martajazz.server.webapi@sha256:e0e6a30cb55b1ac7987a0cd2ca4843d0b56377a5bc1448436517480900ad22f0",
+        "image_id": "sha256:e0e6a30cb55b1ac7987a0cd2ca4843d0b56377a5bc1448436517480900ad22f0",
+        "state": "running",
+        "health": "none",
+        "nano_cpus": 250000000,
+        "memory_bytes": 536870912,
+        "network_mode": "host"
+      },
+      {
+        "id": "d9fc0b5afced651b8fde45487b91a517e52316c221527b7393364d9f39089995",
+        "name": "transitjazz-app-proxy-1",
+        "configured_image": "caddy@sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03",
+        "image_id": "sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03",
+        "state": "running",
+        "health": "none",
+        "nano_cpus": 0,
+        "memory_bytes": 268435456,
+        "network_mode": "host"
+      }
+    ],
+    "timer_active": "active",
+    "Alloy_active": "active",
+    "metrics_file_mtime": 1794836352.304253
+  },
+  "checks": [
+    {
+      "container_id": "45befa1de68526ca5b0686fc5fad7d9e4226b25d65aaa88cdca5665a05724dcb",
+      "name": "pokerattack-production-api-1",
+      "image_identity_state_health_limits_and_sample_success_match": true
+    },
+    {
+      "container_id": "fbe3c939907d8df6e91997d51a8535637b1e279087e6a6a02ab61f383bd86ff6",
+      "name": "pokerattack-pilot-api-1",
+      "image_identity_state_health_limits_and_sample_success_match": true
+    },
+    {
+      "container_id": "1fac1e872bc54e40b1c89230be9f72e94e3e8f2533a46d4799a7e11df5abeb80",
+      "name": "transitjazz-app-server-1",
+      "image_identity_state_health_limits_and_sample_success_match": true
+    },
+    {
+      "container_id": "d9fc0b5afced651b8fde45487b91a517e52316c221527b7393364d9f39089995",
+      "name": "transitjazz-app-proxy-1",
+      "image_identity_state_health_limits_and_sample_success_match": true
+    }
+  ],
+  "cadence": "collector30s / Alloy60s",
+  "cost": "Native bounded unit first collection1.291s, CPUQuota10%, MemoryMax64MiB; exited unit peak counters unavailable and not fabricated. Current exported collection_duration_seconds recorded.",
+  "initial_query_correction": "I05 initial inventory_timestamp_seconds was not a metric; correct snapshot_timestamp_seconds queried. Initial hostname mismatch corrected separately."
+}

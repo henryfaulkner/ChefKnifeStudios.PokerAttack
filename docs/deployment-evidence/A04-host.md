@@ -1,0 +1,11 @@
+# A04 host inventory
+
+Successful read-only capture 2026-11-15T14:58:30Z in [A04-host.json](A04-host.json), source `55c3a413151fc9dfae0e8a7cad4c0230cab13e46` plus allowlisted `deploy/linode/inspect-release-state.py` (hash recorded in source ledger). Trusted existing root SSH operator identity, StrictHostKeyChecking, batch/identities-only; no installation or restart.
+
+Running API digest `sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588`, revision `250b03496c69e33a206e294cbad861a94fa6844a`. Config `7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f` matches protected snapshot bytes and current validator passes. This published image is older than current source; do not attribute local changes to it. Active equals known-good. Pending, previous-good, transaction and new lease absent. Known-good is a usable recovery pair for a future candidate, but rollback from current accepted release has no previous-good yet. Bootstrap must retain current pair explicitly.
+
+Actual API container ID, image ID, port binding, limits and non-root user recorded in JSON. Local ready true. Shared VM has four Docker containers including stopped pilot; PostgreSQL is host-managed rather than a Docker container. Do not invent a PostgreSQL container for the dashboard. Tool files root-owned/no unprivileged write; protected registry directory 0700/config 0600; maintenance file 0600 but old and not a fresh reset acknowledgment. Its contents were not printed. Script hashes and host tool versions recorded.
+
+Last completed backup reference `20261115T030010Z`; backup service Result success/exit 0. Private off-host reference remains `C:/Users/hfaul/PokerAttack-Backups/recurring`, protected DPAPI; this inventory does not claim a new restore/decryption rehearsal. Prior recovery evidence is in migration WP06/WP07. Host registry manifest probe allowed PokerAttack and denied unrelated TransitJazz. No pull or runtime change occurred.
+
+Failed attempts retained: first PowerShell native quoting stripped remote format arguments; second bash here-document terminator acquired CR and Python ended with NameError after reads. Neither mutated production. Replaced with dedicated Python stdin inventory, which completed exit 0. Lost/failed inventory output was not treated as complete verification.

@@ -1,0 +1,28 @@
+{
+  "format": "pokerattack-evidence-v1",
+  "source_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "workflow": {
+    "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+    "run_id": 1,
+    "run_attempt": 1,
+    "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/1"
+  },
+  "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "migration_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "config_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "client_source_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "client_archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "verifier_id": "00000000000000000000000000000000",
+  "verified_unix": 1,
+  "checks": {
+    "https": true,
+    "served_client": true,
+    "signalr": true,
+    "multiplayer": true,
+    "solo": true,
+    "private_message_isolation": true
+  },
+  "artifact_references": [
+    "EXAMPLE ONLY - expired and never promotable"
+  ]
+}

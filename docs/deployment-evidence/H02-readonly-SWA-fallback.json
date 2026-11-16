@@ -1,0 +1,20 @@
+{
+  "timestamp_utc": "2026-11-16T04:50:55.908642+00:00",
+  "scope": "Public read-only static file behavior; no publication or gameplay",
+  "results": [
+    {
+      "path": "appsettings.prod.json",
+      "status": 200,
+      "content_type": "text/html",
+      "is_html": true,
+      "sha256": "db5221106219ad021c33aef5e662d301605e880182f78e3e2b1bcbe0df16bc47"
+    },
+    {
+      "path": "appsettings.h02-nonexistent-cb68b49780da4e21bc2f3158be244a94.json",
+      "status": 200,
+      "content_type": "text/html",
+      "is_html": true,
+      "sha256": "db5221106219ad021c33aef5e662d301605e880182f78e3e2b1bcbe0df16bc47"
+    }
+  ]
+}

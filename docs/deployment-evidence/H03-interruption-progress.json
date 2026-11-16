@@ -1,0 +1,14 @@
+{
+  "task": "H03",
+  "timestamp_utc": "2026-11-16T05:55:21.652706+00:00",
+  "state": "IN_PROGRESS",
+  "application_source_sha": "4ce18ec6cd76958d02cc16d44e15bc706bae5f78",
+  "production_mutation": false,
+  "failed_restoration_and_inspected_recovery": "passed",
+  "SSH_harness": "failed due absent-lease polling race; original report retained; fresh status shows durable attempt16 reset-approved, API running unchanged, maintenance closed; explicit replica recovery17 then corrected SSH test18/recovery19 underway",
+  "source_hashes": {
+    "deploy\\rehearsal\\run_interruption_faults.py": "7add7b228807c3bfc41de66474ec8328be2e82e4f2ca75b4f7933c51172451cc",
+    "deploy\\rehearsal\\resume_interruption_faults.py": "1ed9056ea4e68ae668f8498755a34f9d1cb94a7944b261cf1f15c89f21ee8d64",
+    "deploy\\rehearsal\\run_client_recovery.py": "b8f7b18c7946e77d0d0b21d7e7c7cb3ca1e3e90d5c4021d6fa56186620aed159"
+  }
+}

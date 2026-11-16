@@ -1,0 +1,7 @@
+{
+  "task": "I02",
+  "state": "FAILED BEFORE REMOTE OPERATION",
+  "recorded_utc": "2026-11-16T13:29:18.792837+00:00",
+  "reason": "Private AzureStore used executable az instead of resolving az.cmd on Windows; no blob operation occurred. Platform resolution corrected; focused checks required.",
+  "production_restart": false
+}

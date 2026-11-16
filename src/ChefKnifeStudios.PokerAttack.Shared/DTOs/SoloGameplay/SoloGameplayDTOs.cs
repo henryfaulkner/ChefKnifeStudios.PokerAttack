@@ -1,6 +1,8 @@
 namespace ChefKnifeStudios.PokerAttack.Shared.DTOs.SoloGameplay;
 
 public record StartSoloGameReqDTO(string PlayerName);
+public record LeaveSoloGameReqDTO(string PlayerId);
+public record LeaveSoloGameResDTO(bool Left);
 
 public record StartSoloGameResDTO(
     string GameId,
