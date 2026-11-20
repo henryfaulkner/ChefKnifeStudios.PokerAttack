@@ -1,0 +1,26 @@
+{
+  "queried_utc": "2026-11-16T14:25:33.989756+00:00",
+  "expression": "linode_docker_container_state{host=\"expense-tracker-vm\",container_id=\"92b22b0b4d56bf145764d5cc89a3222f2fe75607a81a513f7c049b117477fe4d\"}",
+  "result": {
+    "status": "success",
+    "data": {
+      "resultType": "vector",
+      "result": [
+        {
+          "metric": {
+            "__name__": "linode_docker_container_state",
+            "container_id": "92b22b0b4d56bf145764d5cc89a3222f2fe75607a81a513f7c049b117477fe4d",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter"
+          },
+          "value": [
+            1794839133.709,
+            "2"
+          ]
+        }
+      ]
+    }
+  }
+}

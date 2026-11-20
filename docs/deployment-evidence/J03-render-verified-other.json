@@ -1,0 +1,31 @@
+{
+  "task": "J03/J04",
+  "mode": "other",
+  "phase": "verified",
+  "recorded_utc": "2026-11-16T15:00:26.670233+00:00",
+  "selection": "transitjazz-app-server-1",
+  "renderer_result": {
+    "type": "gcx.dashboards.snapshot",
+    "schema_version": "1",
+    "action": "rendered",
+    "dir": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\J03-snapshots\\verified-other",
+    "format": "png",
+    "files": [
+      {
+        "uid": "linode-docker-containers",
+        "panel_id": 5,
+        "file_path": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\J03-snapshots\\verified-other\\linode-docker-containers-panel-5.png",
+        "width": 1920,
+        "height": 600,
+        "theme": "dark",
+        "rendered_at": "2026-11-16T10:00:26.5393616-05:00"
+      }
+    ],
+    "summary": {
+      "succeeded": 1,
+      "failed": 0
+    },
+    "failures": []
+  },
+  "visual_inspection": "Required separately; a rendered file can contain an error page."
+}

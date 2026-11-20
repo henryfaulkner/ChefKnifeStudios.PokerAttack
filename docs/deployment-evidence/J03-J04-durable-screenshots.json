@@ -1,0 +1,60 @@
+{
+  "task": "J03/J04",
+  "recorded_utc": "2026-11-16T14:52:32.632609+00:00",
+  "account": "pareleasearchive1f287758",
+  "container": "pokerattack-client-releases",
+  "anonymous_access": false,
+  "credential_or_SAS_exported": false,
+  "artifacts": [
+    {
+      "local_path": "artifacts/J03-snapshots/iteration2-single/linode-docker-containers-panel-5.png",
+      "private_blob_key": "monitoring-evidence/2026-11-16/515dadf9c58cb37b9a3c62caefdbfd9ccbdc144cdc8f10dc44dd67c39a8993f5/linode-docker-containers-panel-5.png",
+      "sha256": "515dadf9c58cb37b9a3c62caefdbfd9ccbdc144cdc8f10dc44dd67c39a8993f5",
+      "readback_verified": true,
+      "visually_inspected": true
+    },
+    {
+      "local_path": "artifacts/J03-snapshots/verified-multi/linode-docker-containers.png",
+      "private_blob_key": "monitoring-evidence/2026-11-16/266e9d34d06920322954698906b9ed7b85357ad692f9a81877c4acf6fd9141b7/linode-docker-containers.png",
+      "sha256": "266e9d34d06920322954698906b9ed7b85357ad692f9a81877c4acf6fd9141b7",
+      "readback_verified": true,
+      "visually_inspected": true
+    },
+    {
+      "local_path": "artifacts/J03-snapshots/verified-all/linode-docker-containers.png",
+      "private_blob_key": "monitoring-evidence/2026-11-16/d41f86b807272c9023e7ce1bb45ca962fcc2b5f3175945f92a6235af694f82fd/linode-docker-containers.png",
+      "sha256": "d41f86b807272c9023e7ce1bb45ca962fcc2b5f3175945f92a6235af694f82fd",
+      "readback_verified": true,
+      "visually_inspected": true
+    },
+    {
+      "local_path": "artifacts/J03-snapshots/stopped-probe/linode-docker-containers-panel-5.png",
+      "private_blob_key": "monitoring-evidence/2026-11-16/d177a7ab8db977857086116943f5116da63b3ecc0f253290aa75ca683707522b/linode-docker-containers-panel-5.png",
+      "sha256": "d177a7ab8db977857086116943f5116da63b3ecc0f253290aa75ca683707522b",
+      "readback_verified": true,
+      "visually_inspected": true
+    },
+    {
+      "local_path": "artifacts/J03-snapshots/recreated-probe/linode-docker-containers-panel-5.png",
+      "private_blob_key": "monitoring-evidence/2026-11-16/ce4cf2673b4b20fa9548315bdb9f04662f2e466f4519ff82b0eecd4fa0fde9f2/linode-docker-containers-panel-5.png",
+      "sha256": "ce4cf2673b4b20fa9548315bdb9f04662f2e466f4519ff82b0eecd4fa0fde9f2",
+      "readback_verified": true,
+      "visually_inspected": true
+    },
+    {
+      "local_path": "artifacts/J03-snapshots/stale-corrected/linode-docker-containers.png",
+      "private_blob_key": "monitoring-evidence/2026-11-16/220c1564eb3c23aae3029b240a4be0d16ef15939ce200a7410640c0bdb2fcae3/linode-docker-containers.png",
+      "sha256": "220c1564eb3c23aae3029b240a4be0d16ef15939ce200a7410640c0bdb2fcae3",
+      "readback_verified": true,
+      "visually_inspected": true
+    },
+    {
+      "local_path": "artifacts/J03-snapshots/recovered-all/linode-docker-containers.png",
+      "private_blob_key": "monitoring-evidence/2026-11-16/91e8c7221349d2fc843471010061e3e2b84b1c379c10767cc3687d6b41f872d8/linode-docker-containers.png",
+      "sha256": "91e8c7221349d2fc843471010061e3e2b84b1c379c10767cc3687d6b41f872d8",
+      "readback_verified": true,
+      "visually_inspected": true
+    }
+  ],
+  "retention": "Private durable evidence objects; no recurring observation program or release gate added."
+}

@@ -1,0 +1,9 @@
+{
+  "task": "J04",
+  "state": "FIRST VISUAL CHECK FAILED / COLLECTOR RESTORED",
+  "recorded_utc": "2026-11-16T14:43:42.350127+00:00",
+  "actual_backend": "J04-stale-series.json passes Unknown/state0/health4 and continuing host up/freshness",
+  "visual_failure": "Collection stat ranged over old Success and new Unknown as separate metric-name series; age fields used palette color instead of threshold color. Screenshot inspected; J04 not closed.",
+  "correction": "All3 current freshness stats use instant queries; age fields use threshold color mode withred above180s. Re-render actual recorded paused interval at2026-11-16T14:41:20Z, before restoration14:41:47Z, plus current live recovery.",
+  "restoration": "J04-restore.json; timeractive, same4container IDs/states and PostgreSQL/Alloy PIDs. No API reset."
+}

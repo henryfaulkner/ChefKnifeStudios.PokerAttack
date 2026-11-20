@@ -58,6 +58,20 @@ archive with its normal conditional writes. The later promotion decision and
 ordinary finish/public browser checks then establish the baseline. No migration
 bundle executes in this sequence.
 
+If the first promotion proof expires while the candidate remains installed,
+rerun the actual build-only GitHub run and wait for its successful later attempt.
+Keep the original server manifest, image, client and reset packet unchanged.
+Run `bootstrap_operator.py verify` with the same workspace/runtime and explicit
+`--verification-attempt N` matching that real GitHub attempt. The existing
+evidence capability transfers only the verified pending lease to the later
+attempt, revokes old verifier authority, and issues fresh scoped identities.
+No drain, reset, image replacement or client upload is repeated. Results go to
+`verification-resume-N/` under the original workspace, preserving old proof.
+After actual gameplay/import/revocation succeeds, request the new matching
+`PROMOTE` decision. Use the same `--verification-attempt N` for `promote` and
+`finish`; neither may read the original expired proof. The client already
+accepted in the durable catalog remains accepted and is rechecked by finish.
+
 If introduction fails, retain maintenance and inspect the exact transaction,
 runtime, lease, saved snapshot hashes and versioned old tools under both host
 locks. Archive the failed attempt. A fresh release-specific legacy reset decision

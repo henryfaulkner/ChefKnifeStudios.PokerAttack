@@ -1,0 +1,43 @@
+{
+  "task": "K02",
+  "state": "EXACT API DIGEST READY/PENDING; CLIENT AND GAMEPLAY REMAIN",
+  "recorded_utc": "2026-11-17T02:18:22.133926+00:00",
+  "source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+  "run_id": 43884112818,
+  "run_attempt": 1,
+  "reset_packet_sha256": "9b4c40c9f4dffa1289c726cb027ed305e50fa2b7dfde46c1238410e630030798",
+  "reset_decision_received_utc": "2026-11-17T02:05:06+00:00",
+  "maintenance": {
+    "mode": "maintenance",
+    "phase": "bootstrap-publication-verified",
+    "sha256": "51ef225762653cb5cbd63b9d8561b77a2708be7884b3cbbd07c453d69a106948"
+  },
+  "delivery": {
+    "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+    "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "phase": "pending"
+  },
+  "runtime": {
+    "container_id": "f0c098961956cfce0e5550f3c1fc63346725d9c5567621f4d5538f3fef223d39",
+    "image_id": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "source_revision": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+    "state": "running",
+    "docker_health": "not-configured",
+    "nano_cpus": 250000000,
+    "memory_bytes": 536870912
+  },
+  "sessions": {
+    "activeGames": 0,
+    "lobbies": 0,
+    "soloGames": 0
+  },
+  "shared_services_preserved": true,
+  "failure": "Original drain call returned unusable outcome; trusted structured readback established reset-approved/no transaction/old API before one guarded deployment continuation. Drain not replayed; approval not refreshed.",
+  "continuation_source_sha256": "8460b50ff7de5d979c23cafce3e3a396d34a229f3063fe32b274041169921723",
+  "operator_transport_sha256": "26b56c8c03518940713856f65b30d826768dafaea0eb70ab20090299600ce0c0",
+  "focused_checks": "Four bootstrap publisher tests pass after adding SSH keepalives. No installed host source or app image changed by transport repair.",
+  "promotion_granted": false,
+  "migration_executed": false,
+  "workspace": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\K01-bootstrap-43884112818-1-refresh-20261117T0202"
+}

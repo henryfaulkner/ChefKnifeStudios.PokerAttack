@@ -1,0 +1,20 @@
+{
+  "directories": {
+    "completed": {
+      "directory": true,
+      "uid": 0,
+      "mode": "0o700"
+    },
+    "client-completed": {
+      "directory": true,
+      "uid": 0,
+      "mode": "0o700"
+    }
+  },
+  "API_runtime_unchanged": true,
+  "admission_still_closed": true,
+  "no_restart_or_migration": true,
+  "recorded_utc": "2026-11-20T01:24:26.339370+00:00",
+  "installer_source_sha256": "389a2d57b1d1d2987cb11ff9b2eefeea34aba47aa74765fb1b8df14b7f78f23d",
+  "failure": "Initial finish rejected before archive/admission change because completed directory absent; client-completed also absent. Both now provisioned root0700."
+}

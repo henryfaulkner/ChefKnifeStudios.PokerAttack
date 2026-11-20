@@ -1,16 +1,7 @@
-name: Migration build and test
+# Manual build-only reference; routine client/server workflows own required checks and delivery.
+name: Bootstrap build-only reference
 'on':
-  pull_request: null
-  push:
-    branches:
-    - main
-  workflow_dispatch:
-    inputs:
-      bootstrap_artifacts:
-        description: 'I02: publish exact tested bootstrap images only; no application delivery'
-        type: boolean
-        required: true
-        default: false
+  workflow_dispatch: null
 permissions:
   contents: read
 concurrency:
@@ -39,7 +30,8 @@ jobs:
       image_artifact_id: ${{ steps.image-upload.outputs.artifact-id }}
     env:
       POKERATTACK_FIXTURE_IMAGE: pokerattack-api:ci-${{ github.sha }}
-      POKERATTACK_FIXTURE_MIGRATION_IMAGE: pokerattack-migrations:ci-${{ github.sha }}
+      POKERATTACK_FIXTURE_MIGRATION_IMAGE: pokerattack-migrations:ci-${{ github.sha
+        }}
       POKERATTACK_FIXTURE_SOURCE: ${{ github.sha }}
       POKERATTACK_FIXTURE_EPHEMERAL_TLS: '1'
     steps:
@@ -84,11 +76,13 @@ jobs:
     - name: Configure disposable runner image store before building or testing
       run: sudo --preserve-env=GITHUB_ACTIONS,RUNNER_ENVIRONMENT python3 deploy/release/ci_docker_store.py
     - name: Test business logic and API hosting with disposable PostgreSQL
-      run: 'dotnet test src/Server/ChefKnifeStudios.PokerAttack.Server.BL.Tests -c Release
+      run: 'dotnet test src/Server/ChefKnifeStudios.PokerAttack.Server.BL.Tests -c
+        Release
 
         dotnet build src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI -c Release
 
-        dotnet test src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI.Tests -c Release
+        dotnet test src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI.Tests -c
+        Release
 
         '
     - name: Test target guards, preparation, release boundaries and host recovery
@@ -100,17 +94,24 @@ jobs:
 
         python -m unittest discover -s deploy/release -p ''test_*.py'' -v
 
-        docker run --rm -v "$PWD:/work:ro" -w /work/deploy/linode python:3.13-bookworm python -m unittest discover -p ''test_*.py'' -v
+        docker run --rm -v "$PWD:/work:ro" -w /work/deploy/linode python:3.13-bookworm
+        python -m unittest discover -p ''test_*.py'' -v
 
         '
-    - name: Validate shared Docker collector, units, additive Alloy and dashboard queries
+    - name: Validate shared Docker collector, units, additive Alloy and dashboard
+        queries
       run: python deploy/monitoring/check-monitoring.py
     - name: Publish isolated browser fixture without releasing a client
-      run: dotnet publish src/Client/ChefKnifeStudios.PokerAttack.Client.WebApp -c Release -o artifacts/client-wp04 /p:BlazorEnableCompression=false
+      run: dotnet publish src/Client/ChefKnifeStudios.PokerAttack.Client.WebApp -c
+        Release -o artifacts/client-wp04 /p:BlazorEnableCompression=false
     - name: Build exact candidate images once
-      run: 'docker build --platform linux/amd64 --build-arg "SOURCE_REVISION=$GITHUB_SHA" -f src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Dockerfile -t "$POKERATTACK_FIXTURE_IMAGE" .
+      run: 'docker build --platform linux/amd64 --build-arg "SOURCE_REVISION=$GITHUB_SHA"
+        -f src/Server/ChefKnifeStudios.PokerAttack.Server.WebAPI/Dockerfile -t "$POKERATTACK_FIXTURE_IMAGE"
+        .
 
-        docker build --platform linux/amd64 --build-arg "SOURCE_REVISION=$GITHUB_SHA" -f src/Server/ChefKnifeStudios.PokerAttack.Server.Data/Dockerfile -t "$POKERATTACK_FIXTURE_MIGRATION_IMAGE" .
+        docker build --platform linux/amd64 --build-arg "SOURCE_REVISION=$GITHUB_SHA"
+        -f src/Server/ChefKnifeStudios.PokerAttack.Server.Data/Dockerfile -t "$POKERATTACK_FIXTURE_MIGRATION_IMAGE"
+        .
 
         '
     - name: Verify exact API image, read-only maintenance and retained browser smoke
@@ -118,7 +119,8 @@ jobs:
     - name: Verify HTTPS gameplay, private isolation, cleanup and revocation
       run: 'python deploy/linode/check-release-gameplay.py
 
-        docker run --rm -v "$PWD:/work:ro" -w /work/deploy/linode python:3.13-bookworm python check-generated-evidence.py /work/artifacts/D02-gameplay-result.json
+        docker run --rm -v "$PWD:/work:ro" -w /work/deploy/linode python:3.13-bookworm
+        python check-generated-evidence.py /work/artifacts/D02-gameplay-result.json
 
         python deploy/linode/check-release-gameplay.py --client-only
 
@@ -209,11 +211,15 @@ jobs:
 
         '
     - name: Publish and prepare once
-      run: 'dotnet publish src/Client/ChefKnifeStudios.PokerAttack.Client.WebApp -c Release -o artifacts/client-publish /p:BlazorEnableCompression=false
+      run: 'dotnet publish src/Client/ChefKnifeStudios.PokerAttack.Client.WebApp -c
+        Release -o artifacts/client-publish /p:BlazorEnableCompression=false
 
-        node deploy/prepare-production-client.mjs artifacts/client-publish/wwwroot artifacts/client-production
+        node deploy/prepare-production-client.mjs artifacts/client-publish/wwwroot
+        artifacts/client-production
 
-        python deploy/release/client_artifacts.py pack artifacts/client-production artifacts/client.tar.gz artifacts/client-candidate.json "$GITHUB_SHA" "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT"
+        python deploy/release/client_artifacts.py pack artifacts/client-production
+        artifacts/client.tar.gz artifacts/client-candidate.json "$GITHUB_SHA" "$GITHUB_RUN_ID"
+        "$GITHUB_RUN_ATTEMPT"
 
         '
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -231,11 +237,13 @@ jobs:
     - name: Bind the actual Actions artifact ID and verify exact archive
       env:
         CLIENT_ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
-      run: 'python deploy/release/client_artifacts.py finalize artifacts/client-candidate.json "$CLIENT_ARTIFACT_ID" artifacts/client-manifest.json
+      run: 'python deploy/release/client_artifacts.py finalize artifacts/client-candidate.json
+        "$CLIENT_ARTIFACT_ID" artifacts/client-manifest.json
 
         python deploy/release/client_artifacts.py check artifacts/client.tar.gz artifacts/client-manifest.json
 
-        python deploy/release/client_artifacts.py summary artifacts/client-manifest.json artifacts/client-identity.json
+        python deploy/release/client_artifacts.py summary artifacts/client-manifest.json
+        artifacts/client-identity.json
 
         '
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -250,7 +258,7 @@ jobs:
         if-no-files-found: error
         retention-days: 30
   server_validation:
-    name: Server validation
+    name: Bootstrap server validation
     needs:
     - changes
     - isolated
@@ -262,9 +270,10 @@ jobs:
         CHANGE_RESULT: ${{ needs.changes.result }}
         ISOLATED_RESULT: ${{ needs.isolated.result }}
         SERVER_CHANGED: ${{ needs.changes.outputs.server }}
-      run: "test \"$CHANGE_RESULT\" = success\nif [ \"$SERVER_CHANGED\" = true ]; then\n  test \"$ISOLATED_RESULT\" = success\nfi\n"
+      run: "test \"$CHANGE_RESULT\" = success\nif [ \"$SERVER_CHANGED\" = true ];\
+        \ then\n  test \"$ISOLATED_RESULT\" = success\nfi\n"
   client_validation:
-    name: Client validation
+    name: Bootstrap client validation
     needs:
     - changes
     - checks
@@ -279,54 +288,6 @@ jobs:
         PACKAGE_RESULT: ${{ needs.package.result }}
         CLIENT_CHANGED: ${{ needs.changes.outputs.client }}
         RESTORE: 'false'
-      run: "test \"$CHANGE_RESULT\" = success\ntest \"$CHECK_RESULT\" = success\nif [ \"$CLIENT_CHANGED\" = true ] && [ \"$RESTORE\" != true ]; then\n  test \"$PACKAGE_RESULT\" = success\nfi\n"
-  publish_bootstrap:
-    needs:
-    - changes
-    - isolated
-    - server_validation
-    - client_validation
-    if: github.repository == 'henryfaulkner/ChefKnifeStudios.PokerAttack' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.bootstrap_artifacts == true && needs.server_validation.result == 'success' && needs.client_validation.result == 'success' && vars.DEPLOYMENT_AUTOMATION_ENABLED == 'false' && vars.BOOTSTRAP_ARTIFACT_PUBLICATION_ENABLED == 'true'
-    environment: server-acr
-    permissions:
-      contents: read
-      actions: read
-      id-token: write
-    runs-on: ubuntu-24.04
-    timeout-minutes: 25
-    outputs:
-      published_artifact_id: ${{ steps.published.outputs.artifact-id }}
-    steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      with:
-        persist-credentials: false
-    - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
-      with:
-        python-version: '3.13'
-    - run: python -m pip install -r deploy/release/requirements-validation.txt
-    - name: Configure disposable publication runner for the exact saved image identities
-      run: sudo --preserve-env=GITHUB_ACTIONS,RUNNER_ENVIRONMENT python3 deploy/release/ci_docker_store.py
-    - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-      with:
-        artifact-ids: ${{ needs.isolated.outputs.image_artifact_id }}
-        path: artifacts/server-images
-        merge-multiple: true
-    - uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6
-      with:
-        client-id: ${{ vars.AZURE_CLIENT_ID }}
-        tenant-id: ${{ vars.AZURE_TENANT_ID }}
-        subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-    - name: Publish only exact tested images and capture verified registry digests
-      env:
-        GH_TOKEN: ${{ github.token }}
-        DEPLOYMENT_AUTOMATION_ENABLED: ${{ vars.DEPLOYMENT_AUTOMATION_ENABLED }}
-        BOOTSTRAP_ARTIFACT_PUBLICATION_ENABLED: ${{ vars.BOOTSTRAP_ARTIFACT_PUBLICATION_ENABLED }}
-      run: python deploy/release/server_images.py publish artifacts/server-images
-    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-      id: published
-      with:
-        name: published-images-${{ github.run_id }}-${{ github.run_attempt }}
-        path: artifacts/server-images/published-images.json
-        if-no-files-found: error
-        retention-days: 30
-    name: Bootstrap artifact publication only
+      run: "test \"$CHANGE_RESULT\" = success\ntest \"$CHECK_RESULT\" = success\n\
+        if [ \"$CLIENT_CHANGED\" = true ] && [ \"$RESTORE\" != true ]; then\n  test\
+        \ \"$PACKAGE_RESULT\" = success\nfi\n"

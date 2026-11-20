@@ -1,0 +1,50 @@
+{
+  "tasks": [
+    "J03",
+    "J04",
+    "G06/G07 revalidation"
+  ],
+  "state": "LIVE BEHAVIOR AND VISUAL VERIFICATION COMPLETE",
+  "recorded_utc": "2026-11-16T15:00:27.904129+00:00",
+  "UID": "linode-docker-containers",
+  "URL": "https://gallantpuffin3113.grafana.net/d/linode-docker-containers",
+  "source_sha256": {
+    "deploy/monitoring/dashboard.py": "e348cadc2a99b8c088fd3648ea4c8afe4508e1ae69ce1fbe4c1975a9e4902dc4",
+    "deploy/monitoring/linode-docker-dashboard.json": "87dd02702ae34d0d52b11f40b50d8f1c1aea11263d32cfefe5824a6daaf9d1e9",
+    "deploy/monitoring/linode-docker-dashboard.resource.json": "8dafdd87b3b5b8bf683a5eae08c58cbc039d2ce260b7ea3db652743e987eabbb",
+    "deploy/monitoring/check-dashboard.py": "a14bda013bc2921c975c9d91195b1e68780e83923e2155618609d4d5a4fa5569",
+    "deploy/monitoring/test_dashboard.py": "885a7e53e76fcb0eb102a985b7347508cf5dd64d040c78d081c28bc5a760903a"
+  },
+  "source_state": "Latest dashboard/QA changes are uncommitted in primary workspace; app build provenance remains actual main dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d. Do not attribute these later dashboard files to the image source.",
+  "evidence": [
+    "J03-current-dropdown-added.json",
+    "J03-probe-create-1.json",
+    "J03-probe-stop-1.json",
+    "J03-probe-recreate-2.json",
+    "J03-recreated-current-series.json",
+    "J03-probe-remove-2.json",
+    "J03-current-dropdown-removed.json",
+    "J04-pause.json",
+    "J04-stale-series.json",
+    "J04-restore.json",
+    "J04-recovery-series.json",
+    "J03-J04-durable-screenshots.json"
+  ],
+  "visual_findings": [
+    "Single selected API shows Running, Docker health Not configured and independent readiness Ready.",
+    "Two actual selected containers render separately; All includes stopped pilot and other actual services.",
+    "Owned sleep-only probe shows Exited then new CID Running; current dropdown removes it after actual removal without definition edits.",
+    "Corrected actual paused interval2026-11-16T14:41:20Z shows one Unknown/stale collection value, red4.41minute ages, all4current states/health/readiness Unknown.",
+    "Live recovery render shows one Success value,45.2second ages,4containers, stopped pilot Exited and all missing healthchecks Not configured.",
+    "Timeline retains distinct full old/new probe CIDs and stops their histories; unchanged application CIDs show Unknown collection then recovery without invented restarts.",
+    "Full raw image/configured/digest/source values match Docker; table cell inspection enabled for complete copying."
+  ],
+  "fixture_assertions": 70,
+  "monitoring_unit_tests": 23,
+  "failures_retained": [
+    "J02-publication-attempt1.json",
+    "J04-first-visual-failure.json",
+    "Initial/iteration screenshots under artifacts/J03-snapshots; first CLI update lacked required UID argument and performed no write."
+  ],
+  "preservation": "All4protected container IDs/states, PostgreSQL PID17929 and Alloy PID43899 unchanged during stale test; host up/sample freshness continue. Owned probe removed, only new collector paused/restored, transient failsafe stopped. No application reset, migrations, recurring browser monitors, alerts or extra release gates."
+}

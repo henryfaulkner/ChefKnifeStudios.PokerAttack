@@ -1,0 +1,165 @@
+{
+  "client-swa": {
+    "protection_rules": [
+      {
+        "id": 72704054,
+        "node_id": "GA_kwDOPgxgQ84EVWA2",
+        "type": "branch_policy"
+      }
+    ],
+    "branch_policy": {
+      "protected_branches": false,
+      "custom_branch_policies": true
+    },
+    "secret_names": [
+      "AZURE_STATIC_WEB_APPS_API_TOKEN",
+      "LINODE_CLIENT_LEASE_PRIVATE_KEY",
+      "LINODE_STATUS_PRIVATE_KEY"
+    ]
+  },
+  "server-acr": {
+    "protection_rules": [
+      {
+        "id": 72704058,
+        "node_id": "GA_kwDOPgxgQ84EVWA6",
+        "type": "branch_policy"
+      }
+    ],
+    "branch_policy": {
+      "protected_branches": false,
+      "custom_branch_policies": true
+    },
+    "secret_names": []
+  },
+  "server-status": {
+    "protection_rules": [
+      {
+        "id": 72704062,
+        "node_id": "GA_kwDOPgxgQ84EVWA-",
+        "type": "branch_policy"
+      }
+    ],
+    "branch_policy": {
+      "protected_branches": false,
+      "custom_branch_policies": true
+    },
+    "secret_names": [
+      "LINODE_STATUS_PRIVATE_KEY"
+    ]
+  },
+  "server-linode": {
+    "protection_rules": [
+      {
+        "id": 72704066,
+        "node_id": "GA_kwDOPgxgQ84EVWBC",
+        "type": "required_reviewers",
+        "prevent_self_review": false,
+        "reviewers": [
+          {
+            "type": "User",
+            "reviewer": {
+              "login": "henryfaulkner",
+              "id": 33840646,
+              "node_id": "MDQ6VXNlcjMzODQwNjQ2",
+              "avatar_url": "https://avatars.githubusercontent.com/u/33840646?v=4",
+              "gravatar_id": "",
+              "url": "https://api.github.com/users/henryfaulkner",
+              "html_url": "https://github.com/henryfaulkner",
+              "followers_url": "https://api.github.com/users/henryfaulkner/followers",
+              "following_url": "https://api.github.com/users/henryfaulkner/following{/other_user}",
+              "gists_url": "https://api.github.com/users/henryfaulkner/gists{/gist_id}",
+              "starred_url": "https://api.github.com/users/henryfaulkner/starred{/owner}{/repo}",
+              "subscriptions_url": "https://api.github.com/users/henryfaulkner/subscriptions",
+              "organizations_url": "https://api.github.com/users/henryfaulkner/orgs",
+              "repos_url": "https://api.github.com/users/henryfaulkner/repos",
+              "events_url": "https://api.github.com/users/henryfaulkner/events{/privacy}",
+              "received_events_url": "https://api.github.com/users/henryfaulkner/received_events",
+              "type": "User",
+              "user_view_type": "public",
+              "site_admin": false
+            }
+          }
+        ]
+      },
+      {
+        "id": 72704068,
+        "node_id": "GA_kwDOPgxgQ84EVWBE",
+        "type": "branch_policy"
+      }
+    ],
+    "branch_policy": {
+      "protected_branches": false,
+      "custom_branch_policies": true
+    },
+    "secret_names": [
+      "LINODE_DEPLOY_PRIVATE_KEY",
+      "LINODE_STATUS_PRIVATE_KEY"
+    ]
+  },
+  "server-verification": {
+    "protection_rules": [
+      {
+        "id": 72704072,
+        "node_id": "GA_kwDOPgxgQ84EVWBI",
+        "type": "branch_policy"
+      }
+    ],
+    "branch_policy": {
+      "protected_branches": false,
+      "custom_branch_policies": true
+    },
+    "secret_names": [
+      "LINODE_EVIDENCE_PRIVATE_KEY",
+      "LINODE_STATUS_PRIVATE_KEY"
+    ]
+  },
+  "server-promotion": {
+    "protection_rules": [
+      {
+        "id": 72704074,
+        "node_id": "GA_kwDOPgxgQ84EVWBK",
+        "type": "required_reviewers",
+        "prevent_self_review": false,
+        "reviewers": [
+          {
+            "type": "User",
+            "reviewer": {
+              "login": "henryfaulkner",
+              "id": 33840646,
+              "node_id": "MDQ6VXNlcjMzODQwNjQ2",
+              "avatar_url": "https://avatars.githubusercontent.com/u/33840646?v=4",
+              "gravatar_id": "",
+              "url": "https://api.github.com/users/henryfaulkner",
+              "html_url": "https://github.com/henryfaulkner",
+              "followers_url": "https://api.github.com/users/henryfaulkner/followers",
+              "following_url": "https://api.github.com/users/henryfaulkner/following{/other_user}",
+              "gists_url": "https://api.github.com/users/henryfaulkner/gists{/gist_id}",
+              "starred_url": "https://api.github.com/users/henryfaulkner/starred{/owner}{/repo}",
+              "subscriptions_url": "https://api.github.com/users/henryfaulkner/subscriptions",
+              "organizations_url": "https://api.github.com/users/henryfaulkner/orgs",
+              "repos_url": "https://api.github.com/users/henryfaulkner/repos",
+              "events_url": "https://api.github.com/users/henryfaulkner/events{/privacy}",
+              "received_events_url": "https://api.github.com/users/henryfaulkner/received_events",
+              "type": "User",
+              "user_view_type": "public",
+              "site_admin": false
+            }
+          }
+        ]
+      },
+      {
+        "id": 72704075,
+        "node_id": "GA_kwDOPgxgQ84EVWBL",
+        "type": "branch_policy"
+      }
+    ],
+    "branch_policy": {
+      "protected_branches": false,
+      "custom_branch_policies": true
+    },
+    "secret_names": [
+      "LINODE_PROMOTION_PRIVATE_KEY",
+      "LINODE_STATUS_PRIVATE_KEY"
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "task": "K01",
+  "checked_utc": "2026-11-17T02:02:29.304920+00:00",
+  "state": "FRESH_ACK_RECEIVED_INSUFFICIENT_EXECUTION_WINDOW_NO_MUTATION",
+  "received_comment": "ACK_RESET 2634afd19ebcdd3922579b27f0fb74404de2aa08661619983a031206633345d8 43884112818/1",
+  "received_utc": "2026-11-17T02:01:15+00:00",
+  "original_expires_utc": "2026-11-17T02:01:57+00:00",
+  "remaining_seconds_at_receipt": 42,
+  "required_drain_seconds": 300,
+  "reason": "Installed release_lease.drain checks original acknowledgment freshness on every iteration; bootstrap maintenance publication also requires freshness. Six observed solo sessions require bounded drain/reset. Starting with 42 seconds cannot complete the approved 300-second drain. No begin/upload/deploy performed; no approval silently extended.",
+  "decision_receipt": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\K01-bootstrap-43884112818-1-refresh-20261117T0133\\reset-decision-received-not-executed.json",
+  "new_packet_sha256": "9b4c40c9f4dffa1289c726cb027ed305e50fa2b7dfde46c1238410e630030798",
+  "new_workspace": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\K01-bootstrap-43884112818-1-refresh-20261117T0202",
+  "source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+  "observed_sessions": {
+    "activeGames": 0,
+    "lobbies": 0,
+    "soloGames": 6
+  },
+  "API_restarted": false,
+  "client_published": false,
+  "promotion_granted": false
+}

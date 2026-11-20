@@ -1,0 +1,30 @@
+{
+  "task": "J04",
+  "action": "restore",
+  "recorded_utc": "2026-11-16T14:41:47.288997+00:00",
+  "snapshot_unix": 1794840106.964562,
+  "alloy_active": "active",
+  "alloy_main_pid": "43899",
+  "postgres_main_pid": "17929",
+  "shared_containers": {
+    "pokerattack-production-api-1": {
+      "container_id": "45befa1de68526ca5b0686fc5fad7d9e4226b25d65aaa88cdca5665a05724dcb",
+      "state": "running"
+    },
+    "pokerattack-pilot-api-1": {
+      "container_id": "fbe3c939907d8df6e91997d51a8535637b1e279087e6a6a02ab61f383bd86ff6",
+      "state": "exited"
+    },
+    "transitjazz-app-server-1": {
+      "container_id": "1fac1e872bc54e40b1c89230be9f72e94e3e8f2533a46d4799a7e11df5abeb80",
+      "state": "running"
+    },
+    "transitjazz-app-proxy-1": {
+      "container_id": "d9fc0b5afced651b8fde45487b91a517e52316c221527b7393364d9f39089995",
+      "state": "running"
+    }
+  },
+  "failsafe_unit": "linode-docker-snapshot-qa-resume-2d76cbb4cd1b",
+  "failsafe_restoration_seconds": 360,
+  "timer_status": "active"
+}

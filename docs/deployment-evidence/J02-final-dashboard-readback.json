@@ -1,0 +1,1801 @@
+{
+  "apiVersion": "dashboard.grafana.app/v1beta1",
+  "kind": "Dashboard",
+  "metadata": {
+    "annotations": {
+      "grafana.app/createdBy": "user:ffvy642z726f4e",
+      "grafana.app/folder": "integration---linux-node",
+      "grafana.app/updatedBy": "user:ffvy642z726f4e",
+      "grafana.app/updatedTimestamp": "2026-11-16T14:43:39Z"
+    },
+    "creationTimestamp": "2026-11-16T14:10:43Z",
+    "generation": 7,
+    "labels": {
+      "grafana.app/deprecatedInternalID": "1136108910432256"
+    },
+    "managedFields": [
+      {
+        "apiVersion": "dashboard.grafana.app/v1beta1",
+        "fieldsType": "FieldsV1",
+        "fieldsV1": {
+          "f:metadata": {
+            "f:annotations": {
+              ".": {},
+              "f:grafana.app/folder": {}
+            }
+          },
+          "f:spec": {
+            "f:annotations": {
+              ".": {},
+              "f:list": {}
+            },
+            "f:description": {},
+            "f:editable": {},
+            "f:panels": {},
+            "f:refresh": {},
+            "f:schemaVersion": {},
+            "f:tags": {},
+            "f:templating": {
+              ".": {},
+              "f:list": {}
+            },
+            "f:time": {
+              ".": {},
+              "f:from": {},
+              "f:to": {}
+            },
+            "f:timezone": {},
+            "f:title": {}
+          }
+        },
+        "manager": "gcx",
+        "operation": "Update",
+        "time": "2026-11-16T14:43:39Z"
+      }
+    ],
+    "name": "linode-docker-containers",
+    "namespace": "stacks-1804691",
+    "resourceVersion": "2122339822827544576",
+    "uid": "0ea53e94-9e64-46d3-8710-8476ddaec8bb"
+  },
+  "spec": {
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "description": "Shared host Docker inventory, full image identity, lifecycle, health and resources. No deployment gate, synthetic program or automatic recovery.",
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "links": [],
+    "panels": [
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "grafanacloud-prom"
+        },
+        "description": "Unknown/stale after three minutes, or absent. Partial collection is Failed; successful peers remain visible.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "mappings": [
+              {
+                "options": {
+                  "0": {
+                    "color": "red",
+                    "text": "Failed"
+                  },
+                  "1": {
+                    "color": "green",
+                    "text": "Success"
+                  },
+                  "2": {
+                    "color": "gray",
+                    "text": "Unknown / stale"
+                  }
+                },
+                "type": "value"
+              }
+            ],
+            "noValue": "Unknown / missing"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 8,
+          "x": 0,
+          "y": 0
+        },
+        "id": 1,
+        "options": {
+          "colorMode": "value",
+          "reduceOptions": {
+            "calcs": [
+              "last"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "value_and_name"
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "((linode_docker_collection_success{host=~\"${host:regex}\"} and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0))) or on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} * 0 + 2))",
+            "format": "time_series",
+            "instant": true,
+            "legendFormat": "{{host}}",
+            "range": false,
+            "refId": "A"
+          }
+        ],
+        "title": "Collection result",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "grafanacloud-prom"
+        },
+        "description": "Age, not a deployment observation gate.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "min": 0,
+            "noValue": "Unavailable",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red"
+                },
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "red",
+                  "value": 180
+                }
+              ]
+            },
+            "unit": "s"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 8,
+          "x": 8,
+          "y": 0
+        },
+        "id": 2,
+        "options": {
+          "colorMode": "value",
+          "reduceOptions": {
+            "calcs": [
+              "last"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "value_and_name"
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}",
+            "format": "time_series",
+            "instant": true,
+            "legendFormat": "{{host}}",
+            "range": false,
+            "refId": "A"
+          }
+        ],
+        "title": "Snapshot age",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "grafanacloud-prom"
+        },
+        "description": "Age, not a deployment observation gate.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "min": 0,
+            "noValue": "Unavailable",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red"
+                },
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "red",
+                  "value": 180
+                }
+              ]
+            },
+            "unit": "s"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 8,
+          "x": 16,
+          "y": 0
+        },
+        "id": 3,
+        "options": {
+          "colorMode": "value",
+          "reduceOptions": {
+            "calcs": [
+              "last"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "value_and_name"
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "time() - linode_docker_last_success_timestamp_seconds{host=~\"${host:regex}\"}",
+            "format": "time_series",
+            "instant": true,
+            "legendFormat": "{{host}}",
+            "range": false,
+            "refId": "A"
+          }
+        ],
+        "title": "Last complete success age",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "grafanacloud-prom"
+        },
+        "description": "Identity includes stopped containers. Requested image, local ID and matching registry digest are different fields; source may be Not provided. Old metadata is excluded by identity timestamp. Full values wrap and remain copyable.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "align": "auto",
+              "cellOptions": {
+                "type": "auto"
+              },
+              "inspect": true,
+              "wrapHeaderText": true,
+              "wrapText": true
+            },
+            "noValue": "Unavailable"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Inventory"
+              },
+              "properties": []
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 4
+        },
+        "id": 4,
+        "options": {
+          "cellHeight": "lg",
+          "footer": {
+            "show": false
+          },
+          "maxRowHeight": 200,
+          "showHeader": true
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "label_join((((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1),\"container_key\",\"/\",\"host\",\"container_id\")",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "{{host}} / {{container}} / {{container_id}}",
+            "range": false,
+            "refId": "A"
+          }
+        ],
+        "title": "Image identity (full copyable values)",
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "Time": true,
+                "Value": true,
+                "container_key": true
+              },
+              "indexByName": {
+                "Value": 3,
+                "container": 1,
+                "container_id": 2,
+                "host": 0
+              },
+              "renameByName": {
+                "Value": "Inventory"
+              }
+            }
+          },
+          {
+            "id": "filterFieldsByName",
+            "options": {
+              "include": {
+                "names": [
+                  "host",
+                  "container",
+                  "container_id",
+                  "compose_project",
+                  "compose_service",
+                  "configured_image",
+                  "image_id",
+                  "registry_digest",
+                  "source_revision",
+                  "network_mode"
+                ]
+              }
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "indexByName": {
+                "compose_project": 3,
+                "compose_service": 4,
+                "configured_image": 5,
+                "container": 1,
+                "container_id": 2,
+                "host": 0,
+                "image_id": 6,
+                "network_mode": 9,
+                "registry_digest": 7,
+                "source_revision": 8
+              },
+              "renameByName": {
+                "compose_project 1": "compose_project",
+                "compose_service 1": "compose_service",
+                "configured_image 1": "configured_image",
+                "container 1": "container",
+                "container_id 1": "container_id",
+                "host 1": "host",
+                "image_id 1": "image_id",
+                "network_mode 1": "network_mode",
+                "registry_digest 1": "registry_digest",
+                "source_revision 1": "source_revision"
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "grafanacloud-prom"
+        },
+        "description": "Running is not health or gameplay correctness. No healthcheck says Not configured. Failed/stale collection says Unknown, never retained green. Fixed loopback readiness is separate from Docker health.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "align": "auto",
+              "cellOptions": {
+                "type": "auto"
+              },
+              "inspect": true,
+              "wrapHeaderText": true,
+              "wrapText": true
+            },
+            "noValue": "Unavailable"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "State"
+              },
+              "properties": [
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "0": {
+                          "color": "gray",
+                          "text": "Unknown / stale"
+                        },
+                        "1": {
+                          "color": "gray",
+                          "text": "Created"
+                        },
+                        "2": {
+                          "color": "green",
+                          "text": "Running"
+                        },
+                        "3": {
+                          "color": "gray",
+                          "text": "Paused"
+                        },
+                        "4": {
+                          "color": "yellow",
+                          "text": "Restarting"
+                        },
+                        "5": {
+                          "color": "gray",
+                          "text": "Removing"
+                        },
+                        "6": {
+                          "color": "gray",
+                          "text": "Exited"
+                        },
+                        "7": {
+                          "color": "gray",
+                          "text": "Dead"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Docker health"
+              },
+              "properties": [
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "0": {
+                          "color": "gray",
+                          "text": "Not configured"
+                        },
+                        "1": {
+                          "color": "green",
+                          "text": "Healthy"
+                        },
+                        "2": {
+                          "color": "red",
+                          "text": "Unhealthy"
+                        },
+                        "3": {
+                          "color": "yellow",
+                          "text": "Starting"
+                        },
+                        "4": {
+                          "color": "gray",
+                          "text": "Unknown / stale"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Application readiness"
+              },
+              "properties": [
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "0": {
+                          "color": "gray",
+                          "text": "Not configured"
+                        },
+                        "1": {
+                          "color": "green",
+                          "text": "Ready"
+                        },
+                        "2": {
+                          "color": "red",
+                          "text": "Not ready"
+                        },
+                        "3": {
+                          "color": "gray",
+                          "text": "Unknown / stale"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Network attribution"
+              },
+              "properties": [
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "0": {
+                          "color": "gray",
+                          "text": "Shared / unavailable"
+                        },
+                        "1": {
+                          "color": "gray",
+                          "text": "Container namespace"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 12
+        },
+        "id": 5,
+        "options": {
+          "cellHeight": "lg",
+          "footer": {
+            "show": false
+          },
+          "maxRowHeight": 200,
+          "showHeader": true
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "label_join((((linode_docker_container_state{host=~\"${host:regex}\"} and on(host,container_id) ((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0)))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1)) or on(host,container_id) ((((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1) * 0 + 0)),\"container_key\",\"/\",\"host\",\"container_id\")",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "{{host}} / {{container}} / {{container_id}}",
+            "range": false,
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "max by(container_key) (label_join((((linode_docker_container_health{host=~\"${host:regex}\"} and on(host,container_id) ((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0)))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1)) or on(host,container_id) ((((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1) * 0 + 4)),\"container_key\",\"/\",\"host\",\"container_id\"))",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "{{host}} / {{container}} / {{container_id}}",
+            "range": false,
+            "refId": "B"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "max by(container_key) (label_join((((linode_docker_container_readiness{host=~\"${host:regex}\"} and on(host,container_id) ((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0)))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1)) or on(host,container_id) ((((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1) * 0 + 3)),\"container_key\",\"/\",\"host\",\"container_id\"))",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "{{host}} / {{container}} / {{container_id}}",
+            "range": false,
+            "refId": "C"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "max by(container_key) (label_join(((linode_docker_container_network_attributable{host=~\"${host:regex}\"} and on(host,container_id) ((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0)))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1)),\"container_key\",\"/\",\"host\",\"container_id\"))",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "{{host}} / {{container}} / {{container_id}}",
+            "range": false,
+            "refId": "D"
+          }
+        ],
+        "title": "Current status, health and readiness",
+        "transformations": [
+          {
+            "id": "joinByField",
+            "options": {
+              "byField": "container_key",
+              "mode": "outerTabular"
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "Time": true,
+                "compose_project": true,
+                "compose_service": true,
+                "configured_image": true,
+                "container_key": true,
+                "image_id": true,
+                "network_mode": true,
+                "registry_digest": true,
+                "source_revision": true
+              },
+              "indexByName": {
+                "Value #A": 3,
+                "Value #B": 4,
+                "Value #C": 5,
+                "Value #D": 6,
+                "container": 1,
+                "container_id": 2,
+                "host": 0
+              },
+              "renameByName": {
+                "Value #A": "State",
+                "Value #B": "Docker health",
+                "Value #C": "Application readiness",
+                "Value #D": "Network attribution"
+              }
+            }
+          },
+          {
+            "id": "filterFieldsByName",
+            "options": {
+              "include": {
+                "names": [
+                  "host",
+                  "container",
+                  "container_id",
+                  "host 1",
+                  "container 1",
+                  "container_id 1",
+                  "State",
+                  "Docker health",
+                  "Application readiness",
+                  "Network attribution"
+                ]
+              }
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "indexByName": {
+                "Application readiness": 8,
+                "Docker health": 7,
+                "Network attribution": 9,
+                "State": 6,
+                "container": 1,
+                "container 1": 4,
+                "container_id": 2,
+                "container_id 1": 5,
+                "host": 0,
+                "host 1": 3
+              },
+              "renameByName": {
+                "container 1": "container",
+                "container_id 1": "container_id",
+                "host 1": "host"
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "grafanacloud-prom"
+        },
+        "description": "Restart/OOM/exit data describe this Docker incarnation, not lifetime deployment history. Missing timestamps or exit codes are unavailable.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "align": "auto",
+              "cellOptions": {
+                "type": "auto"
+              },
+              "inspect": true,
+              "wrapHeaderText": true,
+              "wrapText": true
+            },
+            "noValue": "Unavailable"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Created"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "dateTimeAsIso"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Last start"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "dateTimeAsIso"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Last finish"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "dateTimeAsIso"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Uptime"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "s"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Restarts"
+              },
+              "properties": [
+                {
+                  "id": "decimals",
+                  "value": 0
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "OOM"
+              },
+              "properties": [
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "0": {
+                          "color": "gray",
+                          "text": "No"
+                        },
+                        "1": {
+                          "color": "red",
+                          "text": "OOM"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Exit code"
+              },
+              "properties": [
+                {
+                  "id": "decimals",
+                  "value": 0
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 20
+        },
+        "id": 6,
+        "options": {
+          "cellHeight": "lg",
+          "footer": {
+            "show": false
+          },
+          "maxRowHeight": 200,
+          "showHeader": true
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "label_join(((linode_docker_container_created_timestamp_seconds{host=~\"${host:regex}\"} * 1000 and on(host,container_id) ((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0)))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1)),\"container_key\",\"/\",\"host\",\"container_id\")",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "{{host}} / {{container}} / {{container_id}}",
+            "range": false,
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "max by(container_key) (label_join(((linode_docker_container_started_timestamp_seconds{host=~\"${host:regex}\"} * 1000 and on(host,container_id) ((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0)))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1)),\"container_key\",\"/\",\"host\",\"container_id\"))",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "{{host}} / {{container}} / {{container_id}}",
+            "range": false,
+            "refId": "B"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "max by(container_key) (label_join(((linode_docker_container_finished_timestamp_seconds{host=~\"${host:regex}\"} * 1000 and on(host,container_id) ((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0)))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1)),\"container_key\",\"/\",\"host\",\"container_id\"))",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "{{host}} / {{container}} / {{container_id}}",
+            "range": false,
+            "refId": "C"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "max by(container_key) (label_join(((time() - linode_docker_container_started_timestamp_seconds{host=~\"${host:regex}\"} and on(host,container_id) (((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0))) and on(host,container_id) (linode_docker_container_state{host=~\"${host:regex}\"} == 2))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1)),\"container_key\",\"/\",\"host\",\"container_id\"))",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "{{host}} / {{container}} / {{container_id}}",
+            "range": false,
+            "refId": "D"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "max by(container_key) (label_join(((linode_docker_container_restarts{host=~\"${host:regex}\"} and on(host,container_id) ((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0)))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1)),\"container_key\",\"/\",\"host\",\"container_id\"))",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "{{host}} / {{container}} / {{container_id}}",
+            "range": false,
+            "refId": "E"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "max by(container_key) (label_join(((linode_docker_container_oom_killed{host=~\"${host:regex}\"} and on(host,container_id) ((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0)))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1)),\"container_key\",\"/\",\"host\",\"container_id\"))",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "{{host}} / {{container}} / {{container_id}}",
+            "range": false,
+            "refId": "F"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "max by(container_key) (label_join(((linode_docker_container_exit_code{host=~\"${host:regex}\"} and on(host,container_id) ((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0)))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1)),\"container_key\",\"/\",\"host\",\"container_id\"))",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "{{host}} / {{container}} / {{container_id}}",
+            "range": false,
+            "refId": "G"
+          }
+        ],
+        "title": "Lifecycle of each container incarnation",
+        "transformations": [
+          {
+            "id": "joinByField",
+            "options": {
+              "byField": "container_key",
+              "mode": "outerTabular"
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "Time": true,
+                "compose_project": true,
+                "compose_service": true,
+                "configured_image": true,
+                "container_key": true,
+                "image_id": true,
+                "network_mode": true,
+                "registry_digest": true,
+                "source_revision": true
+              },
+              "indexByName": {
+                "Value #A": 3,
+                "Value #B": 4,
+                "Value #C": 5,
+                "Value #D": 6,
+                "Value #E": 7,
+                "Value #F": 8,
+                "Value #G": 9,
+                "container": 1,
+                "container_id": 2,
+                "host": 0
+              },
+              "renameByName": {
+                "Value #A": "Created",
+                "Value #B": "Last start",
+                "Value #C": "Last finish",
+                "Value #D": "Uptime",
+                "Value #E": "Restarts",
+                "Value #F": "OOM",
+                "Value #G": "Exit code"
+              }
+            }
+          },
+          {
+            "id": "filterFieldsByName",
+            "options": {
+              "include": {
+                "names": [
+                  "host",
+                  "container",
+                  "container_id",
+                  "host 1",
+                  "container 1",
+                  "container_id 1",
+                  "Created",
+                  "Last start",
+                  "Last finish",
+                  "Uptime",
+                  "Restarts",
+                  "OOM",
+                  "Exit code"
+                ]
+              }
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "indexByName": {
+                "Created": 6,
+                "Exit code": 12,
+                "Last finish": 8,
+                "Last start": 7,
+                "OOM": 11,
+                "Restarts": 10,
+                "Uptime": 9,
+                "container": 1,
+                "container 1": 4,
+                "container_id": 2,
+                "container_id 1": 5,
+                "host": 0,
+                "host 1": 3
+              },
+              "renameByName": {
+                "container 1": "container",
+                "container_id 1": "container_id",
+                "host 1": "host"
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "grafanacloud-prom"
+        },
+        "description": "Zero quota/limit explicitly means Unlimited. Resource percentages are shown only for positive configured limits; CPU affinity is not quota.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "align": "auto",
+              "cellOptions": {
+                "type": "auto"
+              },
+              "inspect": true,
+              "wrapHeaderText": true,
+              "wrapText": true
+            },
+            "noValue": "Unavailable"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "CPU quota"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "cores"
+                },
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "0": {
+                          "color": "gray",
+                          "text": "Unlimited"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Memory limit"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "bytes"
+                },
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "0": {
+                          "color": "gray",
+                          "text": "Unlimited"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 28
+        },
+        "id": 7,
+        "options": {
+          "cellHeight": "lg",
+          "footer": {
+            "show": false
+          },
+          "maxRowHeight": 200,
+          "showHeader": true
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "label_join(((linode_docker_container_cpu_limit_cores{host=~\"${host:regex}\"} and on(host,container_id) ((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0)))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1)),\"container_key\",\"/\",\"host\",\"container_id\")",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "{{host}} / {{container}} / {{container_id}}",
+            "range": false,
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "max by(container_key) (label_join(((linode_docker_container_memory_limit_bytes{host=~\"${host:regex}\"} and on(host,container_id) ((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0)))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1)),\"container_key\",\"/\",\"host\",\"container_id\"))",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "{{host}} / {{container}} / {{container_id}}",
+            "range": false,
+            "refId": "B"
+          }
+        ],
+        "title": "Configured limits",
+        "transformations": [
+          {
+            "id": "joinByField",
+            "options": {
+              "byField": "container_key",
+              "mode": "outerTabular"
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "Time": true,
+                "compose_project": true,
+                "compose_service": true,
+                "configured_image": true,
+                "container_key": true,
+                "image_id": true,
+                "network_mode": true,
+                "registry_digest": true,
+                "source_revision": true
+              },
+              "indexByName": {
+                "Value #A": 3,
+                "Value #B": 4,
+                "container": 1,
+                "container_id": 2,
+                "host": 0
+              },
+              "renameByName": {
+                "Value #A": "CPU quota",
+                "Value #B": "Memory limit"
+              }
+            }
+          },
+          {
+            "id": "filterFieldsByName",
+            "options": {
+              "include": {
+                "names": [
+                  "host",
+                  "container",
+                  "container_id",
+                  "host 1",
+                  "container 1",
+                  "container_id 1",
+                  "CPU quota",
+                  "Memory limit"
+                ]
+              }
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "indexByName": {
+                "CPU quota": 6,
+                "Memory limit": 7,
+                "container": 1,
+                "container 1": 4,
+                "container_id": 2,
+                "container_id 1": 5,
+                "host": 0,
+                "host 1": 3
+              },
+              "renameByName": {
+                "container 1": "container",
+                "container_id 1": "container_id",
+                "host 1": "host"
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "grafanacloud-prom"
+        },
+        "description": "One core = one CPU second per second. Four-minute rate; separate container IDs are never merged.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "drawStyle": "line",
+              "fillOpacity": 8,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "spanNulls": false
+            },
+            "min": 0,
+            "noValue": "Unavailable",
+            "unit": "cores"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 36
+        },
+        "id": 8,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "((rate(linode_docker_container_cpu_usage_seconds_total{host=~\"${host:regex}\"}[4m]) and on(host,container_id) (((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0))) and on(host,container_id) (linode_docker_container_state{host=~\"${host:regex}\"} == 2))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1))",
+            "format": "time_series",
+            "instant": false,
+            "legendFormat": "{{host}} / {{container}} / {{container_id}}",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "CPU usage (cores)",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "grafanacloud-prom"
+        },
+        "description": "No configured quota means Unlimited; no percentage is fabricated.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "drawStyle": "line",
+              "fillOpacity": 8,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "spanNulls": false
+            },
+            "min": 0,
+            "noValue": "Unavailable",
+            "unit": "percent"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 36
+        },
+        "id": 9,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "(((100 * rate(linode_docker_container_cpu_usage_seconds_total{host=~\"${host:regex}\"}[4m]) / on(host,container_id) (linode_docker_container_cpu_limit_cores{host=~\"${host:regex}\"} > 0)) and on(host,container_id) (((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0))) and on(host,container_id) (linode_docker_container_state{host=~\"${host:regex}\"} == 2))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1))",
+            "format": "time_series",
+            "instant": false,
+            "legendFormat": "{{host}} / {{container}} / {{container_id}}",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "CPU usage / configured quota",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "grafanacloud-prom"
+        },
+        "description": "Docker memory usage minus inactive file cache. Absent cache input means unavailable.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "drawStyle": "line",
+              "fillOpacity": 8,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "spanNulls": false
+            },
+            "min": 0,
+            "noValue": "Unavailable",
+            "unit": "bytes"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 44
+        },
+        "id": 10,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "((linode_docker_container_memory_working_set_bytes{host=~\"${host:regex}\"} and on(host,container_id) (((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0))) and on(host,container_id) (linode_docker_container_state{host=~\"${host:regex}\"} == 2))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1))",
+            "format": "time_series",
+            "instant": false,
+            "legendFormat": "{{host}} / {{container}} / {{container_id}}",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "Memory working set",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "grafanacloud-prom"
+        },
+        "description": "Raw Docker usage divided by a positive configured hard limit; Unlimited has no percentage.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "drawStyle": "line",
+              "fillOpacity": 8,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "spanNulls": false
+            },
+            "min": 0,
+            "noValue": "Unavailable",
+            "unit": "percent"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 44
+        },
+        "id": 11,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "(((100 * linode_docker_container_memory_usage_bytes{host=~\"${host:regex}\"} / on(host,container_id) (linode_docker_container_memory_limit_bytes{host=~\"${host:regex}\"} > 0)) and on(host,container_id) (((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0))) and on(host,container_id) (linode_docker_container_state{host=~\"${host:regex}\"} == 2))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1))",
+            "format": "time_series",
+            "instant": false,
+            "legendFormat": "{{host}} / {{container}} / {{container_id}}",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "Memory usage / configured limit",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "grafanacloud-prom"
+        },
+        "description": "Host/container-shared namespaces say Shared/unavailable in the status table. Their counters are omitted; this is not zero traffic.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "drawStyle": "line",
+              "fillOpacity": 8,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "spanNulls": false
+            },
+            "min": 0,
+            "noValue": "Unavailable",
+            "unit": "Bps"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 52
+        },
+        "id": 12,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "((rate(linode_docker_container_network_receive_bytes_total{host=~\"${host:regex}\"}[4m]) and on(host,container_id) (((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0))) and on(host,container_id) (linode_docker_container_state{host=~\"${host:regex}\"} == 2))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1))",
+            "format": "time_series",
+            "instant": false,
+            "legendFormat": "Receive / {{host}} / {{container}} / {{container_id}}",
+            "range": true,
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "((rate(linode_docker_container_network_transmit_bytes_total{host=~\"${host:regex}\"}[4m]) and on(host,container_id) (((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0))) and on(host,container_id) (linode_docker_container_state{host=~\"${host:regex}\"} == 2))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1))",
+            "format": "time_series",
+            "instant": false,
+            "legendFormat": "Transmit / {{host}} / {{container}} / {{container_id}}",
+            "range": true,
+            "refId": "B"
+          }
+        ],
+        "title": "Network receive / transmit",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "grafanacloud-prom"
+        },
+        "description": "Four-minute counter rates across block devices, distinct per container incarnation. Missing kernel I/O accounting remains unavailable.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "drawStyle": "line",
+              "fillOpacity": 8,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "spanNulls": false
+            },
+            "min": 0,
+            "noValue": "Unavailable",
+            "unit": "Bps"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 52
+        },
+        "id": 13,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "((rate(linode_docker_container_block_read_bytes_total{host=~\"${host:regex}\"}[4m]) and on(host,container_id) (((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0))) and on(host,container_id) (linode_docker_container_state{host=~\"${host:regex}\"} == 2))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1))",
+            "format": "time_series",
+            "instant": false,
+            "legendFormat": "Read / {{host}} / {{container}} / {{container_id}}",
+            "range": true,
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "((rate(linode_docker_container_block_write_bytes_total{host=~\"${host:regex}\"}[4m]) and on(host,container_id) (((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0))) and on(host,container_id) (linode_docker_container_state{host=~\"${host:regex}\"} == 2))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1))",
+            "format": "time_series",
+            "instant": false,
+            "legendFormat": "Write / {{host}} / {{container}} / {{container_id}}",
+            "range": true,
+            "refId": "B"
+          }
+        ],
+        "title": "Block read / write",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "grafanacloud-prom"
+        },
+        "description": "Thirty-second collection / sixty-second scrape can miss brief transitions. Removed incarnations have no current state; old IDs retain history.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "mappings": [
+              {
+                "options": {
+                  "0": {
+                    "color": "gray",
+                    "text": "Unknown / stale"
+                  },
+                  "1": {
+                    "color": "gray",
+                    "text": "Created"
+                  },
+                  "2": {
+                    "color": "green",
+                    "text": "Running"
+                  },
+                  "3": {
+                    "color": "gray",
+                    "text": "Paused"
+                  },
+                  "4": {
+                    "color": "yellow",
+                    "text": "Restarting"
+                  },
+                  "5": {
+                    "color": "gray",
+                    "text": "Removing"
+                  },
+                  "6": {
+                    "color": "gray",
+                    "text": "Exited"
+                  },
+                  "7": {
+                    "color": "gray",
+                    "text": "Dead"
+                  }
+                },
+                "type": "value"
+              }
+            ],
+            "noValue": "Unavailable"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 60
+        },
+        "id": 14,
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "mergeValues": true,
+          "rowHeight": 0.8,
+          "showValue": "auto"
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "grafanacloud-prom"
+            },
+            "expr": "(((linode_docker_container_state{host=~\"${host:regex}\"} and on(host,container_id) ((linode_docker_container_collection_success{host=~\"${host:regex}\"} == 1) and on(host,container_id) (linode_docker_container_sample_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 1) and on(host) ((time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} < 180) and on(host) (time() - linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"} >= 0)))) * on(host,container_id) group_left(container,compose_project,compose_service,configured_image,image_id,registry_digest,source_revision,network_mode) (((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1)) or on(host,container_id) ((((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host,container_id) group_left max by(host,container_id) (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"})) and ((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\",container=~\"${container:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0)))) * 0 + 1) * 0 + 0))",
+            "format": "time_series",
+            "instant": false,
+            "legendFormat": "{{host}} / {{container}} / {{container_id}}",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "Sampled lifecycle state",
+        "type": "state-timeline"
+      }
+    ],
+    "refresh": "30s",
+    "schemaVersion": 42,
+    "tags": [
+      "linode",
+      "docker"
+    ],
+    "templating": {
+      "list": [
+        {
+          "allValue": ".*",
+          "current": {
+            "text": [
+              "expense-tracker-vm"
+            ],
+            "value": [
+              "expense-tracker-vm"
+            ]
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "includeAll": true,
+          "label": "Host",
+          "multi": true,
+          "name": "host",
+          "options": [],
+          "query": "label_values(linode_docker_inventory_success, host)",
+          "refresh": 2,
+          "sort": 1,
+          "type": "query"
+        },
+        {
+          "allValue": ".*",
+          "current": {
+            "text": "All",
+            "value": "$__all"
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "grafanacloud-prom"
+          },
+          "includeAll": true,
+          "label": "Container",
+          "multi": true,
+          "name": "container",
+          "options": [],
+          "query": "query_result(((linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"${host:regex}\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"${host:regex}\"} and on(host) (linode_docker_inventory_success{host=~\"${host:regex}\"} == 0))))",
+          "refresh": 2,
+          "regex": "/container=\"([^\"]+)\"/",
+          "sort": 1,
+          "type": "query"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "browser",
+    "title": "Linode Docker Containers",
+    "weekStart": ""
+  },
+  "status": {}
+}

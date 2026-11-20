@@ -16,7 +16,10 @@ class DashboardTests(unittest.TestCase):
         self.assertEqual(self.doc['refresh'],'30s')
         self.assertEqual([item['name'] for item in self.doc['templating']['list']],['host','container'])
         self.assertTrue(all(item['multi'] and item['includeAll'] for item in self.doc['templating']['list']))
-        self.assertIn('label_values(linode_docker_container_info',self.doc['templating']['list'][1]['query'])
+        selector=self.doc['templating']['list'][1]['query']
+        self.assertIn('query_result(',selector)
+        self.assertIn('container_identity_timestamp_seconds',selector)
+        self.assertNotIn('${container:regex}',selector)
 
     def test_queries_reference_only_actual_contract_metrics_and_keep_incarnations(self):
         for panel in self.doc['panels']:
@@ -41,6 +44,13 @@ class DashboardTests(unittest.TestCase):
         self.assertIn('180',dashboard.FRESH)
         self.assertIn(' > 0',dashboard.CPU_PERCENT)
         self.assertIn(' > 0',dashboard.MEMORY_PERCENT)
+        # Current freshness must not reduce separate historical Success and
+        # Unknown series into two simultaneous status values.
+        for panel in self.doc['panels'][:3]:
+            self.assertTrue(panel['targets'][0]['instant'])
+            self.assertFalse(panel['targets'][0]['range'])
+        for panel in self.doc['panels'][1:3]:
+            self.assertEqual(panel['fieldConfig']['defaults']['color']['mode'],'thresholds')
 
 
 if __name__=='__main__':unittest.main(verbosity=2)

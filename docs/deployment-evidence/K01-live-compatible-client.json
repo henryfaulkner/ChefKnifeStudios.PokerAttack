@@ -1,0 +1,177 @@
+{
+  "task": "K01 recovery prerequisite",
+  "read_only": true,
+  "checked_utc": "2026-11-16T14:57:17.137038+00:00",
+  "checks": [
+    {
+      "origin": "https://playpokerattack.com",
+      "file": "_framework/blazor.webassembly.js",
+      "sha256": "de5096ae4a37cf0b29578d1a421b364bf20c91149aae71d12887641e1b972010",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://playpokerattack.com",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Client.Core.bzgtgxkg01.wasm",
+      "sha256": "c9908cab3930d3d9ca42ed8997dfe5ca7249c75c8015e82695655f09dd940bbf",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://playpokerattack.com",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Client.Shared.pzh0lddr5o.wasm",
+      "sha256": "15740e3f6eb3924c68198a036cbfb15c12a7c455e17fd43bc4ad22157d20a6dc",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://playpokerattack.com",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Client.WebApp.lk4l9hi095.wasm",
+      "sha256": "9b4899efae5f527a856457aa9fa1f5e0a5f6af932abaf3b66250d7cd57b07b65",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://playpokerattack.com",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Shared.zqm5yrp0mz.wasm",
+      "sha256": "6b4075f17ea1392d478372199afe4a340c82617b05a17a288a9c8f5dbf74c8ce",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://playpokerattack.com",
+      "file": "appsettings.Development.json",
+      "sha256": "af2308290b32b68e9ad4aed9b9408e09b4e6e5691b83211fbd625195de5fc3c7",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://playpokerattack.com",
+      "file": "appsettings.json",
+      "sha256": "f77fb941dc56040d7eddbfd8bbeb21d5a625998c813dcdb387381d394f06a0ba",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://playpokerattack.com",
+      "file": "index.html",
+      "sha256": "db5221106219ad021c33aef5e662d301605e880182f78e3e2b1bcbe0df16bc47",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://www.playpokerattack.com",
+      "file": "_framework/blazor.webassembly.js",
+      "sha256": "de5096ae4a37cf0b29578d1a421b364bf20c91149aae71d12887641e1b972010",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://www.playpokerattack.com",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Client.Core.bzgtgxkg01.wasm",
+      "sha256": "c9908cab3930d3d9ca42ed8997dfe5ca7249c75c8015e82695655f09dd940bbf",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://www.playpokerattack.com",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Client.Shared.pzh0lddr5o.wasm",
+      "sha256": "15740e3f6eb3924c68198a036cbfb15c12a7c455e17fd43bc4ad22157d20a6dc",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://www.playpokerattack.com",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Client.WebApp.lk4l9hi095.wasm",
+      "sha256": "9b4899efae5f527a856457aa9fa1f5e0a5f6af932abaf3b66250d7cd57b07b65",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://www.playpokerattack.com",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Shared.zqm5yrp0mz.wasm",
+      "sha256": "6b4075f17ea1392d478372199afe4a340c82617b05a17a288a9c8f5dbf74c8ce",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://www.playpokerattack.com",
+      "file": "appsettings.Development.json",
+      "sha256": "af2308290b32b68e9ad4aed9b9408e09b4e6e5691b83211fbd625195de5fc3c7",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://www.playpokerattack.com",
+      "file": "appsettings.json",
+      "sha256": "f77fb941dc56040d7eddbfd8bbeb21d5a625998c813dcdb387381d394f06a0ba",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://www.playpokerattack.com",
+      "file": "index.html",
+      "sha256": "db5221106219ad021c33aef5e662d301605e880182f78e3e2b1bcbe0df16bc47",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://salmon-hill-0056eb60f.2.azurestaticapps.net",
+      "file": "_framework/blazor.webassembly.js",
+      "sha256": "de5096ae4a37cf0b29578d1a421b364bf20c91149aae71d12887641e1b972010",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://salmon-hill-0056eb60f.2.azurestaticapps.net",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Client.Core.bzgtgxkg01.wasm",
+      "sha256": "c9908cab3930d3d9ca42ed8997dfe5ca7249c75c8015e82695655f09dd940bbf",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://salmon-hill-0056eb60f.2.azurestaticapps.net",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Client.Shared.pzh0lddr5o.wasm",
+      "sha256": "15740e3f6eb3924c68198a036cbfb15c12a7c455e17fd43bc4ad22157d20a6dc",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://salmon-hill-0056eb60f.2.azurestaticapps.net",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Client.WebApp.lk4l9hi095.wasm",
+      "sha256": "9b4899efae5f527a856457aa9fa1f5e0a5f6af932abaf3b66250d7cd57b07b65",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://salmon-hill-0056eb60f.2.azurestaticapps.net",
+      "file": "_framework/ChefKnifeStudios.PokerAttack.Shared.zqm5yrp0mz.wasm",
+      "sha256": "6b4075f17ea1392d478372199afe4a340c82617b05a17a288a9c8f5dbf74c8ce",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://salmon-hill-0056eb60f.2.azurestaticapps.net",
+      "file": "appsettings.Development.json",
+      "sha256": "af2308290b32b68e9ad4aed9b9408e09b4e6e5691b83211fbd625195de5fc3c7",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://salmon-hill-0056eb60f.2.azurestaticapps.net",
+      "file": "appsettings.json",
+      "sha256": "f77fb941dc56040d7eddbfd8bbeb21d5a625998c813dcdb387381d394f06a0ba",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    },
+    {
+      "origin": "https://salmon-hill-0056eb60f.2.azurestaticapps.net",
+      "file": "index.html",
+      "sha256": "db5221106219ad021c33aef5e662d301605e880182f78e3e2b1bcbe0df16bc47",
+      "header": "prod",
+      "matches_frozen_legacy_artifact": true
+    }
+  ],
+  "passed": true,
+  "source_note": "Historical client source attribution remains historical; these are current exact served-byte comparisons."
+}

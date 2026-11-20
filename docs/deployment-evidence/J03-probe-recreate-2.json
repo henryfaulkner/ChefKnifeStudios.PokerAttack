@@ -1,0 +1,27 @@
+{
+  "task": "J03",
+  "action": "recreate",
+  "state": {
+    "nonce": "83eb3faeabb1",
+    "name": "linode-docker-dashboard-probe-83eb3faeabb1",
+    "image_id": "sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03",
+    "incarnations": [
+      "92b22b0b4d56bf145764d5cc89a3222f2fe75607a81a513f7c049b117477fe4d",
+      "aca3ed1aadfd3f2d82ae7e020abaa6edf698afbba335f637431d736318f84015"
+    ],
+    "container_id": "aca3ed1aadfd3f2d82ae7e020abaa6edf698afbba335f637431d736318f84015"
+  },
+  "shared_containers_unchanged": true,
+  "sample_triggered": true,
+  "recorded_utc": "2026-11-16T14:32:44.220783+00:00",
+  "no_application_API_process": true,
+  "no_host_ports_or_network_or_persistent_volumes": true,
+  "Docker": {
+    "container_id": "aca3ed1aadfd3f2d82ae7e020abaa6edf698afbba335f637431d736318f84015",
+    "status": "running",
+    "health": "none",
+    "image_id": "sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03",
+    "memory_bytes": 16777216,
+    "nano_cpus": 50000000
+  }
+}

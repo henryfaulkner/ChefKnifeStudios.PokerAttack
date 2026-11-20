@@ -1,0 +1,23 @@
+{
+  "recorded_utc": "2026-11-16T14:20:26.769768+00:00",
+  "source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+  "runs": [
+    {
+      "conclusion": "",
+      "databaseId": 43884112818,
+      "event": "workflow_dispatch",
+      "headSha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+      "status": "pending",
+      "url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/43884112818"
+    },
+    {
+      "conclusion": "",
+      "databaseId": 43884109655,
+      "event": "push",
+      "headSha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+      "status": "in_progress",
+      "url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/43884109655"
+    }
+  ],
+  "cancel_scope": "Only redundant build-only push; no release/lease/deployment job exists in this source."
+}

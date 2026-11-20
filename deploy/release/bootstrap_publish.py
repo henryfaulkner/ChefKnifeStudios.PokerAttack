@@ -28,7 +28,8 @@ def operator(action,run,attempt,packet=None):
     if raw is not None and len(raw)>65536:raise ValueError('Oversized root bootstrap packet')
     command=['ssh','-T','-F',os.devnull,'-i',str(Path.home()/'.ssh/id_ed25519_linode_us_southeast'),
              '-o','BatchMode=yes','-o','IdentitiesOnly=yes','-o','IdentityAgent=none','-o','StrictHostKeyChecking=yes',
-             '-o','ClearAllForwardings=yes','-o','ConnectTimeout=15','root@170.187.142.115',
+             '-o','ClearAllForwardings=yes','-o','ConnectTimeout=15',
+             '-o','ServerAliveInterval=15','-o','ServerAliveCountMax=2','root@170.187.142.115',
              f'python3 -I /opt/pokerattack/release-control.py operator-bootstrap {action} production {run} {attempt}']
     try:result=subprocess.run(command,input=raw,capture_output=True,timeout=390 if action=='drain-release' else 90)
     except subprocess.TimeoutExpired:raise UnknownPublication('Inspect root publication state; never repeat the upload automatically') from None

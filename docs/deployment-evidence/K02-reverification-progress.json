@@ -1,0 +1,71 @@
+{
+  "task": "K02",
+  "state": "FRESH REAL GAMEPLAY PASS / EXPLICIT PROMOTION REQUIRED",
+  "recorded_utc": "2026-11-20T01:18:00.765358+00:00",
+  "source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+  "original_build": {
+    "run_id": 43884112818,
+    "run_attempt": 1
+  },
+  "fresh_validation_and_verification": {
+    "run_id": 43884112818,
+    "run_attempt": 2,
+    "actual_GitHub_conclusion": "success",
+    "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/43884112818/attempts/2"
+  },
+  "api_digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+  "API_container_id": "f0c098961956cfce0e5550f3c1fc63346725d9c5567621f4d5538f3fef223d39",
+  "API_container_unchanged": true,
+  "client_archive_sha256": "32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5",
+  "accepted_catalog_readback": {
+    "recorded_utc": "2026-11-20T01:15:35.215657+00:00",
+    "catalog": {
+      "current": {
+        "archive_sha256": "32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5",
+        "artifact_id": 14233913243,
+        "manifest_sha256": "f407bd2f72b5d744d4fc59e6be3978b64d8c28cb187b66f26978d6c40264cd2e",
+        "run_attempt": 1,
+        "run_id": 43884112818,
+        "source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d"
+      },
+      "format": "pokerattack-accepted-clients-v1",
+      "previous": null
+    },
+    "matches_original_actual_acceptance": true,
+    "conditional_version_observed": true
+  },
+  "checks": {
+    "https": true,
+    "multiplayer": true,
+    "private_message_isolation": true,
+    "served_client": true,
+    "signalr": true,
+    "solo": true
+  },
+  "evidence_sha256": "238e1ee5cd65f41a06e911aa355facc3782554aa06a305f7d011da978180df85",
+  "evidence_imported": true,
+  "verifier_revoked": true,
+  "remaining_sessions": {
+    "activeGames": 0,
+    "lobbies": 0,
+    "soloGames": 0
+  },
+  "promotion_comment": "PROMOTE 238e1ee5cd65f41a06e911aa355facc3782554aa06a305f7d011da978180df85 43884112818/2",
+  "evidence_expires_utc": "2026-11-20T01:46:33+00:00",
+  "evidence_expires_Eastern": "2026-11-19T20:46:33-05:00",
+  "promotion_granted": false,
+  "normal_admission_closed": true,
+  "API_restart_or_client_upload_in_this_session": false,
+  "migration_executed": false,
+  "workspace": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\K01-bootstrap-43884112818-1-refresh-20261117T0202",
+  "verification_workspace": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\K01-bootstrap-43884112818-1-refresh-20261117T0202\\verification-resume-2",
+  "operator_argument": "--verification-attempt 2",
+  "original_proof_retained": "K02-generated-evidence-attempt-1.json",
+  "local_operator_hashes": {
+    "deploy/release/bootstrap_operator.py": "1a399f06a13fbb869e76d5ceec1c21a486c296de9c900d0bfff07e23cfc338f6",
+    "deploy/release/BOOTSTRAP.md": "0fde0e49f3e36bb84eaefab70566716a0ca6e59834a32b1d94e765f92d4ee56f",
+    "deploy/release/test_bootstrap_resume.py": "ff46b9e408a9ce084ebdf7028bb244785ef5538f49497fcf79ce10c00cff00cd"
+  },
+  "tests": "12 focused /114 release tests pass; actual later GitHub all checks pass and actual production verification passes",
+  "next": "Require actual matching user promotion decision; then promote and finish using original workspace plus --verification-attempt 2. No restart/reset/upload."
+}

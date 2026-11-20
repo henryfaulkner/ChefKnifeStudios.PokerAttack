@@ -62,6 +62,19 @@ def transports(key_state):
     return {role: Transport(role, state['keys'][role], hosts) for role in PROFILES}
 
 
+def verification_workspace(workspace, action, requested, actual, built):
+    """Keep original proof immutable; only a real later execution may reverify."""
+    actions = ('verify', 'promote', 'finish')
+    if requested is None:
+        if action in actions and actual != built:
+            raise ValueError('Explicit actual verification attempt required for resumed evidence')
+        return workspace
+    if (action not in actions or type(requested) is not int or
+            requested <= built or requested != actual):
+        raise ValueError('Only actual later verification/promotion/finish execution may resume')
+    return workspace / f'verification-resume-{requested}'
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action', choices=('prepare', 'inspect', 'begin', 'maintenance', 'deliver',
@@ -74,7 +87,11 @@ def main():
     parser.add_argument('--client-archive', type=Path)
     parser.add_argument('--decision', type=Path)
     parser.add_argument('--drain-seconds', type=int, default=300)
+    parser.add_argument('--verification-attempt', type=int,
+                        help='Actual successful later GitHub attempt; reverify/promote/finish only, never reset')
     args = parser.parse_args()
+    if args.verification_attempt is not None and args.action not in ('verify', 'promote', 'finish'):
+        raise ValueError('Verification resume cannot deploy, publish or refresh reset approval')
     version = subprocess.run([str(args.node), '--version'], capture_output=True, timeout=15)
     if version.returncode or not version.stdout.decode().strip().startswith('v22.'):
         raise ValueError('Reviewed Node22 runtime required before bootstrap')
@@ -121,6 +138,8 @@ def main():
     env = environment(published, args.node, ws / 'private')
     context = Context(manifest['source_sha'], execution(env)[1], client, operator, manifest=manifest)
     run, attempt = context.build(env)
+    result_ws = verification_workspace(ws, args.action, args.verification_attempt, attempt,
+                                       manifest['workflow']['run_attempt'])
     bound = lambda action: operator(action, run, attempt)
     provisional = ProvisionalClient(client, ws / 'client.tar.gz', bound)
     account = github('actions/variables/CLIENT_ARCHIVE_ACCOUNT')['value']
@@ -155,17 +174,23 @@ def main():
         result = publish('candidate', ws / 'client.tar.gz', client, ws / 'candidate-publication', run, attempt)
         save(ws / 'candidate.json', result)
     elif args.action == 'verify':
+        # The verifier validates the exact installed pending pair, resumes the
+        # lease through its existing evidence capability, then checks the root
+        # client publication under that new owner before issuing any credential.
+        # A pre-resume candidate() call would incorrectly demand the new owner
+        # before that constrained ownership transfer can take place.
         review = server_verify.verify(manifest, env, roles['status'], roles['evidence'], provisional,
-                                      ws / 'verification', context_validator=context.candidate)
-        save(ws / 'promotion-review.json', review)
+                                      result_ws / 'verification',
+                                      context_validator=context.build if args.verification_attempt else context.candidate)
+        save(result_ws / 'promotion-review.json', review)
     elif args.action == 'accept-client':
         save(ws / 'accepted-client.json', provisional.accept_verified(catalog, run, attempt))
     elif args.action == 'promote':
         context.candidate(env)
-        raw = (ws / 'verification/evidence.json').read_bytes()
+        raw = (result_ws / 'verification/evidence.json').read_bytes()
         proof = validate_document('evidence', load_document(raw))
         digest = hashlib.sha256(raw).hexdigest()
-        review = load(ws / 'promotion-review.json')
+        review = load(result_ws / 'promotion-review.json')
         comment = f'PROMOTE {digest} {run}/{attempt}'
         if args.decision is None or review['evidence_sha256'] != digest or review['comment'] != comment:
             raise ValueError('Fresh distinct promotion decision for actual imported proof required')
@@ -174,19 +199,19 @@ def main():
         lease = server_verify.pending(live, manifest, run, attempt)
         if lease.get('evidence_sha256') != digest or lease.get('verifier_revoked') is not True:
             raise ValueError('Actual import/revocation not established')
-        if (ws / 'promotion.json').exists(): raise ValueError('Inspect prior promotion; never replay it')
+        if (result_ws / 'promotion.json').exists(): raise ValueError('Inspect prior promotion; never replay it')
         result = roles['promotion'].call(f"promote production {manifest['api']['digest']} {digest} {run} {attempt}", timeout=150)
         after = roles['status'].call('status production')
         if (result.get('phase') != 'promoted' or after['lease']['phase'] != 'promoted' or after['pairs']['pending']
                 or after['pairs']['active'] != after['pairs']['known-good']):
             raise ValueError('Promotion outcome unresolved; retain maintenance')
-        save(ws / 'promotion.json', {'format': 'pokerattack-promotion-v1', 'phase': 'promoted',
+        save(result_ws / 'promotion.json', {'format': 'pokerattack-promotion-v1', 'phase': 'promoted',
             'overall_release_complete': False, 'workflow': execution(env)[1], 'source_sha': manifest['source_sha'],
             'digest': manifest['api']['digest'], 'config_sha256': manifest['config_sha256'], 'evidence_sha256': digest,
             'client_source_sha': proof['client_source_sha'], 'client_archive_sha256': proof['client_archive_sha256'], 'review': approval})
     elif args.action == 'finish':
-        server_finish.finish(manifest, load(ws / 'promotion.json'), env, roles['status'], roles['promotion'],
-                             catalog, ws / 'completion.json', context_validator=context.candidate)
+        server_finish.finish(manifest, load(result_ws / 'promotion.json'), env, roles['status'], roles['promotion'],
+                             catalog, result_ws / 'completion.json', context_validator=context.candidate)
     print('Bootstrap operation recorded: ' + args.action + '; inspect its exact state before any subsequent action.')
 
 

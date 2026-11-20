@@ -1,0 +1,6 @@
+{
+  "task": "J02",
+  "state": "FIRST CREATE REJECTED / NO DASHBOARD CREATED",
+  "recorded_utc": "2026-11-16T14:10:42.598721+00:00",
+  "reason": "CLI defaults to server-preferred dashboard API v2; resource is v1beta1. Server returned400 version mismatch; readback404 and inspected renderer image confirms dashboard not found. Retry pins v1beta1, without changing authentication or overwriting another dashboard."
+}

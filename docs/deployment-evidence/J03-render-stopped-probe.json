@@ -1,0 +1,31 @@
+{
+  "task": "J03/J04",
+  "mode": "probe",
+  "phase": "stopped",
+  "recorded_utc": "2026-11-16T14:31:10.629719+00:00",
+  "selection": "linode-docker-dashboard-probe-83eb3faeabb1",
+  "renderer_result": {
+    "type": "gcx.dashboards.snapshot",
+    "schema_version": "1",
+    "action": "rendered",
+    "dir": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\J03-snapshots\\stopped-probe",
+    "format": "png",
+    "files": [
+      {
+        "uid": "linode-docker-containers",
+        "panel_id": 5,
+        "file_path": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\J03-snapshots\\stopped-probe\\linode-docker-containers-panel-5.png",
+        "width": 1920,
+        "height": 600,
+        "theme": "dark",
+        "rendered_at": "2026-11-16T09:31:10.496933-05:00"
+      }
+    ],
+    "summary": {
+      "succeeded": 1,
+      "failed": 0
+    },
+    "failures": []
+  },
+  "visual_inspection": "Required separately; a rendered file can contain an error page."
+}

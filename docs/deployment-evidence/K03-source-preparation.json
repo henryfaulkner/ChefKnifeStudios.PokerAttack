@@ -1,0 +1,24 @@
+{
+  "task": "K03",
+  "state": "LOCAL REVIEW PASS / SOURCE PUBLICATION IN PROGRESS; DELIVERY DISABLED",
+  "recorded_utc": "2026-11-20T01:29:23.613038+00:00",
+  "base_main_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+  "worktree": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\K03-workflows-source",
+  "branch": "deployment/activate-client-server",
+  "workflow_hashes": {
+    "client.yml": "6ba1fe9e2488f5153529bbb3df6a71b5680f4764c121eb654619edebdafacc91",
+    "server.yml": "867602f54942d8ccb4eff5364fa5e8106a1421f267a11b99366222b8333dcdc5",
+    "migration-ci.yml": "fe76bfbd07cf4830292cb41ab063f9cf4d2fee463a125db2698ca883419fb1a4"
+  },
+  "tests": {
+    "release": "114 pass",
+    "node": "18 pass",
+    "actionlint": "pass",
+    "monitoring_native_Linux": "23 pass",
+    "monitoring_Windows": "6 O_DIRECTORY errors: Linux-only atomic fsync tests; retained failure, actual native Linux container passes"
+  },
+  "retained_checks": "Separate client/server own stable Client validation/Server validation; bootstrap manual-only reference renamed Bootstrap client/server validation, no publication/deploy authority. No ACA or automatic production migrations introduced.",
+  "bootstrap": "K02 explicitly promoted and reopened; all7public checks pass; initial missing completion-dir failure preserved and repaired.",
+  "source_publication_safety": "Unrelated .claude skills/.agents stepwise and primary index/tree preserved; original plan unchanged; only owned implementation and sanitized evidence copied. Primary historical migration-ci not copied.",
+  "delivery_enabled": false
+}

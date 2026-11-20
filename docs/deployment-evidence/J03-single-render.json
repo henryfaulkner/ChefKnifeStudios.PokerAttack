@@ -1,0 +1,23 @@
+{
+  "type": "gcx.dashboards.snapshot",
+  "schema_version": "1",
+  "action": "rendered",
+  "dir": "artifacts/J03-snapshots/live-single",
+  "format": "png",
+  "files": [
+    {
+      "uid": "linode-docker-containers",
+      "panel_id": null,
+      "file_path": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\J03-snapshots\\live-single\\linode-docker-containers.png",
+      "width": 1920,
+      "height": -1,
+      "theme": "dark",
+      "rendered_at": "2026-11-16T09:11:17.8695512-05:00"
+    }
+  ],
+  "summary": {
+    "succeeded": 1,
+    "failed": 0
+  },
+  "failures": []
+}
