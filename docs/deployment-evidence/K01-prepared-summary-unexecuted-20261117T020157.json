@@ -1,0 +1,21 @@
+{
+  "task": "K01",
+  "state": "PACKET PREPARED / FRESH RESET ACK REQUIRED",
+  "prepared_utc": "2026-11-17T01:31:57+00:00",
+  "workspace": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\K01-bootstrap-43884112818-1-refresh-20261117T0133",
+  "node_executable": "C:\\Users\\hfaul\\AppData\\Local\\npm-cache\\_npx\\52027bd8fc0022aa\\node_modules\\node\\bin\\node.exe",
+  "packet_file": "docs/deployment-evidence/K01-first-release-packet.json",
+  "source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+  "run_id": 43884112818,
+  "run_attempt": 1,
+  "acknowledgment": "ACK_RESET 2634afd19ebcdd3922579b27f0fb74404de2aa08661619983a031206633345d8 43884112818/1",
+  "expires_utc": "2026-11-17T02:01:57+00:00",
+  "expires_New_York": "2026-11-16T21:01:57-05:00",
+  "expected_interruption": "API restart ends remaining matches after the acknowledged bounded drain/reset deadline.",
+  "legacy_limitation": "Static maintenance cannot prevent already loaded capability-0 clients creating games; approved deadline reset deliberately ends remaining matches.",
+  "actual_approval_received": false,
+  "API_restarted": false,
+  "client_published": false,
+  "promotion_granted": false,
+  "prior_acknowledgment": "Exact old ACK received but rejected because its packet window expired; see K01-expired-ack-refresh.json."
+}

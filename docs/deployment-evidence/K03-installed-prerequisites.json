@@ -1,0 +1,42 @@
+{
+  "installed_source_matches": {
+    "/opt/pokerattack/client_lease.py": true,
+    "/opt/pokerattack/host_manifests.py": true,
+    "/opt/pokerattack/release-control.py": true,
+    "/opt/pokerattack/release-legacy-guard.py": true,
+    "/opt/pokerattack/release-recovery.py": true,
+    "/opt/pokerattack/release-status.py": true,
+    "/opt/pokerattack/release_commands.py": true,
+    "/opt/pokerattack/release_evidence.py": true,
+    "/opt/pokerattack/release_lease.py": true,
+    "/opt/pokerattack/release_verifier.py": true,
+    "/opt/pokerattack/secure_state.py": true,
+    "/opt/pokerattack/ssh-control.py": true,
+    "/opt/pokerattack/validate-config.py": true,
+    "/opt/pokerattack/compose.yaml": true,
+    "/opt/pokerattack/bootstrap_control.py": true,
+    "/opt/pokerattack/bootstrap_recovery.py": true,
+    "/usr/local/sbin/pokerattack-backup": true,
+    "/usr/local/sbin/pokerattack-backup.service": true,
+    "/usr/local/sbin/pokerattack-backup.timer": true,
+    "/usr/local/sbin/pokerattack-client-lease": true,
+    "/usr/local/sbin/pokerattack-deploy": true,
+    "/usr/local/sbin/pokerattack-deployment": true,
+    "/usr/local/sbin/pokerattack-evidence": true,
+    "/usr/local/sbin/pokerattack-promotion": true,
+    "/usr/local/sbin/pokerattack-rollback-target": true,
+    "/usr/local/sbin/pokerattack-ssh-control": true,
+    "/usr/local/sbin/pokerattack-ssh-deploy": true,
+    "/usr/local/sbin/pokerattack-ssh-status": true,
+    "/usr/local/sbin/pokerattack-status": true,
+    "/etc/sudoers.d/pokerattack-control": true,
+    "/etc/sudoers.d/pokerattack-status": true
+  },
+  "protected_runtime_directories": {
+    "interrupted": true,
+    "completed": true,
+    "client-completed": true
+  },
+  "all_pass": true,
+  "recorded_utc": "2026-11-20T01:28:46.136214+00:00"
+}

@@ -1,0 +1,21 @@
+{
+  "task": "K01",
+  "checked_utc": "2026-11-17T01:32:47.200820+00:00",
+  "received_comment": "ACK_RESET 0c3c877f0a32a90280a0047dcecd51fa8215d822de63247406e83c762d4d2319 43884112818/1",
+  "result": "REJECTED_EXPIRED_PACKET_NO_MUTATION",
+  "observed_utc": "2026-11-17T01:31:21+00:00",
+  "original_expires_utc": "2026-11-16T15:33:07+00:00",
+  "original_packet_sha256": "0c3c877f0a32a90280a0047dcecd51fa8215d822de63247406e83c762d4d2319",
+  "note": "User supplied exact reset comment, but original packet window had expired. No reset decision receipt created; no approval transferred to new packet.",
+  "refresh_workspace": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\K01-bootstrap-43884112818-1-refresh-20261117T0133",
+  "refresh_source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+  "refresh_observed_sessions": {
+    "activeGames": 0,
+    "lobbies": 0,
+    "soloGames": 6
+  },
+  "refresh_packet_sha256": "2634afd19ebcdd3922579b27f0fb74404de2aa08661619983a031206633345d8",
+  "API_restarted": false,
+  "client_published": false,
+  "promotion_granted": false
+}

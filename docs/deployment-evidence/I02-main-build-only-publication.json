@@ -1,0 +1,21 @@
+{
+  "task": "I02 build-only source publication",
+  "recorded_utc": "2026-11-16T14:17:06.225877+00:00",
+  "PR": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/pull/13",
+  "reviewed_head_sha": "90298cca57aa9cc2c680a52d130d152cdfb8920a",
+  "main_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+  "required_checks": {
+    "changes": "SUCCESS",
+    "checks": "SUCCESS",
+    "isolated": "SUCCESS",
+    "package": "SUCCESS",
+    "Server validation": "SUCCESS",
+    "Client validation": "SUCCESS",
+    "Bootstrap artifact publication only": "SKIPPED"
+  },
+  "passed_run": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/43882084772",
+  "source_publication": "Only build-only migration-ci enabled; routine client/server definitions remain inert templates.",
+  "primary_worktree_HEAD_unchanged": true,
+  "production_delivery_enabled": false,
+  "production_API_restart": false
+}

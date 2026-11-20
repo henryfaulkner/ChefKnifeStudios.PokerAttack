@@ -1,0 +1,44 @@
+{
+  "task": "K01",
+  "state": "K02 COMPLETE / PROMOTED REOPENED PUBLIC CHECKS PASS",
+  "prepared_utc": "2026-11-17T02:01:58+00:00",
+  "workspace": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\K01-bootstrap-43884112818-1-refresh-20261117T0202",
+  "node_executable": "C:\\Users\\hfaul\\AppData\\Local\\npm-cache\\_npx\\52027bd8fc0022aa\\node_modules\\node\\bin\\node.exe",
+  "packet_file": "docs/deployment-evidence/K01-first-release-packet.json",
+  "source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+  "run_id": 43884112818,
+  "run_attempt": 1,
+  "acknowledgment": "ACK_RESET 9b4c40c9f4dffa1289c726cb027ed305e50fa2b7dfde46c1238410e630030798 43884112818/1",
+  "expires_utc": "2026-11-17T02:31:58+00:00",
+  "expires_New_York": "2026-11-16T21:31:58-05:00",
+  "expected_interruption": "API restart ends remaining matches after the acknowledged bounded drain/reset deadline.",
+  "legacy_limitation": "Static maintenance cannot prevent already loaded capability-0 clients creating games; approved deadline reset deliberately ends remaining matches.",
+  "actual_approval_received": true,
+  "API_restarted": true,
+  "client_published": true,
+  "promotion_granted": true,
+  "prior_acknowledgment": "Previous exact ACK received fresh with only42 seconds remaining; receipt retained but not executed. Installed drain requires freshness throughout300seconds. New packet requires distinct matching acknowledgment.",
+  "decision_received_utc": "2026-11-17T02:05:06+00:00",
+  "bootstrap_begin": {
+    "decision": {
+      "comment": "ACK_RESET 9b4c40c9f4dffa1289c726cb027ed305e50fa2b7dfde46c1238410e630030798 43884112818/1",
+      "decision_received_unix": 1794881106,
+      "mechanism": "root-operator decision",
+      "timestamp_note": "Validity starts at original packet/proof, never at runner start or retry.",
+      "validity_anchor_unix": 1794880918
+    },
+    "result": {
+      "phase": "bootstrap-maintenance-pending"
+    }
+  },
+  "candidate_client_published": true,
+  "client_accepted": true,
+  "promotion_comment": "PROMOTE 238e1ee5cd65f41a06e911aa355facc3782554aa06a305f7d011da978180df85 43884112818/2",
+  "evidence_sha256": "238e1ee5cd65f41a06e911aa355facc3782554aa06a305f7d011da978180df85",
+  "evidence_expires_utc": "2026-11-20T01:46:33+00:00",
+  "evidence_expires_Eastern": "2026-11-19T20:46:33-05:00",
+  "verification_attempt": 2,
+  "promotion_workspace": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\K01-bootstrap-43884112818-1-refresh-20261117T0202\\verification-resume-2",
+  "normal_admission_open": true,
+  "completion_report": "docs/deployment-evidence/K02-bootstrap-completion.json"
+}

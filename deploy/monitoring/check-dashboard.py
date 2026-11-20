@@ -89,6 +89,11 @@ def fixture():
                                 'exp_samples':expected(values)})
         expressions.append({'expr':'count('+rewrite(dashboard.META)+')','eval_time':'4m',
                             'exp_samples':[{'labels':'{}','value':1 if case in ('removed','recreated','single') else 2}]})
+        inventory={CID:1,SECOND:1}
+        if case=='removed':inventory.pop(SECOND)
+        if case=='recreated':inventory.pop(CID)
+        expressions.append({'expr':'count by(host,container_id) ('+expression(dashboard.DROPDOWN)+')',
+                            'eval_time':'4m','exp_samples':expected(inventory)})
         tests.append({'name':case,'interval':'1m','input_series':inputs(case),'promql_expr_test':expressions})
     # Parse/evaluate every shipped target as well as assertions above. This
     # catches syntax mistakes in less prominent lifecycle/resource panels.
@@ -115,7 +120,7 @@ def main():
     if result.returncode:raise SystemExit(result.returncode)
     (output/'G07-dashboard-promql-result.json').write_text(json.dumps({'timestamp_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),
         'cases':[item['name'] for item in fixture()['tests']],'promtool':PROMTOOL,
-        'behavioral_assertions':60,'all_dashboard_targets_evaluated':True,'exit_code':0},indent=2)+'\n',encoding='utf-8')
+        'behavioral_assertions':70,'all_dashboard_targets_evaluated':True,'instant_inventory_dropdown_evaluated':True,'exit_code':0},indent=2)+'\n',encoding='utf-8')
 
 
 if __name__=='__main__':main()

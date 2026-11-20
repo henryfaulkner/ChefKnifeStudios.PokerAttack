@@ -116,7 +116,7 @@ try:
  admission.mkdir(mode=0o755);admission.chmod(0o755)
  write(admission/'state.json',b'{"active":false}\n',0o644)
  # Read-only verification directory and config snapshots remain root-protected.
- for p in (base/'interrupted',Path('/etc/pokerattack/production/verification')):
+ for p in (base/'interrupted',base/'completed',base/'client-completed',Path('/etc/pokerattack/production/verification')):
   p.mkdir(mode=0o700,exist_ok=True)
   if p.is_symlink() or p.stat().st_uid!=0 or p.stat().st_mode&0o077:raise ValueError('Unsafe protected runtime directory')
  run('/usr/bin/python3','-I','/opt/pokerattack/validate-config.py','config','production','/etc/pokerattack/production/configs/'+current['config_sha256']+'.env',current['config_sha256'])

@@ -1,0 +1,97 @@
+{
+  "task": "I02",
+  "state": "TRUSTED OIDC / EXACT IMAGE PUBLICATION VERIFIED",
+  "recorded_utc": "2026-11-16T14:39:24.605512+00:00",
+  "real_run": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/43884112818",
+  "source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+  "published_images": {
+    "format": "pokerattack-published-images-v1",
+    "images": {
+      "api": {
+        "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+        "local_image_id": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+        "platform": "linux/amd64",
+        "repository": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi",
+        "source_revision": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+        "tag": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d"
+      },
+      "migration": {
+        "digest": "sha256:dd6c86f57880dc56299e5a6aa11f1700c07c2b92c93f58c4842f988334e71ba4",
+        "local_image_id": "sha256:dd6c86f57880dc56299e5a6aa11f1700c07c2b92c93f58c4842f988334e71ba4",
+        "platform": "linux/amd64",
+        "repository": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.data",
+        "source_revision": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+        "tag": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d"
+      }
+    },
+    "source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+    "tested_archive_sha256": "2d8f0ea775c8186e05bde81419458526197900d19022e9016dd62fccb6b5406c",
+    "workflow": {
+      "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+      "run_attempt": 1,
+      "run_id": 43884112818,
+      "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/43884112818"
+    }
+  },
+  "immutable_tag_and_digest_readbacks": {
+    "api": [
+      {
+        "reference": "chefknifestudios.pokerattack.server.webapi:dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+        "readback": {
+          "changeableAttributes": {
+            "deleteEnabled": false,
+            "listEnabled": true,
+            "readEnabled": true,
+            "writeEnabled": false
+          },
+          "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40"
+        }
+      },
+      {
+        "reference": "chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+        "readback": {
+          "changeableAttributes": {
+            "deleteEnabled": false,
+            "listEnabled": true,
+            "readEnabled": true,
+            "writeEnabled": false
+          },
+          "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40"
+        }
+      }
+    ],
+    "migration": [
+      {
+        "reference": "chefknifestudios.pokerattack.server.data:dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+        "readback": {
+          "changeableAttributes": {
+            "deleteEnabled": false,
+            "listEnabled": true,
+            "readEnabled": true,
+            "writeEnabled": false
+          },
+          "digest": "sha256:dd6c86f57880dc56299e5a6aa11f1700c07c2b92c93f58c4842f988334e71ba4"
+        }
+      },
+      {
+        "reference": "chefknifestudios.pokerattack.server.data@sha256:dd6c86f57880dc56299e5a6aa11f1700c07c2b92c93f58c4842f988334e71ba4",
+        "readback": {
+          "changeableAttributes": {
+            "deleteEnabled": false,
+            "listEnabled": true,
+            "readEnabled": true,
+            "writeEnabled": false
+          },
+          "digest": "sha256:dd6c86f57880dc56299e5a6aa11f1700c07c2b92c93f58c4842f988334e71ba4"
+        }
+      }
+    ]
+  },
+  "host_pull": "K01-prepulled-exact-images.json; separate existing pull-only credential, exact source/platform/ID verified without restart.",
+  "SWA_credential": "Fresh Azure SWA token installed securely in client-swa; actual client publication remains K02/K04, no deployment claimed.",
+  "unauthorized_context_rejection": "Actual main-only environment restrictions plus111 release tests; build-only publisher requires exact main workflow/ref/dispatch and delivery=false.",
+  "scope_limit": "LegacyRegistryPermissions requires registry-wide AcrPush for OIDC; no shared mode change. Fixed source publisher restricts writes to two PokerAttack repositories. Other applications untouched.",
+  "rollout_switch": "false",
+  "one_time_artifact_publication_switch": "restored false",
+  "private_archive": "I02-private-archive-verification.json; real conditional-write/readback/denial tests pass."
+}

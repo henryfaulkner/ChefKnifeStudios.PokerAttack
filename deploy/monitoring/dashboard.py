@@ -9,6 +9,11 @@ LABELS=('container','compose_project','compose_service','configured_image','imag
 
 def metric(name):return 'linode_docker_'+name+'{host=~"${host:regex}"}'
 SNAPSHOT=metric('snapshot_timestamp_seconds')
+INVENTORY_IDENTITY=metric('container_identity_timestamp_seconds')
+# Label-values endpoints include historical, removed containers. An instant
+# inventory query follows the current snapshot while retaining last-known names
+# during a failed collection. It must not depend on its own container variable.
+DROPDOWN=f'(({INVENTORY_IDENTITY} == on(host) group_left {SNAPSHOT}) or ({INVENTORY_IDENTITY} and on(host) ({metric("inventory_success")} == 0)))'
 FRESH=f'((time() - {SNAPSHOT} < 180) and on(host) (time() - {SNAPSHOT} >= 0))'
 IDENTITY='linode_docker_container_identity_timestamp_seconds{host=~"${host:regex}",container=~"${container:regex}"}'
 LATEST=f'({IDENTITY} == {JOIN} group_left max by(host,container_id) ({IDENTITY}))'
@@ -36,7 +41,13 @@ MEMORY_PERCENT=selected('(100 * '+metric('container_memory_usage_bytes')+' / '+J
 
 
 def target(expr,ref='A',table=False):
-    if table:expr='label_join('+expr+',"container_key","/","host","container_id")'
+    if table:
+        expr='label_join('+expr+',"container_key","/","host","container_id")'
+        # Keep metadata in the first frame only. Grafana preserves raw duplicate
+        # field names across outer joins, so hiding their display-name suffixes
+        # cannot remove the extra copies reliably. The full host/CID key still
+        # preserves every incarnation, including multi-select and All.
+        if ref!='A':expr='max by(container_key) ('+expr+')'
     return {'expr':expr,'refId':ref,'datasource':DATASOURCE,'format':'table' if table else 'time_series',
             'instant':table,'range':not table,'legendFormat':'{{host}} / {{container}} / {{container_id}}'}
 
@@ -57,7 +68,7 @@ def build():
         panels.append(item);return item
     def table(title,y,queries,fields=None,description=''):
         item=panel(title,'table',0,y,24,8,[target(expr,chr(65+i),True) for i,(_,expr,_) in enumerate(queries)],description)
-        item['options']={'showHeader':True,'cellHeight':'lg','footer':{'show':False}}
+        item['options']={'showHeader':True,'cellHeight':'lg','maxRowHeight':200,'footer':{'show':False}}
         rename={};exclude={'Time':True,'container_key':True}
         for i,(name,_,config) in enumerate(queries):
             field='Value' if len(queries)==1 else 'Value #'+chr(65+i)
@@ -71,7 +82,17 @@ def build():
         else:item['transformations']=[]
         item['transformations'].append({'id':'organize','options':{'excludeByName':exclude,'renameByName':rename,
             'indexByName':{field:index for index,field in enumerate(['host','container','container_id',*rename])}}})
-        item['fieldConfig']['defaults']['custom']={'align':'auto','cellOptions':{'type':'auto'},'wrapText':True}
+        # Grafana's outer table join suffixes duplicated metadata fields. Keep
+        # one identity per incarnation and only the intended value columns;
+        # exporter labels and copies from subsequent queries are not UI fields.
+        identity=list(dict.fromkeys(fields or ('host','container','container_id',*LABELS)))
+        selected=identity+([field+' 1' for field in identity] if len(queries)>1 else [])
+        selected += [name for name,_,config in queries if not config.get('custom.hidden')]
+        item['transformations'].append({'id':'filterFieldsByName','options':{'include':{'names':selected}}})
+        item['transformations'].append({'id':'organize','options':{
+            'renameByName':{field+' 1':field for field in identity},
+            'indexByName':{field:index for index,field in enumerate(selected)}}})
+        item['fieldConfig']['defaults']['custom']={'align':'auto','cellOptions':{'type':'auto'},'wrapText':True,'wrapHeaderText':True,'inspect':True}
         return item
     def chart(title,x,y,exprs,unit,description=''):
         item=panel(title,'timeseries',x,y,12,8,[target(expr,chr(65+i)) for i,expr in enumerate(exprs)],description,{'unit':unit,'min':0})
@@ -82,9 +103,14 @@ def build():
     item=panel('Collection result','stat',0,0,8,4,[target(collection)],'Unknown/stale after three minutes, or absent. Partial collection is Failed; successful peers remain visible.',
                {'mappings':mappings({0:'Failed',1:'Success',2:'Unknown / stale'}),'noValue':'Unknown / missing'})
     item['options']={'reduceOptions':{'calcs':['last'],'fields':'','values':False},'textMode':'value_and_name','colorMode':'value'}
+    item['targets'][0]['legendFormat']='{{host}}'
+    item['targets'][0].update(instant=True,range=False)
     for title,x,expr in [('Snapshot age',8,'time() - '+SNAPSHOT),('Last complete success age',16,'time() - '+metric('last_success_timestamp_seconds'))]:
-        item=panel(title,'stat',x,0,8,4,[target(expr)],'Age, not a deployment observation gate.',{'unit':'s','min':0})
-        item['options']={'reduceOptions':{'calcs':['last'],'fields':'','values':False},'textMode':'value_and_name'}
+        item=panel(title,'stat',x,0,8,4,[target(expr)],'Age, not a deployment observation gate.',{'unit':'s','min':0,'color':{'mode':'thresholds'},
+            'thresholds':{'mode':'absolute','steps':[{'color':'red','value':None},{'color':'green','value':0},{'color':'red','value':180}]}})
+        item['options']={'reduceOptions':{'calcs':['last'],'fields':'','values':False},'textMode':'value_and_name','colorMode':'value'}
+        item['targets'][0]['legendFormat']='{{host}}'
+        item['targets'][0].update(instant=True,range=False)
     table('Image identity (full copyable values)',4,[('Inventory',META,{'custom.hidden':True})],description='Identity includes stopped containers. Requested image, local ID and matching registry digest are different fields; source may be Not provided. Old metadata is excluded by identity timestamp. Full values wrap and remain copyable.')
     table('Current status, health and readiness',12,[
         ('State',STATE,{'mappings':mappings({0:'Unknown / stale',1:'Created',2:'Running',3:'Paused',4:'Restarting',5:'Removing',6:'Exited',7:'Dead'})}),
@@ -125,10 +151,20 @@ def build():
             {'name':'host','label':'Host','type':'query','datasource':DATASOURCE,'query':'label_values(linode_docker_inventory_success, host)',
              'refresh':2,'multi':True,'includeAll':True,'allValue':'.*','current':{'text':['expense-tracker-vm'],'value':['expense-tracker-vm']},'sort':1},
             {'name':'container','label':'Container','type':'query','datasource':DATASOURCE,
-             'query':'label_values(linode_docker_container_info{host=~"${host:regex}"}, container)',
+             'query':'query_result('+DROPDOWN+')','regex':'/container="([^"]+)"/',
              'refresh':2,'multi':True,'includeAll':True,'allValue':'.*','current':{'text':'All','value':'$__all'},'sort':1}]},
         'panels':panels,'annotations':{'list':[]}}
 
 
+def resource():
+    # Same dashboard, bound to the verified existing stack/folder for CLI
+    # authoring. The classic JSON remains portable through Grafana's import UI.
+    spec=json.loads(json.dumps(build()).replace('${DS_PROMETHEUS}','grafanacloud-prom'))
+    for key in ('id','uid','version','__inputs','__requires'):spec.pop(key,None)
+    return {'apiVersion':'dashboard.grafana.app/v1beta1','kind':'Dashboard',
+            'metadata':{'name':'linode-docker-containers','annotations':{'grafana.app/folder':'integration---linux-node'}},'spec':spec}
+
+
 if __name__=='__main__':
-    Path(__file__).with_name('linode-docker-dashboard.json').write_text(json.dumps(build(),indent=2)+'\n',encoding='utf-8')
+    for name,definition in (('linode-docker-dashboard.json',build()),('linode-docker-dashboard.resource.json',resource())):
+        Path(__file__).with_name(name).write_text(json.dumps(definition,indent=2)+'\n',encoding='utf-8')

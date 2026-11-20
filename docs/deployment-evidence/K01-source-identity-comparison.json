@@ -1,0 +1,10 @@
+{
+  "task": "K01 source prerequisite",
+  "recorded_utc": "2026-11-16T14:54:34.260464+00:00",
+  "actual_tested_main_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+  "primary_branch_HEAD": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "application_source_files_compared": 373,
+  "comparison": "Git-filtered blob identity, including checked-in line-ending normalization; no index/working-tree mutation.",
+  "differences": [],
+  "primary_unrelated_changes_preserved": true
+}

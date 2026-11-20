@@ -1,0 +1,49 @@
+{
+  "task": "K02",
+  "state": "ACTUAL GAMEPLAY PASSED / CLIENT ACCEPTED / EXPLICIT PROMOTION REQUIRED",
+  "recorded_utc": "2026-11-17T02:24:28.861446+00:00",
+  "source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+  "run_id": 43884112818,
+  "run_attempt": 1,
+  "api_digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+  "client_archive_sha256": "32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5",
+  "checks": {
+    "https": true,
+    "multiplayer": true,
+    "private_message_isolation": true,
+    "served_client": true,
+    "signalr": true,
+    "solo": true
+  },
+  "evidence_sha256": "16b608df9ad569ae4976dab1fe77d7ee0cb3c61b3c0de4df65e64681701188a4",
+  "evidence_imported": true,
+  "verifier_revoked": true,
+  "remaining_sessions": {
+    "activeGames": 0,
+    "lobbies": 0,
+    "soloGames": 0
+  },
+  "accepted_clients": {
+    "current": {
+      "archive_sha256": "32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5",
+      "artifact_id": 14233913243,
+      "manifest_sha256": "f407bd2f72b5d744d4fc59e6be3978b64d8c28cb187b66f26978d6c40264cd2e",
+      "run_attempt": 1,
+      "run_id": 43884112818,
+      "source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d"
+    },
+    "format": "pokerattack-accepted-clients-v1",
+    "previous": null
+  },
+  "promotion_comment": "PROMOTE 16b608df9ad569ae4976dab1fe77d7ee0cb3c61b3c0de4df65e64681701188a4 43884112818/1",
+  "evidence_expires_utc": "2026-11-17T02:51:39+00:00",
+  "evidence_expires_Eastern": "2026-11-16T21:51:39-05:00",
+  "promotion_granted": false,
+  "normal_admission_closed": true,
+  "migration_executed": false,
+  "private_evidence_reference": "Linode root-owned /etc/pokerattack/production/verification/16b608df9ad569ae4976dab1fe77d7ee0cb3c61b3c0de4df65e64681701188a4.json; private browser/credential context temporary and not published",
+  "workspace": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\K01-bootstrap-43884112818-1-refresh-20261117T0202",
+  "delivery_failure_reference": "K02-bootstrap-delivery-progress.json",
+  "shared_services_preserved": true,
+  "dashboard_url": "https://gallantpuffin3113.grafana.net/d/linode-docker-containers"
+}

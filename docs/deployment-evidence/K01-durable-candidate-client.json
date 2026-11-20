@@ -1,0 +1,26 @@
+{
+  "task": "I02 / K01 durable candidate",
+  "recorded_utc": "2026-11-16T14:39:29.258611+00:00",
+  "account": "pareleasearchive1f287758",
+  "source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+  "workflow": {
+    "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+    "run_attempt": 1,
+    "run_id": 43884112818,
+    "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/43884112818"
+  },
+  "objects": [
+    {
+      "key": "bootstrap/candidate/32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5/client.tar.gz",
+      "sha256": "32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5",
+      "readback_verified": true
+    },
+    {
+      "key": "bootstrap/candidate/32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5/manifest.json",
+      "sha256": "f407bd2f72b5d744d4fc59e6be3978b64d8c28cb187b66f26978d6c40264cd2e",
+      "readback_verified": true
+    }
+  ],
+  "accepted_history": false,
+  "acceptance": "Provisional only until actual imported/revoked gameplay proof under root bootstrap lease."
+}

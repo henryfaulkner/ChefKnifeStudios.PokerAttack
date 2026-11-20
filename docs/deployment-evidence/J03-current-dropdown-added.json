@@ -1,0 +1,127 @@
+{
+  "queried_utc": "2026-11-16T14:29:42.973293+00:00",
+  "actual_selector_expression": "((linode_docker_container_identity_timestamp_seconds{host=~\"expense-tracker-vm\"} == on(host) group_left linode_docker_snapshot_timestamp_seconds{host=~\"expense-tracker-vm\"}) or (linode_docker_container_identity_timestamp_seconds{host=~\"expense-tracker-vm\"} and on(host) (linode_docker_inventory_success{host=~\"expense-tracker-vm\"} == 0)))",
+  "result": {
+    "status": "success",
+    "data": {
+      "resultType": "vector",
+      "result": [
+        {
+          "metric": {
+            "__name__": "linode_docker_container_identity_timestamp_seconds",
+            "compose_project": "pokerattack-pilot",
+            "compose_service": "api",
+            "configured_image": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+            "container": "pokerattack-pilot-api-1",
+            "container_id": "fbe3c939907d8df6e91997d51a8535637b1e279087e6a6a02ab61f383bd86ff6",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter",
+            "network_mode": "host",
+            "registry_digest": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+            "source_revision": "250b03496c69e33a206e294cbad861a94fa6844a"
+          },
+          "value": [
+            1794839382.679,
+            "1794839331.1481495"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_identity_timestamp_seconds",
+            "compose_project": "pokerattack-production",
+            "compose_service": "api",
+            "configured_image": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+            "container": "pokerattack-production-api-1",
+            "container_id": "45befa1de68526ca5b0686fc5fad7d9e4226b25d65aaa88cdca5665a05724dcb",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "image_id": "sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter",
+            "network_mode": "host",
+            "registry_digest": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:693d3d6a193810000f7ba2c74e51fc14dee641806ebd2c5266bcc471f7154588",
+            "source_revision": "250b03496c69e33a206e294cbad861a94fa6844a"
+          },
+          "value": [
+            1794839382.679,
+            "1794839331.1481495"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_identity_timestamp_seconds",
+            "compose_project": "transitjazz-app",
+            "compose_service": "proxy",
+            "configured_image": "caddy@sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03",
+            "container": "transitjazz-app-proxy-1",
+            "container_id": "d9fc0b5afced651b8fde45487b91a517e52316c221527b7393364d9f39089995",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "image_id": "sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter",
+            "network_mode": "host",
+            "registry_digest": "caddy@sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03",
+            "source_revision": "Not provided"
+          },
+          "value": [
+            1794839382.679,
+            "1794839331.1481495"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_identity_timestamp_seconds",
+            "compose_project": "transitjazz-app",
+            "compose_service": "server",
+            "configured_image": "chefknife.azurecr.io/chefknifestudios.martajazz.server.webapi@sha256:e0e6a30cb55b1ac7987a0cd2ca4843d0b56377a5bc1448436517480900ad22f0",
+            "container": "transitjazz-app-server-1",
+            "container_id": "1fac1e872bc54e40b1c89230be9f72e94e3e8f2533a46d4799a7e11df5abeb80",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "image_id": "sha256:e0e6a30cb55b1ac7987a0cd2ca4843d0b56377a5bc1448436517480900ad22f0",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter",
+            "network_mode": "host",
+            "registry_digest": "chefknife.azurecr.io/chefknifestudios.martajazz.server.webapi@sha256:e0e6a30cb55b1ac7987a0cd2ca4843d0b56377a5bc1448436517480900ad22f0",
+            "source_revision": "Not provided"
+          },
+          "value": [
+            1794839382.679,
+            "1794839331.1481495"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "linode_docker_container_identity_timestamp_seconds",
+            "configured_image": "sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03",
+            "container": "linode-docker-dashboard-probe-83eb3faeabb1",
+            "container_id": "92b22b0b4d56bf145764d5cc89a3222f2fe75607a81a513f7c049b117477fe4d",
+            "host": "expense-tracker-vm",
+            "host_id": "6709ead6be084579bf69e4dd35cadbed",
+            "image_id": "sha256:9c1b76fb701c1f77383d3124d9f626e38bcf83bc1255ed47475d4f2420701d03",
+            "instance": "expense-tracker-vm",
+            "job": "integrations/node_exporter",
+            "network_mode": "none",
+            "registry_digest": "Unavailable",
+            "source_revision": "Not provided"
+          },
+          "value": [
+            1794839382.679,
+            "1794839331.1481495"
+          ]
+        }
+      ]
+    }
+  },
+  "current_names": [
+    "linode-docker-dashboard-probe-83eb3faeabb1",
+    "pokerattack-pilot-api-1",
+    "pokerattack-production-api-1",
+    "transitjazz-app-proxy-1",
+    "transitjazz-app-server-1"
+  ]
+}
