@@ -1,6 +1,6 @@
 # PokerAttack deployment automation completion
 
-Runtime implementation and all required live delivery/recovery/dashboard verification completed on 2026-11-21. Final documentation/evidence source-publication status is tracked by L04 in the [authoritative checklist](DEPLOYMENT_AUTOMATION_CHECKLIST.md). Report recorded 2026-11-21T14:31:31.614459+00:00.
+Runtime implementation and all required live delivery/recovery/dashboard verification completed on 2026-11-21. The completion report and sanitized evidence were published on main through [PR16](https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/pull/16), with required validation and normal protected merge. All64 tasks are complete in the [authoritative checklist](DEPLOYMENT_AUTOMATION_CHECKLIST.md); [publication evidence](deployment-evidence/L04-completion-publication.json) records the exact source/readback. Report recorded 2026-11-21T14:31:31.614459+00:00.
 
 Separate [client](../.github/workflows/client.yml) and [server](../.github/workflows/server.yml) workflows are enabled on protected main. Client delivery uses Azure Static Web Apps; server publication uses tested immutable ACR images and digest-only Linode delivery. Both share non-canceling workflow concurrency and a durable host lease. Six main-only environments separate Azure publication, status, client lease, deployment, verification and promotion authority. The manual-only bootstrap build reference has no production delivery authority. Legacy Azure pipelines 39/40/41 remain disabled.
 
