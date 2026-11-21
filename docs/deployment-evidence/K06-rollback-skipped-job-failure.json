@@ -1,0 +1,15 @@
+{
+  "task": "K06 / F04-F06",
+  "state": "FAILED LIVE WORKFLOW CONTROL / NO API MUTATION",
+  "recorded_utc": "2026-11-21T13:38:27.181450+00:00",
+  "run_id": 44908813275,
+  "run_attempt": 1,
+  "source_sha": "c01088c7d289c7329126294268bde3d34bdad426",
+  "packet_artifact_id": 14709455943,
+  "packet_sha256": "3b76035e29c57926be6706c6cea090ae06b3cc687c01cd2db1a42802077a27fd",
+  "result": "Isolated tests/Server validation/resolve succeeded; publish intentionally skipped for rollback. Deploy/verify/promote skipped, overall run incorrectly success without release. No pending environment, no ACK requested, no host lease/reset.",
+  "cause": "Deployment and promotion job conditions rely on implicit success() status guard; skipped publish ancestor propagates despite successful explicit resolve/validation. Need explicit cancellation-aware status guard and explicit successful direct dependencies.",
+  "host_unchanged": true,
+  "packet_not_actionable": true,
+  "required_fix": "Protected reviewed workflow fix, regression matrix, real GitHub validation; new actual rollback packet after merge. Existing packet must not be acknowledged."
+}

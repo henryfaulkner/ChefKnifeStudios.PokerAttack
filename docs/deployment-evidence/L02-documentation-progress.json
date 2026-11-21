@@ -1,0 +1,27 @@
+{
+  "task": "L02",
+  "state": "OPERATOR DOCS PUBLISHED PR15 / FINAL K06 IDENTITIES AND HANDOVER STILL PENDING",
+  "recorded_utc": "2026-11-21T13:53:49.251613+00:00",
+  "files": {
+    "deploy/linode/README.md": "611b621b23cf20530a59574cef8e5066774590fdc9f31282a34da87b85a41b2c",
+    "docs/LINODE_PRODUCTION_OPERATIONS.md": "a57485cf89217e6592e1e83f9f69a3cb23a35700fb8c2f6b57e9ee4e06048807",
+    "docs/LINODE_IMPLEMENTATION_WORK_PACKAGES.md": "32d466b48c6a5da7ad77adba00ac35ff1b8dfc28fc83b3fa94b3c025e46e1b72",
+    "deploy/monitoring/README.md": "6679748e9b45cf83c6d7c0219c25d55cbc4496b908a0f155bc98ec41c78a5b43",
+    "docs/deployment-evidence/L01-check-ownership.md": "b37050e6795698f9211115cad0e171834668f0015a5756da6b9b706cbe1c295a"
+  },
+  "relative_links_checked": true,
+  "details": [
+    "Routine actual GitHub release/restore/rollback dispatch",
+    "Main-only six environments/five SSH capability names and exact grammar reference",
+    "Fresh original-window reset and distinct promotion comments",
+    "Actual build-only migration workflow and disabled Azure pipeline definitions",
+    "Completed K02/K04/K05 versus still incomplete K06",
+    "Genuine verification-resume/new proof, no timestamp edits or mutation retries",
+    "Private archive names/retention and single installed dashboard/collector rollback",
+    "Shared PostgreSQL/Caddy/TransitJazz preservation and unrelated follow-ups kept outside scope"
+  ],
+  "published": true,
+  "published_main": "0b354783d91babc76796381d0f38414f45cdd9e7",
+  "PR": 15,
+  "remaining": "Final actual rollback/reopening identities and checklist/evidence handover; no L02 completion yet."
+}

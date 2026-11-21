@@ -41,10 +41,17 @@ actual production delivery. K05 source is `c01088c7d289c7329126294268bde3d34bdad
 API digest `sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7`,
 config hash `7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f`.
 Its prior known-good is API `sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40`
-(source `dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d`, same config). K06 is deliberately
-restoring an accepted client and preparing real rollback, so these historical
-identities must be reconciled with [current checklist evidence](DEPLOYMENT_AUTOMATION_CHECKLIST.md)
-and live structured status before operating.
+(source `dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d`, same config). K06 restored and explicitly promoted the prior verified API/client pair through
+actual workflow44911036001/1 on2026-11-21. Current API is464ff427... (full digest above),
+source dec2fb0..., container60bfa134e2dfa60657b32edb8f56563fa529e968ddbdbbc3853cd8babeebe971;
+previous-good is37b1cb... . Current accepted client is original43884112818/1 artifact14233913243,
+archive32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5; previous accepted
+client is K04 archivee8915a... . Both sessions and admission are normal, no pending
+release/lease remains, and no database migration ran. Controllers were corrected
+and reviewed in PR15, source0b354783d91babc76796381d0f38414f45cdd9e7; this controller
+source is distinct from the restored image provenance. Always reconcile
+[current checklist evidence](DEPLOYMENT_AUTOMATION_CHECKLIST.md) and live status
+before a new operation.
 
 Use the [release README](../deploy/linode/README.md) for exact dispatch, artifact
 restoration, environment/key capability, reset/promotion and resume commands.
@@ -120,5 +127,6 @@ External HTTPS/certificate/backup alert delivery and coordinated host reboot
 rehearsal remain unrelated operational follow-ups, outside this deployment plan.
 Shared-password rotation remains explicitly deferred; PokerAttack's scoped role
 is separate, while the old incident is unresolved. No added observability program
-or observation gate is required for deployment completion. K06 and final handover
-remain incomplete until their checklist evidence passes.
+or observation gate is required for deployment completion. K06 live restoration, API rollback, fresh gameplay, explicit promotion/reopening
+and serialization have passed. Final publication status is recorded in the
+[deployment completion report](DEPLOYMENT_AUTOMATION_COMPLETION.md).

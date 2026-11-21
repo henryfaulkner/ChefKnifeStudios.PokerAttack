@@ -4,8 +4,9 @@ Production automation is installed and enabled on protected `main`. The separate
 [client workflow](../../.github/workflows/client.yml) publishes/restores Azure
 Static Web Apps artifacts; the [server workflow](../../.github/workflows/server.yml)
 publishes exact tested images to ACR and delivers immutable digests to Linode.
-K02 bootstrap and K04/K05 actual client/server releases are verified; K06 live
-recovery remains in progress. See the [authoritative checklist](../../docs/DEPLOYMENT_AUTOMATION_CHECKLIST.md)
+K02 bootstrap, K04/K05 actual client/server releases and K06 live client
+restoration/API rollback/serialization are verified, including fresh explicit
+promotion and reopening. See the [authoritative checklist](../../docs/DEPLOYMENT_AUTOMATION_CHECKLIST.md)
 for current evidence and the [release contract](../release/CONTRACT.md) for schemas.
 The legacy combined SSH wrapper rejects production. Routine CI uses separate
 status, client-lease, deployment, evidence and promotion capabilities. The root

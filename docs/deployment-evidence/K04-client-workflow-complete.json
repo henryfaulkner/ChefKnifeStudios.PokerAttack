@@ -1,0 +1,71 @@
+{
+  "task": "K04",
+  "state": "COMPLETE / ACTUAL GITHUB OIDC SWA DELIVERY PUBLIC VERIFICATION ACCEPTANCE PASS",
+  "recorded_utc": "2026-11-20T02:00:44.871664+00:00",
+  "source_sha": "c01088c7d289c7329126294268bde3d34bdad426",
+  "workflow": {
+    "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+    "run_attempt": 3,
+    "run_id": 44656069326,
+    "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44656069326"
+  },
+  "artifact_id": 14594650185,
+  "archive_sha256": "e8915a0971ff8b792020ae8c9a2cfaf0d85e3ee6cbd6cf414292d94b49befb0f",
+  "manifest_artifact_id": 14593836788,
+  "verification_artifact_id": 14594186482,
+  "public_verification": {
+    "checks": {
+      "https": true,
+      "served_client": true,
+      "settings": true,
+      "header": true,
+      "assets": true,
+      "browser": true,
+      "signalr": true
+    },
+    "verified_unix": 1795139941,
+    "client_source_sha": "c01088c7d289c7329126294268bde3d34bdad426",
+    "client_archive_sha256": "e8915a0971ff8b792020ae8c9a2cfaf0d85e3ee6cbd6cf414292d94b49befb0f"
+  },
+  "completion": {
+    "client_archive_sha256": "e8915a0971ff8b792020ae8c9a2cfaf0d85e3ee6cbd6cf414292d94b49befb0f",
+    "outcome": "accepted",
+    "phase": "client-finished"
+  },
+  "accepted_catalog": {
+    "current": {
+      "archive_sha256": "e8915a0971ff8b792020ae8c9a2cfaf0d85e3ee6cbd6cf414292d94b49befb0f",
+      "artifact_id": 14594650185,
+      "manifest_sha256": "99c05713c39de8d7254844fd5606e0ecda1860eb35b0eaa41601edb28f973fc5",
+      "run_attempt": 3,
+      "run_id": 44656069326,
+      "source_sha": "c01088c7d289c7329126294268bde3d34bdad426"
+    },
+    "format": "pokerattack-accepted-clients-v1",
+    "previous": {
+      "archive_sha256": "32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5",
+      "artifact_id": 14233913243,
+      "manifest_sha256": "f407bd2f72b5d744d4fc59e6be3978b64d8c28cb187b66f26978d6c40264cd2e",
+      "run_attempt": 1,
+      "run_id": 43884112818,
+      "source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d"
+    }
+  },
+  "API_container_unchanged": true,
+  "server_pair_unchanged": true,
+  "API_runtime": {
+    "container_id": "f0c098961956cfce0e5550f3c1fc63346725d9c5567621f4d5538f3fef223d39",
+    "image_id": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "source_revision": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+    "state": "running",
+    "docker_health": "not-configured",
+    "nano_cpus": 250000000,
+    "memory_bytes": 536870912
+  },
+  "no_lease_pending_transaction": true,
+  "normal_admission_open": true,
+  "failed_attempts_retained": "K04-SWA-status-permission-remediation.json; attempt1 blocked before upload, attempt2 failed-job-only was cancelled/guarded before upload; full3 matches captured artifact",
+  "migration_executed": false,
+  "publication_token_or_private_context_exposed": false
+}

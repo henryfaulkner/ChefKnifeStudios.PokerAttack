@@ -1,0 +1,51 @@
+{
+  "task": "K06",
+  "state": "CLIENT RESTORATION COMPLETE LIVE / SERVER ROLLBACK PENDING",
+  "recorded_utc": "2026-11-21T13:30:17.794293+00:00",
+  "run_id": 44908674321,
+  "run_attempt": 1,
+  "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44908674321",
+  "verification_artifact_id": 14709375393,
+  "completion": {
+    "client_archive_sha256": "32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5",
+    "outcome": "accepted",
+    "phase": "client-finished"
+  },
+  "public_verification": {
+    "checks": {
+      "https": true,
+      "served_client": true,
+      "settings": true,
+      "header": true,
+      "assets": true,
+      "browser": true,
+      "signalr": true
+    },
+    "verified_unix": 1795267683,
+    "client_source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+    "client_archive_sha256": "32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5"
+  },
+  "accepted_catalog": {
+    "current": {
+      "archive_sha256": "32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5",
+      "artifact_id": 14233913243,
+      "manifest_sha256": "f407bd2f72b5d744d4fc59e6be3978b64d8c28cb187b66f26978d6c40264cd2e",
+      "run_attempt": 1,
+      "run_id": 43884112818,
+      "source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d"
+    },
+    "format": "pokerattack-accepted-clients-v1",
+    "previous": {
+      "archive_sha256": "e8915a0971ff8b792020ae8c9a2cfaf0d85e3ee6cbd6cf414292d94b49befb0f",
+      "artifact_id": 14594650185,
+      "manifest_sha256": "99c05713c39de8d7254844fd5606e0ecda1860eb35b0eaa41601edb28f973fc5",
+      "run_attempt": 3,
+      "run_id": 44656069326,
+      "source_sha": "c01088c7d289c7329126294268bde3d34bdad426"
+    }
+  },
+  "catalog_etag": "\"0x8DF47D34DDFA467\"",
+  "API_container_unchanged": "6ff91d47fba5c9522f175980f99347806ebea718ec3bbbbf250571dc3259aeec",
+  "API_digest_unchanged": "sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+  "local_artifact_review_note": "Initial overly restrictive flat-only ZIP allowlist rejected expected client-release/completion.json before extracting it. Corrected to exact two known member names and bounded reads; raw artifact preserved. No provider mutation or verification bypass."
+}

@@ -1,0 +1,27 @@
+{
+  "task": "K04 / I02 permission correction",
+  "state": "MISSING SWA STATUS READ PERMISSION PROVISIONED / ACTUAL CI RETEST REQUIRED",
+  "recorded_utc": "2026-11-20T01:52:39.826669+00:00",
+  "failed_run": 44656069326,
+  "failure_stage": "Reserve client slot and restore validated exact artifact",
+  "safe_error": "SWA service operation unresolved",
+  "host_readback": "No lease, old client unchanged, API ready/open and same CID; upload step did not execute.",
+  "SWA_current_state": "Ready",
+  "principalId": "c9ae6568-2f1a-4efc-a4c1-850520fea628",
+  "before_SWA_roles": [],
+  "added_assignment": {
+    "id": "/subscriptions/d2f70759-7eeb-4ca5-9046-f7c8d562ef8f/resourceGroups/poker-attack-rg/providers/Microsoft.Web/staticSites/poker-attack-webapp/providers/Microsoft.Authorization/roleAssignments/b21f4682-5fca-42a3-a081-286e8df640f1",
+    "principalId": "c9ae6568-2f1a-4efc-a4c1-850520fea628",
+    "roleDefinitionId": "/subscriptions/d2f70759-7eeb-4ca5-9046-f7c8d562ef8f/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7",
+    "scope": "/subscriptions/d2f70759-7eeb-4ca5-9046-f7c8d562ef8f/resourceGroups/poker-attack-rg/providers/Microsoft.Web/staticSites/poker-attack-webapp"
+  },
+  "after_SWA_roles": [
+    {
+      "role": "Reader",
+      "scope": "/subscriptions/d2f70759-7eeb-4ca5-9046-f7c8d562ef8f/resourceGroups/poker-attack-rg/providers/Microsoft.Web/staticSites/poker-attack-webapp"
+    }
+  ],
+  "least_privilege_note": "Reader at this one SWA resource for the required service-state check. No Contributor, deployment mutation, secret listing, RG/subscription administration or changes to other apps. Existing Blob Data Contributor remains scoped to private archive container.",
+  "API_restart": false,
+  "client_upload_performed": false
+}

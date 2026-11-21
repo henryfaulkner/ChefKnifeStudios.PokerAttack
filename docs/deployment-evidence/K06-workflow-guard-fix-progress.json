@@ -1,0 +1,45 @@
+{
+  "task": "F04-F06 / K06",
+  "state": "PROTECTED PR15 MERGED / REQUIRED ACTUAL CHECKS PASS / CORRECTED LIVE PATH VALIDATING",
+  "recorded_utc": "2026-11-21T13:53:49.251613+00:00",
+  "PR": 15,
+  "PR_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/pull/15",
+  "review_head": "94ace38511315f6fb62fe29ecee30ec30fd1ca98",
+  "base_main": "c01088c7d289c7329126294268bde3d34bdad426",
+  "worktree": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\K06-workflow-fix-source",
+  "files": {
+    ".github/workflows/server.yml": "a99873181996e71a4d946147bf3f0f3dfc662ded61d65b3c081987f9007bd223",
+    "deploy/release/test_workflows.py": "a813e0b008f23e68319cb8955f10efa4f28e0cd7e9c65a5e39350bdd3c735027",
+    "deploy/provision/azure.py": "f10f77b2b7ef4bf9388565fae121e6e27c6c24252d2567bf9dd062d343ff1791",
+    "deploy/linode/README.md": "b1fc5e8fe1b3f552031e6059aa61b9a5c5853bb84c8292567beefe0afdf0729f",
+    "docs/LINODE_PRODUCTION_OPERATIONS.md": "df995224a9cd7b5fb7b112345a5c40afae1dcc5e18d140febfaa168a070e163b",
+    "docs/LINODE_IMPLEMENTATION_WORK_PACKAGES.md": "0e10153859335c70bade2073e2c308726f7ea766798be341c4803d12c7c90fb5",
+    "deploy/monitoring/README.md": "f465e926196bdc095a106633aaea10a0144fdc09a05bd84a9e7b5a615bda3ae7"
+  },
+  "local_tests": {
+    "release_tests": 115,
+    "workflow_tests": 11,
+    "regression_fails_original_workflow": true,
+    "actionlint_all_workflows": "PASS",
+    "diff_check": "PASS"
+  },
+  "source_changes": "Cancellation-aware deploy/promotion status functions and explicit resolve-success prerequisite; regression matrix. Persist previously live-tested resource-only SWA Reader fix and prepared operator docs. No installed host/runtime code changed.",
+  "rollout_variable": "DEPLOYMENT_AUTOMATION_ENABLED=false",
+  "host": "ready/open API37b1cb... CID6ff91d... no lease/transaction; restoredclient32bfd2... current. No extra API reset.",
+  "failed_live_attempt": 44908813275,
+  "required_next": "Actual required Client/Server PR checks; normal protected merge with matching reviewed head; inspect exact main hashes; avoid automatic delivery while rolloutfalse, then dispatch corrected fresh rollback and request new packet-specific reset acknowledgment.",
+  "client_PR_validation": {
+    "run_id": 44910046553,
+    "conclusion": "success"
+  },
+  "server_PR_validation": {
+    "run_id": 44910046594,
+    "conclusion": "success"
+  },
+  "automatic_merge_attempt": "Rejected by repository setting: Auto merge is not allowed. Setting left unchanged; use normal protected merge after checks.",
+  "rollout_enabled": true,
+  "actual_main": "0b354783d91babc76796381d0f38414f45cdd9e7",
+  "corrected_rollback_run_id": 44911036001,
+  "main_publication_report": "K06-PR15-main-publication.json",
+  "installed_tools_revalidated": "K06-installed-tools-revalidation.json"
+}

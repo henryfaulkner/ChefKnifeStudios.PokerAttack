@@ -1,0 +1,138 @@
+{
+  "task": "F05-F06 / K06",
+  "state": "COMPLETE LIVE / ACTUAL ROLLBACK PROMOTION REOPENING AND PUBLIC CHECKS PASS",
+  "recorded_utc": "2026-11-21T14:26:40.594483+00:00",
+  "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44911036001",
+  "run_id": 44911036001,
+  "run_attempt": 1,
+  "execution_source_sha": "0b354783d91babc76796381d0f38414f45cdd9e7",
+  "completion_artifact_id": 14709939751,
+  "verification_artifact_id": 14710372738,
+  "delivery_artifact_id": 14709694807,
+  "completion": {
+    "client_archive_sha256": "32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5",
+    "client_source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+    "completed_utc": "2026-11-21T14:25:50.109460+00:00",
+    "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+    "dashboard_url": "https://gallantpuffin3113.grafana.net/d/linode-docker-containers",
+    "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "evidence_sha256": "cf46b10f2958ef91c8175a5369f120f52c712c2153675514d9314eb7556ff97c",
+    "format": "pokerattack-promotion-v1",
+    "known_good": {
+      "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+      "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+      "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+      "snapshot_config_matches": true
+    },
+    "migration_digest": "sha256:dd6c86f57880dc56299e5a6aa11f1700c07c2b92c93f58c4842f988334e71ba4",
+    "overall_release_complete": true,
+    "phase": "complete",
+    "promotion_complete": true,
+    "public_verification": {
+      "checks": {
+        "assets": true,
+        "browser": true,
+        "header": true,
+        "https": true,
+        "served_client": true,
+        "settings": true,
+        "signalr": true
+      },
+      "client_archive_sha256": "32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5",
+      "client_source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+      "verified_unix": 1795271147
+    },
+    "review": {
+      "comment": "PROMOTE cf46b10f2958ef91c8175a5369f120f52c712c2153675514d9314eb7556ff97c 44911036001/1",
+      "decision_timestamp": null,
+      "environment": "server-promotion",
+      "reviewer": "henryfaulkner",
+      "timestamp_note": "GitHub review API does not expose decision time; immutable packet validity anchor is used conservatively."
+    },
+    "runtime": {
+      "container_id": "60bfa134e2dfa60657b32edb8f56563fa529e968ddbdbbc3853cd8babeebe971",
+      "docker_health": "not-configured",
+      "image_id": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+      "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+      "memory_bytes": 536870912,
+      "nano_cpus": 250000000,
+      "source_revision": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+      "state": "running"
+    },
+    "source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+    "workflow": {
+      "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+      "run_attempt": 1,
+      "run_id": 44911036001,
+      "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44911036001"
+    }
+  },
+  "host_status": {
+    "protocol_version": 1,
+    "target": "production",
+    "sampled_utc": "2026-11-21T14:26:08.938556+00:00",
+    "capabilities": [
+      "structured-status-v1"
+    ],
+    "consistent": true,
+    "errors": [],
+    "pairs": {
+      "active": {
+        "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+        "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+        "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+        "snapshot_config_matches": true
+      },
+      "pending": null,
+      "known-good": {
+        "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+        "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+        "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+        "snapshot_config_matches": true
+      },
+      "previous-good": {
+        "digest": "sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+        "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+        "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+        "snapshot_config_matches": true
+      }
+    },
+    "transaction": false,
+    "lease": null,
+    "maintenance": {
+      "supported": true,
+      "active": false
+    },
+    "runtime": {
+      "container_id": "60bfa134e2dfa60657b32edb8f56563fa529e968ddbdbbc3853cd8babeebe971",
+      "image_id": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+      "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+      "source_revision": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+      "state": "running",
+      "docker_health": "not-configured",
+      "nano_cpus": 250000000,
+      "memory_bytes": 536870912
+    },
+    "sessions": {
+      "activeGames": 0,
+      "lobbies": 0,
+      "soloGames": 0
+    },
+    "readiness": {
+      "ready": true,
+      "identity_matches": true,
+      "limits_match": true,
+      "config_matches": true
+    }
+  },
+  "client_restoration_evidence": "K06-client-restoration-complete.json",
+  "serialization_evidence": "K06-live-recovery-progress.json",
+  "failure_and_fix_evidence": [
+    "K06-rollback-skipped-job-failure.json",
+    "K06-PR15-main-publication.json"
+  ],
+  "dashboard_evidence": "K06-pending-dashboard-verification.json",
+  "shared_services_schema_evidence": "K06-shared-services-schema-verification.json",
+  "intentional_final_pair": "Restored accepted bootstrap client and its previously verified compatible API pair; current release controllers from PR15. Original tested image provenance retained, no rebuild claimed.",
+  "migration_executed": false
+}

@@ -1,0 +1,42 @@
+# PokerAttack deployment automation completion
+
+Runtime implementation and all required live delivery/recovery/dashboard verification completed on 2026-11-21. Final documentation/evidence source-publication status is tracked by L04 in the [authoritative checklist](DEPLOYMENT_AUTOMATION_CHECKLIST.md). Report recorded 2026-11-21T14:31:31.614459+00:00.
+
+Separate [client](../.github/workflows/client.yml) and [server](../.github/workflows/server.yml) workflows are enabled on protected main. Client delivery uses Azure Static Web Apps; server publication uses tested immutable ACR images and digest-only Linode delivery. Both share non-canceling workflow concurrency and a durable host lease. Six main-only environments separate Azure publication, status, client lease, deployment, verification and promotion authority. The manual-only bootstrap build reference has no production delivery authority. Legacy Azure pipelines 39/40/41 remain disabled.
+
+| Required live result | Actual successful run / evidence |
+| --- | --- |
+| Maintenance-aware baseline bootstrap and distinct promotion/reopening | [43884112818/2](https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/43884112818/attempts/2), [K02 completion](deployment-evidence/K02-bootstrap-completion.json) |
+| Normal client CI delivery and exact accepted history | [44656069326/3](https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44656069326/attempts/3), [K04 completion](deployment-evidence/K04-client-workflow-complete.json) |
+| Normal server CI publication/digest deployment/gameplay/promotion/reopening | [44657798365/2](https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44657798365/attempts/2), [K05 completion](deployment-evidence/K05-server-workflow-complete.json) |
+| Exact previously accepted client restoration | [44908674321/1](https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44908674321), [restoration and catalog](deployment-evidence/K06-client-restoration-complete.json) |
+| Recorded API rollback, new gameplay proof, distinct promotion and reopening | [44911036001/1](https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44911036001), [K06 completion](deployment-evidence/K06-live-recovery-complete.json) |
+| Overlapping client/server requests serialize without canceling active releases | [K06 actual overlap evidence](deployment-evidence/K06-live-recovery-progress.json) |
+
+K06 completed at `2026-11-21T14:25:50.109460+00:00`. Its delivery artifact 14709694807, fresh proof artifact 14710372738 and completion artifact 14709939751 were downloaded by numeric ID and validated against actual source/runtime/manifest/execution. All six protected gameplay checks and all seven final public checks passed. Verifier credentials were revoked, sessions reached zero, promotion used the user's exact distinct fresh decision, normal admission reopened and the lease cleared. The initial rollback attempt 44908813275 exposed skipped-ancestor scheduling: it produced a packet but performed no API mutation. [PR15](https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/pull/15) fixed the status guards; regression tests reproduce the old failure and the corrected real rollback now completes. Historical failure evidence remains retained.
+
+The deliberately selected final serving pair is the previously verified API and accepted client restored in K06. A restored image retains its original build provenance; it is not rebuilt or relabeled as the newer controller source.
+
+| Final identity | Exact value |
+| --- | --- |
+| API origin | `https://api.playpokerattack.com` |
+| Client origins | `https://playpokerattack.com`, `https://www.playpokerattack.com`, `https://salmon-hill-0056eb60f.2.azurestaticapps.net` |
+| Current API digest / image ID | `sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40` |
+| API and restored client source | `dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d` |
+| Current API container | `60bfa134e2dfa60657b32edb8f56563fa529e968ddbdbbc3853cd8babeebe971` |
+| Config SHA256 | `7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f` |
+| Current accepted client archive | `32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5`, original 43884112818/1 artifact 14233913243 |
+| Previous-good API | `sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7` |
+| Previous accepted client | `e8915a0971ff8b792020ae8c9a2cfaf0d85e3ee6cbd6cf414292d94b49befb0f`, original 44656069326/3 artifact 14594650185 |
+| Reviewed release-controller source | `0b354783d91babc76796381d0f38414f45cdd9e7` from PR15; later handover commits change documentation only |
+| Final observed release state | Active=known-good, ready, admission open, no pending release/lease/transaction; 0.25 CPU / 512 MiB |
+
+One shared [Linode Docker Containers dashboard](https://gallantpuffin3113.grafana.net/d/linode-docker-containers) selects all inventoried Docker containers and shows full image/digest/source, status, configured health, separate readiness, lifecycle/resources and collection freshness. Dropdown, single/multiple/All, stopped/recreated/removed containers and stale/failed/recovered collection were visually and independently query-verified in [J evidence](deployment-evidence/J03-J04-complete-live-verification.json). K06's new incarnation/image/source/resources/current-state were independently checked with its actual freshness-aware dashboard expressions. At final sample `2026-11-21T14:27:04.649613+00:00`, collection age was `74.0`seconds, below 180seconds. Docker health is Not configured, while application readiness is Ready. The existing Linux host dashboard and monitoring remain preserved. No chart, timer soak or Grafana availability became a release gate.
+
+The [scope audit](deployment-evidence/L03-complete-scope-audit.json), [shared-service/schema evidence](deployment-evidence/K06-shared-services-schema-verification.json) and [final live state](deployment-evidence/L04-final-live-state.json) record preserved Caddy/TransitJazz/pilot IDs/states and PostgreSQL/Alloy PIDs. The read-only database transaction was rolled back; required PokerAttack schema/history and shared ExpenseTracker history remain compatible. No production migration, destructive E2E/global cleanup, database restore, shared service restart, prune or credential extraction occurred. PostgreSQL is host-managed and is not invented as a Docker dropdown entry.
+
+Local regression/authority tests passed 115release tests and workflow lint; required actual PR15 Client/Server checks and normal main rollback isolated Linux/HTTPS/gameplay/monitoring checks passed. The 31installed host-tool hashes, exact published workflow bytes, main-only environment/reviewer boundaries, approved config and source identity were revalidated. See [check ownership](deployment-evidence/L01-check-ownership.md), [current workflow inventory](deployment-evidence/L01-current-main-workflow-inventory.json), [operator guide](LINODE_PRODUCTION_OPERATIONS.md), [release README](../deploy/linode/README.md) and [collector install/rollback](../deploy/monitoring/README.md).
+
+Future API releases and rollbacks still require a fresh release-specific ACK_RESET and separate fresh PROMOTE. Their immutable 30-minute packet/proof windows are never renewed by delayed runners; uncertain operations stop for inspection. GitHub review history does not expose decision timestamps, so tooling conservatively uses the original packet/proof anchor and does not invent a decision time. Accepted client archives are private in `pareleasearchive1f287758/pokerattack-client-releases`, with versioning and 30-day delete retention; GitHub release artifacts retain 30days. No automatic production migration is enabled.
+
+Unrelated follow-ups remain outside this completed deployment/dashboard scope: owner-deferred coordinated shared PostgreSQL password rotation, external alert delivery and host reboot rehearsal, and off-host backup continuity when the owner's workstation is off/logged out. No broader observability/notification program or extra observation gate was added. Primary branch/index, unrelated edits/untracked skills and the original plan were preserved; source publication uses isolated reviewed changes and normal protected merges.

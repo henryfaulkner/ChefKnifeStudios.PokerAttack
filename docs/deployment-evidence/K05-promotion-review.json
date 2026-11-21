@@ -1,0 +1,37 @@
+{
+  "comment": "PROMOTE c6cf3decae023f3074b2492f1fc46efe356d205bc3bfad9d10ebfc3995780f35 44657798365/2",
+  "evidence": {
+    "artifact_references": [
+      "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44657798365/attempts/2",
+      "accepted-client-artifact:14594650185:e8915a0971ff8b792020ae8c9a2cfaf0d85e3ee6cbd6cf414292d94b49befb0f"
+    ],
+    "checks": {
+      "https": true,
+      "multiplayer": true,
+      "private_message_isolation": true,
+      "served_client": true,
+      "signalr": true,
+      "solo": true
+    },
+    "client_archive_sha256": "e8915a0971ff8b792020ae8c9a2cfaf0d85e3ee6cbd6cf414292d94b49befb0f",
+    "client_source_sha": "c01088c7d289c7329126294268bde3d34bdad426",
+    "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+    "digest": "sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+    "format": "pokerattack-evidence-v1",
+    "migration_digest": "sha256:4379996efb899b4776a3f5263f13ede21a2875e26bfe2c905f57aafe3478fe3a",
+    "source_sha": "c01088c7d289c7329126294268bde3d34bdad426",
+    "verified_unix": 1795267238,
+    "verifier_id": "d05b7e235c9238588419db4698e870e2",
+    "workflow": {
+      "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+      "run_attempt": 2,
+      "run_id": 44657798365,
+      "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44657798365"
+    }
+  },
+  "evidence_sha256": "c6cf3decae023f3074b2492f1fc46efe356d205bc3bfad9d10ebfc3995780f35",
+  "expires_unix": 1795269038,
+  "format": "pokerattack-promotion-review-v1",
+  "manifest_sha256": "23680806cd170f485cb8b3b8d02ec3ce811942e3a8f42141bbf58c117ffa77bc",
+  "overall_release_complete": false
+}

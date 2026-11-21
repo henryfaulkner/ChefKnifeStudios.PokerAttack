@@ -1,7 +1,7 @@
 {
   "task": "K03",
-  "state": "LOCAL REVIEW PASS / SOURCE PUBLICATION IN PROGRESS; DELIVERY DISABLED",
-  "recorded_utc": "2026-11-20T01:29:23.613038+00:00",
+  "state": "PROTECTED DRAFT PR14 OPEN / CI IN PROGRESS / DELIVERY DISABLED",
+  "recorded_utc": "2026-11-20T01:31:03.248916+00:00",
   "base_main_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
   "worktree": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\K03-workflows-source",
   "branch": "deployment/activate-client-server",
@@ -20,5 +20,9 @@
   "retained_checks": "Separate client/server own stable Client validation/Server validation; bootstrap manual-only reference renamed Bootstrap client/server validation, no publication/deploy authority. No ACA or automatic production migrations introduced.",
   "bootstrap": "K02 explicitly promoted and reopened; all7public checks pass; initial missing completion-dir failure preserved and repaired.",
   "source_publication_safety": "Unrelated .claude skills/.agents stepwise and primary index/tree preserved; original plan unchanged; only owned implementation and sanitized evidence copied. Primary historical migration-ci not copied.",
-  "delivery_enabled": false
+  "delivery_enabled": false,
+  "PR": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/pull/14",
+  "review_head_sha": "be10e8ff0570e5ff39a54a9489d7704705e68d28",
+  "client_PR_run": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44654028143",
+  "dashboard_variable": "https://gallantpuffin3113.grafana.net/d/linode-docker-containers"
 }

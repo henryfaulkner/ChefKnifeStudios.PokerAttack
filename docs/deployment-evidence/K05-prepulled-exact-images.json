@@ -1,0 +1,27 @@
+{
+  "images": {
+    "api": {
+      "reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+      "image_id": "sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+      "source_revision": "c01088c7d289c7329126294268bde3d34bdad426",
+      "platform": "linux/amd64",
+      "executed": false
+    },
+    "migration": {
+      "reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.data@sha256:4379996efb899b4776a3f5263f13ede21a2875e26bfe2c905f57aafe3478fe3a",
+      "image_id": "sha256:4379996efb899b4776a3f5263f13ede21a2875e26bfe2c905f57aafe3478fe3a",
+      "source_revision": "c01088c7d289c7329126294268bde3d34bdad426",
+      "platform": "linux/amd64",
+      "executed": false
+    }
+  },
+  "API_runtime_unchanged": true,
+  "API_restarted": false,
+  "migration_executed": false,
+  "no_lease": true,
+  "recorded_utc": "2026-11-20T02:14:42.619807+00:00",
+  "task": "K05",
+  "source_sha": "c01088c7d289c7329126294268bde3d34bdad426",
+  "run_id": 44657798365,
+  "run_attempt": 1
+}

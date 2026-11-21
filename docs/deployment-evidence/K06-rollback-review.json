@@ -1,0 +1,137 @@
+{
+  "task": "K06 / F04-F06",
+  "state": "COMPLETE LIVE / ACTUAL ROLLBACK PROMOTION REOPENING AND PUBLIC CHECKS PASS",
+  "recorded_utc": "2026-11-21T14:26:40.594483+00:00",
+  "run_id": 44911036001,
+  "run_attempt": 1,
+  "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44911036001",
+  "execution_source_sha": "0b354783d91babc76796381d0f38414f45cdd9e7",
+  "workspace": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\K06-server-rollback-44911036001-1",
+  "packet_artifact_id": 14710610101,
+  "packet_sha256": "3142805e427561c1a1155db7872c184e549ba391af258e73a06a896d2d645360",
+  "acknowledgment": "ACK_RESET 3142805e427561c1a1155db7872c184e549ba391af258e73a06a896d2d645360 44911036001/1",
+  "expires_utc": "2026-11-21T14:30:40+00:00",
+  "expires_Eastern": "2026-11-21T09:30:40-05:00",
+  "operation": "rollback",
+  "restored_source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+  "current_pair": {
+    "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+    "digest": "sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+    "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+    "snapshot_config_matches": true
+  },
+  "recovery_pair": {
+    "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+    "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "snapshot_config_matches": true
+  },
+  "observed_sessions": {
+    "activeGames": 0,
+    "lobbies": 0,
+    "soloGames": 0
+  },
+  "manifest_sha256": "e559f09b5a156c89d7e787e522ead9766a3c322a0affa463b4ffc33f1ec83862",
+  "schema": {
+    "compatible_with_known_good": true,
+    "required_migrations": [
+      "20251008022524_Init_Data",
+      "20251008234907_NoUsers",
+      "20251015221621_Update_Game_HostPlayerClientId"
+    ],
+    "review_reference": "Reviewed release source: deploy/release/schema-prerequisite.json. Existing migration set unchanged; H must rehearse candidate and recovery against it. No production migration execution."
+  },
+  "original_recovery_manifest_workflow": {
+    "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+    "run_attempt": 1,
+    "run_id": 43884112818,
+    "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/43884112818"
+  },
+  "execution": {
+    "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+    "run_attempt": 1,
+    "run_id": 44911036001,
+    "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44911036001"
+  },
+  "environment": "server-linode",
+  "environment_id": 27463109663,
+  "drain_seconds": 300,
+  "migration_execution": false,
+  "client_restoration_run": 44908674321,
+  "client_restoration_complete": true,
+  "client_current_archive_sha256": "32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5",
+  "serialization_observed_both_directions": true,
+  "reset_ack_received": true,
+  "API_rollback_performed": true,
+  "promotion_received": true,
+  "note": "Actual isolated/validation/resolve PASS, publish intentionally SKIPPED, deploy genuinely WAITING at real owner review. Bounded exact artifact ZIP, packet/schema/hash/execution/source/current/recovery/hostidle and pendingreview checks passed. No API rollback until matching fresh user ACK.",
+  "local_failure_note": "First report formatting failed after all read-only checks because Windows Python venv lacks tzdata. No provider mutation. Used explicit EST UTC-05 offset for the verified Nov21 date; original Unix/UTC expiry unchanged.",
+  "reset_decision": {
+    "task": "K06",
+    "comment": "ACK_RESET 3142805e427561c1a1155db7872c184e549ba391af258e73a06a896d2d645360 44911036001/1",
+    "received_utc": "2026-11-21T14:05:04+00:00",
+    "receipt_time_basis": "First tool observation of actual user ACK; not a GitHub review timestamp.",
+    "recorded_utc": "2026-11-21T14:05:36.008171+00:00",
+    "run_id": 44911036001,
+    "run_attempt": 1,
+    "packet_expires_unix": 1795271440,
+    "observed_sessions": {
+      "activeGames": 0,
+      "lobbies": 0,
+      "soloGames": 0
+    }
+  },
+  "actual_environment_review_approved": true,
+  "delivery_artifact_id": 14709694807,
+  "delivery_outcome": {
+    "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+    "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "expires_unix": 1795271440,
+    "format": "pokerattack-delivery-v1",
+    "manifest_sha256": "e559f09b5a156c89d7e787e522ead9766a3c322a0affa463b4ffc33f1ec83862",
+    "operation": "rollback",
+    "overall_release_complete": false,
+    "phase": "pending",
+    "reset_packet_sha256": "3142805e427561c1a1155db7872c184e549ba391af258e73a06a896d2d645360",
+    "review": {
+      "comment": "ACK_RESET 3142805e427561c1a1155db7872c184e549ba391af258e73a06a896d2d645360 44911036001/1",
+      "decision_timestamp": null,
+      "environment": "server-linode",
+      "reviewer": "henryfaulkner",
+      "timestamp_note": "GitHub review API does not expose decision time; immutable packet validity anchor is used conservatively."
+    },
+    "source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+    "validity_anchor_unix": 1795269640,
+    "workflow": {
+      "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+      "run_attempt": 1,
+      "run_id": 44911036001,
+      "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44911036001"
+    }
+  },
+  "observed_runtime": {
+    "container_id": "60bfa134e2dfa60657b32edb8f56563fa529e968ddbdbbc3853cd8babeebe971",
+    "image_id": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "source_revision": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+    "state": "running",
+    "docker_health": "not-configured",
+    "nano_cpus": 250000000,
+    "memory_bytes": 536870912
+  },
+  "admission_open": true,
+  "verification_artifact_id": 14710372738,
+  "evidence_sha256": "cf46b10f2958ef91c8175a5369f120f52c712c2153675514d9314eb7556ff97c",
+  "promotion_comment": "PROMOTE cf46b10f2958ef91c8175a5369f120f52c712c2153675514d9314eb7556ff97c 44911036001/1",
+  "promotion_expires_utc": "2026-11-21T14:39:50+00:00",
+  "verifier_revoked": true,
+  "remaining_sessions": {
+    "activeGames": 0,
+    "lobbies": 0,
+    "soloGames": 0
+  },
+  "overall_release_complete": true,
+  "promotion_progress": "K06-promotion-progress.json",
+  "completion_artifact_id": 14709939751,
+  "completion_evidence": "K06-live-recovery-complete.json"
+}

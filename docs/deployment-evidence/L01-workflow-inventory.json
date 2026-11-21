@@ -1,0 +1,66 @@
+{
+  "client": {
+    "sha256": "6ba1fe9e2488f5153529bbb3df6a71b5680f4764c121eb654619edebdafacc91",
+    "triggers": [
+      "pull_request",
+      "push",
+      "workflow_dispatch"
+    ],
+    "jobs": [
+      "changes",
+      "checks",
+      "package",
+      "validation",
+      "deploy"
+    ]
+  },
+  "server": {
+    "sha256": "867602f54942d8ccb4eff5364fa5e8106a1421f267a11b99366222b8333dcdc5",
+    "triggers": [
+      "pull_request",
+      "push",
+      "workflow_dispatch"
+    ],
+    "jobs": [
+      "changes",
+      "isolated",
+      "validation",
+      "publish",
+      "resolve",
+      "deploy",
+      "verify",
+      "promote"
+    ]
+  },
+  "migration-ci": {
+    "sha256": "78256c09e5a087107b4eb188a8884e2f5b18a5dd3e49546c744a63797ab73a13",
+    "triggers": [
+      "workflow_dispatch"
+    ],
+    "jobs": [
+      "changes",
+      "isolated",
+      "checks",
+      "package",
+      "server_validation",
+      "client_validation"
+    ]
+  },
+  "recorded_utc": "2026-11-21T13:31:32.925879+00:00",
+  "source_sha": "c01088c7d289c7329126294268bde3d34bdad426",
+  "legacy_azure_definitions": [
+    {
+      "id": 39,
+      "queueStatus": "disabled"
+    },
+    {
+      "id": 40,
+      "queueStatus": "disabled"
+    },
+    {
+      "id": 41,
+      "queueStatus": "disabled"
+    }
+  ],
+  "normalization_note": "First raw worktree comparison rejected CRLF reference bytes; actual published Git LF bytes match normalized reviewed source. No main change; primary migration reference now exact published bytes."
+}

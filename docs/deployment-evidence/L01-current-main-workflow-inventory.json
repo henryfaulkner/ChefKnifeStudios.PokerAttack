@@ -1,0 +1,76 @@
+{
+  "client": {
+    "sha256": "6ba1fe9e2488f5153529bbb3df6a71b5680f4764c121eb654619edebdafacc91",
+    "triggers": [
+      "pull_request",
+      "push",
+      "workflow_dispatch"
+    ],
+    "jobs": [
+      "changes",
+      "checks",
+      "package",
+      "validation",
+      "deploy"
+    ]
+  },
+  "server": {
+    "sha256": "b421abe30508ee6cb3db485f029ecb29aa2b05fbf4d92ebd368a76c910494465",
+    "triggers": [
+      "pull_request",
+      "push",
+      "workflow_dispatch"
+    ],
+    "jobs": [
+      "changes",
+      "isolated",
+      "validation",
+      "publish",
+      "resolve",
+      "deploy",
+      "verify",
+      "promote"
+    ]
+  },
+  "migration-ci": {
+    "sha256": "78256c09e5a087107b4eb188a8884e2f5b18a5dd3e49546c744a63797ab73a13",
+    "triggers": [
+      "workflow_dispatch"
+    ],
+    "jobs": [
+      "changes",
+      "isolated",
+      "checks",
+      "package",
+      "server_validation",
+      "client_validation"
+    ]
+  },
+  "recorded_utc": "2026-11-21T14:06:43.984638+00:00",
+  "source_sha": "0b354783d91babc76796381d0f38414f45cdd9e7",
+  "publication": "PR15 normal protected merge, actual required Client/Server CI passed; corrected actual rollback44911036001 reached real resetgate and is delivering after fresh userdecision.",
+  "legacy_azure_definitions": [
+    {
+      "id": 39,
+      "queueStatus": "disabled",
+      "last_live_read_evidence": "L01-workflow-inventory.json",
+      "prior_inventory_recorded_utc": "2026-11-21T13:31:32.925879+00:00",
+      "note": "Read live earlier in this same handover session; no new read or change claimed."
+    },
+    {
+      "id": 40,
+      "queueStatus": "disabled",
+      "last_live_read_evidence": "L01-workflow-inventory.json",
+      "prior_inventory_recorded_utc": "2026-11-21T13:31:32.925879+00:00",
+      "note": "Read live earlier in this same handover session; no new read or change claimed."
+    },
+    {
+      "id": 41,
+      "queueStatus": "disabled",
+      "last_live_read_evidence": "L01-workflow-inventory.json",
+      "prior_inventory_recorded_utc": "2026-11-21T13:31:32.925879+00:00",
+      "note": "Read live earlier in this same handover session; no new read or change claimed."
+    }
+  ],
+  "status": "PREPARED / FINAL K06 COMPLETION AND EVIDENCE HANDOVER STILL REQUIRED"
+}
