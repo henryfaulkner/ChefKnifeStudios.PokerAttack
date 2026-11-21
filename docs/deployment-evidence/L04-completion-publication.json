@@ -1,0 +1,37 @@
+{
+  "PR": {
+    "mergeCommit": {
+      "oid": "cc42f5bd02670ced4ad2cb3967de598d25442f58"
+    },
+    "mergedAt": "2026-11-21T14:34:49Z",
+    "state": "MERGED",
+    "url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/pull/16"
+  },
+  "review_head": "167527f193c88f30c0107865a3779d9d2fd948a1",
+  "actual_main": "cc42f5bd02670ced4ad2cb3967de598d25442f58",
+  "required_checks": {
+    "changes": "SUCCESS",
+    "isolated": "SKIPPED",
+    "checks": "SUCCESS",
+    "package": "SKIPPED",
+    "Server validation": "SUCCESS",
+    "publish": "SKIPPED",
+    "Client validation": "SUCCESS",
+    "deploy": "SKIPPED",
+    "resolve": "SKIPPED",
+    "verify": "SKIPPED",
+    "promote": "SKIPPED"
+  },
+  "completion_report_sha256": "5770fbe6eae43296f3c8023acfe4e1bdcf34f99b5a1efe2f950411ad181e92b4",
+  "runtime_mutation": false,
+  "task": "L04",
+  "state": "COMPLETE / REPORT PUBLISHED ON MAIN",
+  "recorded_utc": "2026-11-21T14:35:49.597477+00:00",
+  "completion_report": "docs/DEPLOYMENT_AUTOMATION_COMPLETION.md",
+  "release_evidence": "K06-live-recovery-complete.json",
+  "runtime_release_run": 44911036001,
+  "current_API_digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+  "current_client_archive_sha256": "32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5",
+  "dashboard_url": "https://gallantpuffin3113.grafana.net/d/linode-docker-containers",
+  "note": "Completion report first published normally in PR16 after required checks. This checkpoint marks L04 complete only after actual main readback. Subsequent checkpoint publication changes documentation only; no release remains pending."
+}
