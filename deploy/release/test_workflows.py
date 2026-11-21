@@ -19,6 +19,39 @@ WorkflowLoader.add_implicit_resolver('tag:yaml.org,2002:bool', re.compile(r'^(?:
 
 
 class WorkflowTests(unittest.TestCase):
+    def test_rollback_skipped_publication_does_not_skip_reviewed_delivery_or_promotion(self):
+        # A skipped ancestor makes GitHub's implicit success() false, even when
+        # resolve succeeded. Exercise the actual conditions with that default,
+        # failed direct dependencies, cancellation, and an ordinary release.
+        context = {
+            'github.repository': 'henryfaulkner/ChefKnifeStudios.PokerAttack',
+            'github.ref': 'refs/heads/main', 'github.event_name': 'workflow_dispatch',
+            'vars.DEPLOYMENT_AUTOMATION_ENABLED': 'true',
+            'needs.changes.outputs.production_eligible': 'true',
+            'needs.changes.outputs.server': 'true',
+            'needs.validation.result': 'success', 'needs.resolve.result': 'success',
+            'needs.verify.result': 'success',
+        }
+        def permitted(job, default_success=False, cancelled=False, **overrides):
+            expression = self.server['jobs'][job]['if']
+            if not re.search(r'\b(?:always|cancelled|failure|success)\s*\(', expression):
+                if not default_success: return False
+            expression = expression.replace('!cancelled()', str(not cancelled))
+            for name, value in sorted({**context, **overrides}.items(), key=lambda pair: -len(pair[0])):
+                expression = expression.replace(name, repr(value))
+            expression = expression.replace('&&', ' and ').replace('||', ' or ')
+            return bool(eval(expression, {'__builtins__': {}}, {}))
+        for job in ('deploy', 'promote'):
+            with self.subTest(job=job):
+                self.assertTrue(permitted(job))  # rollback: skipped publish ancestor
+                self.assertTrue(permitted(job, default_success=True))
+                self.assertFalse(permitted(job, cancelled=True))
+                self.assertFalse(permitted(job, **{'needs.resolve.result': 'failure'}))
+                self.assertFalse(permitted(job, **{'needs.resolve.result': 'skipped'}))
+        self.assertFalse(permitted('deploy', **{'needs.validation.result': 'failure'}))
+        self.assertFalse(permitted('promote', **{'needs.verify.result': 'failure'}))
+        self.assertFalse(permitted('promote', **{'needs.verify.result': 'skipped'}))
+
     @classmethod
     def setUpClass(cls):
         cls.root = Path(__file__).parents[2]

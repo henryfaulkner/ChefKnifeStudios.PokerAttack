@@ -115,6 +115,13 @@ def main():
                 role = 'Storage Blob Data Contributor' if environment == 'client-swa' else 'Storage Blob Data Reader'
                 resource = scope
             report['assignments'].append(assignment(identity['principalId'], role, resource))
+            if environment == 'client-swa':
+                # The pre-upload unresolved-operation gate reads SWA service
+                # status. Upload authority remains the separately scoped token;
+                # this identity needs no SWA Contributor or secret-list action.
+                swa = az('staticwebapp', 'show', '--name', 'poker-attack-webapp',
+                         '--resource-group', GROUP, '--query', 'id')
+                report['assignments'].append(assignment(identity['principalId'], 'Reader', swa))
             report['identities'][environment] = {key: identity[key] for key in ('id', 'clientId', 'principalId', 'name')}
             report['identities'][environment]['federation'] = federations[0]
             variable('AZURE_CLIENT_ID', identity['clientId'], environment)

@@ -37,7 +37,7 @@ Capacity is an accepted planning assumption, not a claim of measured headroom. R
 | WP06 | Prepare protected host configuration, backups and pilot database | WP01, WP05 | C01–C04; operational part of B03 | COMPLETE for cutover - backups/restore, scoped roles, protected tooling; shared rotation explicitly deferred |
 | WP07 | Verify public pilot, rollback and monitoring | WP06; manual M01 | M01, C05, D01–D05 | PILOT ACCEPTED - gameplay, live rollback, 30-minute/20-connection observation passed; broader operational follow-ups retained |
 | WP08 | Perform coordinated production cutover | WP07; manual M02 | M02, E01–E04; R01 if needed | COMPLETE - production API/client switched; real multiplayer/solo and persistence verified |
-| WP09 | Enable GitHub Actions Linode-only continuous delivery | WP07–WP08 | F02 | BUILD/TEST ACTIVE; GitHub deployment automation remains pending; controlled manual release used |
+| WP09 | Enable GitHub Actions Linode-only continuous delivery | WP07–WP08 | F02 | K01-K05 actual GitHub client/server delivery and explicit promotion COMPLETE; K06 live recovery and final handover remain in the deployment automation checklist |
 | WP10 | Observe production and retire obsolete server resources | WP08; WP09 before retirement | F01, F03–F04 | IN PROGRESS - owner directed immediate ACA removal; app deleted, dedicated environment deleting; production observation continues |
 
 Manual M01/M02 record preparation belongs to WP01; their execution can happen as soon as names/host IP are verified, before their dependent packages. WP10 observation can run while WP09 is completed. Repository work in WP02–WP05 does not wait for DNS. Shared files such as `Program.cs` and pipeline YAML should be edited in this sequence to keep review and integration straightforward. This breakdown does not request parallel agents.
@@ -201,6 +201,8 @@ For every package, record: source SHA, changed files or resource IDs, verificati
 **Handoff:** production known-good image/config pair after public verification, rollback package retained, observation start/end dates and current deployment state.
 
 ## WP09 — Linode-only GitHub Actions delivery
+
+**Current execution record (2026-11-21):** [Deployment automation checklist](DEPLOYMENT_AUTOMATION_CHECKLIST.md) supersedes the historical Azure-specific resources below. Separate GitHub client/server workflows, six main-only environments, capability keys, OIDC, shared concurrency and the single Docker dashboard are installed. K04/K05 normal client/server deliveries and fresh explicit promotion/reopening passed; K06 live restoration/rollback and L handover remain incomplete. Use [production operations](LINODE_PRODUCTION_OPERATIONS.md) and [release README](../deploy/linode/README.md), not retired ACA/Azure Pipelines commands.
 
 **Outcome:** subsequent releases follow the tested deployment path and cannot reactivate ACA.
 
