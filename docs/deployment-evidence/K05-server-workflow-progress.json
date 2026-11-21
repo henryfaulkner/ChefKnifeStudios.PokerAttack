@@ -1,0 +1,166 @@
+{
+  "task": "K05",
+  "state": "COMPLETE LIVE / ACTUAL SERVER WORKFLOW SUCCESS",
+  "recorded_utc": "2026-11-21T13:26:54.444670+00:00",
+  "run_id": 44657798365,
+  "run_attempt": 2,
+  "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44657798365",
+  "source_sha": "c01088c7d289c7329126294268bde3d34bdad426",
+  "workspace": "C:\\Projects\\ChefKnifeStudios.PokerAttack\\artifacts\\K05-server-release-44657798365-2",
+  "packet_artifact_id": 14708186868,
+  "published_images_artifact_id": 14594463081,
+  "tested_images_artifact_id": 14594148143,
+  "isolated_checks_artifact_id": 14593794048,
+  "packet_sha256": "c3debebb9ccb5afa3b8316911191b61f07115a1a4ae58530854cf71d7c29f1bb",
+  "acknowledgment": "ACK_RESET c3debebb9ccb5afa3b8316911191b61f07115a1a4ae58530854cf71d7c29f1bb 44657798365/2",
+  "expires_utc": "2026-11-21T13:40:58+00:00",
+  "expires_Eastern": "2026-11-21T08:40:58-05:00",
+  "api": {
+    "digest": "sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+    "local_image_id": "sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+    "platform": "linux/amd64",
+    "repository": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi",
+    "source_revision": "c01088c7d289c7329126294268bde3d34bdad426",
+    "tag": "c01088c7d289c7329126294268bde3d34bdad426"
+  },
+  "migration": {
+    "digest": "sha256:4379996efb899b4776a3f5263f13ede21a2875e26bfe2c905f57aafe3478fe3a",
+    "local_image_id": "sha256:4379996efb899b4776a3f5263f13ede21a2875e26bfe2c905f57aafe3478fe3a",
+    "platform": "linux/amd64",
+    "repository": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.data",
+    "source_revision": "c01088c7d289c7329126294268bde3d34bdad426",
+    "tag": "c01088c7d289c7329126294268bde3d34bdad426"
+  },
+  "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+  "current_pair": {
+    "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+    "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "snapshot_config_matches": true
+  },
+  "recovery_pair": {
+    "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+    "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "snapshot_config_matches": true
+  },
+  "observed_sessions_packet": {
+    "activeGames": 0,
+    "lobbies": 0,
+    "soloGames": 0
+  },
+  "observed_sessions_fresh": {
+    "activeGames": 0,
+    "lobbies": 0,
+    "soloGames": 0
+  },
+  "read_only_schema_prerequisite": {
+    "compatible_with_known_good": true,
+    "required_migrations": [
+      "20251008022524_Init_Data",
+      "20251008234907_NoUsers",
+      "20251015221621_Update_Game_HostPlayerClientId"
+    ],
+    "review_reference": "Reviewed release source: deploy/release/schema-prerequisite.json. Existing migration set unchanged; H must rehearse candidate and recovery against it. No production migration execution."
+  },
+  "drain_policy": "At most300seconds; reset-at-deadline deliberately ends remaining matches. Workflow default300; no DB migration execution.",
+  "approval_environment": "server-linode",
+  "approval_environment_id": 27463109663,
+  "API_reset_ack_received": true,
+  "API_restarted": true,
+  "promotion_received": true,
+  "no_host_lease_reserved_before_approval": true,
+  "prepulled_exact_image_report": "K05-prepulled-exact-images.json",
+  "actual_GitHub_jobs_passed": [
+    "changes",
+    "isolated",
+    "Server validation",
+    "publish",
+    "resolve"
+  ],
+  "pending_approval_environment_id": 27463109663,
+  "refresh_note": "Expired unapproved attempt1 cancelled only after host ready/no lease confirmed. Actual GitHub resolve-job rerun creates genuine attempt2/new review packet; reuses original tested/published immutable images, no rebuild/push/restart/approval. Original packet and summary retained.",
+  "original_image_build_attempt": 1,
+  "previous_expired_packet_sha256": "52372dca91ec741ceeae0319a419655bd7520628165be66475d2178f9a3ed827",
+  "reset_decision": {
+    "task": "K05",
+    "comment": "ACK_RESET c3debebb9ccb5afa3b8316911191b61f07115a1a4ae58530854cf71d7c29f1bb 44657798365/2",
+    "received_utc": "2026-11-21T13:13:06+00:00",
+    "receipt_time_basis": "First observed current user decision; not a GitHub review timestamp.",
+    "recorded_utc": "2026-11-21T13:16:02.866362+00:00",
+    "packet_expires_unix": 1795268458,
+    "run_id": 44657798365,
+    "run_attempt": 2
+  },
+  "actual_environment_review_submitted": true,
+  "delivery_artifact_id": 14708342269,
+  "delivery_outcome": {
+    "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+    "digest": "sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+    "expires_unix": 1795268458,
+    "format": "pokerattack-delivery-v1",
+    "manifest_sha256": "23680806cd170f485cb8b3b8d02ec3ce811942e3a8f42141bbf58c117ffa77bc",
+    "operation": "release",
+    "overall_release_complete": false,
+    "phase": "pending",
+    "reset_packet_sha256": "c3debebb9ccb5afa3b8316911191b61f07115a1a4ae58530854cf71d7c29f1bb",
+    "review": {
+      "comment": "ACK_RESET c3debebb9ccb5afa3b8316911191b61f07115a1a4ae58530854cf71d7c29f1bb 44657798365/2",
+      "decision_timestamp": null,
+      "environment": "server-linode",
+      "reviewer": "henryfaulkner",
+      "timestamp_note": "GitHub review API does not expose decision time; immutable packet validity anchor is used conservatively."
+    },
+    "source_sha": "c01088c7d289c7329126294268bde3d34bdad426",
+    "validity_anchor_unix": 1795266658,
+    "workflow": {
+      "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+      "run_attempt": 2,
+      "run_id": 44657798365,
+      "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44657798365"
+    }
+  },
+  "observed_runtime": {
+    "container_id": "6ff91d47fba5c9522f175980f99347806ebea718ec3bbbbf250571dc3259aeec",
+    "image_id": "sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+    "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+    "source_revision": "c01088c7d289c7329126294268bde3d34bdad426",
+    "state": "running",
+    "docker_health": "not-configured",
+    "nano_cpus": 250000000,
+    "memory_bytes": 536870912
+  },
+  "pending_dashboard_evidence": "K05-pending-dashboard-verification.json",
+  "verification_artifact_id": 14709211413,
+  "verification_job_id": 136857812262,
+  "promotion_job_id": 136858771625,
+  "promotion_environment_id": 27463116638,
+  "evidence_sha256": "c6cf3decae023f3074b2492f1fc46efe356d205bc3bfad9d10ebfc3995780f35",
+  "promotion_comment": "PROMOTE c6cf3decae023f3074b2492f1fc46efe356d205bc3bfad9d10ebfc3995780f35 44657798365/2",
+  "promotion_expires_utc": "2026-11-21T13:50:38+00:00",
+  "gameplay_checks": {
+    "https": true,
+    "multiplayer": true,
+    "private_message_isolation": true,
+    "served_client": true,
+    "signalr": true,
+    "solo": true
+  },
+  "verifier_revoked": true,
+  "remaining_sessions": {
+    "activeGames": 0,
+    "lobbies": 0,
+    "soloGames": 0
+  },
+  "admission_open": true,
+  "promotion_decision": {
+    "comment": "PROMOTE c6cf3decae023f3074b2492f1fc46efe356d205bc3bfad9d10ebfc3995780f35 44657798365/2",
+    "received_utc": "2026-11-21T13:23:30.281292+00:00",
+    "receipt_time_basis": "First tool observation of actual user promotion message; not a GitHub review timestamp.",
+    "run_id": 44657798365,
+    "run_attempt": 2,
+    "proof_expires_unix": 1795269038
+  },
+  "completion_artifact_id": 14709032668,
+  "overall_release_complete": true
+}

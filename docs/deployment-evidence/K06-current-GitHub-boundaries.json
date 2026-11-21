@@ -1,0 +1,49 @@
+{
+  "recorded_utc": "2026-11-21T13:54:42.946585+00:00",
+  "source_sha": "0b354783d91babc76796381d0f38414f45cdd9e7",
+  "environments": {
+    "client-swa": {
+      "id": 27463097778,
+      "main_only": true,
+      "required_reviewers": [],
+      "prevent_self_review": null
+    },
+    "server-acr": {
+      "id": 27463101965,
+      "main_only": true,
+      "required_reviewers": [],
+      "prevent_self_review": null
+    },
+    "server-status": {
+      "id": 27463105884,
+      "main_only": true,
+      "required_reviewers": [],
+      "prevent_self_review": null
+    },
+    "server-linode": {
+      "id": 27463109663,
+      "main_only": true,
+      "required_reviewers": [
+        "henryfaulkner"
+      ],
+      "prevent_self_review": false
+    },
+    "server-verification": {
+      "id": 27463113360,
+      "main_only": true,
+      "required_reviewers": [],
+      "prevent_self_review": null
+    },
+    "server-promotion": {
+      "id": 27463116638,
+      "main_only": true,
+      "required_reviewers": [
+        "henryfaulkner"
+      ],
+      "prevent_self_review": false
+    }
+  },
+  "approved_config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+  "rollout_enabled": true,
+  "read_only": true
+}

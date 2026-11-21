@@ -1,0 +1,29 @@
+{
+  "task": "L03",
+  "state": "PARTIAL AUDIT / K06 AND FINAL REQUIRED EVIDENCE OPEN",
+  "recorded_utc": "2026-11-21T13:43:51.396199+00:00",
+  "PR15_published_paths": [
+    ".github/workflows/server.yml",
+    "deploy/linode/README.md",
+    "deploy/monitoring/README.md",
+    "deploy/provision/azure.py",
+    "deploy/release/test_workflows.py",
+    "docs/LINODE_IMPLEMENTATION_WORK_PACKAGES.md",
+    "docs/LINODE_PRODUCTION_OPERATIONS.md"
+  ],
+  "PR15_secret_files_or_private_artifacts_published": false,
+  "primary_head_preserved": "55c3a413151fc9dfae0e8a7cad4c0230cab13e46",
+  "primary_index_unchanged_empty": true,
+  "original_plan_preserved_sha256": "10a37128a9cfa49b92a5bed38887a17f5aec512eb54086642530bee4865df69c",
+  "unrelated_untracked_skill_directories_preserved": [
+    ".claude/skills",
+    ".agents/skills/stepwise-instructions"
+  ],
+  "host_mutation_scope": "Only K05 explicitly acknowledged API digest replacement/promotion; K06 accepted client restoration. No production DB migration, destructive global E2E cleanup, shared PostgreSQL/Caddy/TransitJazz/Alloy restart, DNS change or new observation gate.",
+  "independent_live_preservation_evidence": "K05-server-workflow-complete.json",
+  "open": [
+    "F04-F06 correction PR15 required validation/publication",
+    "K06 actual server rollback/fresh proof/promotion/reopening",
+    "Final current-source inventory/docs/evidence publication and completion report"
+  ]
+}

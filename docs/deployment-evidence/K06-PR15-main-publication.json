@@ -1,0 +1,44 @@
+{
+  "PR": {
+    "mergeCommit": {
+      "oid": "0b354783d91babc76796381d0f38414f45cdd9e7"
+    },
+    "mergedAt": "2026-11-21T13:50:01Z",
+    "state": "MERGED",
+    "url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/pull/15"
+  },
+  "review_head": "94ace38511315f6fb62fe29ecee30ec30fd1ca98",
+  "actual_main": "0b354783d91babc76796381d0f38414f45cdd9e7",
+  "source_hashes": {
+    ".github/workflows/server.yml": "b421abe30508ee6cb3db485f029ecb29aa2b05fbf4d92ebd368a76c910494465",
+    "deploy/linode/README.md": "b1fc5e8fe1b3f552031e6059aa61b9a5c5853bb84c8292567beefe0afdf0729f",
+    "deploy/monitoring/README.md": "f465e926196bdc095a106633aaea10a0144fdc09a05bd84a9e7b5a615bda3ae7",
+    "deploy/provision/azure.py": "f10f77b2b7ef4bf9388565fae121e6e27c6c24252d2567bf9dd062d343ff1791",
+    "deploy/release/test_workflows.py": "a813e0b008f23e68319cb8955f10efa4f28e0cd7e9c65a5e39350bdd3c735027",
+    "docs/LINODE_IMPLEMENTATION_WORK_PACKAGES.md": "0e10153859335c70bade2073e2c308726f7ea766798be341c4803d12c7c90fb5",
+    "docs/LINODE_PRODUCTION_OPERATIONS.md": "df995224a9cd7b5fb7b112345a5c40afae1dcc5e18d140febfaa168a070e163b"
+  },
+  "required_checks": {
+    "changes": "SUCCESS",
+    "checks": "SUCCESS",
+    "isolated": "SUCCESS",
+    "package": "SUCCESS",
+    "Server validation": "SUCCESS",
+    "publish": "SKIPPED",
+    "Client validation": "SUCCESS",
+    "deploy": "SKIPPED",
+    "resolve": "SKIPPED",
+    "verify": "SKIPPED",
+    "promote": "SKIPPED"
+  },
+  "rollout_enabled": true,
+  "host_tools_changed": false,
+  "recorded_utc": "2026-11-21T13:52:35.277836+00:00",
+  "redundant_main_push_cancelled": [
+    44910949571,
+    44910949638
+  ],
+  "cancellation_confirmed_completed_before_activation": true,
+  "API_digest_unchanged": "sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+  "source_publication": "Normal protected merge, required actual Client/Server validation pass, exact main files match reviewed source; no bypass."
+}

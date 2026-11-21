@@ -1,0 +1,69 @@
+{
+  "task": "K06",
+  "recorded_utc": "2026-11-21T14:09:53.426279+00:00",
+  "state": "POST-ROLLBACK SHARED SERVICES AND READ-ONLY SCHEMA VERIFIED / PROMOTION PENDING",
+  "services": {
+    "containers": [
+      {
+        "ID": "60bfa134e2dfa60657b32edb8f56563fa529e968ddbdbbc3853cd8babeebe971",
+        "Names": "pokerattack-production-api-1",
+        "State": "running"
+      },
+      {
+        "ID": "fbe3c939907d8df6e91997d51a8535637b1e279087e6a6a02ab61f383bd86ff6",
+        "Names": "pokerattack-pilot-api-1",
+        "State": "exited"
+      },
+      {
+        "ID": "1fac1e872bc54e40b1c89230be9f72e94e3e8f2533a46d4799a7e11df5abeb80",
+        "Names": "transitjazz-app-server-1",
+        "State": "running"
+      },
+      {
+        "ID": "d9fc0b5afced651b8fde45487b91a517e52316c221527b7393364d9f39089995",
+        "Names": "transitjazz-app-proxy-1",
+        "State": "running"
+      }
+    ],
+    "service_pids": {
+      "postgresql@16-main.service": "17929",
+      "alloy.service": "43899"
+    }
+  },
+  "baseline_reference": "K05-server-workflow-complete.json",
+  "unrelated_container_ids_and_states_unchanged": true,
+  "PostgreSQL_and_Alloy_PIDs_unchanged": true,
+  "schema_query": {
+    "helper": ".agents/skills/pokerattack-db/scripts/query-vm.ps1",
+    "target": "expensetrackerdb",
+    "identity": "postgres via existing trusted root SSH/local peer; not app-role permission evidence",
+    "transaction_read_only": true,
+    "isolation": "repeatable read",
+    "transaction_rolled_back": true,
+    "data_queries": false,
+    "PokerAttack_tables": [
+      "Games",
+      "RoundScores",
+      "Rounds"
+    ],
+    "ExpenseTracker_tables": [
+      "Budgets",
+      "Categories",
+      "CategorySemantics",
+      "ExpenseCategories",
+      "ExpenseSemantics",
+      "Expenses",
+      "RecurringExpenseConfigs"
+    ],
+    "shared_history_total_rows": 10,
+    "PokerAttack_required_migrations": [
+      "20251008022524_Init_Data",
+      "20251008234907_NoUsers",
+      "20251015221621_Update_Game_HostPlayerClientId"
+    ],
+    "shared_ExpenseTracker_history_rows": 7,
+    "interpretation": "Existing required schema/history compatible; no migration execution. This is a post-rollback catalog read and not a before/after full DDL hash comparison. Host begin-rollback also independently checked both recovery/candidate migration prerequisites read-only before stop.",
+    "raw_sanitized_output_reference": "artifacts/K06-server-rollback-44911036001-1/read-only-schema-history.txt"
+  },
+  "API_restart_scope": "Only explicitly acknowledged PokerAttack API replacement. PostgreSQL/shared Caddy/TransitJazz/Alloy unchanged."
+}

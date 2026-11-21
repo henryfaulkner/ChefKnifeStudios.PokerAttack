@@ -1,0 +1,70 @@
+{
+  "recorded_utc": "2026-11-21T14:27:04.649613+00:00",
+  "host_status": {
+    "protocol_version": 1,
+    "target": "production",
+    "sampled_utc": "2026-11-21T14:27:03.611797+00:00",
+    "capabilities": [
+      "structured-status-v1"
+    ],
+    "consistent": true,
+    "errors": [],
+    "pairs": {
+      "active": {
+        "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+        "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+        "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+        "snapshot_config_matches": true
+      },
+      "pending": null,
+      "known-good": {
+        "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+        "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+        "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+        "snapshot_config_matches": true
+      },
+      "previous-good": {
+        "digest": "sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+        "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+        "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+        "snapshot_config_matches": true
+      }
+    },
+    "transaction": false,
+    "lease": null,
+    "maintenance": {
+      "supported": true,
+      "active": false
+    },
+    "runtime": {
+      "container_id": "60bfa134e2dfa60657b32edb8f56563fa529e968ddbdbbc3853cd8babeebe971",
+      "image_id": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+      "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+      "source_revision": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+      "state": "running",
+      "docker_health": "not-configured",
+      "nano_cpus": 250000000,
+      "memory_bytes": 536870912
+    },
+    "sessions": {
+      "activeGames": 0,
+      "lobbies": 0,
+      "soloGames": 0
+    },
+    "readiness": {
+      "ready": true,
+      "identity_matches": true,
+      "limits_match": true,
+      "config_matches": true
+    }
+  },
+  "dashboard_url": "https://gallantpuffin3113.grafana.net/d/linode-docker-containers",
+  "datasource": "grafanacloud-prom",
+  "collector_age_seconds": 73.99825525283813,
+  "query": "time() - linode_docker_snapshot_timestamp_seconds{host=\"expense-tracker-vm\"}",
+  "query_type": "instant",
+  "freshness_threshold_seconds": 180,
+  "known_good_matches_runtime": true,
+  "admission_open": true,
+  "lease_cleared": true
+}

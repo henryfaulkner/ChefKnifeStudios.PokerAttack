@@ -1,0 +1,20 @@
+{
+  "recorded_utc": "2026-11-21T13:55:47.014879+00:00",
+  "read_only": true,
+  "images": [
+    {
+      "reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+      "image_id": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+      "platform": "linux/amd64",
+      "source_revision": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d"
+    },
+    {
+      "reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.data@sha256:dd6c86f57880dc56299e5a6aa11f1700c07c2b92c93f58c4842f988334e71ba4",
+      "image_id": "sha256:dd6c86f57880dc56299e5a6aa11f1700c07c2b92c93f58c4842f988334e71ba4",
+      "platform": "linux/amd64",
+      "source_revision": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d"
+    }
+  ],
+  "API_restarted": false,
+  "migration_executed": false
+}

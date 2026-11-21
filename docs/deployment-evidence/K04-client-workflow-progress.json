@@ -1,0 +1,58 @@
+{
+  "task": "K04",
+  "state": "COMPLETE / SEE K04-client-workflow-complete.json",
+  "recorded_utc": "2026-11-20T01:58:47.605032+00:00",
+  "source_sha": "c01088c7d289c7329126294268bde3d34bdad426",
+  "run_id": 44656069326,
+  "run_attempt": 3,
+  "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44656069326",
+  "before_API": {
+    "container_id": "f0c098961956cfce0e5550f3c1fc63346725d9c5567621f4d5538f3fef223d39",
+    "image_id": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "source_revision": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+    "state": "running",
+    "docker_health": "not-configured",
+    "nano_cpus": 250000000,
+    "memory_bytes": 536870912
+  },
+  "before_server_pair": {
+    "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+    "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "snapshot_config_matches": true
+  },
+  "before_admission": {
+    "supported": true,
+    "active": false
+  },
+  "delivery_enabled": true,
+  "completion_claimed": true,
+  "attempt1_failure": "SWA service-state gate: identity lacked SWA ARM Reader; no upload or lease occurred",
+  "actual_permission_remediation": "K04-SWA-status-permission-remediation.json",
+  "attempt2": "Failed-job-only rerun cancelled before publication/lease because new fresh candidate must match current attempt; original artifact attempt1 cannot become2. Wait cancellation completes, then full rerun builds actual attempt3.",
+  "provisioning_source_sha256": "f10f77b2b7ef4bf9388565fae121e6e27c6c24252d2567bf9dd062d343ff1791",
+  "no_API_restart": true,
+  "no_client_upload_yet": false,
+  "actual_service_status_gate_passed": true,
+  "current_client_lease": {
+    "kind": "client",
+    "phase": "client-publishing",
+    "run_id": 44656069326,
+    "run_attempt": 3,
+    "source_sha": "c01088c7d289c7329126294268bde3d34bdad426",
+    "client_archive_sha256": "e8915a0971ff8b792020ae8c9a2cfaf0d85e3ee6cbd6cf414292d94b49befb0f",
+    "artifact_id": 14594650185,
+    "minimum_server_capability": 1,
+    "client_source_run_id": 44656069326,
+    "client_source_run_attempt": 3,
+    "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+    "client_recovery_run_id": 43884112818,
+    "client_recovery_run_attempt": 1,
+    "client_recovery_artifact_id": 14233913243,
+    "client_recovery_archive_sha256": "32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5"
+  },
+  "API_container_unchanged": true,
+  "client_upload_complete": true
+}

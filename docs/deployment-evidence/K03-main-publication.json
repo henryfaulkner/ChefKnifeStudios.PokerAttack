@@ -1,0 +1,58 @@
+{
+  "task": "K03",
+  "state": "K03 COMPLETE / SEPARATE REVIEWED WORKFLOWS ON MAIN / ROUTINE DELIVERY ENABLED",
+  "recorded_utc": "2026-11-20T01:46:18.001853+00:00",
+  "PR": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/pull/14",
+  "review_head_sha": "be10e8ff0570e5ff39a54a9489d7704705e68d28",
+  "main_sha": "c01088c7d289c7329126294268bde3d34bdad426",
+  "workflow_hashes": {
+    "client.yml": "6ba1fe9e2488f5153529bbb3df6a71b5680f4764c121eb654619edebdafacc91",
+    "server.yml": "867602f54942d8ccb4eff5364fa5e8106a1421f267a11b99366222b8333dcdc5",
+    "migration-ci.yml": "78256c09e5a087107b4eb188a8884e2f5b18a5dd3e49546c744a63797ab73a13"
+  },
+  "required_check_results": {
+    "Client validation": "SUCCESS",
+    "Server validation": "SUCCESS"
+  },
+  "PR_client_run": 44654028143,
+  "PR_server_run": 44654028121,
+  "redundant_main_push_runs_cancel_requested": [
+    {
+      "databaseId": 44655963474,
+      "event": "push",
+      "headSha": "c01088c7d289c7329126294268bde3d34bdad426",
+      "status": "pending",
+      "workflowName": "PokerAttack Client CI/CD"
+    },
+    {
+      "databaseId": 44655963464,
+      "event": "push",
+      "headSha": "c01088c7d289c7329126294268bde3d34bdad426",
+      "status": "in_progress",
+      "workflowName": "PokerAttack Server CI/CD"
+    }
+  ],
+  "cancellation_reason": "PR checks passed; rollout stillfalse, no delivery authority or lease active. Cancel redundant build-only main pushes before intentionally enabling and dispatching one chosen client run. No active release cancelled.",
+  "primary_HEAD_unchanged": true,
+  "delivery_enabled": true,
+  "activated_utc": "2026-11-20T01:46:40.807570+00:00",
+  "redundant_push_cancellation_verified": [
+    {
+      "run_id": 44655963474,
+      "conclusion": "cancelled",
+      "status": "completed"
+    },
+    {
+      "run_id": 44655963464,
+      "conclusion": "cancelled",
+      "status": "completed"
+    }
+  ],
+  "host_ready_open_no_lease_before_activation": true,
+  "live_API_digest_unchanged": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+  "actual_CI_delivery_remaining": [
+    "K04",
+    "K05",
+    "K06"
+  ]
+}

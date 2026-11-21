@@ -1,0 +1,79 @@
+{
+  "current_pair": {
+    "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+    "digest": "sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+    "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+    "snapshot_config_matches": true
+  },
+  "execution": {
+    "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+    "run_attempt": 1,
+    "run_id": 44911036001,
+    "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44911036001"
+  },
+  "expected_interruption": "Explicit rollback restarts only the API after the acknowledged bounded drain/reset deadline. Unavailable counts are not zero.",
+  "format": "pokerattack-release-packet-v1",
+  "manifest": {
+    "api": {
+      "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+      "local_image_id": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+      "platform": "linux/amd64",
+      "repository": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi",
+      "source_revision": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+      "tag": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d"
+    },
+    "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+    "format": "pokerattack-server-v1",
+    "migration": {
+      "digest": "sha256:dd6c86f57880dc56299e5a6aa11f1700c07c2b92c93f58c4842f988334e71ba4",
+      "local_image_id": "sha256:dd6c86f57880dc56299e5a6aa11f1700c07c2b92c93f58c4842f988334e71ba4",
+      "platform": "linux/amd64",
+      "repository": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.data",
+      "source_revision": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+      "tag": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d"
+    },
+    "schema": {
+      "compatible_with_known_good": true,
+      "required_migrations": [
+        "20251008022524_Init_Data",
+        "20251008234907_NoUsers",
+        "20251015221621_Update_Game_HostPlayerClientId"
+      ],
+      "review_reference": "Reviewed release source: deploy/release/schema-prerequisite.json. Existing migration set unchanged; H must rehearse candidate and recovery against it. No production migration execution."
+    },
+    "source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+    "verification_references": [
+      "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/43884112818/attempts/1",
+      "tested-image-archive-sha256:2d8f0ea775c8186e05bde81419458526197900d19022e9016dd62fccb6b5406c"
+    ],
+    "workflow": {
+      "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+      "run_attempt": 1,
+      "run_id": 43884112818,
+      "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/43884112818"
+    }
+  },
+  "manifest_sha256": "e559f09b5a156c89d7e787e522ead9766a3c322a0affa463b4ffc33f1ec83862",
+  "observed_sessions": {
+    "activeGames": 0,
+    "lobbies": 0,
+    "soloGames": 0
+  },
+  "observed_utc": "2026-11-21T14:00:40.380900+00:00",
+  "operation": "rollback",
+  "pending_pair": null,
+  "recovery_from": null,
+  "recovery_pair": {
+    "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+    "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "snapshot_config_matches": true
+  },
+  "reset_review": {
+    "comment": "ACK_RESET 3142805e427561c1a1155db7872c184e549ba391af258e73a06a896d2d645360 44911036001/1",
+    "packet_sha256": "3142805e427561c1a1155db7872c184e549ba391af258e73a06a896d2d645360"
+  },
+  "review_window_expires_unix": 1795271440,
+  "review_window_started_unix": 1795269640,
+  "schema_check": "Host read-only prerequisite; no migration or database downgrade."
+}

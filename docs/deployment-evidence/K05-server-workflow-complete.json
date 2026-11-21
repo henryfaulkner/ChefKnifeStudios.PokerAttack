@@ -1,0 +1,105 @@
+{
+  "task": "K05",
+  "state": "COMPLETE LIVE / ACTUAL SERVER WORKFLOW SUCCESS",
+  "recorded_utc": "2026-11-21T13:26:54.444670+00:00",
+  "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44657798365/attempts/2",
+  "completion_artifact_id": 14709032668,
+  "verification_artifact_id": 14709211413,
+  "delivery_artifact_id": 14708342269,
+  "completion": {
+    "client_archive_sha256": "e8915a0971ff8b792020ae8c9a2cfaf0d85e3ee6cbd6cf414292d94b49befb0f",
+    "client_source_sha": "c01088c7d289c7329126294268bde3d34bdad426",
+    "completed_utc": "2026-11-21T13:24:55.537920+00:00",
+    "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+    "dashboard_url": "https://gallantpuffin3113.grafana.net/d/linode-docker-containers",
+    "digest": "sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+    "evidence_sha256": "c6cf3decae023f3074b2492f1fc46efe356d205bc3bfad9d10ebfc3995780f35",
+    "format": "pokerattack-promotion-v1",
+    "known_good": {
+      "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+      "digest": "sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+      "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+      "snapshot_config_matches": true
+    },
+    "migration_digest": "sha256:4379996efb899b4776a3f5263f13ede21a2875e26bfe2c905f57aafe3478fe3a",
+    "overall_release_complete": true,
+    "phase": "complete",
+    "promotion_complete": true,
+    "public_verification": {
+      "checks": {
+        "assets": true,
+        "browser": true,
+        "header": true,
+        "https": true,
+        "served_client": true,
+        "settings": true,
+        "signalr": true
+      },
+      "client_archive_sha256": "e8915a0971ff8b792020ae8c9a2cfaf0d85e3ee6cbd6cf414292d94b49befb0f",
+      "client_source_sha": "c01088c7d289c7329126294268bde3d34bdad426",
+      "verified_unix": 1795267492
+    },
+    "review": {
+      "comment": "PROMOTE c6cf3decae023f3074b2492f1fc46efe356d205bc3bfad9d10ebfc3995780f35 44657798365/2",
+      "decision_timestamp": null,
+      "environment": "server-promotion",
+      "reviewer": "henryfaulkner",
+      "timestamp_note": "GitHub review API does not expose decision time; immutable packet validity anchor is used conservatively."
+    },
+    "runtime": {
+      "container_id": "6ff91d47fba5c9522f175980f99347806ebea718ec3bbbbf250571dc3259aeec",
+      "docker_health": "not-configured",
+      "image_id": "sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+      "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:37b1cb0775efdc0c85136b6bbd342bd942c4b98002f85eff51440472ba173fa7",
+      "memory_bytes": 536870912,
+      "nano_cpus": 250000000,
+      "source_revision": "c01088c7d289c7329126294268bde3d34bdad426",
+      "state": "running"
+    },
+    "source_sha": "c01088c7d289c7329126294268bde3d34bdad426",
+    "workflow": {
+      "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+      "run_attempt": 2,
+      "run_id": 44657798365,
+      "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44657798365"
+    }
+  },
+  "host_reopened_no_lease_observation": "post-promotion-observed-status.json",
+  "shared_services": {
+    "containers": [
+      {
+        "ID": "6ff91d47fba5c9522f175980f99347806ebea718ec3bbbbf250571dc3259aeec",
+        "Names": "pokerattack-production-api-1",
+        "State": "running"
+      },
+      {
+        "ID": "fbe3c939907d8df6e91997d51a8535637b1e279087e6a6a02ab61f383bd86ff6",
+        "Names": "pokerattack-pilot-api-1",
+        "State": "exited"
+      },
+      {
+        "ID": "1fac1e872bc54e40b1c89230be9f72e94e3e8f2533a46d4799a7e11df5abeb80",
+        "Names": "transitjazz-app-server-1",
+        "State": "running"
+      },
+      {
+        "ID": "d9fc0b5afced651b8fde45487b91a517e52316c221527b7393364d9f39089995",
+        "Names": "transitjazz-app-proxy-1",
+        "State": "running"
+      }
+    ],
+    "service_pids": {
+      "postgresql@16-main.service": "17929",
+      "alloy.service": "43899"
+    }
+  },
+  "dashboard_evidence": "K05-pending-dashboard-verification.json",
+  "migration_executed": false,
+  "remaining_required_tasks": [
+    "K06",
+    "L01",
+    "L02",
+    "L03",
+    "L04"
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "task": "F04-F06 / K06",
+  "state": "COMPLETE LIVE / ACTUAL ROLLBACK PROMOTION REOPENING AND PUBLIC CHECKS PASS",
+  "recorded_utc": "2026-11-21T14:26:40.594483+00:00",
+  "run_id": 44911036001,
+  "run_attempt": 1,
+  "verification_artifact_id": 14710372738,
+  "evidence_sha256": "cf46b10f2958ef91c8175a5369f120f52c712c2153675514d9314eb7556ff97c",
+  "promotion_comment": "PROMOTE cf46b10f2958ef91c8175a5369f120f52c712c2153675514d9314eb7556ff97c 44911036001/1",
+  "promotion_expires_utc": "2026-11-21T14:39:50+00:00",
+  "promotion_expires_Eastern": "2026-11-21T09:39:50-05:00",
+  "proof": {
+    "format": "pokerattack-evidence-v1",
+    "source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+    "workflow": {
+      "repository": "henryfaulkner/ChefKnifeStudios.PokerAttack",
+      "run_id": 44911036001,
+      "run_attempt": 1,
+      "run_url": "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44911036001"
+    },
+    "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "migration_digest": "sha256:dd6c86f57880dc56299e5a6aa11f1700c07c2b92c93f58c4842f988334e71ba4",
+    "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+    "client_source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+    "client_archive_sha256": "32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5",
+    "verifier_id": "4e6ac3835106e0aade5be2b6bd9ba355",
+    "verified_unix": 1795270190,
+    "checks": {
+      "https": true,
+      "served_client": true,
+      "signalr": true,
+      "private_message_isolation": true,
+      "multiplayer": true,
+      "solo": true
+    },
+    "artifact_references": [
+      "https://github.com/henryfaulkner/ChefKnifeStudios.PokerAttack/actions/runs/44911036001/attempts/1",
+      "accepted-client-artifact:14233913243:32bfd2e0402846236dc074e09d382945c71acf555105a6a1834e6b46cba2c4d5"
+    ]
+  },
+  "manifest_sha256": "e559f09b5a156c89d7e787e522ead9766a3c322a0affa463b4ffc33f1ec83862",
+  "observed_runtime": {
+    "container_id": "60bfa134e2dfa60657b32edb8f56563fa529e968ddbdbbc3853cd8babeebe971",
+    "image_id": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "image_reference": "chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi@sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "source_revision": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+    "state": "running",
+    "docker_health": "not-configured",
+    "nano_cpus": 250000000,
+    "memory_bytes": 536870912
+  },
+  "lease": {
+    "kind": "server",
+    "digest": "sha256:464ff4271d74764de98eca11058b19c892b82099d82aa9edf911f3584e21da40",
+    "config_sha256": "7c830479833d8b9a8ed119a75a73069fd70c1ce510f67c060cfc365f9936355f",
+    "source_sha": "dec2fb0c13d928a3c3df3031c5a8ef3455d0d02d",
+    "run_id": 44911036001,
+    "run_attempt": 1,
+    "phase": "pending",
+    "manifest_sha256": "e559f09b5a156c89d7e787e522ead9766a3c322a0affa463b4ffc33f1ec83862",
+    "verifier_issued": true,
+    "verifier_revoked": true,
+    "approved_unix": 1795269640,
+    "expires_unix": 1795271440,
+    "evidence_sha256": "cf46b10f2958ef91c8175a5369f120f52c712c2153675514d9314eb7556ff97c"
+  },
+  "sessions": {
+    "activeGames": 0,
+    "lobbies": 0,
+    "soloGames": 0
+  },
+  "admission_open": true,
+  "promotion_received": true,
+  "overall_release_complete": true,
+  "promotion_environment_id": 27463116638,
+  "pending_environments": [
+    {
+      "name": "server-promotion",
+      "id": 27463116638,
+      "current_user_can_approve": true
+    }
+  ],
+  "dashboard_evidence": "K06-pending-dashboard-verification.json",
+  "shared_services_schema_evidence": "K06-shared-services-schema-verification.json",
+  "promotion_decision": {
+    "comment": "PROMOTE cf46b10f2958ef91c8175a5369f120f52c712c2153675514d9314eb7556ff97c 44911036001/1",
+    "received_utc": "2026-11-21T14:24:54.044755+00:00",
+    "receipt_time_basis": "First tool observation of actual user PROMOTE; not a GitHub review timestamp.",
+    "run_id": 44911036001,
+    "run_attempt": 1,
+    "proof_expires_unix": 1795271990
+  },
+  "completion_artifact_id": 14709939751,
+  "completion_evidence": "K06-live-recovery-complete.json"
+}
