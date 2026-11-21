@@ -1,6 +1,6 @@
 # Shared Linode Docker snapshot
 
-Local source only until I/J. One collector and one **Linode Docker Containers**
+Installed and live-verified in I/J (see checklist evidence). One collector and one **Linode Docker Containers**
 dashboard use the existing Alloy Unix exporter, 60-second scrape and authenticated
 forwarding path. No public metrics listener, datasource, container healthcheck or
 application restart is added. PostgreSQL is host-managed and is not invented as a
@@ -50,6 +50,7 @@ files after Alloy no longer reads them. Do not delete shared exporter state,
 restart Docker, alter host dashboards or touch application containers.
 
 Local checks: `python -m unittest discover -s deploy/monitoring -v` in Linux.
-Disposable lifecycle/overhead and actual dashboard query checks remain H04/J.
+Disposable lifecycle/overhead and actual dashboard query checks passed H04/J; see
+[the recorded live evidence](../../docs/deployment-evidence/J03-J04-complete-live-verification.json).
 The dashboard is runtime visibility, never a reset, promotion, readiness or
 automatic-rollback gate.

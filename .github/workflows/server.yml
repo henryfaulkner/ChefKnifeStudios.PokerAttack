@@ -241,7 +241,9 @@ jobs:
 
   deploy:
     needs: [changes, validation, resolve]
+    # Rollback intentionally skips publish; override GitHub's implicit ancestor-success guard.
     if: >-
+      !cancelled() && needs.resolve.result == 'success' &&
       needs.validation.result == 'success' &&
       github.repository == 'henryfaulkner/ChefKnifeStudios.PokerAttack' &&
       github.ref == 'refs/heads/main' &&
@@ -354,6 +356,7 @@ jobs:
   promote:
     needs: [resolve, verify]
     if: >-
+      !cancelled() && needs.resolve.result == 'success' &&
       needs.verify.result == 'success' &&
       github.repository == 'henryfaulkner/ChefKnifeStudios.PokerAttack' &&
       github.ref == 'refs/heads/main' &&

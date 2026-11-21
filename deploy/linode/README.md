@@ -1,6 +1,15 @@
 # PokerAttack release tooling
 
-Repository automation is being implemented against [the release contract](../release/CONTRACT.md) and [the authoritative checklist](../../docs/DEPLOYMENT_AUTOMATION_CHECKLIST.md). New role wrappers, admission mounts and lease controls are **local source only until I03/I04**, and the complete toolset must pass H before installation. The live installed snapshot remains the one recorded in production operations/evidence. The repository's legacy combined SSH wrapper now rejects production; future production keys must use the separate status/deployment/evidence/promotion capabilities. Repository production replacement also requires the matching controller lease, while the installed historical root operator path remains the transitional recovery channel until bootstrap.
+Production automation is installed and enabled on protected `main`. The separate
+[client workflow](../../.github/workflows/client.yml) publishes/restores Azure
+Static Web Apps artifacts; the [server workflow](../../.github/workflows/server.yml)
+publishes exact tested images to ACR and delivers immutable digests to Linode.
+K02 bootstrap and K04/K05 actual client/server releases are verified; K06 live
+recovery remains in progress. See the [authoritative checklist](../../docs/DEPLOYMENT_AUTOMATION_CHECKLIST.md)
+for current evidence and the [release contract](../release/CONTRACT.md) for schemas.
+The legacy combined SSH wrapper rejects production. Routine CI uses separate
+status, client-lease, deployment, evidence and promotion capabilities. The root
+bootstrap path is retained for inspected recovery, not routine delivery.
 
 Production is installed on Linode after the verified pilot and owner-directed cutover. See [production operations](../../docs/LINODE_PRODUCTION_OPERATIONS.md) for current identities, recovery and unfinished operational follow-ups. The owner directed ACA retirement and deferred shared password rotation. Production releases use the protected command below; never start a second authoritative game process.
 
@@ -27,35 +36,134 @@ The production/pilot use the same Compose file with distinct project names, env 
 
 `Caddyfile.example` is additive to `/opt/transitjazz/Caddyfile`, under that proxy owner's Compose lifecycle. Back up, append, validate inside the existing proxy image, then intentionally reload it during WP06/07. Preserve certificate/config volumes and existing sites. Both public sites deny test and operator paths case-insensitively. Use a private SSH tunnel for pilot cleanup. Caddy handles WebSocket upgrades/query strings. No second proxy is installed.
 
-## Controlled release interface
+## Routine production releases
 
-All examples below are on-host root commands. Dedicated CI SSH keys use the forced wrapper with `restrict`/no forwarding/no PTY; sudoers permits only `/usr/local/sbin/pokerattack-deploy`. Provisioning configs, maintenance acknowledgement and verification evidence is an operator task, outside that key's permissions. WP09 adds GitHub environment and branch controls.
+Dispatch on trusted `main`, using the installed GitHub authentication:
 
-1. Review config and image provenance. Registry is fixed to `chefknife.azurecr.io/chefknifestudios.pokerattack.server.webapi`; only a lowercase sha256 digest is accepted. First install pull-only registry access with a separate protected Docker credential directory owned by root.
-2. Enter client maintenance and observe/drain games or explicitly end them. Create `/etc/pokerattack/<target>/maintenance` mode 0600 containing `sessions-reset-approved`. It expires after 30 minutes; it records a deliberate reset, not a claim that matches survived. Production ACA stopping and client maintenance remain WP08 operator steps; the script cannot infer those from local readiness.
-3. Run `pokerattack-deploy deploy pilot sha256:<64hex> <config-sha256>` (or production). It validates config, pre-pulls before stopping, validates Compose, snapshots the pair, checks maintenance, then stops only that target's API and waits at most 30 readiness attempts with bounded curls. Runtime image ID and exact enforced limits are checked. A failed candidate restores the recorded active pair when possible and returns failure even if recovery succeeds.
-4. Leave the candidate pending. Perform public TLS, actual SignalR, multiplayer/solo and private-message isolation checks. Save reviewed evidence as root-owned 0600 `/etc/pokerattack/<target>/verification/<sha256>.json`. Fields: `digest` (`sha256:...`), `config_sha256`, 40-hex `source_sha`, `verified_unix`, and booleans `https`, `signalr`, `multiplayer`, `solo`, `private_message_isolation`, all true. Include supporting log/artifact references in additional fields. Hash the exact file bytes. It expires after 30 minutes.
-5. Run `pokerattack-deploy promote pilot sha256:<64hex> <evidence-sha256>`. Only the matching active pending pair can be promoted after fresh evidence and a renewed local identity/readiness check. Local health alone cannot create known-good. A pending pair blocks a competing deployment.
+```powershell
+gh workflow run client.yml --ref main -f operation=release
+gh workflow run server.yml --ref main -f operation=release
+```
 
-`pokerattack-deploy status pilot` reports identity/local readiness without secrets. `rollback pilot` requires fresh maintenance acknowledgement and restores known-good when pending, otherwise previous-good. Rollback itself remains pending external verification. Never automatically downgrade/restore the database during application rollback.
+Both workflows use `pokerattack-production-release`, `cancel-in-progress: false`,
+and a durable host lease. Do not cancel an active release to start another.
+GitHub permits only one pending member of a concurrency group; avoid queuing
+additional requests over an existing pending request. A host lease survives
+runner failure and is not cleared by canceling a run.
+
+Client delivery validates the exact archived artifact, current server readiness
+and compatibility before upload, verifies all three client origins and browser
+SignalR, then records accepted current/previous pointers. It does not restart API.
+For a restoration, choose an actually accepted manifest and its exact identities:
+
+```powershell
+gh workflow run client.yml --ref main -f operation=restore -f restore_run=RUN -f restore_attempt=ATTEMPT -f restore_artifact=NUMERIC_ARTIFACT_ID -f restore_checksum=ARCHIVE_SHA256
+```
+
+Server delivery builds/tests once, publishes API and migration images with
+`server-acr` OIDC, then prepares the numeric `server-release-packet-RUN-ATTEMPT`
+artifact through `server-status`. Publication never executes the migration image.
+Review the packet's source, tested image IDs/digests, config, schema, current and
+recovery pair, session counts and original expiry. A release-specific reset
+acknowledgment is required before approving `server-linode`, with its exact comment:
+`ACK_RESET PACKET_SHA256 RUN/ATTEMPT`. The original 30-minute packet window must
+also cover runner startup and the bounded drain (default 300 seconds). Do not
+renew the anchor or reuse a comment from another packet.
+
+The deployment closes admission, drains or resets remaining matches according to
+the acknowledged policy, rechecks schema read-only and deploys only the captured
+API digest. It leaves a ready candidate pending. `server-verification` runs real
+production-safe HTTPS, SignalR, multiplayer, solo, private-message isolation and
+served-client checks; it leaves only its own sessions, verifies zero counts,
+revokes its credential and imports exact generated proof. No hand-authored pass
+booleans or production-wide E2E cleanup are allowed.
+
+Inspect `server-verification-RUN-ATTEMPT` and matching live pending state. A
+separate explicit `PROMOTE EVIDENCE_SHA256 RUN/ATTEMPT` decision is required at
+`server-promotion`, within the proof's original 30-minute window. After promotion,
+CI rechecks accepted client/runtime identity, reopens admission, runs seven public
+checks and uploads `server-outcome-RUN-ATTEMPT`. Completion requires actual run
+success, `overall_release_complete: true`, matching known-good/runtime, open
+admission and no lease. An ACR push or ready pending API alone is incomplete.
+
+GitHub environment review comments must come from the actual release decision.
+When authorized to relay a user's exact decision, submit it through the genuine
+pending-deployments API; do not invent review history or decision timestamps.
+The GitHub history API lacks decision timestamps, so tooling uses the earlier
+immutable packet/proof anchor conservatively.
+
+## Installed capabilities
+
+All commands include literal `production` as their second word and reject extra
+whitespace, arguments, targets and shell syntax. Packets travel as bounded JSON
+on stdin; keys cannot supply paths or obtain a shell. Never print key/config or
+verifier credential contents. See [exact grammar](release_commands.py).
+
+| GitHub environment | SSH user / secret | Allowed purpose |
+| --- | --- | --- |
+| `server-status` | `pa-status` / `LINODE_STATUS_PRIVATE_KEY` | `status production`, `rollback-target production` |
+| `client-swa` | `pa-client` / `LINODE_CLIENT_LEASE_PRIVATE_KEY` | Client lease begin/finish/resume/recovery; status |
+| `server-linode` | `pa-deploy` / `LINODE_DEPLOY_PRIVATE_KEY` | Begin release/rollback, exact deploy/rollback, guarded resume; status |
+| `server-verification` | `pa-evidence` / `LINODE_EVIDENCE_PRIVATE_KEY` | Issue/revoke verifier, import evidence, resume verification; status |
+| `server-promotion` | `pa-promote` / `LINODE_PROMOTION_PRIVATE_KEY` | Exact promote, finish-release; status |
+
+`server-acr` uses scoped Azure OIDC, no host SSH. `client-swa` OIDC has only scoped
+SWA Reader and private archive-container Blob Contributor; its SWA deployment
+secret remains environment protected. Verification/promotion identities read the
+private archive. All environments are main-only; server-linode/server-promotion
+require the explicit reviews above. Preserve strict installed host trust.
+
+## Application rollback and verification resume
+
+```powershell
+gh workflow run server.yml --ref main -f operation=rollback
+```
+
+The status capability resolves the recorded known-good when a candidate is
+pending, otherwise previous-good. The packet contains the saved manifest and
+matching config/schema; it is not a new build of that old source. A new rollback
+ACK_RESET is mandatory before its API restart. Restored code remains pending
+until fresh gameplay, credential revocation, distinct PROMOTE and reopening pass.
+Never downgrade or restore a database to roll back application code.
+
+For expired proof or an interrupted verification/promotion, first inspect
+structured status, then rerun the actual verification job and dependents with
+`gh run rerun RUN --job VERIFY_JOB_ID`. A genuine later attempt may resume the
+same established candidate with fresh verifier IDs/proof and a new PROMOTE.
+Do not rerun deployment or change a packet/proof timestamp. If an unapproved
+reset packet expires while the host is idle, cancel only that unstarted attempt
+and rerun the actual resolve job to obtain a new execution/packet/decision.
+Inspect every uncertain mutation before retrying.
+
+Pilot-only legacy root commands remain available for isolated work. They are
+not the production CI interface; production requires its matching controller
+lease, generated evidence and fresh review controls.
 
 ## Interrupted execution and recovery
 
 Lost SSH or killed execution is an unknown outcome. Do not launch another release. The protected `transaction` file records old/candidate directories; it blocks further operations until inspected. Use LISH if SSH is unavailable. Under `flock /var/lib/pokerattack/deploy.lock`, inspect only that target's Compose container, image, readiness and release snapshots. Stop a failed candidate, restart the recorded old pair using its own `release.env`, and verify health/public gameplay before correcting pointers and archiving the transaction file. Do not print app.env. If no recorded old pair exists, stop the failed candidate and retain maintenance for operator inspection; retired ACA is not a recovery authority. Failed recovery retains the transaction; do not remove it merely to make the next job green. No prune/reboot/shared-service stop is a recovery step.
 
-## Automation and baseline introduction
+## Bootstrap history, artifacts and monitoring
 
-The new source controls are tracked in the [deployment checklist](../../docs/DEPLOYMENT_AUTOMATION_CHECKLIST.md).
-Source checks and disposable rehearsals do not mean the production tools or
-workflows are installed/enabled. The [bootstrap contract](../release/BOOTSTRAP.md)
-describes the root-only publication sequence, immutable legacy recovery bundle,
-provisional first-client verification, ordinary manual workflow dispatch, and
-lost-response reconciliation. Preserve the established root recovery channel;
-capability-separated CI keys cannot invoke that transitional exception.
+The [bootstrap contract](../release/BOOTSTRAP.md) describes the completed K02
+root-only transition and immutable legacy recovery bundle. Its static maintenance
+publication and first-client acceptance exception are historical bootstrap
+mechanics, not routine release steps. ACA is retired and cannot be reactivated
+as a recovery authority.
 
-ACA has been retired and is not an available recovery authority. Recover from
-the recorded Linode image/config and its matching saved tooling; an unready first
-candidate without a recorded recovery pair must remain closed for inspection.
+GitHub release/test/image artifacts are retained for 30 days. The private Azure
+Blob archive (`pareleasearchive1f287758`, `pokerattack-client-releases`) preserves
+accepted exact client archives/manifests and CAS current/previous history, with
+versioning and 30-day delete retention. No public access, shared keys or SAS
+publication is used. Do not replace an accepted artifact with a rebuild.
+
+The single [Linode Docker Containers dashboard](https://gallantpuffin3113.grafana.net/d/linode-docker-containers)
+is installed and live-verified, alongside the existing Linux host dashboard.
+Select `pokerattack-production-api-1` to compare full image/digest/source and
+container incarnation with release evidence. Docker health Not configured is
+not Healthy; fixed application readiness is separate. Stale/missing/failed
+collection is Unknown, never a green zero. This is visibility, not an additional
+release gate. See [collector installation/rollback](../monitoring/README.md).
 
 ## Credential coordination
 
